@@ -1,8 +1,12 @@
-# team-3
-## Team Members:
-## kaoutar
-## Nora
-## Sølve
-## Zara 
-## Lennard
-## Sondre
+# IN2000 - Software Engineering med Prosjektarbeid
+
+## 🚀 Team-3
+
+### 👥 Teammedlemmer
+- **Kaoutar**
+- **Nora**
+- **Sølve**
+- **Zara**
+- **Lennard**
+- **Sondre**
+
