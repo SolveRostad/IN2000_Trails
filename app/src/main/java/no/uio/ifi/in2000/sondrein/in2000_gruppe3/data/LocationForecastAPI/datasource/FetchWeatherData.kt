@@ -1,11 +1,12 @@
 package no.uio.ifi.in2000.sondrein.in2000_gruppe3.data.LocationForecastAPI.datasource
 
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.data.LocationForecastAPI.models.Locationforecast
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 
 // Get temperature at selected place right now
-fun getTemperature(lat: Double, lon: Double): String {
+fun getTemperature(lat: Double, lon: Double): Locationforecast {
     val urlString = "https://api.met.no/weatherapi/locationforecast/2.0/classic?lat=$lat&lon=$lon"
 
     return try {
