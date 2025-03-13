@@ -3,6 +3,7 @@ package no.uio.ifi.in2000.sondrein.in2000_gruppe3.data.LocationForecastAPI.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class DetailsXX(
-    val precipitation_amount: Double
+data class Next6Hours(
+    val details: DetailsX?,
+    val summary: Summary
 )

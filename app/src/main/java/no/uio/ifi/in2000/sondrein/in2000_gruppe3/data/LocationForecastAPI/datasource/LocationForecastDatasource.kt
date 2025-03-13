@@ -8,7 +8,7 @@ import java.net.URL
 /**
  * Datasource for fetching weather data from the MET API.
  */
-class FetchLocationForecast {
+class LocationForecastDatasource {
     /**
      * Fetches weather data from the MET API.
      * @param lat Latitude of the location
@@ -16,24 +16,25 @@ class FetchLocationForecast {
      * @return Locationforecast object or null if request fails
      */
     fun getLocationForecast(lat: Double, lon: Double): Locationforecast? {
-        val urlString = "https://api.met.no/weatherapi/locationforecast/2.0/classic?lat=$lat&lon=$lon"
+        val urlString = "https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=$lat&lon=$lon"
 
         return try {
             val url = URL(urlString)
             val connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
-            connection.setRequestProperty("User-Agent", "IN2000_TripPlanner/1.0 (sondrein@uio.no)")
+            connection.setRequestProperty("User-Agent", "IN2000_trails/1.0 (sondrein@uio.no)")
             connection.connect()
 
             if (connection.responseCode == HttpURLConnection.HTTP_OK) {
-                val responseText = connection.inputStream.bufferedReader().use { it.readText() }
-
-                // Deserialize JSON to Locationforecast object
-                Json { ignoreUnknownKeys = true }.decodeFromString<Locationforecast>(responseText)
+                val response = connection.inputStream.bufferedReader().readText()
+                val json = Json { ignoreUnknownKeys = true }
+                // Serialize the response to a Locationforecast object
+                json.decodeFromString<Locationforecast>(response)
             } else {
                 null
             }
         } catch (e: Exception) {
+            println("Feil ved parsing av JSON: ${e.message}")
             null
         }
     }

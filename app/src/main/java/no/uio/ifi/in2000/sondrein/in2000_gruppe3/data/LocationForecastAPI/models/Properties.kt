@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Properties(
     val meta: Meta,
-    val timeseries: List<Timesery>
+    val timeseries: List<TimeSeries>
 )

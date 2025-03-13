@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Next1Hours(
-    val details: DetailsXX,
+    val details: DetailsX,
     val summary: Summary
 )

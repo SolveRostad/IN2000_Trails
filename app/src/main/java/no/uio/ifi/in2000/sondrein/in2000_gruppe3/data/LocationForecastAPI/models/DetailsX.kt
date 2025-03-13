@@ -3,4 +3,6 @@ package no.uio.ifi.in2000.sondrein.in2000_gruppe3.data.LocationForecastAPI.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-class DetailsX
+data class DetailsX(
+    val precipitation_amount: Double? = null
+)
