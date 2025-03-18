@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.mapbox
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
@@ -8,6 +9,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.nestedscroll.nestedScrollModifierNode
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.mapbox.maps.Style
 import com.mapbox.geojson.Point
@@ -57,8 +61,8 @@ fun MapViewer() {
         MapboxMap(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(350.dp),
-                //.clip(RoundedCornerShape(12.dp)),
+                .height(350.dp)
+                .clip(RoundedCornerShape(12.dp)),
             mapViewportState = mapViewportState,
             style = {
                 if (selectedStyle == Style.STANDARD) {
