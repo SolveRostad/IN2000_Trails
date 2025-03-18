@@ -37,6 +37,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -44,6 +45,10 @@ dependencies {
 
     // Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
+
+    // Mapbox
+    implementation("com.mapbox.maps:android:11.10.2")
+    implementation("com.mapbox.extension:maps-compose:11.10.2")
 
     // Standard libs
     implementation(libs.androidx.core.ktx)
