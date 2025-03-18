@@ -4,28 +4,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.mapbox.maps.MapView
-import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.mapbox.MapViewer
-import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.theme.IN2000_gruppe3Theme
-import androidx.activity.compose.setContent
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.Screen
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.favoriteScreen.FavoriteScreen
-import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCard.HikeRouteCard
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCard.HikeCard
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.home.HomeScreen
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.Screen
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.theme.IN2000_gruppe3Theme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +24,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             IN2000_gruppe3Theme {
-                Surface() {
+                Surface {
                     App()
                 }
             }
@@ -44,19 +35,20 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun App() {
     val navController = rememberNavController()
-    HikeAppNavHost(navController = navController)
+    AppNavHost(navController = navController)
 }
 
 @Composable
-fun HikeAppNavHost(navController: NavHostController) {
+fun AppNavHost(navController: NavHostController) {
     NavHost(
         navController = navController,
         startDestination = Screen.Home.route
     ) {
+        // Home screen
         composable(Screen.Home.route) {
             HomeScreen(
                 onHikeClick = { hikeId ->
-                    navController.navigate(Screen.HikeRoute.createRoute(hikeId))
+                    navController.navigate(Screen.HikeCard.createRoute(hikeId))
                 },
                 onFavoritesClick = {
                     navController.navigate(Screen.Favorites.route)
@@ -64,12 +56,13 @@ fun HikeAppNavHost(navController: NavHostController) {
             )
         }
 
+        // HikeCard screen
         composable(
-            route = Screen.HikeRoute.route,
+            route = Screen.HikeCard.route,
             arguments = listOf(navArgument("hikeId") { type = NavType.IntType })
         ) { backStackEntry ->
             val hikeId = backStackEntry.arguments?.getInt("hikeId") ?: -1
-            HikeRouteCard(
+            HikeCard(
                 hikeId = hikeId,
                 onBackClick = {
                     navController.popBackStack()
@@ -83,10 +76,11 @@ fun HikeAppNavHost(navController: NavHostController) {
             )
         }
 
+        // Favorites screen
         composable(Screen.Favorites.route) {
             FavoriteScreen(
                 onHikeClick = { hikeId ->
-                    navController.navigate(Screen.HikeRoute.createRoute(hikeId))
+                    navController.navigate(Screen.HikeCard.createRoute(hikeId))
                 },
                 onHomeClick = {
                     navController.navigate(Screen.Home.route) {

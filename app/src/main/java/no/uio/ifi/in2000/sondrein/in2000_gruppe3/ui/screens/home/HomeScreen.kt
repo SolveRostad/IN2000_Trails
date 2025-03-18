@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.mapbox.MapViewer
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.Hike
-import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCard.HikeCard
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCard.SmallHikeCard
 
 @Composable
 fun HomeScreen(
@@ -51,29 +51,30 @@ fun HomeScreen(
             Hike(3, "River Path", 10.0, "Hard", "")
         )
 
-
-        LazyColumn(
+        Column (
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues),
-            contentPadding = PaddingValues(16.dp)
+                .padding(paddingValues)
         ) {
-            item {
-                Text(
-                    text = "Hiking Routes",
-                    style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-            }
+            Text(
+                text = "Hiking Routes",
+                style = MaterialTheme.typography.headlineLarge,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
 
-            item {
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Box(modifier = Modifier.padding(horizontal = 16.dp)) {
                 MapViewer()
-                Spacer(modifier = Modifier.height(16.dp))
             }
 
-            items(hikes) { hike ->
-                HikeCard(hike = hike, onClick = { onHikeClick(hike.id) })
-                Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+
+            LazyColumn(contentPadding = PaddingValues(16.dp)) {
+                items(hikes) { hike ->
+                    SmallHikeCard(hike = hike, onClick = { onHikeClick(hike.id) })
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
             }
         }
     }
