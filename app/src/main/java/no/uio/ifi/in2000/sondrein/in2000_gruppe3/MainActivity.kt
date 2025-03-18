@@ -11,6 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.mapbox.maps.MapView
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.mapbox.MapViewer
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.theme.IN2000_gruppe3Theme
 
 class MainActivity : ComponentActivity() {
@@ -19,7 +21,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             IN2000_gruppe3Theme {
-
+                MapViewer()
             }
         }
     }
