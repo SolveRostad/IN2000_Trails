@@ -20,33 +20,18 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.mapbox.MapViewer
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.navigation.BottomBar
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCard.SmallHikeCard
 
 @Composable
 fun HomeScreen(
-    onHikeClick: (Int) -> Unit,
-    onFavoritesClick: () -> Unit,
     viewModel: HomeScreenViewModel,
     navController: NavHostController
 ) {
     val uiState by viewModel.homeScreenUIState.collectAsState()
     Scaffold(
-        bottomBar = {
-            BottomBar(
-                onHomeClick = { /* Already on home */ },
-                onFavoritesClick = onFavoritesClick,
-                navController = navController
-            )
-        }
+        bottomBar = { BottomBar(navController = navController) }
     ) { paddingValues ->
-
-        // Dummydata
-//        val hikes = listOf(
-//            Hike(1, "Mountain Trail", 8.5, "Medium", ""),
-//            Hike(2, "Forest Walk", 5.2, "Easy", ""),
-//            Hike(3, "River Path", 10.0, "Hard", "")
-//        )
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -68,7 +53,10 @@ fun HomeScreen(
 
             LazyColumn(contentPadding = PaddingValues(16.dp)) {
                 items(uiState.turer.features) { feature ->
-                    SmallHikeCard(feature, onClick = { /* TODO */ })
+                    SmallHikeCard(
+                        feature,
+                        onClick = { navController.navigate(Screen.HikeCard.createRoute(feature)) }
+                    )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }

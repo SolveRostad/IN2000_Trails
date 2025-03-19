@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 data class Feature(
     val geometry: Geometry,
     val properties: Properties,
-    val type: String
+    val type: String,
+    val id: Int? = 0
 )

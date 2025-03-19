@@ -6,13 +6,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -22,42 +19,32 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.Hike
+import androidx.navigation.NavHostController
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.home.HomeScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HikeCard(
-    hikeId: Int,
-    onBackClick: () -> Unit,
-    onFavoriteClick: () -> Unit
+    viewModel: HomeScreenViewModel,
+    navController: NavHostController
 ) {
-
-    // Dummydata
-    val hike = remember {
-        when (hikeId) {
-            1 -> Hike(1, "Mountain Trail", 8.5, "Medium", "")
-            2 -> Hike(2, "Forest Walk", 5.2, "Easy", "")
-            3 -> Hike(3, "River Path", 10.0, "Hard", "")
-            else -> Hike(-1, "Unknown Hike", 0.0, "Unknown", "")
-        }
-    }
-
-
+    val uiState by viewModel.homeScreenUIState.collectAsState()
+    val feature = viewModel.homeScreenUIState.value.turer.features[0]
     var isFavorite by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = hike.name) },
+                title = { Text(text = feature.properties.rutenavn.first()) },
                 navigationIcon = {
-                    IconButton(onClick = onBackClick) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
@@ -67,9 +54,6 @@ fun HikeCard(
                 actions = {
                     IconButton(onClick = {
                         isFavorite = !isFavorite
-                        if (isFavorite) {
-                            onFavoriteClick()
-                        }
                     }) {
                         Icon(
                             imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
@@ -94,9 +78,8 @@ fun HikeCard(
                         style = MaterialTheme.typography.headlineMedium
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = "Hike ID: $hikeId")
-                    Text(text = "Distance: ${hike.distance} km")
-                    Text(text = "Difficulty: ${hike.difficulty}")
+                    Text(text = "Avstand til turen: ${feature.properties.distance_meters.toFloat() / 1000.0} km")
+                    Text(text = if (feature.properties.gradering.isEmpty()) "Ukjent" else "Vanskelighetsgrad: ${feature.properties.gradering.first()}")
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = "Route Description",
@@ -109,18 +92,18 @@ fun HikeCard(
                 }
             }
 
-            Button(
-                onClick = onFavoriteClick,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Favorite,
-                    contentDescription = null,
-                    modifier = Modifier.size(18.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Add to Favorites")
-            }
+//            Button(
+//                onClick = onFavoriteClick,
+//                modifier = Modifier.align(Alignment.CenterHorizontally)
+//            ) {
+//                Icon(
+//                    imageVector = Icons.Default.Favorite,
+//                    contentDescription = null,
+//                    modifier = Modifier.size(18.dp)
+//                )
+//                Spacer(modifier = Modifier.width(8.dp))
+//                Text(text = "Add to Favorites")
+//            }
         }
     }
 }

@@ -21,13 +21,15 @@ fun AppNavHost() {
         // Home screen
         composable(Screen.Home.route) {
             HomeScreen(
-                onHikeClick = { hikeId ->
-                    navController.navigate(Screen.HikeCard.createRoute(hikeId))
-                },
-                onFavoritesClick = {
-                    navController.navigate(Screen.Favorites.route)
-                },
                 viewModel = viewModel(),
+                navController = navController
+            )
+        }
+
+        // Favorites screen
+        composable(Screen.Favorites.route) {
+            FavoriteScreen(
+                viewmodel = viewModel(),
                 navController = navController
             )
         }
@@ -36,34 +38,9 @@ fun AppNavHost() {
         composable(
             route = Screen.HikeCard.route,
             arguments = listOf(navArgument("hikeId") { type = NavType.IntType })
-        ) { backStackEntry ->
-            val hikeId = backStackEntry.arguments?.getInt("hikeId") ?: -1
+        ) {
             HikeCard(
-                hikeId = hikeId,
-                onBackClick = {
-                    navController.popBackStack()
-                },
-                onFavoriteClick = {
-                    navController.navigate(Screen.Favorites.route) {
-                        // Pop up to Home screen, but don't include it
-                        popUpTo(Screen.Home.route) { inclusive = false }
-                    }
-                }
-            )
-        }
-
-        // Favorites screen
-        composable(Screen.Favorites.route) {
-            FavoriteScreen(
-                onHikeClick = { hikeId ->
-                    navController.navigate(Screen.HikeCard.createRoute(hikeId))
-                },
-                onHomeClick = {
-                    navController.navigate(Screen.Home.route) {
-                        // Pop up to start destination and include it
-                        popUpTo(Screen.Home.route) { inclusive = true }
-                    }
-                },
+                viewModel = viewModel(),
                 navController = navController
             )
         }

@@ -18,21 +18,15 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.Hike
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.home.HomeScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteScreen(
-    onHikeClick: (Int) -> Unit,
-    onHomeClick: () -> Unit,
+    viewmodel: HomeScreenViewModel,
     navController: NavHostController
 ) {
-    // Dummydata
-    val favoriteHikes = remember {
-        listOf(
-            Hike(2, "Forest Walk", 5.2, "Easy", ""),
-            Hike(3, "River Path", 10.0, "Hard", "")
-        )
-    }
+    val favoriteHikes = remember { listOf<Hike>() }
 
     Scaffold(
         topBar = {
@@ -40,13 +34,7 @@ fun FavoriteScreen(
                 title = { Text(text = "Favorite Hikes") }
             )
         },
-        bottomBar = {
-            BottomBar(
-                onHomeClick = onHomeClick,
-                onFavoritesClick = { /* Already on favorites */ },
-                navController = navController
-            )
-        }
+        bottomBar = { BottomBar(navController = navController) }
     ) { paddingValues ->
         if (favoriteHikes.isEmpty()) {
             Box(
