@@ -7,6 +7,9 @@ import io.ktor.client.request.get
 import io.ktor.serialization.kotlinx.json.json
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.data.TurAPI.models.Turer
 
+/**
+ * Datasource for fetching turdata from the TurDB API
+ */
 class TurAPIDatasource {
 
     private val ktorHttpClient = HttpClient {

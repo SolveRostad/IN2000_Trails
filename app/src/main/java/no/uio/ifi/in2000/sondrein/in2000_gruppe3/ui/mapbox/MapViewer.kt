@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -36,8 +35,7 @@ import no.uio.ifi.in2000.sondrein.in2000_gruppe3.R
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 /**
- * Presenterer et kart med mulighet for å velge kartstil og lysmåte
- * Kun en preview som må endres på for å matche funksjonalitet i appen
+ * MapViewer er en composable som viser et kart med mulighet for å velge kartstil og lysmåte
  */
 @Composable
 fun MapViewer(viewModel: HomeScreenViewModel) {
@@ -45,28 +43,20 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
 
     var isDarkMode by remember { mutableStateOf(false) }
     var selectedStyle by remember { mutableStateOf(Style.STANDARD) }
-    var zoom by remember { mutableDoubleStateOf(12.0) }
-
 
     val mapViewportState = rememberMapViewportState {
         setCameraOptions {
-            zoom(zoom)
+            zoom(12.0)
             center(uiState.pointerCoordinates)
             pitch(0.0)
             bearing(0.0)
         }
     }
 
-    /**
-     * LaunchedEffect for å oppdatere kartet når koordinatene endres
-     */
-
     Box {
         MapboxMap(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(350.dp)
-                .clip(RoundedCornerShape(12.dp)),
+                .fillMaxSize(),
             mapViewportState = mapViewportState,
             style = {
                 if (selectedStyle == Style.STANDARD) {
@@ -80,12 +70,7 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
             },
             onMapClickListener = { point ->
                 viewModel.updatePointerCoordinates(point)
-                // Hva som skjer når man trykker på kartet
                 viewModel.fetchTurer(point.latitude(), point.longitude(), 5)
-                // Henter koordinatene til punktet som ble trykket på og oppdaterer koordinatene
-                // Returnerer koordinatene til stedet som ble trykket på
-                //onCoordinatesSelected(newCoordinates)
-
                 true
             },
             // Fjerner skala, logo og attribusjon fra kartet
@@ -93,13 +78,13 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
             logo = {},
             attribution = {}
         ) {
-            // Hva som skal vises på kartet
-
-            // Legger til en markør på kartet
+            // Legger til markør for pekerposisjonen
             val marker = rememberIconImage(R.drawable.red_marker)
             PointAnnotation(point = uiState.pointerCoordinates) {
                 iconImage = marker
             }
+
+            // Legger til ruter på kartet
             uiState.turer.features.forEach { feature ->
                 val color = viewModel.getViableRouteColor()
                 feature.geometry.coordinates.forEach { coordinates ->
@@ -115,14 +100,13 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
                         lineOpacity = 0.8
                     }
                 }
-
             }
         }
 
         // Legger til knapper for å velge kartstil og lysmåte
         Column(
             modifier = Modifier
-                .padding(4.dp)
+                .padding(5.dp, 25.dp)
                 .align(Alignment.TopStart)
         ) {
             Box(
