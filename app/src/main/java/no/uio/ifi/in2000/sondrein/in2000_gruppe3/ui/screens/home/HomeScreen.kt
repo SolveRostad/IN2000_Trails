@@ -1,13 +1,20 @@
 package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.home
 
-import androidx.compose.runtime.Composable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -20,8 +27,10 @@ import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCard.SmallHikeCa
 fun HomeScreen(
     onHikeClick: (Int) -> Unit,
     onFavoritesClick: () -> Unit,
+    viewModel: HomeScreenViewModel,
     navController: NavHostController
 ) {
+    val uiState by viewModel.homeScreenUIState.collectAsState()
     Scaffold(
         bottomBar = {
             BottomBar(
@@ -39,7 +48,7 @@ fun HomeScreen(
             Hike(3, "River Path", 10.0, "Hard", "")
         )
 
-        Column (
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
@@ -53,7 +62,7 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Box(modifier = Modifier.padding(horizontal = 16.dp)) {
-                MapViewer()
+                MapViewer(viewModel)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
