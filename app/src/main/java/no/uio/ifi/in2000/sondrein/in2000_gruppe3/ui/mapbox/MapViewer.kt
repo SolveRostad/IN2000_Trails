@@ -43,7 +43,7 @@ import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.home.HomeScreenViewM
  */
 @Composable
 fun MapViewer(viewModel: HomeScreenViewModel) {
-    val defaultCoordinates = Coordinates(59.9138688, 10.7522454) // Oslo
+    val defaultCoordinates = Coordinates(59.846195, 10.661952) // Nesodden
     var coordinates by remember { mutableStateOf(defaultCoordinates) }
     var isDarkMode by remember { mutableStateOf(false) }
     var selectedStyle by remember { mutableStateOf(Style.STANDARD) }
