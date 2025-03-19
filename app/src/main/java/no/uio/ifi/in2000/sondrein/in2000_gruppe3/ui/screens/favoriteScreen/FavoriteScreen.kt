@@ -16,9 +16,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.data.TurAPI.models.Feature
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.navigation.BottomBar
-import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.Hike
-import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.home.HomeScreenViewModel
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,7 +26,7 @@ fun FavoriteScreen(
     viewmodel: HomeScreenViewModel,
     navController: NavHostController
 ) {
-    val favoriteHikes = remember { listOf<Hike>() }
+    val favoriteHikes = remember { listOf<Feature>() }
 
     Scaffold(
         topBar = {

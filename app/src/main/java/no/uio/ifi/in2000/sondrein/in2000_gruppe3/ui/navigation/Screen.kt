@@ -8,9 +8,6 @@ import no.uio.ifi.in2000.sondrein.in2000_gruppe3.data.TurAPI.models.Feature
  */
 sealed class Screen(val route: String) {
     object Home : Screen("home")
-    object HikeCard : Screen("hike/{hikeId}") {
-        fun createRoute(feature: Feature) = "hike/${feature.id}"
-    }
-
+    object HikeScreen : Screen("hikeScreen")
     object Favorites : Screen("favorites")
 }

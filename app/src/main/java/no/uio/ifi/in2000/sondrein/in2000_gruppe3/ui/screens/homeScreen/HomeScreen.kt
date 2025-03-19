@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.home
+package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,14 +21,16 @@ import androidx.navigation.NavHostController
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.mapbox.MapViewer
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.navigation.Screen
-import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCard.SmallHikeCard
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 
 @Composable
 fun HomeScreen(
     viewModel: HomeScreenViewModel,
+    hikeViewModel: HikeScreenViewModel,
     navController: NavHostController
 ) {
     val uiState by viewModel.homeScreenUIState.collectAsState()
+
     Scaffold(
         bottomBar = { BottomBar(navController = navController) }
     ) { paddingValues ->
@@ -55,7 +57,10 @@ fun HomeScreen(
                 items(uiState.turer.features) { feature ->
                     SmallHikeCard(
                         feature,
-                        onClick = { navController.navigate(Screen.HikeCard.createRoute(feature)) }
+                        onClick = {
+                            hikeViewModel.updateHike(feature)
+                            navController.navigate("hikeScreen")
+                        }
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
