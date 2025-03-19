@@ -1,7 +1,9 @@
 package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen
 
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mapbox.geojson.Point
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,11 +21,26 @@ class HomeScreenViewModel() : ViewModel() {
     private val locationForecastRepository = LocationForecastRepository()
     private val metAlertsRepository = MetAlertsRepository()
 
+    private val polylineColors = listOf(
+        Color(0xFF3388FF), // Bright blue
+        Color(0xFF32CD32), // Lime green
+        Color(0xFFFF8C00), // Dark orange
+        Color(0xFFE91E63), // Pink
+        Color(0xFF9C27B0), // Purple
+        Color(0xFF00BCD4), // Cyan
+        Color(0xFFFF5252), // Red
+        Color(0xFF795548), // Brown
+        Color(0xFF607D8B), // Blue grey
+        Color(0xFFFFEB3B)  // Yellow
+    )
+    private var _routeColorIndex = 0
+
     private val _homeScreenUIState = MutableStateFlow<HomeScreenUIState>(
         HomeScreenUIState(
             turer = Turer(listOf(), ""),
             alerts = MetAlerts(listOf(), "", "", ""),
-            forecast = null
+            forecast = null,
+            pointerCoordinates = Point.fromLngLat( 10.661952, 59.846195)
         )
     )
     val homeScreenUIState: StateFlow<HomeScreenUIState> = _homeScreenUIState.asStateFlow()
@@ -50,6 +67,20 @@ class HomeScreenViewModel() : ViewModel() {
             }
         }
     }
+    fun updatePointerCoordinates(point: Point) {
+        _homeScreenUIState.update {
+            it.copy(pointerCoordinates = point)
+        }
+    }
+
+    fun getViableRouteColor(): Color {
+        if (_routeColorIndex == polylineColors.size-1) {
+            _routeColorIndex = 0
+        } else {
+            _routeColorIndex++
+        }
+        return polylineColors[_routeColorIndex]
+    }
 }
 
 data class HomeScreenUIState(
@@ -58,5 +89,6 @@ data class HomeScreenUIState(
     val errorMessage: String = "",
     val turer: Turer,
     val alerts: MetAlerts,
-    val forecast: Locationforecast?
+    val forecast: Locationforecast?,
+    val pointerCoordinates: Point
 )

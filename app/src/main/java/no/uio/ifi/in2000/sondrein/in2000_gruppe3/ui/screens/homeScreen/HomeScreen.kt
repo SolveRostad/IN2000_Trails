@@ -59,7 +59,7 @@ fun HomeScreen(
                         feature,
                         onClick = {
                             hikeViewModel.updateHike(feature)
-                            navController.navigate("hikeScreen")
+                            navController.navigate(Screen.HikeScreen.route)
                         }
                     )
                     Spacer(modifier = Modifier.height(16.dp))
