@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
@@ -34,8 +33,7 @@ import com.mapbox.maps.extension.compose.style.MapStyle
 import com.mapbox.maps.extension.compose.style.standard.LightPresetValue
 import com.mapbox.maps.extension.compose.style.standard.MapboxStandardStyle
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.R
-import no.uio.ifi.in2000.sondrein.in2000_gruppe3.data.coordinates.Coordinates
-import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.home.HomeScreenViewModel
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 /**
  * Presenterer et kart med mulighet for å velge kartstil og lysmåte
@@ -43,17 +41,17 @@ import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.home.HomeScreenViewM
  */
 @Composable
 fun MapViewer(viewModel: HomeScreenViewModel) {
-    val defaultCoordinates = Coordinates(59.846195, 10.661952) // Nesodden
-    var coordinates by remember { mutableStateOf(defaultCoordinates) }
+    val uiState by viewModel.homeScreenUIState.collectAsState()
+
     var isDarkMode by remember { mutableStateOf(false) }
     var selectedStyle by remember { mutableStateOf(Style.STANDARD) }
     var zoom by remember { mutableDoubleStateOf(12.0) }
-    val uiState by viewModel.homeScreenUIState.collectAsState()
+
 
     val mapViewportState = rememberMapViewportState {
         setCameraOptions {
             zoom(zoom)
-            center(Point.fromLngLat(defaultCoordinates.lon, defaultCoordinates.lat))
+            center(uiState.pointerCoordinates)
             pitch(0.0)
             bearing(0.0)
         }
@@ -62,13 +60,6 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
     /**
      * LaunchedEffect for å oppdatere kartet når koordinatene endres
      */
-    LaunchedEffect(coordinates) {
-        zoom = mapViewportState.cameraState?.zoom ?: 12.0
-        mapViewportState.setCameraOptions {
-            center(Point.fromLngLat(coordinates.lon, coordinates.lat))
-            zoom(zoom)
-        }
-    }
 
     Box {
         MapboxMap(
@@ -88,14 +79,12 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
                 }
             },
             onMapClickListener = { point ->
+                viewModel.updatePointerCoordinates(point)
                 // Hva som skjer når man trykker på kartet
                 viewModel.fetchTurer(point.latitude(), point.longitude(), 5)
                 // Henter koordinatene til punktet som ble trykket på og oppdaterer koordinatene
-                val newCoordinates = Coordinates(point.latitude(), point.longitude())
-                coordinates = newCoordinates
                 // Returnerer koordinatene til stedet som ble trykket på
                 //onCoordinatesSelected(newCoordinates)
-
 
                 true
             },
@@ -108,11 +97,11 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
 
             // Legger til en markør på kartet
             val marker = rememberIconImage(R.drawable.red_marker)
-            PointAnnotation(point = Point.fromLngLat(coordinates.lon, coordinates.lat)) {
+            PointAnnotation(point = uiState.pointerCoordinates) {
                 iconImage = marker
             }
             uiState.turer.features.forEach { feature ->
-                val color = getRandomColor()
+                val color = viewModel.getViableRouteColor()
                 feature.geometry.coordinates.forEach { coordinates ->
                     val points = mutableListOf<Point>()
                     coordinates.forEach {
@@ -167,9 +156,4 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
             }
         }
     }
-}
-
-fun getRandomColor(): Color {
-    val random = java.util.Random()
-    return Color(random.nextFloat(), random.nextFloat(), random.nextFloat())
 }

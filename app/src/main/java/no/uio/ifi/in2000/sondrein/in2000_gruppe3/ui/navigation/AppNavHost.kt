@@ -8,12 +8,19 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.favoriteScreen.FavoriteScreen
-import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCard.HikeCard
-import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.home.HomeScreen
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreen
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreen
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
 fun AppNavHost() {
     val navController = rememberNavController()
+
+    //view models
+    val homeScreenViewModel: HomeScreenViewModel = viewModel()
+    val hikeScreenViewModel: HikeScreenViewModel = viewModel()
+
     NavHost(
         navController = navController,
         startDestination = Screen.Home.route
@@ -21,7 +28,8 @@ fun AppNavHost() {
         // Home screen
         composable(Screen.Home.route) {
             HomeScreen(
-                viewModel = viewModel(),
+                viewModel = homeScreenViewModel,
+                hikeViewModel = hikeScreenViewModel,
                 navController = navController
             )
         }
@@ -29,18 +37,15 @@ fun AppNavHost() {
         // Favorites screen
         composable(Screen.Favorites.route) {
             FavoriteScreen(
-                viewmodel = viewModel(),
+                viewmodel = viewModel(), //FIKSE DETTE
                 navController = navController
             )
         }
 
         // HikeCard screen
-        composable(
-            route = Screen.HikeCard.route,
-            arguments = listOf(navArgument("hikeId") { type = NavType.IntType })
-        ) {
-            HikeCard(
-                viewModel = viewModel(),
+        composable(route = Screen.HikeScreen.route) {
+            HikeScreen(
+                viewModel = hikeScreenViewModel,
                 navController = navController
             )
         }
