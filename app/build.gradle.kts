@@ -50,6 +50,13 @@ dependencies {
     implementation("com.mapbox.maps:android:11.10.2")
     implementation("com.mapbox.extension:maps-compose:11.10.2")
 
+    // Navcontroller
+    implementation ("androidx.compose.ui:ui:1.7.8")
+    implementation ("androidx.compose.material:material:1.7.8")
+    implementation ("androidx.compose.ui:ui-tooling-preview:1.7.8")
+    implementation ("androidx.navigation:navigation-compose:2.8.9")
+    implementation ("androidx.activity:activity-compose:1.8.2")
+
     // Standard libs
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

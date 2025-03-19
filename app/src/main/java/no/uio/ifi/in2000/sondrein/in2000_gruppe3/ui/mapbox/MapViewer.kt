@@ -57,8 +57,8 @@ fun MapViewer() {
         MapboxMap(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(350.dp),
-                //.clip(RoundedCornerShape(12.dp)),
+                .height(350.dp)
+                .clip(RoundedCornerShape(12.dp)),
             mapViewportState = mapViewportState,
             style = {
                 if (selectedStyle == Style.STANDARD) {
