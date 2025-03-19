@@ -51,11 +51,21 @@ dependencies {
     implementation("com.mapbox.extension:maps-compose:11.10.2")
 
     // Navcontroller
-    implementation ("androidx.compose.ui:ui:1.7.8")
-    implementation ("androidx.compose.material:material:1.7.8")
-    implementation ("androidx.compose.ui:ui-tooling-preview:1.7.8")
-    implementation ("androidx.navigation:navigation-compose:2.8.9")
-    implementation ("androidx.activity:activity-compose:1.8.2")
+    implementation("androidx.compose.ui:ui:1.7.8")
+    implementation("androidx.compose.material:material:1.7.8")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.7.8")
+    implementation("androidx.navigation:navigation-compose:2.8.9")
+    implementation("androidx.activity:activity-compose:1.8.2")
+
+    // Ktor
+    val ktorVersion = "3.0.3"
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
+    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-client-android:$ktorVersion")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-cbor:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-protobuf:$ktorVersion")
 
     // Standard libs
     implementation(libs.androidx.core.ktx)
