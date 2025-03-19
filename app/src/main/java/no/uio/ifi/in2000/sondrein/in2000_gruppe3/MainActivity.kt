@@ -15,7 +15,7 @@ import androidx.navigation.navArgument
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.favoriteScreen.FavoriteScreen
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCard.HikeCard
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.home.HomeScreen
-import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.Screen
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.theme.IN2000_gruppe3Theme
 
 class MainActivity : ComponentActivity() {
@@ -52,7 +52,8 @@ fun AppNavHost(navController: NavHostController) {
                 },
                 onFavoritesClick = {
                     navController.navigate(Screen.Favorites.route)
-                }
+                },
+                navController = navController
             )
         }
 
@@ -87,7 +88,8 @@ fun AppNavHost(navController: NavHostController) {
                         // Pop up to start destination and include it
                         popUpTo(Screen.Home.route) { inclusive = true }
                     }
-                }
+                },
+                navController = navController
             )
         }
     }

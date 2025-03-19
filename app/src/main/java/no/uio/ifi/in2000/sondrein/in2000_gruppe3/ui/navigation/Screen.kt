@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens
+package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.navigation
 
 /**
  * Class that represents the different screens in the app.

@@ -10,37 +10,25 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.mapbox.MapViewer
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.Hike
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCard.SmallHikeCard
 
 @Composable
 fun HomeScreen(
     onHikeClick: (Int) -> Unit,
-    onFavoritesClick: () -> Unit
+    onFavoritesClick: () -> Unit,
+    navController: NavHostController
 ) {
     Scaffold(
         bottomBar = {
-            BottomAppBar {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    IconButton(onClick = { /* Already on home */ }) {
-                        Icon(
-                            imageVector = Icons.Default.Home,
-                            contentDescription = "Home",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                    IconButton(onClick = onFavoritesClick) {
-                        Icon(
-                            imageVector = Icons.Default.Favorite,
-                            contentDescription = "Favorites"
-                        )
-                    }
-                }
-            }
+            BottomBar(
+                onHomeClick = { /* Already on home */ },
+                onFavoritesClick = onFavoritesClick,
+                navController = navController
+            )
         }
     ) { paddingValues ->
 

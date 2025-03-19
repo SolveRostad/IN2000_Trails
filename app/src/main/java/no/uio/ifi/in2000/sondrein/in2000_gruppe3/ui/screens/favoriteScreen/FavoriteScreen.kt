@@ -24,6 +24,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.Hike
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCard.SmallHikeCard
 
@@ -31,7 +33,8 @@ import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCard.SmallHikeCa
 @Composable
 fun FavoriteScreen(
     onHikeClick: (Int) -> Unit,
-    onHomeClick: () -> Unit
+    onHomeClick: () -> Unit,
+    navController: NavHostController
 ) {
     // Dummydata
     val favoriteHikes = remember {
@@ -48,26 +51,11 @@ fun FavoriteScreen(
             )
         },
         bottomBar = {
-            BottomAppBar {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    IconButton(onClick = onHomeClick) {
-                        Icon(
-                            imageVector = Icons.Default.Home,
-                            contentDescription = "Home"
-                        )
-                    }
-                    IconButton(onClick = { /* Already on favorites */ }) {
-                        Icon(
-                            imageVector = Icons.Default.Favorite,
-                            contentDescription = "Favorites",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                }
-            }
+            BottomBar(
+                onHomeClick = onHomeClick,
+                onFavoritesClick = { /* Already on favorites */ },
+                navController = navController
+            )
         }
     ) { paddingValues ->
         if (favoriteHikes.isEmpty()) {
