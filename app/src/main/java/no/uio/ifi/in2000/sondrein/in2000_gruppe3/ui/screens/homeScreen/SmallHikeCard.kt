@@ -2,6 +2,7 @@ package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,6 +22,7 @@ fun SmallHikeCard(feature: Feature, onClick: () -> Unit) {
             .fillMaxWidth()
             .clickable(onClick = onClick),
     ) {
+
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = feature.properties.rutenavn.first(), // Må kanskje endres
