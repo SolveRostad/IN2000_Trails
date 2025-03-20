@@ -63,7 +63,7 @@ fun HomeScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .heightIn(max = 400.dp)
+                            .heightIn(max = 600.dp)
                     ) {
                         // Drag handle
                         Box(

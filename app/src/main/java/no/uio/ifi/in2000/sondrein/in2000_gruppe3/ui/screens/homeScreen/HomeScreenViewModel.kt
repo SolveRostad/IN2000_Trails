@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -44,6 +45,26 @@ class HomeScreenViewModel() : ViewModel() {
         )
     )
     val homeScreenUIState: StateFlow<HomeScreenUIState> = _homeScreenUIState.asStateFlow()
+
+    // Holder på style og darkmode til kartet
+    private val _mapStyle = mutableStateOf("STANDARD")
+    var mapStyle: String
+        get() = _mapStyle.value
+        set(value) {
+            _mapStyle.value = value
+        }
+    private val _mapIsDarkmode = mutableStateOf(false)
+    var mapIsDarkmode: Boolean
+        get() = _mapIsDarkmode.value
+        set(value) {
+            _mapIsDarkmode.value = value
+        }
+
+    // Oppdaterer style og darkmode til kartet
+    fun updateMapStyle(style: String, isDark: Boolean) {
+        mapStyle = style
+        mapIsDarkmode = isDark
+    }
 
     fun fetchTurer(lat: Double, lng: Double, limit: Int) {
         viewModelScope.launch {
