@@ -27,7 +27,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.mapbox.MapViewer
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.navigation.BottomBar
@@ -73,6 +75,7 @@ fun HomeScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .heightIn(max = 600.dp)
+                            .clipToBounds()
                     ) {
                         // Drag handle
                         Box(
@@ -84,12 +87,7 @@ fun HomeScreen(
 
                         // Innholdet i bottom sheet
                         LazyColumn(
-                            contentPadding = PaddingValues(
-                                start = 16.dp,
-                                end = 16.dp,
-                                top = 8.dp,
-                                bottom = 16.dp
-                            )
+                            contentPadding = PaddingValues(16.dp),
                         ) {
                             if (uiState.turer.features.isEmpty()) {
                                 item {
@@ -113,7 +111,7 @@ fun HomeScreen(
                         }
                     }
                 },
-                sheetPeekHeight = 45.dp,
+                sheetPeekHeight = 40.dp,
                 sheetDragHandle = null,
                 sheetContainerColor = MaterialTheme.colorScheme.surface,
                 sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),

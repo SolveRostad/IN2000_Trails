@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.DropdownMenu
@@ -19,13 +20,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
-fun MapStyleDropdownMenu(
-    viewModel: HomeScreenViewModel
-) {
+fun MapStyleDropdownMenu(viewModel: HomeScreenViewModel) {
     var expanded by remember { mutableStateOf(false) }
 
     Box(
@@ -43,24 +43,39 @@ fun MapStyleDropdownMenu(
                 )
             }
 
-            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                DropdownMenuItem(text = { Text("Lyst") }, onClick = {
-                    viewModel.mapStyle = "STANDARD"
-                    viewModel.mapIsDarkmode = false
-                    expanded = false
-                })
-                DropdownMenuItem(text = { Text("Mørkt") }, onClick = {
-                    viewModel.updateMapStyle("STANDARD", false)
-                    expanded = false
-                })
-                DropdownMenuItem(text = { Text("Satellitt") }, onClick = {
-                    viewModel.updateMapStyle("STANDARD", false)
-                    expanded = false
-                })
-                DropdownMenuItem(text = { Text("Natur") }, onClick = {
-                    viewModel.updateMapStyle("STANDARD", false)
-                    expanded = false
-                })
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier.width(80.dp)
+            ) {
+                DropdownMenuItem(
+                    text = { Text("Lyst", modifier = Modifier.width(100.dp), textAlign = TextAlign.Center) },
+                    onClick = {
+                        viewModel.updateMapStyle("STANDARD", false)
+                        expanded = false
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text("Mørkt", modifier = Modifier.width(100.dp), textAlign = TextAlign.Center) },
+                    onClick = {
+                        viewModel.updateMapStyle("STANDARD", true)
+                        expanded = false
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text("Satellitt", modifier = Modifier.width(100.dp), textAlign = TextAlign.Center) },
+                    onClick = {
+                        viewModel.updateMapStyle("SATELLITE", true)
+                        expanded = false
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text("Natur", modifier = Modifier.width(100.dp), textAlign = TextAlign.Center) },
+                    onClick = {
+                        viewModel.updateMapStyle("OUTDOORS", false)
+                        expanded = false
+                    }
+                )
             }
         }
     }
