@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
@@ -12,11 +13,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.mapbox.geojson.BoundingBox
 import com.mapbox.geojson.Point
+import com.mapbox.maps.Style
+import com.mapbox.maps.extension.compose.MapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotation
 import com.mapbox.maps.extension.compose.rememberMapState
 import com.mapbox.maps.extension.compose.style.standard.MapboxStandardStyle
+import com.mapbox.maps.extension.style.layers.addLayer
+import com.mapbox.maps.extension.style.layers.generated.LineLayer
+import com.mapbox.maps.extension.style.sources.addSource
+import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource
 import com.mapbox.maps.plugin.gestures.generated.GesturesSettings
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.data.TurAPI.models.Feature
 
@@ -67,17 +74,34 @@ fun HikeCardMapPreview(feature: Feature) {
             logo = {},
             attribution = {},
         ) {
-            feature.geometry.coordinates.forEach { coordinates ->
-                val points = mutableListOf<Point>()
-                coordinates.forEach {
-                    points.add(Point.fromLngLat(it[1], it[0]))
-                }
-                PolylineAnnotation(
-                    points = points
-                ) {
-                    lineColor = Color.Blue
-                    lineWidth = 3.0
-                    lineOpacity = 0.8
+            val sourceId = remember { "source-${feature.hashCode()}" }
+            val layerId = remember { "layer-${feature.hashCode()}" }
+            MapEffect(Unit) { mapView ->
+                val mapboxMap = mapView.mapboxMap
+                mapboxMap.loadStyle(Style.MAPBOX_STREETS) { style ->
+                    style.removeStyleLayer(layerId)
+                    style.removeStyleSource(sourceId)
+
+                    val lineStrings = feature.geometry.coordinates.map { coords ->
+                        val points = coords.map { Point.fromLngLat(it[1], it[0]) }
+                        com.mapbox.geojson.LineString.fromLngLats(points)
+                    }
+
+                    val multiLineString = com.mapbox.geojson.MultiLineString.fromLineStrings(lineStrings)
+                    val geoJsonFeature = com.mapbox.geojson.Feature.fromGeometry(multiLineString)
+
+                    val featureCollection = com.mapbox.geojson.FeatureCollection.fromFeatures(listOf(geoJsonFeature))
+
+                    val source = GeoJsonSource.Builder(sourceId)
+                        .data(featureCollection.toJson())
+                        .build()
+                    style.addSource(source)
+
+                    val lineLayer = LineLayer(layerId, sourceId)
+                    lineLayer.lineColor("rgba(100, 100, 100, 1)")
+                    lineLayer.lineWidth(3.0)
+                    lineLayer.lineOpacity(0.8)
+                    style.addLayer(lineLayer)
                 }
             }
         }
