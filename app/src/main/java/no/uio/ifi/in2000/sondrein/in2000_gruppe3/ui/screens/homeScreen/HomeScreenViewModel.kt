@@ -54,6 +54,7 @@ class HomeScreenViewModel() : ViewModel() {
         set(value) {
             _mapStyle.value = value
         }
+
     private val _mapIsDarkmode = mutableStateOf(false)
     var mapIsDarkmode: Boolean
         get() = _mapIsDarkmode.value

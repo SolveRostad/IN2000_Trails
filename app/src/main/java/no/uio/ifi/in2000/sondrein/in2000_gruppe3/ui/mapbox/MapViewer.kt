@@ -106,6 +106,8 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
                 }
             }
         }
+
+        // Legger til temperatur på kartet
         ForecastDisplay(viewModel)
 
         // Dropdown menu for å velge kartstil

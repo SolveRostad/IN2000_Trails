@@ -2,7 +2,6 @@ package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,10 +21,9 @@ fun SmallHikeCard(feature: Feature, onClick: () -> Unit) {
             .fillMaxWidth()
             .clickable(onClick = onClick),
     ) {
-
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = feature.properties.rutenavn, // Må kanskje endres
+                text = feature.properties.rutenavn,
                 style = MaterialTheme.typography.titleLarge
             )
 
@@ -33,6 +31,10 @@ fun SmallHikeCard(feature: Feature, onClick: () -> Unit) {
 
             Text(text = "Avstand til turen: ${feature.properties.distance_meters.toFloat() / 1000.0} km")
             Text(text = if (feature.properties.gradering.isEmpty()) "Ukjent" else "Vanskelighetsgrad: ${feature.properties.gradering.first()}")
+
+            Spacer(modifier = Modifier.height(3.dp))
+
+            HikeCardMapPreview(feature)
         }
     }
 }

@@ -1,9 +1,13 @@
 package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.mapbox.geojson.BoundingBox
@@ -17,7 +21,7 @@ import com.mapbox.maps.plugin.gestures.generated.GesturesSettings
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.data.TurAPI.models.Feature
 
 @Composable
-fun HikeCardMapPreview(feature: Feature, modifier: Modifier = Modifier) {
+fun HikeCardMapPreview(feature: Feature) {
     val coordinates = mutableListOf<Point>()
     feature.geometry.coordinates.forEach { coordList ->
         coordList.forEach { coord ->
@@ -48,28 +52,33 @@ fun HikeCardMapPreview(feature: Feature, modifier: Modifier = Modifier) {
             bearing(0.0)
         }
     }
-    MapboxMap(
-        modifier = modifier
+    Box(
+        modifier = Modifier
             .height(200.dp)
-            .fillMaxWidth(),
-        mapViewportState = mapViewPortState,
-        mapState = mapState,
-        style = { MapboxStandardStyle() },
-        scaleBar = {},
-        logo = {},
-        attribution = {},
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .clipToBounds()
     ) {
-        feature.geometry.coordinates.forEach { coordinates ->
-            val points = mutableListOf<Point>()
-            coordinates.forEach {
-                points.add(Point.fromLngLat(it[1], it[0]))
-            }
-            PolylineAnnotation(
-                points = points
-            ) {
-                lineColor = Color.Blue
-                lineWidth = 3.0
-                lineOpacity = 0.8
+        MapboxMap(
+            mapViewportState = mapViewPortState,
+            mapState = mapState,
+            style = { MapboxStandardStyle() },
+            scaleBar = {},
+            logo = {},
+            attribution = {},
+        ) {
+            feature.geometry.coordinates.forEach { coordinates ->
+                val points = mutableListOf<Point>()
+                coordinates.forEach {
+                    points.add(Point.fromLngLat(it[1], it[0]))
+                }
+                PolylineAnnotation(
+                    points = points
+                ) {
+                    lineColor = Color.Blue
+                    lineWidth = 3.0
+                    lineOpacity = 0.8
+                }
             }
         }
     }
