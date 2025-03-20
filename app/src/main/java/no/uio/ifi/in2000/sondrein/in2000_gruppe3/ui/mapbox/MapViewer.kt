@@ -42,12 +42,13 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
         }
     }
 
+    // Oppdaterer ViewportState når pekerposisjonen endres
     LaunchedEffect(uiState.pointerCoordinates) {
         mapViewportState.setCameraOptions {
-            zoom(12.0) // Behold samme zoom-nivå
-            center(uiState.pointerCoordinates) // Oppdater senterposisjonen til de nye koordinatene
-            pitch(0.0) // Behold samme pitch
-            bearing(0.0) // Behold samme bearing
+            zoom(12.0)
+            center(uiState.pointerCoordinates)
+            pitch(0.0)
+            bearing(0.0)
         }
     }
 
