@@ -26,14 +26,10 @@ fun FavoriteScreen(
     viewmodel: HomeScreenViewModel,
     navController: NavHostController
 ) {
-    val favoriteHikes = remember { listOf<Feature>() }
+    val favoriteHikes = remember { listOf<Feature>() } // Bytt med egen viewmodel
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(text = "Favorite Hikes") }
-            )
-        },
+        topBar = { TopAppBar(title = { Text(text = "Favorite Hikes") }) },
         bottomBar = { BottomBar(navController = navController) }
     ) { paddingValues ->
         if (favoriteHikes.isEmpty()) {
@@ -44,7 +40,7 @@ fun FavoriteScreen(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = "You don't have any favorite hikes yet.",
+                    text = "Her var det tomt gitt 🤔",
                     style = MaterialTheme.typography.titleMedium
                 )
             }
@@ -56,9 +52,8 @@ fun FavoriteScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-//                items(ui) { hike ->
-//                    SmallHikeCard(hike = hike, onClick = { onHikeClick(hike.id) })
-//                }
+                // Legg til favoritt turer i egen viewmodel og hent her
+                // forEach favoritt { HikeCard(favoritt) }
             }
         }
     }

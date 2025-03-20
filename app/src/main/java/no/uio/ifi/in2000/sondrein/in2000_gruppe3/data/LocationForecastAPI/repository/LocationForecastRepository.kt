@@ -5,7 +5,6 @@ import no.uio.ifi.in2000.sondrein.in2000_gruppe3.data.LocationForecastAPI.models
 
 /**
  * Repository for fetching weather data.
- * @param fetcher datasource for fetching weather data.
  */
 class LocationForecastRepository() {
     private val fetcher = LocationForecastDatasource()

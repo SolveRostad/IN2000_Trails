@@ -22,22 +22,17 @@ fun SmallHikeCard(feature: Feature, onClick: () -> Unit) {
             .fillMaxWidth()
             .clickable(onClick = onClick),
     ) {
-        Row {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    text = feature.properties.rutenavn.first(), // Må kanskje endres
-                    style = MaterialTheme.typography.headlineMedium
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                //Text(text = "Type tur: ${feature.type}")
-                Text(text = "Avstand til turen: ${feature.properties.distance_meters.toFloat() / 1000.0} km")
-                Text(text = if (feature.properties.gradering.isEmpty()) "Ukjent" else "Vanskelighetsgrad: ${feature.properties.gradering.first()}")
-            }
-            HikeCardMapPreview(
-                feature = feature,
-                modifier = Modifier
-            )
-        }
 
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = feature.properties.rutenavn.first(), // Må kanskje endres
+                style = MaterialTheme.typography.titleLarge
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(text = "Avstand til turen: ${feature.properties.distance_meters.toFloat() / 1000.0} km")
+            Text(text = if (feature.properties.gradering.isEmpty()) "Ukjent" else "Vanskelighetsgrad: ${feature.properties.gradering.first()}")
+        }
     }
 }
