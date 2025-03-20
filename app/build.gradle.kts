@@ -43,6 +43,15 @@ android {
 
 dependencies {
 
+    // mapbox search
+    val mapboxSearchVersion = "2.8.0-rc.1"
+    implementation("com.mapbox.search:autofill:$mapboxSearchVersion")
+    implementation("com.mapbox.search:discover:$mapboxSearchVersion")
+    implementation("com.mapbox.search:place-autocomplete:$mapboxSearchVersion")
+    implementation("com.mapbox.search:offline:$mapboxSearchVersion")
+    implementation("com.mapbox.search:mapbox-search-android:$mapboxSearchVersion")
+    implementation("com.mapbox.search:mapbox-search-android-ui:$mapboxSearchVersion")
+
     // Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
 

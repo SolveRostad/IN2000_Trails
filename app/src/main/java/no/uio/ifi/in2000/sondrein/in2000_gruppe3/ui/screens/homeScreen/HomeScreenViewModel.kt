@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mapbox.geojson.Point
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -95,7 +96,11 @@ class HomeScreenViewModel() : ViewModel() {
             it.copy(pointerCoordinates = point)
         }
     }
-
+    fun updateSearchQuery(query: String) { // putt i ny viewmodel
+        _homeScreenUIState.update {
+            it.copy(searchQuery = query)
+        }
+    }
     fun getViableRouteColor(): Color {
         if (_routeColorIndex == polylineColors.size-1) {
             _routeColorIndex = 0
@@ -152,5 +157,6 @@ data class HomeScreenUIState(
     val turer: Turer,
     val alerts: MetAlerts,
     val forecast: Locationforecast?,
-    val pointerCoordinates: Point
+    val pointerCoordinates: Point,
+    val searchQuery: String = ""
 )

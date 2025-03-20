@@ -31,7 +31,7 @@ fun MapStyleDropdownMenu(viewModel: HomeScreenViewModel) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(0.dp, 35.dp),
+            .padding(5.dp, 30.dp),
         contentAlignment = Alignment.TopEnd
     ) {
         Column {
