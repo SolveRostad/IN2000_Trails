@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCardScreen
+package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.hikeCard
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HikeCardMapPreview
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 
 @Composable
 fun HikeCard(viewModel: HikeScreenViewModel) {

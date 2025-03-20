@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen
+package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.hikeCard
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
