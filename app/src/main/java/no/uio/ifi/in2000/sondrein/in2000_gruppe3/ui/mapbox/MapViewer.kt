@@ -1,26 +1,14 @@
 package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.mapbox
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import com.mapbox.geojson.Point
 import com.mapbox.maps.Style
 import com.mapbox.maps.extension.compose.MapboxMap
@@ -41,8 +29,9 @@ import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScree
 fun MapViewer(viewModel: HomeScreenViewModel) {
     val uiState by viewModel.homeScreenUIState.collectAsState()
 
-    var isDarkMode by remember { mutableStateOf(false) }
-    var selectedStyle by remember { mutableStateOf(Style.STANDARD) }
+    // Observe the map style and dark mode from ViewModel to trigger recomposition
+    val mapStyle by remember { derivedStateOf { viewModel.mapStyle } }
+    val isDarkMode by remember { derivedStateOf { viewModel.mapIsDarkmode } }
 
     val mapViewportState = rememberMapViewportState {
         setCameraOptions {
@@ -53,19 +42,33 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
         }
     }
 
+    LaunchedEffect(uiState.pointerCoordinates) {
+        mapViewportState.setCameraOptions {
+            zoom(12.0) // Behold samme zoom-nivå
+            center(uiState.pointerCoordinates) // Oppdater senterposisjonen til de nye koordinatene
+            pitch(0.0) // Behold samme pitch
+            bearing(0.0) // Behold samme bearing
+        }
+    }
+
     Box {
         MapboxMap(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             mapViewportState = mapViewportState,
             style = {
-                if (selectedStyle == Style.STANDARD) {
-                    MapboxStandardStyle {
-                        lightPreset =
-                            if (isDarkMode) LightPresetValue.NIGHT else LightPresetValue.DAY
+                when (mapStyle) {
+                    "STANDARD" -> {
+                        MapboxStandardStyle {
+                            lightPreset =
+                                if (isDarkMode) LightPresetValue.NIGHT else LightPresetValue.DAY
+                        }
                     }
-                } else {
-                    MapStyle(style = selectedStyle)
+                    "SATELLITE" -> {
+                        MapStyle(style = Style.STANDARD_SATELLITE)
+                    }
+                    "OUTDOORS" -> {
+                        MapStyle(style = Style.OUTDOORS)
+                    }
                 }
             },
             onMapClickListener = { point ->
@@ -103,41 +106,10 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
             }
         }
 
-        // Legger til knapper for å velge kartstil og lysmåte
-        Column(
-            modifier = Modifier
-                .padding(5.dp, 25.dp)
-                .align(Alignment.TopStart)
-        ) {
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Color.White.copy(alpha = 0.7f))
-            ) {
-                Row(modifier = Modifier.padding(4.dp)) {
-                    MapButton("Standard") { selectedStyle = Style.STANDARD }
-                    Spacer(modifier = Modifier.width(4.dp))
-                    MapButton("Satellite") { selectedStyle = Style.STANDARD_SATELLITE }
-                    Spacer(modifier = Modifier.width(4.dp))
-                    MapButton("Outdoors") { selectedStyle = Style.OUTDOORS }
-                }
-            }
+        // Dropdown menu for å velge kartstil
+        MapStyleDropdownMenu(viewModel)
 
-            Spacer(modifier = Modifier.height(4.dp))
-
-            if (selectedStyle == Style.STANDARD) {
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Color.White.copy(alpha = 0.7f))
-                ) {
-                    Row(modifier = Modifier.padding(4.dp)) {
-                        MapButton("Light") { isDarkMode = false }
-                        Spacer(modifier = Modifier.width(4.dp))
-                        MapButton("Dark") { isDarkMode = true }
-                    }
-                }
-            }
-        }
+        // Søkefelt for å søke etter steder
+        SearchBarForMap(viewModel)
     }
 }
