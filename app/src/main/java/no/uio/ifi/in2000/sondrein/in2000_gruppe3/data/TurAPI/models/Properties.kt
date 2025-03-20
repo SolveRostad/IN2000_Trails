@@ -6,6 +6,5 @@ import kotlinx.serialization.Serializable
 data class Properties(
     val distance_meters: Int,
     val gradering: List<String>,
-    val rutenavn: List<String>,
-    val rutenummer: String
+    val rutenavn: String
 )

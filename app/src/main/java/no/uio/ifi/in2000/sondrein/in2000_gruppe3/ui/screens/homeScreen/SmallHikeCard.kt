@@ -25,7 +25,7 @@ fun SmallHikeCard(feature: Feature, onClick: () -> Unit) {
 
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = feature.properties.rutenavn.first(), // Må kanskje endres
+                text = feature.properties.rutenavn, // Må kanskje endres
                 style = MaterialTheme.typography.titleLarge
             )
 

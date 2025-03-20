@@ -30,7 +30,7 @@ fun HikeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = uiState.feature.properties.rutenavn.first()) }, //Må kanskje endres
+                title = { Text(text = uiState.feature.properties.rutenavn) }, //Må kanskje endres
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
