@@ -13,7 +13,7 @@ class HikeScreenViewModel: ViewModel() {
     private val _hikeScreenUIState = MutableStateFlow<HikeScreenUIState> (
         HikeScreenUIState(
             feature = Feature(
-                Geometry(listOf(), "error"), Properties(0, listOf(), listOf(), "error"), "error")
+                Geometry(listOf(), "error"), Properties(0, listOf(), "error"), "error")
         )
     )
     val hikeScreenUIState: StateFlow<HikeScreenUIState> = _hikeScreenUIState.asStateFlow()
