@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -57,12 +58,13 @@ fun HikeCardMapPreview(feature: Feature) {
             bearing(0.0)
         }
     }
-    Box(
+    Surface(
         modifier = Modifier
-            .height(200.dp)
+            .height(160.dp)  // Slightly reduced for safety
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
-            .clipToBounds()
+            .clipToBounds(),
+        shape = RoundedCornerShape(8.dp)
     ) {
         MapboxMap(
             mapViewportState = mapViewPortState,
