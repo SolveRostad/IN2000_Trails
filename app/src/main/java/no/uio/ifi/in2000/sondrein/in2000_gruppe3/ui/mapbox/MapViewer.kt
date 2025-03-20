@@ -106,6 +106,7 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
                 }
             }
         }
+        ForecastDisplay(viewModel)
 
         // Dropdown menu for å velge kartstil
         MapStyleDropdownMenu(viewModel)

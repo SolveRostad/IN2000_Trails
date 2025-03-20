@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -41,6 +42,14 @@ fun HomeScreen(
     navController: NavHostController
 ) {
     val uiState by viewModel.homeScreenUIState.collectAsState()
+
+    //henter værdata basert på koordinatene
+    LaunchedEffect(uiState.pointerCoordinates) {
+        viewModel.fetchForecast(
+            uiState.pointerCoordinates.latitude(),
+            uiState.pointerCoordinates.longitude()
+        )
+    }
 
     Scaffold(
         bottomBar = { BottomBar(navController = navController) }

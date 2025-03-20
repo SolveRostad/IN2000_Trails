@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mapbox.geojson.Point
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -101,6 +102,45 @@ class HomeScreenViewModel() : ViewModel() {
             _routeColorIndex++
         }
         return polylineColors[_routeColorIndex]
+    }
+
+    fun fetchForecast(lat: Double, lon: Double){
+        //Log.d("Forecast", "fetchForecast called with lat: $lat, lon: $lon")
+        viewModelScope.launch(Dispatchers.IO) { // <-- Kjør direkte i IO-tråd
+            _homeScreenUIState.update {
+                it.copy(isLoading = true)
+            }
+            try {
+                val result = locationForecastRepository.getForecast(lat, lon)
+                _homeScreenUIState.update {
+                    it.copy(forecast = result, isError = false, isLoading = false)
+                }
+            } catch (e: Exception) {
+                _homeScreenUIState.update {
+                    it.copy(isError = true, errorMessage = e.message ?: "Unknown error", isLoading = false)
+                }
+            }
+        }
+    }
+
+    fun fetchAlerts(){
+        viewModelScope.launch {
+            _homeScreenUIState.update {
+                it.copy(isLoading = true)
+            }
+            try {
+                val result = metAlertsRepository.getAlerts() //henter data fra repository
+                if(result != null){
+                    _homeScreenUIState.update {
+                        it.copy(alerts = result)
+                    }
+                }
+            } catch (e: Exception){
+                _homeScreenUIState.update {
+                    it.copy(isError = true, errorMessage = e.message ?: "Unknown error", isLoading = false)
+                }
+            }
+        }
     }
 }
 
