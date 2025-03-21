@@ -101,7 +101,7 @@ private fun createStaticMapUrl(
 
     // Legg til markør ved startpunktet
     val startPoint = simplifiedCoordinates.first()
-    pathString.append(",pin-s+4B4B4B(${startPoint.longitude()},${startPoint.latitude()})")
+    pathString.append(",pin-s+FF0000(${startPoint.longitude()},${startPoint.latitude()})")
 
     // Build the static map URL
     return "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/" +
