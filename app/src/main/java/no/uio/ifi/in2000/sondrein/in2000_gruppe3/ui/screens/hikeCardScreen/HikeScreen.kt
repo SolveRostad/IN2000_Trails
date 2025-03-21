@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.hikeCard.HikeCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -33,6 +33,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -111,7 +112,15 @@ fun SearchBarForMap(viewModel: HomeScreenViewModel) {
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
                 ),
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") }
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                )
             )
         }
 
