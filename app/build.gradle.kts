@@ -16,6 +16,9 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        buildConfigField("String", "MAPBOX_ACCESS_TOKEN", "\"${properties["MAPBOX_ACCESS_TOKEN"]}\"")
+        buildConfigField("String", "MAPBOX_SECRET_TOKEN", "\"${properties["MAPBOX_SECRET_TOKEN"]}\"")
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -58,6 +61,7 @@ dependencies {
     // Mapbox
     implementation("com.mapbox.maps:android:11.10.2")
     implementation("com.mapbox.extension:maps-compose:11.10.2")
+    implementation("io.coil-kt:coil-compose:2.7.0")
 
     // Navcontroller
     implementation("androidx.compose.ui:ui:1.7.8")
