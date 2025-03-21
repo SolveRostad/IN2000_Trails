@@ -13,6 +13,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +27,9 @@ import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScree
 
 @Composable
 fun MapStyleDropdownMenu(viewModel: HomeScreenViewModel) {
+    val uiState by viewModel.homeScreenUIState.collectAsState()
+    val mapIsDarkmode = uiState.mapIsDarkmode
+
     var expanded by remember { mutableStateOf(false) }
 
     Box(
@@ -39,7 +43,7 @@ fun MapStyleDropdownMenu(viewModel: HomeScreenViewModel) {
                 Icon(
                     imageVector = Icons.Default.Settings,
                     contentDescription = "Settings",
-                    tint = if (viewModel.mapIsDarkmode || viewModel.mapStyle == "SATELLITE") Color.White else Color.Unspecified
+                    tint = if (mapIsDarkmode) Color.White else Color.Unspecified
                 )
             }
 

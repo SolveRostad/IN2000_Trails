@@ -5,20 +5,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.mapbox.geojson.Point
 import com.mapbox.maps.Style
+import com.mapbox.maps.extension.compose.MapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
-import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotation
 import com.mapbox.maps.extension.compose.annotation.rememberIconImage
 import com.mapbox.maps.extension.compose.style.MapStyle
 import com.mapbox.maps.extension.compose.style.standard.LightPresetValue
 import com.mapbox.maps.extension.compose.style.standard.MapboxStandardStyle
+import com.mapbox.maps.extension.style.layers.addLayer
+import com.mapbox.maps.extension.style.layers.generated.LineLayer
+import com.mapbox.maps.extension.style.sources.addSource
+import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.R
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
@@ -28,10 +30,8 @@ import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScree
 @Composable
 fun MapViewer(viewModel: HomeScreenViewModel) {
     val uiState by viewModel.homeScreenUIState.collectAsState()
-
-    // Observe the map style and dark mode from ViewModel to trigger recomposition
-    val mapStyle by remember { derivedStateOf { viewModel.mapStyle } }
-    val isDarkMode by remember { derivedStateOf { viewModel.mapIsDarkmode } }
+    var mapStyle = uiState.mapStyle
+    var mapIsDarkmode = uiState.mapIsDarkmode
 
     val mapViewportState = rememberMapViewportState {
         setCameraOptions {
@@ -61,7 +61,7 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
                     "STANDARD" -> {
                         MapboxStandardStyle {
                             lightPreset =
-                                if (isDarkMode) LightPresetValue.NIGHT else LightPresetValue.DAY
+                                if (mapIsDarkmode) LightPresetValue.NIGHT else LightPresetValue.DAY
                         }
                     }
                     "SATELLITE" -> {
@@ -88,20 +88,53 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
                 iconImage = marker
             }
 
-            // Legger til ruter på kartet
-            uiState.turer.features.forEach { feature ->
-                val color = viewModel.getViableRouteColor()
-                feature.geometry.coordinates.forEach { coordinates ->
-                    val points = mutableListOf<Point>()
-                    coordinates.forEach {
-                        points.add(Point.fromLngLat(it[1], it[0]))
+            // Legger til turer på kartet
+            MapEffect(uiState.turer) { mapView ->
+                val mapboxMap = mapView.mapboxMap
+                val style = mapboxMap.style
+
+                // Fjerner tidligere turer
+                if (style != null) {
+                    // Fjern alle eksisterende kilder og lag for turer
+                    style.styleSources.forEach { source ->
+                        if (source.id.startsWith("source-")) {
+                            style.removeStyleSource(source.id)
+                        }
                     }
-                    PolylineAnnotation(
-                        points = points
-                    ) {
-                        lineColor = color
-                        lineWidth = 6.0
-                        lineOpacity = 0.8
+                    style.styleLayers.forEach { layer ->
+                        if (layer.id.startsWith("layer-")) {
+                            style.removeStyleLayer(layer.id)
+                        }
+                    }
+
+                    // Legger til nye turer
+                    uiState.turer.features.forEach { feature ->
+                        val sourceId = "source-${feature.hashCode()}"
+                        val layerId = "layer-${feature.hashCode()}"
+
+                        val lineStrings = feature.geometry.coordinates.map { coords ->
+                            val points = coords.map { Point.fromLngLat(it[1], it[0]) }
+                            com.mapbox.geojson.LineString.fromLngLats(points)
+                        }
+
+                        val multiLineString = com.mapbox.geojson.MultiLineString.fromLineStrings(lineStrings)
+                        val geoJsonFeature = com.mapbox.geojson.Feature.fromGeometry(multiLineString)
+                        val featureCollection = com.mapbox.geojson.FeatureCollection.fromFeatures(listOf(geoJsonFeature))
+
+                        val source = GeoJsonSource.Builder(sourceId)
+                            .data(featureCollection.toJson())
+                            .build()
+                        style.addSource(source)
+
+                        val color = viewModel.getViableRouteColor()
+                        val rgbaColor = "rgba(${(color.red * 255).toInt()}, ${(color.green * 255).toInt()}, ${(color.blue * 255).toInt()}, ${color.alpha})"
+
+                        val lineLayer = LineLayer(layerId, sourceId)
+
+                        lineLayer.lineColor(rgbaColor)
+                        lineLayer.lineWidth(3.0)
+                        lineLayer.lineOpacity(0.8)
+                        style.addLayer(lineLayer)
                     }
                 }
             }

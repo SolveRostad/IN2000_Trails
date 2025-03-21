@@ -1,12 +1,10 @@
 package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.Point
 import com.mapbox.search.autocomplete.PlaceAutocomplete
 import com.mapbox.search.autocomplete.PlaceAutocompleteSuggestion
@@ -50,7 +48,9 @@ class HomeScreenViewModel() : ViewModel() {
             forecast = null,
             pointerCoordinates = Point.fromLngLat( 10.661952, 59.846195),
             searchQuery = "",
-            searchResponse = emptyList()
+            searchResponse = emptyList(),
+            mapStyle = "STANDARD",
+            mapIsDarkmode = false
         )
     )
     val homeScreenUIState: StateFlow<HomeScreenUIState> = _homeScreenUIState.asStateFlow()
@@ -58,28 +58,25 @@ class HomeScreenViewModel() : ViewModel() {
     // Create autocomplete client
     private val placeAutocomplete = PlaceAutocomplete.create()
 
-    // Holder på style og darkmode til kartet
-    private val _mapStyle = mutableStateOf("STANDARD") //dette bør være i UIState
-    var mapStyle: String
-        get() = _mapStyle.value
-        set(value) {
-            _mapStyle.value = value
-        }
-
-    private val _mapIsDarkmode = mutableStateOf(false)
-    var mapIsDarkmode: Boolean
-        get() = _mapIsDarkmode.value
-        set(value) {
-            _mapIsDarkmode.value = value
-        }
 
     // Oppdaterer style og darkmode til kartet
     fun updateMapStyle(style: String, isDark: Boolean) {
-        mapStyle = style
-        mapIsDarkmode = isDark
+        viewModelScope.launch {
+            _homeScreenUIState.update {
+                it.copy(mapStyle = style, mapIsDarkmode = isDark)
+            }
+        }
+    }
+
+    fun clearTurer() {
+        _homeScreenUIState.update { currentState ->
+            currentState.copy(turer = Turer(emptyList(), ""))
+        }
     }
 
     fun fetchTurer(lat: Double, lng: Double, limit: Int) {
+        clearTurer()
+
         viewModelScope.launch {
             _homeScreenUIState.update {
                 it.copy(isLoading = true)
@@ -101,11 +98,13 @@ class HomeScreenViewModel() : ViewModel() {
             }
         }
     }
+
     fun updatePointerCoordinates(point: Point) {
         _homeScreenUIState.update {
             it.copy(pointerCoordinates = point)
         }
     }
+
     fun updateSearchQuery(query: String) { // putt i ny viewmodel?
         viewModelScope.launch {
             _homeScreenUIState.update {
@@ -128,8 +127,8 @@ class HomeScreenViewModel() : ViewModel() {
                 }
             }
         }
-
     }
+
     fun getViableRouteColor(): Color {
         if (_routeColorIndex == polylineColors.size-1) {
             _routeColorIndex = 0
@@ -188,5 +187,7 @@ data class HomeScreenUIState(
     val forecast: Locationforecast?,
     val pointerCoordinates: Point,
     val searchQuery: String,
-    val searchResponse: List<PlaceAutocompleteSuggestion>
+    val searchResponse: List<PlaceAutocompleteSuggestion>,
+    val mapStyle: String,
+    val mapIsDarkmode: Boolean
 )

@@ -32,7 +32,7 @@ fun SmallHikeCard(feature: Feature, onClick: () -> Unit) {
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(text = "Avstand til turen: ${feature.properties.distance_meters.toFloat() / 1000.0} km")
-            Text(text = if (feature.properties.gradering.isEmpty()) "Ukjent" else "Vanskelighetsgrad: ${feature.properties.gradering.first()}")
+            Text(text = if (feature.properties.gradering.isEmpty()) "Vanskelighetsgrad: Ukjent" else "Vanskelighetsgrad: ${feature.properties.gradering.first()}")
 
             Spacer(modifier = Modifier.height(3.dp))
 
