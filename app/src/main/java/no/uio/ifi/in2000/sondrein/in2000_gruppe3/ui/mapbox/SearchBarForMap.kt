@@ -27,16 +27,21 @@ import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
@@ -49,21 +54,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.R
 import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.sp
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
 fun SearchBarForMap(viewModel: HomeScreenViewModel) {
     val uiState by viewModel.homeScreenUIState.collectAsState()
-    val coroutineScope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
-    val suggestions = remember { mutableStateOf<List<PlaceAutocompleteSuggestion>>(emptyList()) }
-
-    // Create autocomplete client
-    val placeAutocomplete = remember {
-        PlaceAutocomplete.create()
-    }
 
     Column {
         Box(
@@ -77,21 +77,6 @@ fun SearchBarForMap(viewModel: HomeScreenViewModel) {
                 value = uiState.searchQuery,
                 onValueChange = { newQuery ->
                     viewModel.updateSearchQuery(newQuery)
-
-                    // Search for places when query changes
-                    coroutineScope.launch {
-                        if (newQuery.length >= 3) {
-                            val response = placeAutocomplete.suggestions(newQuery)
-
-                            if (response.isValue) {
-                                suggestions.value = response.value ?: emptyList()
-                            } else {
-                                Log.e("SearchBar", "Error fetching suggestions", response.error)
-                            }
-                        } else {
-                            suggestions.value = emptyList()
-                        }
-                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
@@ -101,8 +86,7 @@ fun SearchBarForMap(viewModel: HomeScreenViewModel) {
                     .onKeyEvent { keyEvent ->
                         if (keyEvent.type == KeyEventType.KeyUp && keyEvent.key == Key.Enter) {
                             keyboardController?.hide()
-                            suggestions.value = emptyList()
-                            // Handle search
+                            viewModel.updateSearchQuery("")
                         }
                         true
                     },
@@ -125,43 +109,71 @@ fun SearchBarForMap(viewModel: HomeScreenViewModel) {
         }
 
         // Show suggestions
-        if (suggestions.value.isNotEmpty()) {
+        if (uiState.searchResponse.isNotEmpty()) {
             LazyColumn(
+
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.background, RoundedCornerShape(10.dp))
                     .border(1.dp, Color.Gray, RoundedCornerShape(10.dp))
             ) {
-                items(suggestions.value) { suggestion ->
-                    Text(
-                        text = suggestion.name,
+                items(uiState.searchResponse) { suggestion ->
+                    Log.d("SearchBarForMap", suggestion.toString())
+                    Row (
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(10.dp)
+                            .padding(start = 15.dp, end = 15.dp, top = 10.dp, bottom = 10.dp)
                             .clickable {
-                                // Handle selection
-                                coroutineScope.launch {
-                                    val result = placeAutocomplete.select(suggestion)
-                                    result.onValue { place ->
-                                        // Update the map position using the selected place
-//                                        viewModel.updateMapPosition(
-//                                            place.coordinate?.latitude ?: 0.0,
-//                                            place.coordinate?.longitude ?: 0.0
-//                                        )
-                                    }
-                                }
-                                // Clear suggestions
-                                suggestions.value = emptyList()
+                                viewModel.updateSearchQuery("")
                                 keyboardController?.hide()
+                            },
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        Column {
+                            Text(
+                                text = suggestion.name,
+                                fontSize = 16.sp
+                            )
+                            if (suggestion.formattedAddress != null) {
+                                Text(
+                                    text = suggestion.formattedAddress!!,
+                                    fontSize = 10.sp
+                                )
                             }
-                    )
-                    Divider(
-                        modifier = Modifier.fillMaxWidth(),
-                        color = Color.Gray,
-                        thickness = 1.dp
-                    )
+                        }
+                        Icon(
+                            painter = painterResource(id = getIconFromString(suggestion.makiIcon?: "")),
+                            contentDescription = "descriptive_icon",
+                            modifier = Modifier
+                                .size(30.dp)
+                        )
+                    }
+                    if (suggestion != uiState.searchResponse.last()) {
+                        HorizontalDivider(
+                            color = Color.LightGray,
+                            thickness = 1.0.dp
+                        )
+                    }
                 }
             }
+        }
+    }
+}
+fun getIconFromString(iconName: String): Int {
+    return when (iconName) {
+        "marker" -> R.drawable.marker
+        "lodging" -> R.drawable.lodging
+        "building" -> R.drawable.building
+        "information" -> R.drawable.information
+        "restaurant" -> R.drawable.restaurant
+        "bus" -> R.drawable.bus
+        "florist" -> R.drawable.florist
+        "cinema" -> R.drawable.cinema
+        "fast-food" -> R.drawable.fast_food
+        else -> {
+            Log.d("UNKNOWN ICON", iconName)
+            R.drawable.ic_launcher_background
         }
     }
 }
