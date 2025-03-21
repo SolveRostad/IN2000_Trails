@@ -68,7 +68,7 @@ fun HikeCardMapPreview(feature: Feature) {
             contentDescription = "Map preview",
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize(),
-            error = painterResource(id = R.drawable.construction)
+            error = painterResource(id = R.drawable.caution)
         )
     }
 }
@@ -91,7 +91,7 @@ private fun createStaticMapUrl(
     // Construct path for the polyline
     val pathString = StringBuilder()
     if (simplifiedCoordinates.isNotEmpty()) {
-        pathString.append("path-3+0066FF-0.8(")
+        pathString.append("path-5+FF3300-1.0(")
         simplifiedCoordinates.forEachIndexed { index, point ->
             if (index > 0) pathString.append(",")
             pathString.append("${point.longitude()},${point.latitude()}")
@@ -99,8 +99,12 @@ private fun createStaticMapUrl(
         pathString.append(")")
     }
 
+    // Legg til markør ved startpunktet
+    val startPoint = simplifiedCoordinates.first()
+    pathString.append(",pin-s+4B4B4B(${startPoint.longitude()},${startPoint.latitude()})")
+
     // Build the static map URL
-    return "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/" +
+    return "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/" +
             "${pathString}/" +
             "${center.longitude()},${center.latitude()},$zoom,0/" +
             "${width}x${height}@2x" +
