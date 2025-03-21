@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.Point
 import com.mapbox.search.autocomplete.PlaceAutocomplete
 import com.mapbox.search.autocomplete.PlaceAutocompleteSuggestion
@@ -67,7 +68,15 @@ class HomeScreenViewModel() : ViewModel() {
         }
     }
 
+    fun clearTurer() {
+        _homeScreenUIState.update { currentState ->
+            currentState.copy(turer = Turer(emptyList(), ""))
+        }
+    }
+
     fun fetchTurer(lat: Double, lng: Double, limit: Int) {
+        clearTurer()
+
         viewModelScope.launch {
             _homeScreenUIState.update {
                 it.copy(isLoading = true)

@@ -91,17 +91,20 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
             // Legger til turer på kartet
             MapEffect(uiState.turer) { mapView ->
                 val mapboxMap = mapView.mapboxMap
-
                 val style = mapboxMap.style
 
                 // Fjerner tidligere turer
                 if (style != null) {
-                    uiState.turer.features.forEach { feature ->
-                        val sourceId = "source-${feature.hashCode()}"
-                        val layerId = "layer-${feature.hashCode()}"
-
-                        style.removeStyleLayer(layerId)
-                        style.removeStyleSource(sourceId)
+                    // Fjern alle eksisterende kilder og lag for turer
+                    style.styleSources.forEach { source ->
+                        if (source.id.startsWith("source-")) {
+                            style.removeStyleSource(source.id)
+                        }
+                    }
+                    style.styleLayers.forEach { layer ->
+                        if (layer.id.startsWith("layer-")) {
+                            style.removeStyleLayer(layer.id)
+                        }
                     }
 
                     // Legger til nye turer
