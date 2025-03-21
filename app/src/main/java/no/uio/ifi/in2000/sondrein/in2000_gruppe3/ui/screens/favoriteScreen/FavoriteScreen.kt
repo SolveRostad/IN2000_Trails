@@ -3,36 +3,43 @@ package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.favoriteScreen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.data.TurAPI.models.Feature
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.navigation.BottomBar
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.SmallHikeCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteScreen(
-    viewmodel: HomeScreenViewModel,
+    favoritesViewModel: FavoritesViewModel,
     navController: NavHostController
 ) {
-    val favoriteHikes = remember { listOf<Feature>() } // Bytt med egen viewmodel
+    val favoriteUIState by favoritesViewModel.favoritesScreenUIState.collectAsState()
 
     Scaffold(
         topBar = { TopAppBar(title = { Text(text = "Favorite Hikes") }) },
         bottomBar = { BottomBar(navController = navController) }
     ) { paddingValues ->
-        if (favoriteHikes.isEmpty()) {
+        if (favoriteUIState.favorites == null) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -52,8 +59,15 @@ fun FavoriteScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Legg til favoritt turer i egen viewmodel og hent her
-                // forEach favoritt { HikeCard(favoritt) }
+                if (favoriteUIState.favorites != null){
+                    items(favoriteUIState.favorites!!) { feature ->
+                        SmallHikeCard(
+                            feature = feature,
+                            onClick = { }
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+                }
             }
         }
     }

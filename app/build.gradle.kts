@@ -43,6 +43,15 @@ android {
 
 dependencies {
 
+    //DataStore
+    implementation(libs.androidx.datastore.preferences)
+
+    // optional - RxJava2 support
+    implementation(libs.androidx.datastore.preferences.rxjava2)
+
+    // optional - RxJava3 support
+    implementation(libs.androidx.datastore.preferences.rxjava3)
+
     // mapbox search
     val mapboxSearchVersion = "2.8.0-rc.1"
     implementation("com.mapbox.search:autofill:$mapboxSearchVersion")

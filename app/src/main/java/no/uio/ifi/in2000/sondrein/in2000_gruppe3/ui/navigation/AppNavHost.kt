@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.favoriteScreen.FavoriteScreen
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreen
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreen
@@ -18,6 +19,7 @@ fun AppNavHost() {
     //view models
     val homeScreenViewModel: HomeScreenViewModel = viewModel()
     val hikeScreenViewModel: HikeScreenViewModel = viewModel()
+    val favoritesViewModel: FavoritesViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -35,7 +37,7 @@ fun AppNavHost() {
         // Favorites screen
         composable(Screen.Favorites.route) {
             FavoriteScreen(
-                viewmodel = viewModel(), //FIKSE DETTE
+                favoritesViewModel = FavoritesViewModel(), //FIKSE DETTE
                 navController = navController
             )
         }
@@ -44,6 +46,7 @@ fun AppNavHost() {
         composable(route = Screen.HikeScreen.route) {
             HikeScreen(
                 viewModel = hikeScreenViewModel,
+                favoritesViewModel = favoritesViewModel,
                 navController = navController
             )
         }
