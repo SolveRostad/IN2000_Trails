@@ -21,6 +21,7 @@ import no.uio.ifi.in2000.sondrein.in2000_gruppe3.BuildConfig
 @Composable
 fun HikeCardMapPreview(feature: Feature) {
     val coordinates = mutableListOf<Point>()
+
     feature.geometry.coordinates.forEach { coordList ->
         coordList.forEach { coord ->
             coordinates.add(Point.fromLngLat(coord[1], coord[0]))
