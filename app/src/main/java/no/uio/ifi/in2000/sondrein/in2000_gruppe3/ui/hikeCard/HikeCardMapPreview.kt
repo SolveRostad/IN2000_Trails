@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.hikeCard
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,9 +15,11 @@ import no.uio.ifi.in2000.sondrein.in2000_gruppe3.data.TurAPI.models.Feature
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.BuildConfig
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.R
 
 @Composable
 fun HikeCardMapPreview(feature: Feature) {
@@ -47,6 +50,8 @@ fun HikeCardMapPreview(feature: Feature) {
         lineCoordinates = coordinates
     )
 
+    Log.d("HikeCardMapPreview", "Static map URL: $staticMapUrl")
+
     Surface(
         modifier = Modifier
             .height(160.dp)
@@ -62,7 +67,8 @@ fun HikeCardMapPreview(feature: Feature) {
                 .build(),
             contentDescription = "Map preview",
             contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            error = painterResource(id = R.drawable.construction)
         )
     }
 }
@@ -75,11 +81,18 @@ private fun createStaticMapUrl(
     height: Int,
     lineCoordinates: List<Point>
 ): String {
+    // Limit number of coordinates to avoid exceeding URL length limits
+    val simplifiedCoordinates = if (lineCoordinates.size > 100) {
+        simplifyPath(lineCoordinates, 100)
+    } else {
+        lineCoordinates
+    }
+
     // Construct path for the polyline
     val pathString = StringBuilder()
-    if (lineCoordinates.isNotEmpty()) {
-        pathString.append("path-3+4B4B4B-0.8(")
-        lineCoordinates.forEachIndexed { index, point ->
+    if (simplifiedCoordinates.isNotEmpty()) {
+        pathString.append("path-3+0066FF-0.8(")
+        simplifiedCoordinates.forEachIndexed { index, point ->
             if (index > 0) pathString.append(",")
             pathString.append("${point.longitude()},${point.latitude()}")
         }
@@ -90,8 +103,17 @@ private fun createStaticMapUrl(
     return "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/" +
             "${pathString}/" +
             "${center.longitude()},${center.latitude()},$zoom,0/" +
-            "${width}x${height}" +
+            "${width}x${height}@2x" +
             "?access_token=${BuildConfig.MAPBOX_SECRET_TOKEN}"
+}
+
+// Helper function to simplify a path to a maximum number of points
+private fun simplifyPath(points: List<Point>, maxPoints: Int): List<Point> {
+    if (points.size <= maxPoints) return points
+
+    val step = points.size / maxPoints
+    return points.filterIndexed { index, _ -> index % step == 0 }
+        .take(maxPoints)
 }
 
 // Calculate an ideal zoom level based on the bounding box
@@ -101,12 +123,13 @@ private fun calculateIdealZoom(bbox: BoundingBox): Double {
     val maxDiff = maxOf(latDiff, lngDiff)
 
     return when {
-        maxDiff > 5.0 -> 1.0
-        maxDiff > 1.0 -> 4.0
-        maxDiff > 0.5 -> 6.0
-        maxDiff > 0.1 -> 8.0
-        maxDiff > 0.05 -> 7.0
-        else -> 12.0
+        maxDiff > 5.0 -> 2.0
+        maxDiff > 1.0 -> 5.0
+        maxDiff > 0.5 -> 7.0
+        maxDiff > 0.1 -> 10.0
+        maxDiff > 0.05 -> 12.0
+        maxDiff > 0.01 -> 13.0
+        else -> 14.0
     }
 }
 
@@ -126,5 +149,11 @@ private fun getBoundingBox(points: List<Point>): BoundingBox {
         maxLng = maxOf(maxLng, point.longitude())
     }
 
-    return BoundingBox.fromLngLats(minLng, minLat, maxLng, maxLat)
+    val buffer = 0.05 * maxOf(maxLat - minLat, maxLng - minLng)
+    return BoundingBox.fromLngLats(
+        minLng - buffer,
+        minLat - buffer,
+        maxLng + buffer,
+        maxLat + buffer
+    )
 }
