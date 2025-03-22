@@ -39,33 +39,39 @@ fun FavoriteScreen(
         topBar = { TopAppBar(title = { Text(text = "Favorite Hikes") }) },
         bottomBar = { BottomBar(navController = navController) }
     ) { paddingValues ->
-        if (favoriteUIState.favorites == null) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = "Her var det tomt gitt 🤔",
-                    style = MaterialTheme.typography.titleMedium
-                )
+        when {
+            favoriteUIState.favorites.isNullOrEmpty() -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = "Her var det tomt gitt 🤔",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
             }
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                if (favoriteUIState.favorites != null){
-                    items(favoriteUIState.favorites!!) { feature ->
-                        SmallHikeCard(
-                            feature = feature,
-                            onClick = { }
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
+
+            else -> {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    if (favoriteUIState.favorites != null) {
+                        items(favoriteUIState.favorites!!) { feature ->
+                            SmallHikeCard(
+                                feature = feature,
+                                onClick = {
+                                    navController.navigate("hikeDetail/${feature.properties.rutenavn}")
+                                }
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
                     }
                 }
             }

@@ -37,7 +37,7 @@ fun AppNavHost() {
         // Favorites screen
         composable(Screen.Favorites.route) {
             FavoriteScreen(
-                favoritesViewModel = FavoritesViewModel(), //FIKSE DETTE
+                favoritesViewModel = favoritesViewModel,
                 navController = navController
             )
         }

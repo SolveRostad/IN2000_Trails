@@ -12,6 +12,7 @@ import kotlinx.serialization.json.Json
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.data.TurAPI.models.Feature
 
 
+val Context.favoritesDataStore: DataStore<Preferences> by preferencesDataStore(name = "feature_preferences")
 
 class FavoritesDataSource(){
     val Context.favoritesDataStore: DataStore<Preferences> by preferencesDataStore(name = "feature_preferences")

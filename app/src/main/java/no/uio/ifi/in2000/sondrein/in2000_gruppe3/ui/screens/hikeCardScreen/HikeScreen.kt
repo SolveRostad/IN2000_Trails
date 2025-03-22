@@ -38,9 +38,12 @@ fun HikeScreen(
     viewModel: HikeScreenViewModel,
     navController: NavHostController
 ) {
-    val context = LocalContext.current
-    val checkedState = remember { mutableStateOf(false) }
     val uiState by viewModel.hikeScreenUIState.collectAsState()
+    val favoritesUIState by favoritesViewModel.favoritesScreenUIState.collectAsState()
+
+    val checkedState = remember {
+        mutableStateOf(favoritesViewModel.isHikeFavorite(uiState.feature))
+    }
 
     Scaffold(
         topBar = {
@@ -69,20 +72,21 @@ fun HikeScreen(
 
             IconToggleButton(
                 checked = checkedState.value,
-                onCheckedChange = { checkedState.value = it }
+                onCheckedChange = {
+                    checkedState.value = it
+                    if (it) {
+                        favoritesViewModel.addHike(uiState.feature)
+                    } else {
+                        favoritesViewModel.deleteHike(uiState.feature)
+                    }
+                }
             ) {
                 val tint by animateColorAsState(if (checkedState.value) Color.Red else Color.Gray)
                 Icon(
                     if (checkedState.value) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                    contentDescription = "Localized description",
+                    contentDescription = "Toggle favorite",
                     tint = tint
                 )
-
-                if (checkedState.value) {
-                    favoritesViewModel.addHike(uiState.feature, context)
-                } else{
-                    favoritesViewModel.deleteHike(uiState.feature, context)
-                }
             }
 
         }
