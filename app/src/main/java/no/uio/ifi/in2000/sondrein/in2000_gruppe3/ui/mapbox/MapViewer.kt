@@ -82,12 +82,6 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
             logo = {},
             attribution = {}
         ) {
-            // Legger til markør for pekerposisjonen
-            val marker = rememberIconImage(R.drawable.red_marker)
-            PointAnnotation(point = uiState.pointerCoordinates) {
-                iconImage = marker
-            }
-
             // Legger til turer på kartet
             MapEffect(uiState.turer) { mapView ->
                 val mapboxMap = mapView.mapboxMap
@@ -138,6 +132,12 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
                         style.addLayer(lineLayer)
                     }
                 }
+            }
+
+            // Legger til markør for pekerposisjonen
+            val marker = rememberIconImage(R.drawable.red_marker)
+            PointAnnotation(point = uiState.pointerCoordinates) {
+                iconImage = marker
             }
         }
 
