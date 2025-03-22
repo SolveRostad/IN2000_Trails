@@ -109,6 +109,7 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
 
                     // Legger til nye turer
                     uiState.turer.features.forEach { feature ->
+                        val featureId = feature.properties.rutenavn
                         val sourceId = "source-${feature.hashCode()}"
                         val layerId = "layer-${feature.hashCode()}"
 
@@ -126,7 +127,7 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
                             .build()
                         style.addSource(source)
 
-                        val color = viewModel.getViableRouteColor()
+                        val color = viewModel.getViableRouteColor(featureId)
                         val rgbaColor = "rgba(${(color.red * 255).toInt()}, ${(color.green * 255).toInt()}, ${(color.blue * 255).toInt()}, ${color.alpha})"
 
                         val lineLayer = LineLayer(layerId, sourceId)
