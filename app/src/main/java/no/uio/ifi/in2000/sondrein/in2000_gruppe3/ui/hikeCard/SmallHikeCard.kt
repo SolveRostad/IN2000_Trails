@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen
+package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.hikeCard
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.data.TurAPI.models.Feature
 
@@ -19,6 +20,7 @@ fun SmallHikeCard(feature: Feature, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .clipToBounds()
             .clickable(onClick = onClick),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -30,7 +32,7 @@ fun SmallHikeCard(feature: Feature, onClick: () -> Unit) {
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(text = "Avstand til turen: ${feature.properties.distance_meters.toFloat() / 1000.0} km")
-            Text(text = if (feature.properties.gradering.isEmpty()) "Ukjent" else "Vanskelighetsgrad: ${feature.properties.gradering.first()}")
+            Text(text = if (feature.properties.gradering.isEmpty()) "Vanskelighetsgrad: Ukjent" else "Vanskelighetsgrad: ${feature.properties.gradering.first()}")
 
             Spacer(modifier = Modifier.height(3.dp))
 

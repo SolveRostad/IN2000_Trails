@@ -1,12 +1,15 @@
 package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen
 
-import androidx.compose.runtime.mutableStateOf
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.Point
+import com.mapbox.search.autocomplete.PlaceAutocomplete
+import com.mapbox.search.autocomplete.PlaceAutocompleteSuggestion
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,40 +39,44 @@ class HomeScreenViewModel() : ViewModel() {
         Color(0xFF607D8B), // Blue grey
         Color(0xFFFFEB3B)  // Yellow
     )
-    private var _routeColorIndex = 0
+    private var _routeColorIndex = 0 //dette bør endres/flyttes
 
     private val _homeScreenUIState = MutableStateFlow<HomeScreenUIState>(
         HomeScreenUIState(
             turer = Turer(listOf(), ""),
             alerts = MetAlerts(listOf(), "", "", ""),
             forecast = null,
-            pointerCoordinates = Point.fromLngLat( 10.661952, 59.846195)
+            pointerCoordinates = Point.fromLngLat( 10.661952, 59.846195),
+            searchQuery = "",
+            searchResponse = emptyList(),
+            mapStyle = "STANDARD",
+            mapIsDarkmode = false
         )
     )
     val homeScreenUIState: StateFlow<HomeScreenUIState> = _homeScreenUIState.asStateFlow()
 
-    // Holder på style og darkmode til kartet
-    private val _mapStyle = mutableStateOf("STANDARD")
-    var mapStyle: String
-        get() = _mapStyle.value
-        set(value) {
-            _mapStyle.value = value
-        }
+    // Create autocomplete client
+    private val placeAutocomplete = PlaceAutocomplete.create()
 
-    private val _mapIsDarkmode = mutableStateOf(false)
-    var mapIsDarkmode: Boolean
-        get() = _mapIsDarkmode.value
-        set(value) {
-            _mapIsDarkmode.value = value
-        }
 
     // Oppdaterer style og darkmode til kartet
     fun updateMapStyle(style: String, isDark: Boolean) {
-        mapStyle = style
-        mapIsDarkmode = isDark
+        viewModelScope.launch {
+            _homeScreenUIState.update {
+                it.copy(mapStyle = style, mapIsDarkmode = isDark)
+            }
+        }
+    }
+
+    fun clearTurer() {
+        _homeScreenUIState.update { currentState ->
+            currentState.copy(turer = Turer(emptyList(), ""))
+        }
     }
 
     fun fetchTurer(lat: Double, lng: Double, limit: Int) {
+        clearTurer()
+
         viewModelScope.launch {
             _homeScreenUIState.update {
                 it.copy(isLoading = true)
@@ -91,16 +98,37 @@ class HomeScreenViewModel() : ViewModel() {
             }
         }
     }
+
     fun updatePointerCoordinates(point: Point) {
         _homeScreenUIState.update {
             it.copy(pointerCoordinates = point)
         }
     }
-    fun updateSearchQuery(query: String) { // putt i ny viewmodel
-        _homeScreenUIState.update {
-            it.copy(searchQuery = query)
+
+    fun updateSearchQuery(query: String) { // putt i ny viewmodel?
+        viewModelScope.launch {
+            _homeScreenUIState.update {
+                it.copy(searchQuery = query)
+            }
+            delay(500) // er dette en dum løsning for å unngå for mange requests?
+            if (query.length >= 3) {
+                val response = placeAutocomplete.suggestions(query)
+
+                if (response.isValue) {
+                    _homeScreenUIState.update {
+                        it.copy(searchResponse = response.value ?: emptyList())
+                    }
+                } else {
+                    Log.e("SearchBar", "Error fetching suggestions", response.error)
+                }
+            } else {
+                _homeScreenUIState.update {
+                    it.copy(searchResponse = emptyList())
+                }
+            }
         }
     }
+
     fun getViableRouteColor(): Color {
         if (_routeColorIndex == polylineColors.size-1) {
             _routeColorIndex = 0
@@ -158,5 +186,8 @@ data class HomeScreenUIState(
     val alerts: MetAlerts,
     val forecast: Locationforecast?,
     val pointerCoordinates: Point,
-    val searchQuery: String = ""
+    val searchQuery: String,
+    val searchResponse: List<PlaceAutocompleteSuggestion>,
+    val mapStyle: String,
+    val mapIsDarkmode: Boolean
 )

@@ -30,6 +30,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.hikeCard.HikeCard
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
