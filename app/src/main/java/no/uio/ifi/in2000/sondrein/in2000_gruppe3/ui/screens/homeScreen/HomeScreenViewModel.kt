@@ -36,8 +36,7 @@ class HomeScreenViewModel() : ViewModel() {
             searchQuery = "",
             searchResponse = emptyList(),
             mapStyle = "STANDARD",
-            mapIsDarkmode = false,
-            lastFetchedData = false
+            mapIsDarkmode = false
         )
     )
     val homeScreenUIState: StateFlow<HomeScreenUIState> = _homeScreenUIState.asStateFlow()
@@ -124,9 +123,9 @@ class HomeScreenViewModel() : ViewModel() {
             try {
                 val turerResponse = turAPIRepository.getTurer(lat, lng, limit)
                 _homeScreenUIState.update {
-                    it.copy(turer = turerResponse, isError = false, lastFetchedData = true)
+                    it.copy(turer = turerResponse, isError = false)
                 }
-                turerResponse.features.forEach { println(it.properties.toString()) } // Debug
+                turerResponse.features.forEach { println(it.properties.toString()) }
             } catch (e: Exception) {
                 _homeScreenUIState.update {
                     it.copy(isError = true, errorMessage = e.message ?: "Unknown error")
@@ -190,6 +189,5 @@ data class HomeScreenUIState(
     val searchQuery: String,
     val searchResponse: List<PlaceAutocompleteSuggestion>,
     val mapStyle: String,
-    val mapIsDarkmode: Boolean,
-    val lastFetchedData: Boolean = false
+    val mapIsDarkmode: Boolean
 )
