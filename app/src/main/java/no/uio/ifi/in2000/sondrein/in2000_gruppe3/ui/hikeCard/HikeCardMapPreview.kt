@@ -108,7 +108,8 @@ private fun createStaticMapUrl(
             "${pathString}/" +
             "${center.longitude()},${center.latitude()},$zoom,0/" +
             "${width}x${height}@2x" +
-            "?access_token=${BuildConfig.MAPBOX_SECRET_TOKEN}"
+            "?access_token=${BuildConfig.MAPBOX_SECRET_TOKEN}" +
+            "&attribution=false&logo=false"
 }
 
 // Helper function to simplify a path to a maximum number of points
