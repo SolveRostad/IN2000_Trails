@@ -132,5 +132,5 @@ data class FavoritesScreenUIState(
     val errorMessage: String = "",
     val isLoading: Boolean = false,
     val isFavorite: Boolean = false,
-    val favorites: List<Feature>?,
+    val favorites: List<Feature>,
 )

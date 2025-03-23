@@ -17,20 +17,19 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import no.uio.ifi.in2000.sondrein.in2000_gruppe3.data.TurAPI.models.Feature
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.hikeCard.SmallHikeCard
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.navigation.Screen
-import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
-import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.SmallHikeCard
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteScreen(
     favoritesViewModel: FavoritesViewModel,
+    hikeScreenViewModel: HikeScreenViewModel,
     navController: NavHostController
 ) {
     val favoriteUIState by favoritesViewModel.favoritesScreenUIState.collectAsState()
@@ -40,7 +39,7 @@ fun FavoriteScreen(
         bottomBar = { BottomBar(navController = navController) }
     ) { paddingValues ->
         when {
-            favoriteUIState.favorites.isNullOrEmpty() -> {
+            favoriteUIState.favorites.isEmpty() -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -62,16 +61,15 @@ fun FavoriteScreen(
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    if (favoriteUIState.favorites != null) {
-                        items(favoriteUIState.favorites!!) { feature ->
-                            SmallHikeCard(
-                                feature = feature,
-                                onClick = {
-                                    navController.navigate("hikeDetail/${feature.properties.rutenavn}")
-                                }
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                        }
+                    items(favoriteUIState.favorites) { feature ->
+                        SmallHikeCard (
+                            feature = feature,
+                            onClick = {
+                                hikeScreenViewModel.updateHike(feature)
+                                navController.navigate(Screen.HikeScreen.route)
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
             }

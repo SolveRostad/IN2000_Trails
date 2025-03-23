@@ -55,7 +55,7 @@ fun HomeScreen(
             BottomSheetDrawer(
                 bottomSheetState = bottomSheetState,
                 viewModel = viewModel,
-                hikeViewModel = hikeViewModel,
+                hikeScreenViewModel = hikeViewModel,
                 navController = navController
             ) {
                 MapViewer(viewModel = viewModel)
