@@ -34,7 +34,7 @@ import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScree
 fun BottomSheetDrawer(
     bottomSheetState: BottomSheetScaffoldState,
     viewModel: HomeScreenViewModel,
-    hikeViewModel: HikeScreenViewModel,
+    hikeScreenViewModel: HikeScreenViewModel,
     navController: NavHostController,
     content: @Composable () -> Unit
 ) {
@@ -67,7 +67,7 @@ fun BottomSheetDrawer(
                         SmallHikeCard(
                             feature = feature,
                             onClick = {
-                                hikeViewModel.updateHike(feature)
+                                hikeScreenViewModel.updateHike(feature)
                                 navController.navigate(Screen.HikeScreen.route)
                             }
                         )

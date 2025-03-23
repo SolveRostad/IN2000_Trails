@@ -38,6 +38,7 @@ fun AppNavHost() {
         composable(Screen.Favorites.route) {
             FavoriteScreen(
                 favoritesViewModel = favoritesViewModel,
+                hikeScreenViewModel = hikeScreenViewModel,
                 navController = navController
             )
         }
