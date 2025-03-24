@@ -45,7 +45,7 @@ fun HomeScreen(
                 .padding(bottom = paddingValues.calculateBottomPadding())
         ) {
             // Bottom sheet state for å kunne åpne og lukke bottom sheet
-            val bottomSheetState = rememberBottomSheetScaffoldState(
+            var bottomSheetState = rememberBottomSheetScaffoldState(
                 bottomSheetState = rememberStandardBottomSheetState(
                     initialValue = SheetValue.PartiallyExpanded
                 )

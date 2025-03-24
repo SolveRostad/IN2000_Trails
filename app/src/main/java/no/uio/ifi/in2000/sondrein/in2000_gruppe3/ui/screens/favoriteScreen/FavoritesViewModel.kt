@@ -60,7 +60,7 @@ class FavoritesViewModel(application: Application): AndroidViewModel(application
                         it.copy(favorites = hikes.toList())
                     }
                     viewModelSaveHikes(hikes)
-                    Log.i("La til tur i favorites", "$hikes")
+                    Log.d("La til tur i favorites", "$hikes")
                 }
             } catch (e: Exception) {
                 _favortiesScreenUIState.update {

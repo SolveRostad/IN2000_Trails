@@ -31,17 +31,19 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.hikeCard.HikeCard
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.navigation.BottomBar
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HikeScreen(
     favoritesViewModel: FavoritesViewModel,
-    viewModel: HikeScreenViewModel,
+    hikeScreenviewModel: HikeScreenViewModel,
+    homeScreenViewModel: HomeScreenViewModel,
     navController: NavHostController
 ) {
-    val uiState by viewModel.hikeScreenUIState.collectAsState()
-    val favoritesUIState by favoritesViewModel.favoritesScreenUIState.collectAsState()
+    val uiState by hikeScreenviewModel.hikeScreenUIState.collectAsState()
 
     val checkedState = remember {
         mutableStateOf(favoritesViewModel.isHikeFavorite(uiState.feature))
@@ -60,7 +62,8 @@ fun HikeScreen(
                     }
                 }
             )
-        }
+        },
+        bottomBar = { BottomBar(navController = navController) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -70,7 +73,7 @@ fun HikeScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-            HikeCard(viewModel)
+            HikeCard(hikeScreenviewModel, homeScreenViewModel)
 
             IconToggleButton(
                 checked = checkedState.value,

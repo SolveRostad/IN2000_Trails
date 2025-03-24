@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 data class Feature(
     val geometry: Geometry,
     val properties: Properties,
-    val type: String
+    val type: String,
+    var color: String = "rgba(0, 0, 0, 1.0)"
 )

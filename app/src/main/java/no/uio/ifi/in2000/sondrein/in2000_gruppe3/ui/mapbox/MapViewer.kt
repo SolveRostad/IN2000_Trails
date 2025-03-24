@@ -43,13 +43,18 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
     }
 
     // Oppdaterer ViewportState når pekerposisjonen endres
-    LaunchedEffect(uiState.pointerCoordinates) {
+    LaunchedEffect(uiState.pointerCoordinates, mapStyle) {
         mapViewportState.setCameraOptions {
             zoom(12.0)
             center(uiState.pointerCoordinates)
             pitch(0.0)
             bearing(0.0)
         }
+        viewModel.fetchTurer(
+            uiState.pointerCoordinates.latitude(),
+            uiState.pointerCoordinates.longitude(),
+            5
+        )
     }
 
     Box {
@@ -121,12 +126,9 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
                             .build()
                         style.addSource(source)
 
-                        val color = viewModel.getViableRouteColor(featureId)
-                        val rgbaColor = "rgba(${(color.red * 255).toInt()}, ${(color.green * 255).toInt()}, ${(color.blue * 255).toInt()}, ${color.alpha})"
-
                         val lineLayer = LineLayer(layerId, sourceId)
 
-                        lineLayer.lineColor(rgbaColor)
+                        lineLayer.lineColor(feature.color)
                         lineLayer.lineWidth(3.0)
                         lineLayer.lineOpacity(0.8)
                         style.addLayer(lineLayer)
