@@ -5,9 +5,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SheetValue
-import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -22,15 +19,15 @@ import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCardScreen.HikeS
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    viewModel: HomeScreenViewModel,
+    homeScreenViewModel: HomeScreenViewModel,
     hikeViewModel: HikeScreenViewModel,
     navController: NavHostController
 ) {
-    val uiState by viewModel.homeScreenUIState.collectAsState()
+    val uiState by homeScreenViewModel.homeScreenUIState.collectAsState()
 
     // Oppdaterer ViewportState når pekerposisjonen endres
     LaunchedEffect(uiState.pointerCoordinates) {
-        viewModel.fetchForecast(
+        homeScreenViewModel.fetchForecast(
             uiState.pointerCoordinates.latitude(),
             uiState.pointerCoordinates.longitude()
         )
@@ -44,21 +41,13 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(bottom = paddingValues.calculateBottomPadding())
         ) {
-            // Bottom sheet state for å kunne åpne og lukke bottom sheet
-            var bottomSheetState = rememberBottomSheetScaffoldState(
-                bottomSheetState = rememberStandardBottomSheetState(
-                    initialValue = SheetValue.PartiallyExpanded
-                )
-            )
-
             // BottomSheetDrawer for å vise turer
             BottomSheetDrawer(
-                bottomSheetState = bottomSheetState,
-                viewModel = viewModel,
+                homeScreenViewModel = homeScreenViewModel,
                 hikeScreenViewModel = hikeViewModel,
                 navController = navController
             ) {
-                MapViewer(viewModel = viewModel)
+                MapViewer(homeScreenViewModel)
             }
         }
     }

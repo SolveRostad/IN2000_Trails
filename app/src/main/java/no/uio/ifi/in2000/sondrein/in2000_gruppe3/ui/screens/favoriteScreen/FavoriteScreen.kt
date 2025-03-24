@@ -37,7 +37,7 @@ fun FavoriteScreen(
     val favoriteUIState by favoritesViewModel.favoritesScreenUIState.collectAsState()
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text(text = "Favorite Hikes") }) },
+        topBar = { TopAppBar(title = { Text(text = "Favoritt turer") }) },
         bottomBar = { BottomBar(navController = navController) }
     ) { paddingValues ->
         when {
