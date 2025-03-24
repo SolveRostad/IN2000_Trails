@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.hikeCard.HikeCard
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 
@@ -61,7 +62,8 @@ fun HikeScreen(
                     }
                 }
             )
-        }
+        },
+        bottomBar = { BottomBar(navController = navController) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
