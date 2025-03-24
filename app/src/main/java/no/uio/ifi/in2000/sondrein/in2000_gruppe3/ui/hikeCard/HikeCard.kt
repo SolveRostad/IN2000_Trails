@@ -16,7 +16,10 @@ import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCardScreen.HikeS
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
-fun HikeCard(hikeScreenviewModel: HikeScreenViewModel, homeScreenViewModel: HomeScreenViewModel) {
+fun HikeCard(
+    hikeScreenviewModel: HikeScreenViewModel,
+    homeScreenViewModel: HomeScreenViewModel
+) {
     val uiState by hikeScreenviewModel.hikeScreenUIState.collectAsState()
 
     Card {

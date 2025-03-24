@@ -14,11 +14,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
-import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -32,13 +35,25 @@ import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScree
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomSheetDrawer(
-    bottomSheetState: BottomSheetScaffoldState,
-    viewModel: HomeScreenViewModel,
+    homeScreenViewModel: HomeScreenViewModel,
     hikeScreenViewModel: HikeScreenViewModel,
     navController: NavHostController,
     content: @Composable () -> Unit
 ) {
-    val uiState by viewModel.homeScreenUIState.collectAsState()
+    val uiState by homeScreenViewModel.homeScreenUIState.collectAsState()
+
+    // Bottom sheet state for å kunne åpne og lukke bottom sheet
+    var bottomSheetState = rememberBottomSheetScaffoldState(
+        bottomSheetState = rememberStandardBottomSheetState(
+            initialValue = SheetValue.PartiallyExpanded
+        )
+    )
+
+    LaunchedEffect(uiState.searchResponse) {
+        if (uiState.searchResponse.isNotEmpty()) {
+            bottomSheetState.bottomSheetState.partialExpand()
+        }
+    }
 
     BottomSheetScaffold(
         scaffoldState = bottomSheetState,
@@ -65,7 +80,7 @@ fun BottomSheetDrawer(
                     }
                     items(uiState.turer.features) { feature ->
                         SmallHikeCard(
-                            viewModel,
+                            homeScreenViewModel,
                             feature = feature,
                             onClick = {
                                 hikeScreenViewModel.updateHike(feature)

@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
-fun MapStyleDropdownMenu(viewModel: HomeScreenViewModel) {
-    val uiState by viewModel.homeScreenUIState.collectAsState()
+fun MapStyleDropdownMenu(homeScreenViewModel: HomeScreenViewModel) {
+    val uiState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val mapIsDarkmode = uiState.mapIsDarkmode
 
     var expanded by remember { mutableStateOf(false) }
@@ -53,30 +53,30 @@ fun MapStyleDropdownMenu(viewModel: HomeScreenViewModel) {
                 modifier = Modifier.width(80.dp)
             ) {
                 DropdownMenuItem(
-                    text = { Text("Lyst", modifier = Modifier.width(100.dp), textAlign = TextAlign.Center) },
+                    text = { Text("Natur", modifier = Modifier.width(100.dp), textAlign = TextAlign.Center) },
                     onClick = {
-                        viewModel.updateMapStyle("STANDARD", false)
-                        expanded = false
-                    }
-                )
-                DropdownMenuItem(
-                    text = { Text("Mørkt", modifier = Modifier.width(100.dp), textAlign = TextAlign.Center) },
-                    onClick = {
-                        viewModel.updateMapStyle("STANDARD", true)
+                        homeScreenViewModel.updateMapStyle("OUTDOORS", false)
                         expanded = false
                     }
                 )
                 DropdownMenuItem(
                     text = { Text("Satellitt", modifier = Modifier.width(100.dp), textAlign = TextAlign.Center) },
                     onClick = {
-                        viewModel.updateMapStyle("SATELLITE", true)
+                        homeScreenViewModel.updateMapStyle("SATELLITE", true)
                         expanded = false
                     }
                 )
                 DropdownMenuItem(
-                    text = { Text("Natur", modifier = Modifier.width(100.dp), textAlign = TextAlign.Center) },
+                    text = { Text("Dag", modifier = Modifier.width(100.dp), textAlign = TextAlign.Center) },
                     onClick = {
-                        viewModel.updateMapStyle("OUTDOORS", false)
+                        homeScreenViewModel.updateMapStyle("STANDARD", false)
+                        expanded = false
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text("Natt", modifier = Modifier.width(100.dp), textAlign = TextAlign.Center) },
+                    onClick = {
+                        homeScreenViewModel.updateMapStyle("STANDARD", true)
                         expanded = false
                     }
                 )

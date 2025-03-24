@@ -26,9 +26,12 @@ import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScree
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
-fun HikeCardMapPreview(viewModel: HomeScreenViewModel, feature: Feature) {
+fun HikeCardMapPreview(
+    homeScreenViewModel: HomeScreenViewModel,
+    feature: Feature
+) {
     val coordinates = mutableListOf<Point>()
-    val uiState by viewModel.homeScreenUIState.collectAsState()
+    val uiState by homeScreenViewModel.homeScreenUIState.collectAsState()
 
     feature.geometry.coordinates.forEach { coordList ->
         coordList.forEach { coord ->
@@ -96,12 +99,13 @@ private fun createStaticMapUrl(
     }
 
     // Build the path string directly from coordinates
-    val polyline = encodePolyline(simplifiedCoordinates)
+    val polyline = encodePolyline(lineCoordinates)
     val encodedPolyline = java.net.URLEncoder.encode(polyline, "UTF-8")
 
     // Markør for start- og sluttpunkt
-    val startPoint = simplifiedCoordinates.first()
-    val endPoint = simplifiedCoordinates.last()
+    // Er ikke sikkert dette er riktig punkter
+    val startPoint = lineCoordinates.first()
+    val endPoint = lineCoordinates.last()
     val markers = "pin-s+4285F4(${startPoint.longitude()},${startPoint.latitude()})," +
             "pin-s+FF0000(${endPoint.longitude()},${endPoint.latitude()})"
 

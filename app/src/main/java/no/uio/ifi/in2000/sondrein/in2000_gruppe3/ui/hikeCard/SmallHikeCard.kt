@@ -18,7 +18,7 @@ import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScree
 
 @Composable
 fun SmallHikeCard(
-    viewModel: HomeScreenViewModel,
+    homeScreenViewModel: HomeScreenViewModel,
     feature: Feature,
     onClick: () -> Unit) {
     Card(
@@ -40,7 +40,7 @@ fun SmallHikeCard(
 
             Spacer(modifier = Modifier.height(3.dp))
 
-            HikeCardMapPreview(viewModel, feature)
+            HikeCardMapPreview(homeScreenViewModel, feature)
         }
     }
 }

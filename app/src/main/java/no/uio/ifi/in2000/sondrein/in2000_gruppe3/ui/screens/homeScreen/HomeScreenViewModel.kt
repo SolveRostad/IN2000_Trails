@@ -50,6 +50,32 @@ class HomeScreenViewModel() : ViewModel() {
     )
     val homeScreenUIState: StateFlow<HomeScreenUIState> = _homeScreenUIState.asStateFlow()
 
+    // Oppdaterer søkefeltet og henter forslag fra PlaceAutocomplete
+    private val placeAutocomplete = PlaceAutocomplete.create()
+    fun updateSearchQuery(query: String) { // putt i ny viewmodel?
+        viewModelScope.launch {
+            _homeScreenUIState.update {
+                it.copy(searchQuery = query)
+            }
+            delay(500) // er dette en dum løsning for å unngå for mange requests?
+            if (query.length >= 3) {
+                val response = placeAutocomplete.suggestions(query)
+
+                if (response.isValue) {
+                    _homeScreenUIState.update {
+                        it.copy(searchResponse = response.value ?: emptyList())
+                    }
+                } else {
+                    Log.e("SearchBar", "Error fetching suggestions", response.error)
+                }
+            } else {
+                _homeScreenUIState.update {
+                    it.copy(searchResponse = emptyList())
+                }
+            }
+        }
+    }
+
     // Oppdaterer style og darkmode til kartet
     fun updateMapStyle(style: String, isDark: Boolean) {
         viewModelScope.launch {
@@ -179,8 +205,8 @@ data class HomeScreenUIState(
     val alerts: MetAlerts,
     val forecast: Locationforecast?,
     val pointerCoordinates: Point,
-    val mapStyle: String,
-    val mapIsDarkmode: Boolean,
     val searchQuery: String,
     val searchResponse: List<PlaceAutocompleteSuggestion>,
+    val mapStyle: String,
+    val mapIsDarkmode: Boolean
 )
