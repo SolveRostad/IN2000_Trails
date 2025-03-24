@@ -120,10 +120,20 @@ private fun createStaticMapUrl(
     val mapStyle = uiState.mapStyle
     val darkmode = uiState.mapIsDarkmode
     var mapStyleUrl = when (mapStyle) {
+        "STANDARD" -> "streets-v11"
         "SATELLITE" -> "satellite-v9"
         "OUTDOORS" -> "outdoors-v12"
         else -> "streets-v11"
     }
+
+    if (mapStyle == "STANDARD" && darkmode) {
+        mapStyleUrl = "dark-v10"
+    }
+
+    /**
+     * Legge til layer på kartet fungerer kanskje for å tegne turen
+     * &addlayer={"id":"road-overlay","type":"line","source":"composite","source-layer":"road","filter":["==",["get","class"],"motorway"],"paint":{"line-color":"%23ff0000","line-width":5}}&before_layer=road-label
+     */
 
     Log.d("HikeCardMapPreview", "Path string: $encodedPolyline")
     // Build the static map URL with the path

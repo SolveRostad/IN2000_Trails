@@ -47,7 +47,8 @@ fun AppNavHost() {
         // HikeCard screen
         composable(route = Screen.HikeScreen.route) {
             HikeScreen(
-                viewModel = hikeScreenViewModel,
+                homeScreenViewModel = homeScreenViewModel,
+                hikeScreenviewModel = hikeScreenViewModel,
                 favoritesViewModel = favoritesViewModel,
                 navController = navController
             )
