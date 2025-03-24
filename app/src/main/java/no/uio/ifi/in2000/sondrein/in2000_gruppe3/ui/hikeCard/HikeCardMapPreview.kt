@@ -13,6 +13,8 @@ import com.mapbox.geojson.BoundingBox
 import com.mapbox.geojson.Point
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.data.TurAPI.models.Feature
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -20,11 +22,14 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.BuildConfig
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.R
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenUIState
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 import kotlin.math.cos
 
 @Composable
-fun HikeCardMapPreview(feature: Feature) {
+fun HikeCardMapPreview(viewModel: HomeScreenViewModel, feature: Feature) {
     val coordinates = mutableListOf<Point>()
+    val uiState by viewModel.homeScreenUIState.collectAsState()
 
     feature.geometry.coordinates.forEach { coordList ->
         coordList.forEach { coord ->
@@ -61,7 +66,8 @@ fun HikeCardMapPreview(feature: Feature) {
     val staticMapUrl = createStaticMapUrl(
         center = center,
         zoom = zoom,
-        lineCoordinates = coordinates
+        lineCoordinates = coordinates,
+        uiState = uiState
     )
 
     Log.d("HikeCardMapPreview", "Static map URL: $staticMapUrl")
@@ -91,7 +97,8 @@ fun HikeCardMapPreview(feature: Feature) {
 private fun createStaticMapUrl(
     center: Point,
     zoom: Double,
-    lineCoordinates: List<Point>
+    lineCoordinates: List<Point>,
+    uiState: HomeScreenUIState
 ): String {
     // Limit number of coordinates to avoid exceeding URL length limits
     val simplifiedCoordinates = if (lineCoordinates.size > 100) {
@@ -101,7 +108,8 @@ private fun createStaticMapUrl(
     }
 
     // Build the path string directly from coordinates
-    val pathString = simplifiedCoordinates.joinToString(",") { "${it.longitude()},${it.latitude()}" }
+    val polyline = encodePolyline(simplifiedCoordinates)
+    val encodedPolyline = java.net.URLEncoder.encode(polyline, "UTF-8")
 
     // Add markers for start and end points
     val startPoint = simplifiedCoordinates.first()
@@ -109,13 +117,28 @@ private fun createStaticMapUrl(
     val markers = "pin-s+4285F4(${startPoint.longitude()},${startPoint.latitude()})," +
             "pin-s+FF0000(${endPoint.longitude()},${endPoint.latitude()})"
 
+    val mapStyle = uiState.mapStyle
+    val darkmode = uiState.mapIsDarkmode
+    var mapStyleUrl = when (mapStyle) {
+        "SATELLITE" -> "satellite-v9"
+        "OUTDOORS" -> "outdoors-v12"
+        else -> "streets-v11"
+    }
+
+    Log.d("HikeCardMapPreview", "Path string: $encodedPolyline")
     // Build the static map URL with the path
-    return "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/" +
-            "path-6+FF3300-1($pathString),${markers}/" +
+    return "https://api.mapbox.com/styles/v1/mapbox/${mapStyleUrl}/static/" +
+            "path-6+FF3300-1($encodedPolyline),${markers}/" +
             "${center.longitude()},${center.latitude()},$zoom,0,0/" +
             "600x500" + // widthxheight@2x
             "?access_token=${BuildConfig.MAPBOX_SECRET_TOKEN}" +
             "&attribution=false&logo=false" // Remove attribution and logo
+}
+private fun encodePolyline(points: List<Point>): String {
+    return com.mapbox.geojson.utils.PolylineUtils.encode(
+        points.map { com.mapbox.geojson.Point.fromLngLat(it.longitude(), it.latitude()) },
+        5 // precision
+    )
 }
 
 // Helper function to simplify a path to a maximum number of points

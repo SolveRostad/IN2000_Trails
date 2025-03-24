@@ -65,6 +65,7 @@ fun BottomSheetDrawer(
                     }
                     items(uiState.turer.features) { feature ->
                         SmallHikeCard(
+                            viewModel,
                             feature = feature,
                             onClick = {
                                 hikeScreenViewModel.updateHike(feature)

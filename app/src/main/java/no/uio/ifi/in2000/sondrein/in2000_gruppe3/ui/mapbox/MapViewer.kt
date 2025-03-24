@@ -121,12 +121,9 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
                             .build()
                         style.addSource(source)
 
-                        val color = viewModel.getViableRouteColor(featureId)
-                        val rgbaColor = "rgba(${(color.red * 255).toInt()}, ${(color.green * 255).toInt()}, ${(color.blue * 255).toInt()}, ${color.alpha})"
-
                         val lineLayer = LineLayer(layerId, sourceId)
 
-                        lineLayer.lineColor(rgbaColor)
+                        lineLayer.lineColor(feature.color)
                         lineLayer.lineWidth(3.0)
                         lineLayer.lineOpacity(0.8)
                         style.addLayer(lineLayer)

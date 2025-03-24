@@ -39,6 +39,7 @@ fun AppNavHost() {
             FavoriteScreen(
                 favoritesViewModel = favoritesViewModel,
                 hikeScreenViewModel = hikeScreenViewModel,
+                homeScreenViewModel = homeScreenViewModel,
                 navController = navController
             )
         }

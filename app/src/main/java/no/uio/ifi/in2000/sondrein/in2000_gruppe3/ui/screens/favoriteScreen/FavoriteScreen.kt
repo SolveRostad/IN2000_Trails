@@ -24,12 +24,14 @@ import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.hikeCard.SmallHikeCard
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteScreen(
     favoritesViewModel: FavoritesViewModel,
     hikeScreenViewModel: HikeScreenViewModel,
+    homeScreenViewModel: HomeScreenViewModel,
     navController: NavHostController
 ) {
     val favoriteUIState by favoritesViewModel.favoritesScreenUIState.collectAsState()
@@ -63,6 +65,7 @@ fun FavoriteScreen(
                 ) {
                     items(favoriteUIState.favorites) { feature ->
                         SmallHikeCard (
+                            homeScreenViewModel,
                             feature = feature,
                             onClick = {
                                 hikeScreenViewModel.updateHike(feature)

@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
 fun HikeCard(viewModel: HikeScreenViewModel) {
@@ -21,7 +22,7 @@ fun HikeCard(viewModel: HikeScreenViewModel) {
     Card {
         Column(modifier = Modifier.padding(16.dp)) {
 
-            HikeCardMapPreview(uiState.feature)
+            HikeCardMapPreview(viewModel = HomeScreenViewModel(), uiState.feature)
 
             Spacer(modifier = Modifier.height(16.dp))
 
