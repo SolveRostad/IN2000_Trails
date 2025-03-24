@@ -1,8 +1,6 @@
 package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.hikeCardScreen
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.rememberTransition
-import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,7 +35,6 @@ import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.hikeCard.HikeCard
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HikeScreen(
@@ -55,7 +52,7 @@ fun HikeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = uiState.feature.properties.rutenavn) }, //Må kanskje endres
+                title = { Text(text = uiState.feature.properties.rutenavn) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -75,7 +72,6 @@ fun HikeScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-
             HikeCard(hikeScreenviewModel, homeScreenViewModel)
 
             Box(
@@ -110,7 +106,6 @@ fun HikeScreen(
                     )
                 }
             }
-
         }
     }
 }

@@ -1,11 +1,9 @@
 package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.favoriteScreen
 
 import android.app.Application
-import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -94,8 +92,6 @@ class FavoritesViewModel(application: Application): AndroidViewModel(application
                 }
             }
         }
-
-
     }
 
     fun deleteHike(feature: Feature) {
