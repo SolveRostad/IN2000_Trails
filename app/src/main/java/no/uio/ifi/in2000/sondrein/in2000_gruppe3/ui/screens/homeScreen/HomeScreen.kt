@@ -28,7 +28,7 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.homeScreenUIState.collectAsState()
 
-    //henter værdata basert på koordinatene
+    // Oppdaterer ViewportState når pekerposisjonen endres
     LaunchedEffect(uiState.pointerCoordinates) {
         viewModel.fetchForecast(
             uiState.pointerCoordinates.latitude(),
