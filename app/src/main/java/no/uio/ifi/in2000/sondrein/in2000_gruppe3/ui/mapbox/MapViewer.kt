@@ -43,13 +43,18 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
     }
 
     // Oppdaterer ViewportState når pekerposisjonen endres
-    LaunchedEffect(uiState.pointerCoordinates) {
+    LaunchedEffect(uiState.pointerCoordinates, mapStyle) {
         mapViewportState.setCameraOptions {
             zoom(12.0)
             center(uiState.pointerCoordinates)
             pitch(0.0)
             bearing(0.0)
         }
+        viewModel.fetchTurer(
+            uiState.pointerCoordinates.latitude(),
+            uiState.pointerCoordinates.longitude(),
+            5
+        )
     }
 
     Box {

@@ -34,9 +34,6 @@ fun HomeScreen(
             uiState.pointerCoordinates.latitude(),
             uiState.pointerCoordinates.longitude()
         )
-        val lat = uiState.pointerCoordinates.latitude()
-        val lng = uiState.pointerCoordinates.longitude()
-        viewModel.fetchTurer(lat, lng, 5)
     }
 
     Scaffold(
