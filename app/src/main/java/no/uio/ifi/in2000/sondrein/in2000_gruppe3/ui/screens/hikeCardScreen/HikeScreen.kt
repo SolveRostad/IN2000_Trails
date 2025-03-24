@@ -103,7 +103,7 @@ fun HikeScreen(
                     }
                     Text(
                         modifier = Modifier.align(Alignment.CenterVertically),
-                        text = if (checkedState.value) "Remove from favorites" else "Add to favorites"
+                        text = if (checkedState.value) "Fjern fra favoritter" else "Legg til i favoritter"
                     )
                 }
             }
