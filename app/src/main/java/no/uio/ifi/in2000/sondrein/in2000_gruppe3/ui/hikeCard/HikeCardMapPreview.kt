@@ -99,13 +99,13 @@ private fun createStaticMapUrl(
     }
 
     // Build the path string directly from coordinates
-    val polyline = encodePolyline(lineCoordinates)
+    val polyline = encodePolyline(simplifiedCoordinates)
     val encodedPolyline = java.net.URLEncoder.encode(polyline, "UTF-8")
 
     // Markør for start- og sluttpunkt
     // Er ikke sikkert dette er riktig punkter
-    val startPoint = lineCoordinates.first()
-    val endPoint = lineCoordinates.last()
+    val startPoint = simplifiedCoordinates.first()
+    val endPoint = simplifiedCoordinates.last()
     val markers = "pin-s+4285F4(${startPoint.longitude()},${startPoint.latitude()})," +
             "pin-s+FF0000(${endPoint.longitude()},${endPoint.latitude()})"
 

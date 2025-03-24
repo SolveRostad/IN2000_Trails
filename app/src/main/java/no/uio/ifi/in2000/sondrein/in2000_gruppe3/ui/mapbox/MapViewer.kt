@@ -1,12 +1,16 @@
 package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.mapbox
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.mapbox.geojson.Point
 import com.mapbox.maps.Style
 import com.mapbox.maps.extension.compose.MapEffect
@@ -142,13 +146,18 @@ fun MapViewer(homeScreenViewModel: HomeScreenViewModel) {
             }
         }
 
-        // Legger til temperatur på kartet
-        ForecastDisplay(homeScreenViewModel)
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.Center
+        ){
+            // Legger til temperatur på kartet
+            ForecastDisplay(homeScreenViewModel, modifier = Modifier.padding(end = 8.dp))
 
-        // Dropdown menu for å velge kartstil
-        MapStyleDropdownMenu(homeScreenViewModel)
+            // Søkefelt for å søke etter steder
+            SearchBarForMap(homeScreenViewModel, modifier = Modifier)
 
-        // Søkefelt for å søke etter steder
-        SearchBarForMap(homeScreenViewModel)
+            // Dropdown menu for å velge kartstil
+            MapStyleDropdownMenu(homeScreenViewModel, modifier = Modifier.padding(start = 8.dp))
+        }
     }
 }

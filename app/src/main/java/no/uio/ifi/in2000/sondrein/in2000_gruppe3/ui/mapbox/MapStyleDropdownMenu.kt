@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.mapbox
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,16 +27,17 @@ import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
-fun MapStyleDropdownMenu(homeScreenViewModel: HomeScreenViewModel) {
+fun MapStyleDropdownMenu(
+    homeScreenViewModel: HomeScreenViewModel,
+    modifier: Modifier = Modifier
+) {
     val uiState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val mapIsDarkmode = uiState.mapIsDarkmode
 
     var expanded by remember { mutableStateOf(false) }
 
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(5.dp, 30.dp),
+        modifier = modifier.padding(5.dp, 30.dp),
         contentAlignment = Alignment.TopEnd
     ) {
         Column {

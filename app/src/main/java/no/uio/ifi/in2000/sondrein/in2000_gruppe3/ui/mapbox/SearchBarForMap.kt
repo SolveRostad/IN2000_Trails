@@ -5,8 +5,12 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,23 +44,24 @@ import no.uio.ifi.in2000.sondrein.in2000_gruppe3.R
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
-fun SearchBarForMap(homeScreenViewModel: HomeScreenViewModel) {
+fun SearchBarForMap(
+    homeScreenViewModel: HomeScreenViewModel,
+    modifier: Modifier = Modifier
+) {
     val homeScreenUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
     val isSearchActive =
         homeScreenUIState.searchQuery.isNotEmpty() || homeScreenUIState.searchResponse.isNotEmpty()
 
     Surface(
-        modifier = Modifier.fillMaxWidth(),
         color = if (isSearchActive) Color.White else Color.Transparent,
-        shadowElevation = if (isSearchActive) 4.dp else 0.dp
+        shadowElevation = if (isSearchActive) 4.dp else 0.dp,
     ) {
         Column {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = modifier
                     .padding(top = 10.dp),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.TopCenter
             ) {
                 // Search field
                 TextField(
@@ -98,8 +103,9 @@ fun SearchBarForMap(homeScreenViewModel: HomeScreenViewModel) {
             if (homeScreenUIState.searchResponse.isNotEmpty()) {
                 LazyColumn(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .fillMaxWidth(0.80f)
+                        .padding(horizontal = 10.dp),
+                    contentPadding = PaddingValues(10.dp)
                 ) {
                     items(homeScreenUIState.searchResponse) { suggestion ->
                         Column(
