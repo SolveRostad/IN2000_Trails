@@ -24,7 +24,6 @@ import no.uio.ifi.in2000.sondrein.in2000_gruppe3.BuildConfig
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.R
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenUIState
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
-import kotlin.math.cos
 
 @Composable
 fun HikeCardMapPreview(viewModel: HomeScreenViewModel, feature: Feature) {
@@ -39,13 +38,6 @@ fun HikeCardMapPreview(viewModel: HomeScreenViewModel, feature: Feature) {
         }
     }
 
-    if (coordinates.isEmpty()) {
-        Log.e("HikeCardMapPreview", "Ingen gyldige koordinater funnet")
-        return
-    } else {
-        Log.d("HikeCardMapPreview", "Coordinates: $coordinates")
-    }
-
     // Calculate the center point of the bounding box
     val bbox = getBoundingBox(coordinates)
     val center = Point.fromLngLat(
@@ -55,12 +47,6 @@ fun HikeCardMapPreview(viewModel: HomeScreenViewModel, feature: Feature) {
 
     // Calculate zoom level based on the bounding box
     val zoom = calculateIdealZoom(bbox)
-
-    // Ikke nødvendig om center og zoom fungerer som forventet,
-    // må evt sendes inn som parameter i createStaticMapUrl
-    val widthAndHeight = calculateIdealWidthAndHeight(bbox)
-    val width = widthAndHeight.first
-    val height = widthAndHeight.second
 
     // Create a static map URL
     val staticMapUrl = createStaticMapUrl(
@@ -80,7 +66,7 @@ fun HikeCardMapPreview(viewModel: HomeScreenViewModel, feature: Feature) {
             .clip(RoundedCornerShape(8.dp)),
         shape = RoundedCornerShape(8.dp)
     ) {
-        // Use AsyncImage to load the static map
+        // Tegner kartet som et bilde
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(staticMapUrl)
@@ -113,12 +99,13 @@ private fun createStaticMapUrl(
     val polyline = encodePolyline(simplifiedCoordinates)
     val encodedPolyline = java.net.URLEncoder.encode(polyline, "UTF-8")
 
-    // Add markers for start and end points
+    // Markør for start- og sluttpunkt
     val startPoint = simplifiedCoordinates.first()
     val endPoint = simplifiedCoordinates.last()
     val markers = "pin-s+4285F4(${startPoint.longitude()},${startPoint.latitude()})," +
             "pin-s+FF0000(${endPoint.longitude()},${endPoint.latitude()})"
 
+    // Velger mapstyle
     val mapStyle = uiState.mapStyle
     val darkmode = uiState.mapIsDarkmode
     var mapStyleUrl = when (mapStyle) {
@@ -131,8 +118,8 @@ private fun createStaticMapUrl(
         mapStyleUrl = "dark-v10"
     }
 
+    // Turens farge
     val color = rgbaToHex(feature.color)
-    Log.d("HikeCardMapPreview", "Color: $color")
 
     /**
      * Legge til layer på kartet fungerer kanskje for å tegne turen
@@ -140,16 +127,18 @@ private fun createStaticMapUrl(
      */
 
     Log.d("HikeCardMapPreview", "Path string: $encodedPolyline")
+
     // Build the static map URL with the path
     return "https://api.mapbox.com/styles/v1/mapbox/${mapStyleUrl}/static/" +
             "path-6+${color}-1($encodedPolyline),${markers}/" +
             "${center.longitude()},${center.latitude()},$zoom,0,0/" +
-            "600x500" + // widthxheight@2x
+            "600x500@2x" + // widthxheight@2x
             "?access_token=${BuildConfig.MAPBOX_SECRET_TOKEN}" +
             "&attribution=false&logo=false" // Remove attribution and logo
 }
 
-fun rgbaToHex(rgba: String): String {
+// Convert an RGBA color string to a hex color string
+private fun rgbaToHex(rgba: String): String {
     val regex = Regex("""rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)""")
     val matchResult = regex.find(rgba)
     return if (matchResult != null) {
@@ -208,8 +197,8 @@ private fun getBoundingBox(points: List<Point>): BoundingBox {
     }
 
     // Legg til en buffer basert på størrelsen på bounding box
-    val latBuffer = (maxLat - minLat) * 0.1
-    val lngBuffer = (maxLng - minLng) * 0.1
+    val latBuffer = (maxLat - minLat) * 0.5
+    val lngBuffer = (maxLng - minLng) * 0.5
 
     return BoundingBox.fromLngLats(
         minLng - lngBuffer,
@@ -239,29 +228,5 @@ private fun calculateIdealZoom(bbox: BoundingBox): Double {
         maxDiff > 0.05 -> 12.0
         maxDiff > 0.01 -> 13.0
         else -> 13.0
-    }
-}
-
-// Improved function to calculate width and height based on aspect ratio of bounding box
-private fun calculateIdealWidthAndHeight(bbox: BoundingBox): Pair<Int, Int> {
-    // Standard størrelse for kartet
-    val minWidth = 400
-    val minHeight = 300
-
-    // Beregn aspektforholdet til bounding box
-    val latDiff = bbox.north() - bbox.south()
-    val lngDiff = bbox.east() - bbox.west()
-    val midLat = (bbox.north() + bbox.south()) / 2
-    val latCorrection = cos(Math.toRadians(midLat))
-    val correctedLngDiff = lngDiff * latCorrection
-    val aspectRatio = correctedLngDiff / latDiff
-
-    // Beregn bredde og høyde basert på aspektforhold
-    return if (aspectRatio > 1) {
-        // Bredere enn høy
-        Pair(minOf(800, (minHeight * aspectRatio).toInt().coerceAtLeast(minWidth)), minHeight)
-    } else {
-        // Høyere enn bred
-        Pair(minWidth, minOf(800, (minWidth / aspectRatio).toInt().coerceAtLeast(minHeight)))
     }
 }
