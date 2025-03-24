@@ -20,6 +20,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.BuildConfig
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.R
+import kotlin.math.cos
 
 @Composable
 fun HikeCardMapPreview(feature: Feature) {
@@ -27,8 +28,17 @@ fun HikeCardMapPreview(feature: Feature) {
 
     feature.geometry.coordinates.forEach { coordList ->
         coordList.forEach { coord ->
-            coordinates.add(Point.fromLngLat(coord[1], coord[0]))
+            if (coord.size >= 2) {
+                coordinates.add(Point.fromLngLat(coord[1], coord[0]))
+            }
         }
+    }
+
+    if (coordinates.isEmpty()) {
+        Log.e("HikeCardMapPreview", "Ingen gyldige koordinater funnet")
+        return
+    } else {
+        Log.d("HikeCardMapPreview", "Coordinates: $coordinates")
     }
 
     // Calculate the center point of the bounding box
@@ -41,12 +51,16 @@ fun HikeCardMapPreview(feature: Feature) {
     // Calculate zoom level based on the bounding box
     val zoom = calculateIdealZoom(bbox)
 
+    // Ikke nødvendig om center og zoom fungerer som forventet,
+    // må evt sendes inn som parameter i createStaticMapUrl
+    val widthAndHeight = calculateIdealWidthAndHeight(bbox)
+    val width = widthAndHeight.first
+    val height = widthAndHeight.second
+
     // Create a static map URL
     val staticMapUrl = createStaticMapUrl(
         center = center,
         zoom = zoom,
-        width = 400,
-        height = 200,
         lineCoordinates = coordinates
     )
 
@@ -77,8 +91,6 @@ fun HikeCardMapPreview(feature: Feature) {
 private fun createStaticMapUrl(
     center: Point,
     zoom: Double,
-    width: Int,
-    height: Int,
     lineCoordinates: List<Point>
 ): String {
     // Limit number of coordinates to avoid exceeding URL length limits
@@ -88,54 +100,46 @@ private fun createStaticMapUrl(
         lineCoordinates
     }
 
-    // Construct path for the polyline
-    val pathString = StringBuilder()
-    if (simplifiedCoordinates.isNotEmpty()) {
-        pathString.append("path-5+FF3300-1.0(")
-        simplifiedCoordinates.forEachIndexed { index, point ->
-            if (index > 0) pathString.append(",")
-            pathString.append("${point.longitude()},${point.latitude()}")
-        }
-        pathString.append(")")
-    }
+    // Build the path string directly from coordinates
+    val pathString = simplifiedCoordinates.joinToString(",") { "${it.longitude()},${it.latitude()}" }
 
-    // Legg til markør ved startpunktet
+    // Add markers for start and end points
     val startPoint = simplifiedCoordinates.first()
-    pathString.append(",pin-s+FF0000(${startPoint.longitude()},${startPoint.latitude()})")
+    val endPoint = simplifiedCoordinates.last()
+    val markers = "pin-s+4285F4(${startPoint.longitude()},${startPoint.latitude()})," +
+            "pin-s+FF0000(${endPoint.longitude()},${endPoint.latitude()})"
 
-    // Build the static map URL
+    // Build the static map URL with the path
     return "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/" +
-            "${pathString}/" +
-            "${center.longitude()},${center.latitude()},$zoom,0/" +
-            "${width}x${height}@2x" +
+            "path-6+FF3300-1($pathString),${markers}/" +
+            "${center.longitude()},${center.latitude()},$zoom,0,0/" +
+            "600x500" + // widthxheight@2x
             "?access_token=${BuildConfig.MAPBOX_SECRET_TOKEN}" +
-            "&attribution=false&logo=false"
+            "&attribution=false&logo=false" // Remove attribution and logo
 }
 
 // Helper function to simplify a path to a maximum number of points
 private fun simplifyPath(points: List<Point>, maxPoints: Int): List<Point> {
     if (points.size <= maxPoints) return points
 
-    val step = points.size / maxPoints
-    return points.filterIndexed { index, _ -> index % step == 0 }
-        .take(maxPoints)
-}
+    // Always include first and last points
+    val result = mutableListOf(points.first())
 
-// Calculate an ideal zoom level based on the bounding box
-private fun calculateIdealZoom(bbox: BoundingBox): Double {
-    val latDiff = bbox.north() - bbox.south()
-    val lngDiff = bbox.east() - bbox.west()
-    val maxDiff = maxOf(latDiff, lngDiff)
+    // Calculate how many intermediate points we can include
+    val intermediatePoints = maxPoints - 2
+    if (intermediatePoints <= 0) return listOf(points.first(), points.last())
 
-    return when {
-        maxDiff > 5.0 -> 2.0
-        maxDiff > 1.0 -> 5.0
-        maxDiff > 0.5 -> 7.0
-        maxDiff > 0.1 -> 10.0
-        maxDiff > 0.05 -> 12.0
-        maxDiff > 0.01 -> 13.0
-        else -> 14.0
+    // Find critical turning points by measuring distance or angle changes
+    val pointsWithoutEndpoints = points.subList(1, points.size - 1)
+    val step = pointsWithoutEndpoints.size / intermediatePoints
+
+    for (i in 0 until intermediatePoints) {
+        val index = (i * step).coerceAtMost(pointsWithoutEndpoints.size - 1)
+        result.add(pointsWithoutEndpoints[index])
     }
+
+    result.add(points.last())
+    return result
 }
 
 // Calculate the bounding box of a set of coordinates
@@ -154,11 +158,61 @@ private fun getBoundingBox(points: List<Point>): BoundingBox {
         maxLng = maxOf(maxLng, point.longitude())
     }
 
-    val buffer = 0.05 * maxOf(maxLat - minLat, maxLng - minLng)
+    // Legg til en buffer basert på størrelsen på bounding box
+    val latBuffer = (maxLat - minLat) * 0.1
+    val lngBuffer = (maxLng - minLng) * 0.1
+
     return BoundingBox.fromLngLats(
-        minLng - buffer,
-        minLat - buffer,
-        maxLng + buffer,
-        maxLat + buffer
+        minLng - lngBuffer,
+        minLat - latBuffer,
+        maxLng + lngBuffer,
+        maxLat + latBuffer
     )
+}
+
+// Calculate an ideal zoom level based on the bounding box
+private fun calculateIdealZoom(bbox: BoundingBox): Double {
+    val latDiff = bbox.north() - bbox.south()
+    val lngDiff = bbox.east() - bbox.west()
+
+    // Ensure we have a minimum difference to prevent extreme zoom levels
+    val maxDiff = maxOf(latDiff, lngDiff, 0.005)
+
+    // More gradual zoom scaling
+    return when {
+        maxDiff > 10.0 -> 5.0
+        maxDiff > 5.0 -> 7.0
+        maxDiff > 2.0 -> 9.0
+        maxDiff > 1.0 -> 10.0
+        maxDiff > 0.5 -> 10.0
+        maxDiff > 0.2 -> 10.0
+        maxDiff > 0.1 -> 11.0
+        maxDiff > 0.05 -> 12.0
+        maxDiff > 0.01 -> 13.0
+        else -> 13.0
+    }
+}
+
+// Improved function to calculate width and height based on aspect ratio of bounding box
+private fun calculateIdealWidthAndHeight(bbox: BoundingBox): Pair<Int, Int> {
+    // Standard størrelse for kartet
+    val minWidth = 400
+    val minHeight = 300
+
+    // Beregn aspektforholdet til bounding box
+    val latDiff = bbox.north() - bbox.south()
+    val lngDiff = bbox.east() - bbox.west()
+    val midLat = (bbox.north() + bbox.south()) / 2
+    val latCorrection = cos(Math.toRadians(midLat))
+    val correctedLngDiff = lngDiff * latCorrection
+    val aspectRatio = correctedLngDiff / latDiff
+
+    // Beregn bredde og høyde basert på aspektforhold
+    return if (aspectRatio > 1) {
+        // Bredere enn høy
+        Pair(minOf(800, (minHeight * aspectRatio).toInt().coerceAtLeast(minWidth)), minHeight)
+    } else {
+        // Høyere enn bred
+        Pair(minWidth, minOf(800, (minWidth / aspectRatio).toInt().coerceAtLeast(minHeight)))
+    }
 }
