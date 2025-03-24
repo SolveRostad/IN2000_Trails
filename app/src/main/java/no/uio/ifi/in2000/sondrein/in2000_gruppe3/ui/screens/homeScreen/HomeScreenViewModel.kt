@@ -41,40 +41,14 @@ class HomeScreenViewModel() : ViewModel() {
             turer = Turer(listOf(), ""),
             alerts = MetAlerts(listOf(), "", "", ""),
             forecast = null,
-            pointerCoordinates = Point.fromLngLat( 10.661952, 59.846195),
-            mapStyle = "STANDARD",
+            pointerCoordinates = Point.fromLngLat(10.661952, 59.846195),
+            mapStyle = "OUTDOORS",
             mapIsDarkmode = false,
             searchQuery = "",
             searchResponse = emptyList()
         )
     )
     val homeScreenUIState: StateFlow<HomeScreenUIState> = _homeScreenUIState.asStateFlow()
-
-    // Oppdaterer søkefeltet og henter forslag fra PlaceAutocomplete
-    private val placeAutocomplete = PlaceAutocomplete.create()
-    fun updateSearchQuery(query: String) { // putt i ny viewmodel?
-        viewModelScope.launch {
-            _homeScreenUIState.update {
-                it.copy(searchQuery = query)
-            }
-            delay(500) // er dette en dum løsning for å unngå for mange requests?
-            if (query.length >= 3) {
-                val response = placeAutocomplete.suggestions(query)
-
-                if (response.isValue) {
-                    _homeScreenUIState.update {
-                        it.copy(searchResponse = response.value ?: emptyList())
-                    }
-                } else {
-                    Log.e("SearchBar", "Error fetching suggestions", response.error)
-                }
-            } else {
-                _homeScreenUIState.update {
-                    it.copy(searchResponse = emptyList())
-                }
-            }
-        }
-    }
 
     // Oppdaterer style og darkmode til kartet
     fun updateMapStyle(style: String, isDark: Boolean) {
@@ -139,17 +113,24 @@ class HomeScreenViewModel() : ViewModel() {
         }
     }
 
-    fun getSelectSearchResultPoint(suggestion: PlaceAutocompleteSuggestion) {
+    fun getSelectedSearchResultPoint(suggestion: PlaceAutocompleteSuggestion) {
         var point: Point = Point.fromLngLat(0.0, 0.0)
         viewModelScope.launch {
             try {
                 val detailsResponse = placeAutocomplete.select(suggestion)
-                Log.d("SearchBarViewModel", "Selected suggestion coordinates: ${detailsResponse.value?.coordinate}")
+                Log.d(
+                    "SearchBarViewModel",
+                    "Selected suggestion coordinates: ${detailsResponse.value?.coordinate}"
+                )
                 val coordinates = detailsResponse.value!!.coordinate.coordinates()
                 point = Point.fromLngLat(coordinates[0], coordinates[1])
 
                 _homeScreenUIState.update {
-                    it.copy(searchResponse = emptyList(), searchQuery = "", pointerCoordinates = point)
+                    it.copy(
+                        searchResponse = emptyList(),
+                        searchQuery = "",
+                        pointerCoordinates = point
+                    )
                 }
             } catch (e: Exception) {
                 Log.e("SearchBarViewModel", "Error selecting place", e)
@@ -157,7 +138,7 @@ class HomeScreenViewModel() : ViewModel() {
         }
     }
 
-    fun fetchForecast(lat: Double, lon: Double){
+    fun fetchForecast(lat: Double, lon: Double) {
         //Log.d("Forecast", "fetchForecast called with lat: $lat, lon: $lon")
         viewModelScope.launch(Dispatchers.IO) { // <-- Kjør direkte i IO-tråd
             _homeScreenUIState.update {
@@ -170,27 +151,35 @@ class HomeScreenViewModel() : ViewModel() {
                 }
             } catch (e: Exception) {
                 _homeScreenUIState.update {
-                    it.copy(isError = true, errorMessage = e.message ?: "Unknown error", isLoading = false)
+                    it.copy(
+                        isError = true,
+                        errorMessage = e.message ?: "Unknown error",
+                        isLoading = false
+                    )
                 }
             }
         }
     }
 
-    fun fetchAlerts(){
+    fun fetchAlerts() {
         viewModelScope.launch {
             _homeScreenUIState.update {
                 it.copy(isLoading = true)
             }
             try {
                 val result = metAlertsRepository.getAlerts() //henter data fra repository
-                if(result != null){
+                if (result != null) {
                     _homeScreenUIState.update {
                         it.copy(alerts = result)
                     }
                 }
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 _homeScreenUIState.update {
-                    it.copy(isError = true, errorMessage = e.message ?: "Unknown error", isLoading = false)
+                    it.copy(
+                        isError = true,
+                        errorMessage = e.message ?: "Unknown error",
+                        isLoading = false
+                    )
                 }
             }
         }

@@ -1,148 +1,136 @@
 package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.mapbox
 
-import androidx.compose.foundation.background
+import android.util.Log
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import android.util.Log
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import no.uio.ifi.in2000.sondrein.in2000_gruppe3.R
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.dp
+import no.uio.ifi.in2000.sondrein.in2000_gruppe3.R
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
 fun SearchBarForMap(homeScreenViewModel: HomeScreenViewModel) {
-    val uiState by homeScreenViewModel.homeScreenUIState.collectAsState()
+    val homeScreenUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
+    val isSearchActive =
+        homeScreenUIState.searchQuery.isNotEmpty() || homeScreenUIState.searchResponse.isNotEmpty()
 
-    Column {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 10.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            // Search field
-            TextField(
-                value = uiState.searchQuery,
-                onValueChange = { newQuery ->
-                    homeScreenViewModel.updateSearchQuery(newQuery)
-                },
-                modifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .padding(16.dp)
-                    .clip(RoundedCornerShape(30.dp))
-                    .border(1.dp, Color.Gray, RoundedCornerShape(30.dp))
-                    .onKeyEvent { keyEvent ->
-                        if (keyEvent.type == KeyEventType.KeyUp && keyEvent.key == Key.Enter) {
-                            keyboardController?.hide()
-                            homeScreenViewModel.updateSearchQuery("")
-                        }
-                        true
-                    },
-                singleLine = true,
-                placeholder = { Text("Hvor vil du gå tur?") },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
-                ),
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
-                colors = TextFieldDefaults.colors(
-                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                )
-            )
-        }
-
-        // Show suggestions
-        if (uiState.searchResponse.isNotEmpty()) {
-            LazyColumn(
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = if (isSearchActive) Color.White else Color.Transparent,
+        shadowElevation = if (isSearchActive) 4.dp else 0.dp
+    ) {
+        Column {
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.background, RoundedCornerShape(10.dp))
-                    .border(1.dp, Color.Gray, RoundedCornerShape(10.dp))
+                    .padding(top = 10.dp),
+                contentAlignment = Alignment.Center
             ) {
-                items(uiState.searchResponse) { suggestion ->
-                    Log.d("SearchBarForMap", suggestion.toString())
-                    Row (
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 15.dp, end = 15.dp, top = 10.dp, bottom = 10.dp)
-                            .clickable {
-                                homeScreenViewModel.getSelectSearchResultPoint(suggestion)
+                // Search field
+                TextField(
+                    value = homeScreenUIState.searchQuery,
+                    onValueChange = { newQuery ->
+                        homeScreenViewModel.updateSearchQuery(newQuery)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .padding(16.dp)
+                        .clip(RoundedCornerShape(30.dp))
+                        .border(1.dp, Color.Gray, RoundedCornerShape(30.dp))
+                        .onKeyEvent { keyEvent ->
+                            if (keyEvent.type == KeyEventType.KeyUp && keyEvent.key == Key.Enter) {
                                 keyboardController?.hide()
-                            },
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        Column {
+                                homeScreenViewModel.updateSearchQuery("")
+                            }
+                            true
+                        },
+                    singleLine = true,
+                    placeholder = { Text("Hvor vil du gå tur?") },
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done
+                    ),
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+                    colors = TextFieldDefaults.colors(
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        focusedContainerColor = MaterialTheme.colorScheme.surface,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    )
+                )
+            }
+
+            // Show suggestions
+            if (homeScreenUIState.searchResponse.isNotEmpty()) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                ) {
+                    items(homeScreenUIState.searchResponse) { suggestion ->
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    homeScreenViewModel.getSelectedSearchResultPoint(suggestion)
+                                    keyboardController?.hide()
+                                }
+                                .padding(16.dp)
+                        ) {
                             Text(
                                 text = suggestion.name,
-                                fontSize = 16.sp
+                                style = MaterialTheme.typography.bodyLarge
                             )
-                            if (suggestion.formattedAddress != null) {
+                            suggestion.formattedAddress?.let {
                                 Text(
-                                    text = suggestion.formattedAddress!!,
-                                    fontSize = 10.sp
+                                    text = it,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         }
-                        Icon(
-                            painter = painterResource(id = getIconFromString(suggestion.makiIcon?: "")),
-                            contentDescription = "descriptive_icon",
-                            modifier = Modifier
-                                .size(30.dp)
-                        )
-                    }
-                    if (suggestion != uiState.searchResponse.last()) {
-                        HorizontalDivider(
-                            color = Color.LightGray,
-                            thickness = 1.0.dp
-                        )
+                        HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray)
                     }
                 }
             }
         }
     }
 }
+
 fun getIconFromString(iconName: String): Int {
     return when (iconName) {
         "marker" -> R.drawable.marker
