@@ -45,8 +45,8 @@ import androidx.compose.ui.unit.sp
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
-fun SearchBarForMap(viewModel: HomeScreenViewModel) {
-    val uiState by viewModel.homeScreenUIState.collectAsState()
+fun SearchBarForMap(homeScreenViewModel: HomeScreenViewModel) {
+    val uiState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Column {
@@ -60,7 +60,7 @@ fun SearchBarForMap(viewModel: HomeScreenViewModel) {
             TextField(
                 value = uiState.searchQuery,
                 onValueChange = { newQuery ->
-                    viewModel.updateSearchQuery(newQuery)
+                    homeScreenViewModel.updateSearchQuery(newQuery)
                 },
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
@@ -70,7 +70,7 @@ fun SearchBarForMap(viewModel: HomeScreenViewModel) {
                     .onKeyEvent { keyEvent ->
                         if (keyEvent.type == KeyEventType.KeyUp && keyEvent.key == Key.Enter) {
                             keyboardController?.hide()
-                            viewModel.updateSearchQuery("")
+                            homeScreenViewModel.updateSearchQuery("")
                         }
                         true
                     },
@@ -107,7 +107,7 @@ fun SearchBarForMap(viewModel: HomeScreenViewModel) {
                             .fillMaxWidth()
                             .padding(start = 15.dp, end = 15.dp, top = 10.dp, bottom = 10.dp)
                             .clickable {
-                                viewModel.updateSearchQuery("")
+                                homeScreenViewModel.getSelectSearchResultPoint(suggestion)
                                 keyboardController?.hide()
                             },
                         horizontalArrangement = Arrangement.SpaceBetween,
