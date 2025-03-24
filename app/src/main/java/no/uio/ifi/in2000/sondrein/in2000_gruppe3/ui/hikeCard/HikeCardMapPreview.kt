@@ -67,7 +67,8 @@ fun HikeCardMapPreview(viewModel: HomeScreenViewModel, feature: Feature) {
         center = center,
         zoom = zoom,
         lineCoordinates = coordinates,
-        uiState = uiState
+        uiState = uiState,
+        feature = feature
     )
 
     Log.d("HikeCardMapPreview", "Static map URL: $staticMapUrl")
@@ -98,7 +99,8 @@ private fun createStaticMapUrl(
     center: Point,
     zoom: Double,
     lineCoordinates: List<Point>,
-    uiState: HomeScreenUIState
+    uiState: HomeScreenUIState,
+    feature: Feature
 ): String {
     // Limit number of coordinates to avoid exceeding URL length limits
     val simplifiedCoordinates = if (lineCoordinates.size > 100) {
@@ -125,10 +127,12 @@ private fun createStaticMapUrl(
         "OUTDOORS" -> "outdoors-v12"
         else -> "streets-v11"
     }
-
     if (mapStyle == "STANDARD" && darkmode) {
         mapStyleUrl = "dark-v10"
     }
+
+    val color = rgbaToHex(feature.color)
+    Log.d("HikeCardMapPreview", "Color: $color")
 
     /**
      * Legge til layer på kartet fungerer kanskje for å tegne turen
@@ -138,12 +142,24 @@ private fun createStaticMapUrl(
     Log.d("HikeCardMapPreview", "Path string: $encodedPolyline")
     // Build the static map URL with the path
     return "https://api.mapbox.com/styles/v1/mapbox/${mapStyleUrl}/static/" +
-            "path-6+FF3300-1($encodedPolyline),${markers}/" +
+            "path-6+${color}-1($encodedPolyline),${markers}/" +
             "${center.longitude()},${center.latitude()},$zoom,0,0/" +
             "600x500" + // widthxheight@2x
             "?access_token=${BuildConfig.MAPBOX_SECRET_TOKEN}" +
             "&attribution=false&logo=false" // Remove attribution and logo
 }
+
+fun rgbaToHex(rgba: String): String {
+    val regex = Regex("""rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)""")
+    val matchResult = regex.find(rgba)
+    return if (matchResult != null) {
+        val (r, g, b, a) = matchResult.destructured
+        String.format("%02X%02X%02X", r.toInt(), g.toInt(), b.toInt())
+    } else {
+        throw IllegalArgumentException("Invalid RGBA format")
+    }
+}
+
 private fun encodePolyline(points: List<Point>): String {
     return com.mapbox.geojson.utils.PolylineUtils.encode(
         points.map { com.mapbox.geojson.Point.fromLngLat(it.longitude(), it.latitude()) },

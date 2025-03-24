@@ -46,7 +46,7 @@ fun BottomSheetDrawer(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(max = 600.dp)
+                    .heightIn(max = 680.dp)
                     .clipToBounds()
             ) {
                 // Innholdet i bottom sheet

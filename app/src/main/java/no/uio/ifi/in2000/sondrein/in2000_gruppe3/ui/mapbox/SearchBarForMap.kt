@@ -95,7 +95,6 @@ fun SearchBarForMap(viewModel: HomeScreenViewModel) {
         // Show suggestions
         if (uiState.searchResponse.isNotEmpty()) {
             LazyColumn(
-
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.background, RoundedCornerShape(10.dp))
