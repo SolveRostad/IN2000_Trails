@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000.sondrein.in2000_gruppe3.data.TurAPI.repository
 
-import androidx.compose.ui.graphics.Color
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.data.TurAPI.datasource.TurAPIDatasource
 import no.uio.ifi.in2000.sondrein.in2000_gruppe3.data.TurAPI.models.Turer
 

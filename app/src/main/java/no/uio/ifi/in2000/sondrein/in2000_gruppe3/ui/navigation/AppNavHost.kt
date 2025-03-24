@@ -28,7 +28,7 @@ fun AppNavHost() {
         // Home screen
         composable(Screen.Home.route) {
             HomeScreen(
-                viewModel = homeScreenViewModel,
+                homeScreenViewModel = homeScreenViewModel,
                 hikeViewModel = hikeScreenViewModel,
                 navController = navController
             )

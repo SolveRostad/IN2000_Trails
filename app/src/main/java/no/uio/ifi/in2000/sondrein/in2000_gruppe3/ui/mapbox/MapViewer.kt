@@ -28,8 +28,8 @@ import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScree
  * MapViewer er en composable som viser et kart med mulighet for å velge kartstil og lysmåte
  */
 @Composable
-fun MapViewer(viewModel: HomeScreenViewModel) {
-    val uiState by viewModel.homeScreenUIState.collectAsState()
+fun MapViewer(homeScreenViewModel: HomeScreenViewModel) {
+    val uiState by homeScreenViewModel.homeScreenUIState.collectAsState()
     var mapStyle = uiState.mapStyle
     var mapIsDarkmode = uiState.mapIsDarkmode
 
@@ -50,7 +50,7 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
             pitch(0.0)
             bearing(0.0)
         }
-        viewModel.fetchTurer(
+        homeScreenViewModel.fetchTurer(
             uiState.pointerCoordinates.latitude(),
             uiState.pointerCoordinates.longitude(),
             5
@@ -78,8 +78,8 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
                 }
             },
             onMapClickListener = { point ->
-                viewModel.updatePointerCoordinates(point)
-                viewModel.fetchTurer(point.latitude(), point.longitude(), 5)
+                homeScreenViewModel.updatePointerCoordinates(point)
+                homeScreenViewModel.fetchTurer(point.latitude(), point.longitude(), 5)
                 true
             },
             // Fjerner skala, logo og attribusjon fra kartet
@@ -108,7 +108,6 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
 
                     // Legger til nye turer
                     uiState.turer.features.forEach { feature ->
-                        val featureId = feature.properties.rutenavn
                         val sourceId = "source-${feature.hashCode()}"
                         val layerId = "layer-${feature.hashCode()}"
 
@@ -144,12 +143,12 @@ fun MapViewer(viewModel: HomeScreenViewModel) {
         }
 
         // Legger til temperatur på kartet
-        ForecastDisplay(viewModel)
+        ForecastDisplay(homeScreenViewModel)
 
         // Dropdown menu for å velge kartstil
-        MapStyleDropdownMenu(viewModel)
+        MapStyleDropdownMenu(homeScreenViewModel)
 
         // Søkefelt for å søke etter steder
-        SearchBarForMap(viewModel)
+        SearchBarForMap(homeScreenViewModel)
     }
 }

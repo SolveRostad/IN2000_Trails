@@ -34,7 +34,7 @@ class HomeScreenViewModel() : ViewModel() {
             pointerCoordinates = Point.fromLngLat( 10.661952, 59.846195),
             searchQuery = "",
             searchResponse = emptyList(),
-            mapStyle = "STANDARD",
+            mapStyle = "OUTDOORS",
             mapIsDarkmode = false
         )
     )
