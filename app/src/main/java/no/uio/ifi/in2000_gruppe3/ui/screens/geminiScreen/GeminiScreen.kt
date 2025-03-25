@@ -39,10 +39,10 @@ import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
 fun GeminiScreen(
-    //geminiViewModel: GeminiViewModel,
+    geminiViewModel: GeminiViewModel,
     navController: NavHostController
 ) {
-    //val geminiUiState by geminiViewModel.geminiUIState.collectAsState()
+    val geminiUiState by geminiViewModel.geminiUIState.collectAsState()
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
     var input by remember { mutableStateOf("") }
@@ -79,7 +79,7 @@ fun GeminiScreen(
                     onDone = {
                         keyboardController?.hide()
                         coroutineScope.launch {
-                            //geminiViewModel.askQuestion(input)
+                            geminiViewModel.askQuestion(input)
                         }
                     }
                 )
@@ -91,7 +91,7 @@ fun GeminiScreen(
                 onClick = {
                     keyboardController?.hide()
                     coroutineScope.launch {
-                        //geminiViewModel.askQuestion(input)
+                        geminiViewModel.askQuestion(input)
                     }
                 },
                 modifier = Modifier.fillMaxWidth(0.6f)
@@ -101,7 +101,7 @@ fun GeminiScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            if (false) {
+            if (geminiUiState.isLoading) {
                 Loader()
             } else {
                 Box(
@@ -112,7 +112,7 @@ fun GeminiScreen(
                         .verticalScroll(scrollState)
                 ) {
                     MarkdownText(
-                        markdown = "text",
+                        markdown = geminiUiState.response,
                         modifier = Modifier.padding(8.dp),
                         style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
                     )

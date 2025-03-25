@@ -131,3 +131,21 @@ fun SearchBarForMap(
         }
     }
 }
+
+fun getIconFromString(iconName: String): Int {
+    return when (iconName) {
+        "marker" -> R.drawable.marker
+        "lodging" -> R.drawable.lodging
+        "building" -> R.drawable.building
+        "information" -> R.drawable.information
+        "restaurant" -> R.drawable.restaurant
+        "bus" -> R.drawable.bus
+        "florist" -> R.drawable.florist
+        "cinema" -> R.drawable.cinema
+        "fast-food" -> R.drawable.fast_food
+        else -> {
+            Log.d("UNKNOWN ICON", iconName)
+            R.drawable.ic_launcher_background
+        }
+    }
+}
