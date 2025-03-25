@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.ui.hikeCard.SmallHikeCard
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
@@ -37,10 +38,12 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 fun BottomSheetDrawer(
     homeScreenViewModel: HomeScreenViewModel,
     hikeScreenViewModel: HikeScreenViewModel,
+    mapboxViewModel: MapboxViewModel,
     navController: NavHostController,
     content: @Composable () -> Unit
 ) {
-    val uiState by homeScreenViewModel.homeScreenUIState.collectAsState()
+    val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
+    val homeScreenUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
 
     // Bottom sheet state for å kunne åpne og lukke bottom sheet
     var bottomSheetState = rememberBottomSheetScaffoldState(
@@ -49,8 +52,8 @@ fun BottomSheetDrawer(
         )
     )
 
-    LaunchedEffect(uiState.searchResponse) {
-        if (uiState.searchResponse.isNotEmpty()) {
+    LaunchedEffect(mapboxUIState.searchResponse) {
+        if (mapboxUIState.searchResponse.isNotEmpty()) {
             bottomSheetState.bottomSheetState.partialExpand()
         }
     }
@@ -61,7 +64,7 @@ fun BottomSheetDrawer(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(max = 680.dp)
+                    .heightIn(max = 670.dp)
                     .clipToBounds()
             ) {
                 // Innholdet i bottom sheet
@@ -69,7 +72,7 @@ fun BottomSheetDrawer(
                     modifier = Modifier.clipToBounds(),
                     contentPadding = PaddingValues(16.dp),
                 ) {
-                    if (uiState.turer.features.isEmpty()) {
+                    if (homeScreenUIState.hikes.features.isEmpty()) {
                         item {
                             Text(
                                 text = "Ingen turer funnet 😕",
@@ -78,9 +81,9 @@ fun BottomSheetDrawer(
                             )
                         }
                     }
-                    items(uiState.turer.features) { feature ->
+                    items(homeScreenUIState.hikes.features) { feature ->
                         SmallHikeCard(
-                            homeScreenViewModel,
+                            mapboxViewModel,
                             feature = feature,
                             onClick = {
                                 hikeScreenViewModel.updateHike(feature)

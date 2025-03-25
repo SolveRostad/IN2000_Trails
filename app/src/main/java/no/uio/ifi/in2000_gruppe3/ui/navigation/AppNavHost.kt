@@ -5,6 +5,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoriteScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.geminiScreen.GeminiScreen
@@ -22,6 +23,7 @@ fun AppNavHost() {
     val homeScreenViewModel: HomeScreenViewModel = viewModel()
     val hikeScreenViewModel: HikeScreenViewModel = viewModel()
     val favoritesViewModel: FavoritesViewModel = viewModel()
+    val mapboxViewModel: MapboxViewModel = viewModel()
     val geminiViewModel: GeminiViewModel = viewModel()
 
     NavHost(
@@ -33,6 +35,7 @@ fun AppNavHost() {
             HomeScreen(
                 homeScreenViewModel = homeScreenViewModel,
                 hikeViewModel = hikeScreenViewModel,
+                mapboxViewModel = mapboxViewModel,
                 navController = navController
             )
         }
@@ -40,9 +43,9 @@ fun AppNavHost() {
         // Favorites screen
         composable(Screen.Favorites.route) {
             FavoriteScreen(
-                homeScreenViewModel = homeScreenViewModel,
-                hikeScreenViewModel = hikeScreenViewModel,
                 favoritesViewModel = favoritesViewModel,
+                hikeScreenViewModel = hikeScreenViewModel,
+                mapboxViewModel = mapboxViewModel,
                 navController = navController
             )
         }
@@ -53,6 +56,7 @@ fun AppNavHost() {
                 homeScreenViewModel = homeScreenViewModel,
                 hikeScreenviewModel = hikeScreenViewModel,
                 favoritesViewModel = favoritesViewModel,
+                mapboxViewModel = mapboxViewModel,
                 navController = navController
             )
         }

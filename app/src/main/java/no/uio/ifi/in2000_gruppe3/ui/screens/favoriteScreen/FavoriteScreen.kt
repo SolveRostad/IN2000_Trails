@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.ui.hikeCard.SmallHikeCard
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
@@ -31,7 +32,7 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 fun FavoriteScreen(
     favoritesViewModel: FavoritesViewModel,
     hikeScreenViewModel: HikeScreenViewModel,
-    homeScreenViewModel: HomeScreenViewModel,
+    mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
     val favoriteUIState by favoritesViewModel.favoritesScreenUIState.collectAsState()
@@ -64,8 +65,8 @@ fun FavoriteScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(favoriteUIState.favorites) { feature ->
-                        SmallHikeCard (
-                            homeScreenViewModel,
+                        SmallHikeCard(
+                            mapboxViewModel,
                             feature = feature,
                             onClick = {
                                 hikeScreenViewModel.updateHike(feature)

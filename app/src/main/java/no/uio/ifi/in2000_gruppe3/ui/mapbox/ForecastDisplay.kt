@@ -29,47 +29,44 @@ fun getWeatherIconUrl(symbolCode: String): String {
 }
 
 @Composable
-fun ForecastDisplay(viewModel: HomeScreenViewModel) {
-    val uiState = viewModel.homeScreenUIState.collectAsState().value
-    val isDarkMode = uiState.mapIsDarkmode
+fun ForecastDisplay(
+    homeScreenViewModel: HomeScreenViewModel,
+    mapboxViewModel: MapboxViewModel
+) {
+    val homeScreenUiState = homeScreenViewModel.homeScreenUIState.collectAsState().value
+    val mapboxUiState = mapboxViewModel.mapboxUIState.collectAsState().value
+    val mapStyle = mapboxUiState.mapStyle
 
-    if (uiState.forecast != null) {
-        val firstTimeseries = uiState.forecast.properties.timeseries.firstOrNull()
+    if (homeScreenUiState.forecast != null) {
+        val firstTimeseries = homeScreenUiState.forecast.properties.timeseries.firstOrNull()
         val temperature = firstTimeseries?.data?.instant?.details?.air_temperature
 
         val symbolCode = firstTimeseries?.data?.next_1_hours?.summary?.symbol_code
         val iconURL = getWeatherIconUrl(symbolCode.toString())
 
-        val temperatureTextColor = if (isDarkMode) {
-            Color.White
-        } else {
-            Color.Black
-        }
+        val temperatureTextColor = if (mapStyle == MapStyles.STANDARD_SATELLITE) Color.White else Color.Black
 
         Box (
             modifier = Modifier.padding(10.dp, 20.dp),
             contentAlignment = Alignment.TopStart
         ){
-            Image(
-                painter = rememberAsyncImagePainter(iconURL),
-                contentDescription = "Vær-ikon",
-                modifier = Modifier
-                    .size(60.dp)
-                    .padding(end = 10.dp)
-            )
-            Text(
-                text = if (temperature != null) {
-                    "$temperature °C"
-                } else {
-                    "Ingen temperaturdata tilgjengelig"
-                },
-                style = MaterialTheme.typography.titleMedium,
-                color = temperatureTextColor,
-                        modifier = Modifier
+            if (temperature != null) {
+                Image(
+                    painter = rememberAsyncImagePainter(iconURL),
+                    contentDescription = "Vær-ikon",
+                    modifier = Modifier
+                        .size(60.dp)
+                        .padding(end = 10.dp)
+                )
+                Text(
+                    text = "$temperature°C",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = temperatureTextColor,
+                    modifier = Modifier
                         .align(Alignment.BottomCenter) // Plasserer teksten i bunnen av boksen
-                    .padding(top = 50.dp)
-            )
+                        .padding(top = 50.dp)
+                )
+            }
         }
     }
 }
-

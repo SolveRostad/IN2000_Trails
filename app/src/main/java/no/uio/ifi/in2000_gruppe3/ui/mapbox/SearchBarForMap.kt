@@ -6,11 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,17 +38,16 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000_gruppe3.R
-import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
 fun SearchBarForMap(
-    homeScreenViewModel: HomeScreenViewModel,
+    mapboxViewModel: MapboxViewModel,
     modifier: Modifier = Modifier
 ) {
-    val homeScreenUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
+    val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
     val isSearchActive =
-        homeScreenUIState.searchQuery.isNotEmpty() || homeScreenUIState.searchResponse.isNotEmpty()
+        mapboxUIState.searchQuery.isNotEmpty() || mapboxUIState.searchResponse.isNotEmpty()
 
     Surface(
         color = if (isSearchActive) Color.White else Color.Transparent,
@@ -65,9 +61,9 @@ fun SearchBarForMap(
             ) {
                 // Search field
                 TextField(
-                    value = homeScreenUIState.searchQuery,
+                    value = mapboxUIState.searchQuery,
                     onValueChange = { newQuery ->
-                        homeScreenViewModel.updateSearchQuery(newQuery)
+                        mapboxViewModel.updateSearchQuery(newQuery)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -76,7 +72,7 @@ fun SearchBarForMap(
                         .onKeyEvent { keyEvent ->
                             if (keyEvent.type == KeyEventType.KeyUp && keyEvent.key == Key.Enter) {
                                 keyboardController?.hide()
-                                homeScreenViewModel.updateSearchQuery("")
+                                mapboxViewModel.updateSearchQuery("")
                             }
                             true
                         },
@@ -99,19 +95,19 @@ fun SearchBarForMap(
             }
 
             // Show suggestions
-            if (homeScreenUIState.searchResponse.isNotEmpty()) {
+            if (mapboxUIState.searchResponse.isNotEmpty()) {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth(0.85f)
                         .padding(horizontal = 10.dp),
                     contentPadding = PaddingValues(10.dp)
                 ) {
-                    items(homeScreenUIState.searchResponse) { suggestion ->
+                    items(mapboxUIState.searchResponse) { suggestion ->
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    homeScreenViewModel.getSelectedSearchResultPoint(suggestion)
+                                    mapboxViewModel.getSelectedSearchResultPoint(suggestion)
                                     keyboardController?.hide()
                                 }
                                 .padding(16.dp)
@@ -132,24 +128,6 @@ fun SearchBarForMap(
                     }
                 }
             }
-        }
-    }
-}
-
-fun getIconFromString(iconName: String): Int {
-    return when (iconName) {
-        "marker" -> R.drawable.marker
-        "lodging" -> R.drawable.lodging
-        "building" -> R.drawable.building
-        "information" -> R.drawable.information
-        "restaurant" -> R.drawable.restaurant
-        "bus" -> R.drawable.bus
-        "florist" -> R.drawable.florist
-        "cinema" -> R.drawable.cinema
-        "fast-food" -> R.drawable.fast_food
-        else -> {
-            Log.d("UNKNOWN ICON", iconName)
-            R.drawable.ic_launcher_background
         }
     }
 }
