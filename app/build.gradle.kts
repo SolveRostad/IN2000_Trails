@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "no.uio.ifi.in2000.sondrein.in2000_gruppe3"
+    namespace = "no.uio.ifi.in2000_gruppe3"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "no.uio.ifi.in2000.sondrein.in2000_gruppe3"
+        applicationId = "no.uio.ifi.in2000_gruppe3"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
