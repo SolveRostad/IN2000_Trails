@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000_gruppe3.data.geminiAI.datasource
 
+import android.util.Log
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.GenerateContentResponse
 import com.google.ai.client.generativeai.type.TextPart
@@ -9,12 +10,10 @@ import no.uio.ifi.in2000_gruppe3.BuildConfig
 import no.uio.ifi.in2000_gruppe3.data.geminiAI.models.GeminiResponse
 
 class GeminiDatasource {
-    private val generativeModel by lazy {
-        GenerativeModel(
-            modelName = "gemini-2.0-flash",
-            apiKey = BuildConfig.GEMINI_API_KEY
-        )
-    }
+    private val generativeModel = GenerativeModel(
+        modelName = "gemini-2.0-flash",
+        apiKey = BuildConfig.GEMINI_API_KEY
+    )
 
     suspend fun askQuestion(question: String): GeminiResponse {
         return try {
@@ -29,6 +28,7 @@ class GeminiDatasource {
                 GeminiResponse.Error("Response was not in expected text format")
             }
         } catch (e: Exception) {
+            Log.e("GeminiDatasource", "Error: ${e.message}")
             GeminiResponse.Error("Error: ${e.message}")
         }
     }

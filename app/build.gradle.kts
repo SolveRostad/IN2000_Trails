@@ -83,8 +83,13 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.8.2")
 
     // Ktor
-    val ktorVersion = "3.0.3"
+    val ktorVersion = "3.1.1"
     implementation("io.ktor:ktor-client-core:$ktorVersion")
+    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
+    implementation("io.ktor:ktor-client-plugins:$ktorVersion")
+    implementation("io.ktor:ktor-client-logging:$ktorVersion")
+    //implementation("io.ktor:ktor-client-http-timeout:$ktorVersion")
+
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
     implementation("io.ktor:ktor-client-android:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")

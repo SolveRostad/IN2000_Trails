@@ -39,10 +39,10 @@ import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
 fun GeminiScreen(
-    geminiViewModel: GeminiViewModel,
+    //geminiViewModel: GeminiViewModel,
     navController: NavHostController
 ) {
-    val geminiUiState by geminiViewModel.geminiUIState.collectAsState()
+    //val geminiUiState by geminiViewModel.geminiUIState.collectAsState()
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
     var input by remember { mutableStateOf("") }
@@ -69,7 +69,7 @@ fun GeminiScreen(
             OutlinedTextField(
                 value = input,
                 onValueChange = { input = it },
-                label = { Text("Ask a question") },
+                label = { Text("Still meg et spørsmål") },
                 modifier = Modifier.fillMaxWidth(0.9f),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Done,
@@ -79,7 +79,7 @@ fun GeminiScreen(
                     onDone = {
                         keyboardController?.hide()
                         coroutineScope.launch {
-                            geminiViewModel.askQuestion(input)
+                            //geminiViewModel.askQuestion(input)
                         }
                     }
                 )
@@ -90,16 +90,18 @@ fun GeminiScreen(
             Button(
                 onClick = {
                     keyboardController?.hide()
-                    geminiViewModel.askQuestion(input)
+                    coroutineScope.launch {
+                        //geminiViewModel.askQuestion(input)
+                    }
                 },
                 modifier = Modifier.fillMaxWidth(0.6f)
             ) {
-                Text("Submit", fontSize = 16.sp)
+                Text("Send", fontSize = 16.sp)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            if (geminiUiState.isLoading) {
+            if (false) {
                 Loader()
             } else {
                 Box(
@@ -110,7 +112,7 @@ fun GeminiScreen(
                         .verticalScroll(scrollState)
                 ) {
                     MarkdownText(
-                        markdown = geminiUiState.response,
+                        markdown = "text",
                         modifier = Modifier.padding(8.dp),
                         style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
                     )

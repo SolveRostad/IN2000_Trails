@@ -24,7 +24,7 @@ fun AppNavHost() {
     val hikeScreenViewModel: HikeScreenViewModel = viewModel()
     val favoritesViewModel: FavoritesViewModel = viewModel()
     val mapboxViewModel: MapboxViewModel = viewModel()
-    val geminiViewModel: GeminiViewModel = viewModel()
+    //val geminiViewModel: GeminiViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -64,7 +64,7 @@ fun AppNavHost() {
         // Gemini screen
         composable(Screen.Gemini.route) {
             GeminiScreen(
-                geminiViewModel = geminiViewModel,
+                //geminiViewModel = geminiViewModel,
                 navController = navController
             )
         }
