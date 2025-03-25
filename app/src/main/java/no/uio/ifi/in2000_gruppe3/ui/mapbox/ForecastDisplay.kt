@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.mapbox
+package no.uio.ifi.in2000_gruppe3.ui.mapbox
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -11,9 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import no.uio.ifi.in2000.sondrein.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 fun getWeatherIconUrl(symbolCode: String): String {
     val iconUrl: String
@@ -23,13 +24,17 @@ fun getWeatherIconUrl(symbolCode: String): String {
     } else {
         iconUrl = "https://raw.githubusercontent.com/metno/weathericons/refs/heads/main/weather/png/$symbolCode.png"
     }
-    Log.d("WeatherIcon", "Icon URL: $iconUrl")  // Legg til logging for URL
+    Log.d("WeatherIcon", "Icon URL: $iconUrl")  //logging for URL
     return iconUrl
 }
 
 @Composable
-fun ForecastDisplay(viewModel: HomeScreenViewModel) {
+fun ForecastDisplay(
+    viewModel: HomeScreenViewModel,
+    modifier: Modifier = Modifier
+) {
     val uiState = viewModel.homeScreenUIState.collectAsState().value
+    val isDarkMode = uiState.mapIsDarkmode
 
     if (uiState.forecast != null) {
         val firstTimeseries = uiState.forecast.properties.timeseries.firstOrNull()
@@ -38,16 +43,22 @@ fun ForecastDisplay(viewModel: HomeScreenViewModel) {
         val symbolCode = firstTimeseries?.data?.next_1_hours?.summary?.symbol_code
         val iconURL = getWeatherIconUrl(symbolCode.toString())
 
+        val temperatureTextColor = if (isDarkMode) {
+            Color.White
+        } else {
+            Color.Black
+        }
+
         Box (
-            modifier = Modifier.padding(5.dp, 40.dp),
+            modifier = modifier.padding(10.dp, 20.dp),
             contentAlignment = Alignment.TopStart
         ){
             Image(
                 painter = rememberAsyncImagePainter(iconURL),
                 contentDescription = "Vær-ikon",
                 modifier = Modifier
-                    .size(80.dp)
-                    .padding(end = 8.dp)
+                    .size(60.dp)
+                    .padding(end = 10.dp)
             )
             Text(
                 text = if (temperature != null) {
@@ -55,7 +66,11 @@ fun ForecastDisplay(viewModel: HomeScreenViewModel) {
                 } else {
                     "Ingen temperaturdata tilgjengelig"
                 },
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                color = temperatureTextColor,
+                        modifier = Modifier
+                        .align(Alignment.BottomCenter) // Plasserer teksten i bunnen av boksen
+                    .padding(top = 50.dp)
             )
         }
     }
