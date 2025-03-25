@@ -129,7 +129,6 @@ class MapboxViewModel() : ViewModel() {
     }
 
     fun getSelectedSearchResultPoint(suggestion: PlaceAutocompleteSuggestion) {
-        var point: Point = Point.fromLngLat(0.0, 0.0)
         viewModelScope.launch {
             try {
                 val detailsResponse = placeAutocomplete.select(suggestion)
@@ -138,7 +137,7 @@ class MapboxViewModel() : ViewModel() {
                     "Selected suggestion coordinates: ${detailsResponse.value?.coordinate}"
                 )
                 val coordinates = detailsResponse.value!!.coordinate.coordinates()
-                point = Point.fromLngLat(coordinates[0], coordinates[1])
+                val point = Point.fromLngLat(coordinates[0], coordinates[1])
 
                 _mapboxUIState.update {
                     it.copy(

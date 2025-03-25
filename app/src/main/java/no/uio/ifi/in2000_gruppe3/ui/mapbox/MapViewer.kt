@@ -27,7 +27,6 @@ fun MapViewer(
     homeScreenViewModel: HomeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
 ) {
-
     val homeScreenUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
 
