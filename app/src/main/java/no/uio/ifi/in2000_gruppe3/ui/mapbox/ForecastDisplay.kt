@@ -35,7 +35,6 @@ fun ForecastDisplay(
             Text(
                 text = if (temperature != null) "$temperature°C" else "",
                 style = MaterialTheme.typography.titleMedium,
-                color = if (uiState.mapIsDarkmode) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
             )
         }
     }

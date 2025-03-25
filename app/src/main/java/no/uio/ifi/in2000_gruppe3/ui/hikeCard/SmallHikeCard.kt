@@ -14,13 +14,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000_gruppe3.data.turAPI.models.Feature
-import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 
 @Composable
 fun SmallHikeCard(
-    homeScreenViewModel: HomeScreenViewModel,
+    mapboxViewModel: MapboxViewModel,
     feature: Feature,
-    onClick: () -> Unit) {
+    onClick: () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -40,7 +41,7 @@ fun SmallHikeCard(
 
             Spacer(modifier = Modifier.height(3.dp))
 
-            HikeCardMapPreview(homeScreenViewModel, feature)
+            HikeCardMapPreview(mapboxViewModel, feature)
         }
     }
 }

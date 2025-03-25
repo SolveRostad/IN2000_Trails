@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapViewer
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomSheetDrawer
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
@@ -21,15 +22,16 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 fun HomeScreen(
     homeScreenViewModel: HomeScreenViewModel,
     hikeViewModel: HikeScreenViewModel,
+    mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
-    val uiState by homeScreenViewModel.homeScreenUIState.collectAsState()
+    val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
 
     // Oppdaterer ViewportState når pekerposisjonen endres
-    LaunchedEffect(uiState.pointerCoordinates) {
+    LaunchedEffect(mapboxUIState.pointerCoordinates) {
         homeScreenViewModel.fetchForecast(
-            uiState.pointerCoordinates.latitude(),
-            uiState.pointerCoordinates.longitude()
+            mapboxUIState.pointerCoordinates.latitude(),
+            mapboxUIState.pointerCoordinates.longitude()
         )
     }
 
@@ -45,9 +47,13 @@ fun HomeScreen(
             BottomSheetDrawer(
                 homeScreenViewModel = homeScreenViewModel,
                 hikeScreenViewModel = hikeViewModel,
+                mapboxViewModel = mapboxViewModel,
                 navController = navController
             ) {
-                MapViewer(homeScreenViewModel)
+                MapViewer(
+                    homeScreenViewModel,
+                    mapboxViewModel
+                )
             }
         }
     }

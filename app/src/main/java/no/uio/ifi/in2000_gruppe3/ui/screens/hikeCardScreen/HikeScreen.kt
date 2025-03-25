@@ -27,12 +27,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000_gruppe3.ui.hikeCard.HikeCard
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
+import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,6 +41,7 @@ fun HikeScreen(
     favoritesViewModel: FavoritesViewModel,
     hikeScreenviewModel: HikeScreenViewModel,
     homeScreenViewModel: HomeScreenViewModel,
+    mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
     val uiState by hikeScreenviewModel.hikeScreenUIState.collectAsState()
@@ -72,7 +73,7 @@ fun HikeScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            HikeCard(hikeScreenviewModel, homeScreenViewModel)
+            HikeCard(hikeScreenviewModel, mapboxViewModel)
 
             Box(
                 modifier = Modifier
