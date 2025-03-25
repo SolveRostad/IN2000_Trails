@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import no.uio.ifi.in2000_gruppe3.data.favorites.datasource.FavoritesDataSource
-import no.uio.ifi.in2000_gruppe3.data.turAPI.models.Feature
+import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 
 class FeatureRepository() {
 

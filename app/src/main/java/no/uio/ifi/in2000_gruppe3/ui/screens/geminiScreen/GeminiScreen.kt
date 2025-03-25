@@ -70,7 +70,7 @@ fun GeminiScreen(
                 value = input,
                 onValueChange = { input = it },
                 label = { Text("Ask a question") },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(0.9f),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Done,
                     keyboardType = KeyboardType.Text
@@ -112,8 +112,7 @@ fun GeminiScreen(
                     MarkdownText(
                         markdown = geminiUiState.response,
                         modifier = Modifier.padding(8.dp),
-                        style = MaterialTheme.typography.bodyMedium
-                            .copy(fontSize = 16.sp)
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
                     )
                 }
             }

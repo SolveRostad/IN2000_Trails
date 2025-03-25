@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import no.uio.ifi.in2000_gruppe3.data.turAPI.models.Feature
+import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 
 class MapboxViewModel() : ViewModel() {
     private val placeAutocomplete = PlaceAutocomplete.create()

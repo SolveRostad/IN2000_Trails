@@ -12,8 +12,8 @@ import no.uio.ifi.in2000_gruppe3.data.locationForecastAPI.models.Locationforecas
 import no.uio.ifi.in2000_gruppe3.data.locationForecastAPI.repository.LocationForecastRepository
 import no.uio.ifi.in2000_gruppe3.data.metAlertsAPI.models.MetAlerts
 import no.uio.ifi.in2000_gruppe3.data.metAlertsAPI.repository.MetAlertsRepository
-import no.uio.ifi.in2000_gruppe3.data.turAPI.models.Hikes
-import no.uio.ifi.in2000_gruppe3.data.turAPI.repository.TurAPIRepository
+import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Hikes
+import no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository.TurAPIRepository
 
 class HomeScreenViewModel() : ViewModel() {
     private val turAPIRepository = TurAPIRepository()
