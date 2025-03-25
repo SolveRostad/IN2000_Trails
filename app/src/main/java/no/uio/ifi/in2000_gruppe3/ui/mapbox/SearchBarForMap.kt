@@ -56,11 +56,11 @@ fun SearchBarForMap(
     Surface(
         color = if (isSearchActive) Color.White else Color.Transparent,
         shadowElevation = if (isSearchActive) 4.dp else 0.dp,
+        modifier = modifier.padding(top = 10.dp)
     ) {
         Column {
             Box(
-                modifier = modifier
-                    .padding(top = 10.dp),
+                modifier = modifier.fillMaxWidth(0.8f),
                 contentAlignment = Alignment.TopCenter
             ) {
                 // Search field
@@ -70,8 +70,7 @@ fun SearchBarForMap(
                         homeScreenViewModel.updateSearchQuery(newQuery)
                     },
                     modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .padding(16.dp)
+                        .fillMaxWidth()
                         .clip(RoundedCornerShape(30.dp))
                         .border(1.dp, Color.Gray, RoundedCornerShape(30.dp))
                         .onKeyEvent { keyEvent ->
@@ -103,7 +102,7 @@ fun SearchBarForMap(
             if (homeScreenUIState.searchResponse.isNotEmpty()) {
                 LazyColumn(
                     modifier = Modifier
-                        .fillMaxWidth(0.80f)
+                        .fillMaxWidth(0.85f)
                         .padding(horizontal = 10.dp),
                     contentPadding = PaddingValues(10.dp)
                 ) {

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.BottomAppBar
@@ -46,7 +47,11 @@ fun BottomBar(navController: NavHostController) {
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = { navController.navigate(Screen.Home.route) }) {
+                IconButton(
+                    onClick = {
+                        if (navController.currentDestination?.route != "home")
+                            navController.navigate(Screen.Home.route)
+                    }) {
                     Icon(
                         imageVector = Icons.Default.Home,
                         contentDescription = "Home",
@@ -56,11 +61,29 @@ fun BottomBar(navController: NavHostController) {
                             LocalContentColor.current
                     )
                 }
-                IconButton(onClick = { navController.navigate(Screen.Favorites.route) }) {
+                IconButton(
+                    onClick = {
+                        if (navController.currentDestination?.route != "favorites")
+                            navController.navigate(Screen.Favorites.route)
+                    }) {
                     Icon(
                         imageVector = Icons.Default.Favorite,
                         contentDescription = "Favorites",
                         tint = if (navController.currentDestination?.route == "favorites")
+                            MaterialTheme.colorScheme.primary
+                        else
+                            LocalContentColor.current
+                    )
+                }
+                IconButton(
+                    onClick = {
+                        if (navController.currentDestination?.route != "gemini")
+                            navController.navigate(Screen.Gemini.route)
+                    }) {
+                    Icon(
+                        imageVector = Icons.Default.Face,
+                        contentDescription = "Gemini",
+                        tint = if (navController.currentDestination?.route == "gemini")
                             MaterialTheme.colorScheme.primary
                         else
                             LocalContentColor.current

@@ -29,10 +29,7 @@ fun getWeatherIconUrl(symbolCode: String): String {
 }
 
 @Composable
-fun ForecastDisplay(
-    viewModel: HomeScreenViewModel,
-    modifier: Modifier = Modifier
-) {
+fun ForecastDisplay(viewModel: HomeScreenViewModel) {
     val uiState = viewModel.homeScreenUIState.collectAsState().value
     val isDarkMode = uiState.mapIsDarkmode
 
@@ -50,7 +47,7 @@ fun ForecastDisplay(
         }
 
         Box (
-            modifier = modifier.padding(10.dp, 20.dp),
+            modifier = Modifier.padding(10.dp, 20.dp),
             contentAlignment = Alignment.TopStart
         ){
             Image(

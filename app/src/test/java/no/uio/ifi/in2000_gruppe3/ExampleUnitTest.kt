@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.sondrein.in2000_gruppe3
+package no.uio.ifi.in2000_gruppe3
 
 import org.junit.Test
 
