@@ -32,7 +32,7 @@ fun MapStyleDropdownMenu(homeScreenViewModel: HomeScreenViewModel) {
     var expanded by remember { mutableStateOf(false) }
 
     Box(
-        modifier = Modifier.padding(5.dp, 30.dp),
+        modifier = Modifier.padding(5.dp, 35.dp),
         contentAlignment = Alignment.TopEnd
     ) {
         Column {

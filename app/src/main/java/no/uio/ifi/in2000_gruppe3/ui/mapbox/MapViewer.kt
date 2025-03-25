@@ -159,7 +159,7 @@ fun MapViewer(homeScreenViewModel: HomeScreenViewModel) {
             ForecastDisplay(homeScreenViewModel)
 
             // Search bar
-            SearchBarForMap(homeScreenViewModel, modifier = Modifier.padding(top = 10.dp))
+            SearchBarForMap(homeScreenViewModel, modifier = Modifier.padding(top = 11.dp))
 
             // Settings dropdown
             MapStyleDropdownMenu(homeScreenViewModel)
