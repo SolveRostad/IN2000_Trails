@@ -139,8 +139,7 @@ class HomeScreenViewModel() : ViewModel() {
     }
 
     fun fetchForecast(lat: Double, lon: Double) {
-        //Log.d("Forecast", "fetchForecast called with lat: $lat, lon: $lon")
-        viewModelScope.launch(Dispatchers.IO) { // <-- Kjør direkte i IO-tråd
+        viewModelScope.launch(Dispatchers.IO) { //kjører direkte i IO-tråd
             _homeScreenUIState.update {
                 it.copy(isLoading = true)
             }
