@@ -1,37 +1,38 @@
 package no.uio.ifi.in2000_gruppe3.ui.hikeCard
 
 import android.util.Log
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.dp
-import com.mapbox.geojson.BoundingBox
-import com.mapbox.geojson.Point
-import no.uio.ifi.in2000_gruppe3.data.turAPI.models.Feature
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.mapbox.geojson.BoundingBox
+import com.mapbox.geojson.Point
 import no.uio.ifi.in2000_gruppe3.BuildConfig
 import no.uio.ifi.in2000_gruppe3.R
-import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenUIState
-import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
+import no.uio.ifi.in2000_gruppe3.data.turAPI.models.Feature
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapStyle
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxUIState
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 
 @Composable
 fun HikeCardMapPreview(
-    homeScreenViewModel: HomeScreenViewModel,
+    mapboxViewModel: MapboxViewModel,
     feature: Feature
 ) {
     val coordinates = mutableListOf<Point>()
-    val uiState by homeScreenViewModel.homeScreenUIState.collectAsState()
+    val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
 
     feature.geometry.coordinates.forEach { coordList ->
         coordList.forEach { coord ->
@@ -56,7 +57,7 @@ fun HikeCardMapPreview(
         center = center,
         zoom = zoom,
         lineCoordinates = coordinates,
-        uiState = uiState,
+        uiState = mapboxUIState,
         feature = feature
     )
 
@@ -88,7 +89,7 @@ private fun createStaticMapUrl(
     center: Point,
     zoom: Double,
     lineCoordinates: List<Point>,
-    uiState: HomeScreenUIState,
+    uiState: MapboxUIState,
     feature: Feature
 ): String {
     // Limit number of coordinates to avoid exceeding URL length limits
@@ -111,15 +112,11 @@ private fun createStaticMapUrl(
 
     // Velger mapstyle
     val mapStyle = uiState.mapStyle
-    val darkmode = uiState.mapIsDarkmode
     var mapStyleUrl = when (mapStyle) {
-        "STANDARD" -> "streets-v11"
-        "SATELLITE" -> "satellite-v9"
-        "OUTDOORS" -> "outdoors-v12"
+        MapStyle.STANDARD -> "streets-v11"
+        MapStyle.SATELLITE -> "satellite-v9"
+        MapStyle.OUTDOORS -> "outdoors-v12"
         else -> "streets-v11"
-    }
-    if (mapStyle == "STANDARD" && darkmode) {
-        mapStyleUrl = "dark-v10"
     }
 
     // Turens farge

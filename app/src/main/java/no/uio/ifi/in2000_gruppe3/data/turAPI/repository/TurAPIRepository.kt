@@ -1,7 +1,7 @@
 package no.uio.ifi.in2000_gruppe3.data.turAPI.repository
 
 import no.uio.ifi.in2000_gruppe3.data.turAPI.datasource.TurAPIDatasource
-import no.uio.ifi.in2000_gruppe3.data.turAPI.models.Turer
+import no.uio.ifi.in2000_gruppe3.data.turAPI.models.Hikes
 
 /**
  * Repository for the TurAPI
@@ -11,9 +11,9 @@ class TurAPIRepository {
     private var colorIndex = 0
 
 
-    suspend fun getTurer(lat: Double, lng: Double, limit: Int): Turer {
+    suspend fun getTurer(lat: Double, lng: Double, limit: Int): Hikes {
         val turer = turAPIDatasource.getTurer(lat, lng, limit)
-        turer.features.forEach {feature ->
+        turer.features.forEach { feature ->
             feature.color = getColor()
         }
         return turer
@@ -34,7 +34,7 @@ class TurAPIRepository {
         )
         val color = colors[colorIndex]
 
-        if (colorIndex == colors.size-1) {
+        if (colorIndex == colors.size - 1) {
             colorIndex = 0
         } else {
             colorIndex++

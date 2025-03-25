@@ -22,7 +22,8 @@ fun getWeatherIconUrl(symbolCode: String): String {
         Log.d("WeatherIcon", "symbolCode is null or empty!")
         iconUrl = "https://example.com/default-icon.png"  // Fallback URL
     } else {
-        iconUrl = "https://raw.githubusercontent.com/metno/weathericons/refs/heads/main/weather/png/$symbolCode.png"
+        iconUrl =
+            "https://raw.githubusercontent.com/metno/weathericons/refs/heads/main/weather/png/$symbolCode.png"
     }
     Log.d("WeatherIcon", "Icon URL: $iconUrl")  //logging for URL
     return iconUrl
@@ -34,7 +35,6 @@ fun ForecastDisplay(
     modifier: Modifier = Modifier
 ) {
     val uiState = viewModel.homeScreenUIState.collectAsState().value
-    val isDarkMode = uiState.mapIsDarkmode
 
     if (uiState.forecast != null) {
         val firstTimeseries = uiState.forecast.properties.timeseries.firstOrNull()
@@ -43,16 +43,12 @@ fun ForecastDisplay(
         val symbolCode = firstTimeseries?.data?.next_1_hours?.summary?.symbol_code
         val iconURL = getWeatherIconUrl(symbolCode.toString())
 
-        val temperatureTextColor = if (isDarkMode) {
-            Color.White
-        } else {
-            Color.Black
-        }
+        val temperatureTextColor = Color.White
 
-        Box (
+        Box(
             modifier = modifier.padding(10.dp, 20.dp),
             contentAlignment = Alignment.TopStart
-        ){
+        ) {
             Image(
                 painter = rememberAsyncImagePainter(iconURL),
                 contentDescription = "Vær-ikon",
@@ -68,11 +64,10 @@ fun ForecastDisplay(
                 },
                 style = MaterialTheme.typography.titleMedium,
                 color = temperatureTextColor,
-                        modifier = Modifier
-                        .align(Alignment.BottomCenter) // Plasserer teksten i bunnen av boksen
+                modifier = Modifier
+                    .align(Alignment.BottomCenter) // Plasserer teksten i bunnen av boksen
                     .padding(top = 50.dp)
             )
         }
     }
 }
-
