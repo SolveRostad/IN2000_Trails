@@ -29,7 +29,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
 import no.uio.ifi.in2000_gruppe3.ui.hikeCard.HikeCard
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.ForecastDisplay
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
@@ -38,22 +40,18 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HikeScreen(
+    homeScreenViewModel: HomeScreenViewModel,
     favoritesViewModel: FavoritesViewModel,
     hikeScreenviewModel: HikeScreenViewModel,
-    homeScreenViewModel: HomeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
     val uiState by hikeScreenviewModel.hikeScreenUIState.collectAsState()
 
-    val checkedState = remember {
-        mutableStateOf(favoritesViewModel.isHikeFavorite(uiState.feature))
-    }
-
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = uiState.feature.properties.rutenavn) },
+                title = {Text(text = getTodaysDate())},
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -73,40 +71,13 @@ fun HikeScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            HikeCard(hikeScreenviewModel, mapboxViewModel)
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Row(
-                    modifier = Modifier
-                ) {
-                    IconToggleButton(
-                        checked = checkedState.value,
-                        onCheckedChange = {
-                            checkedState.value = it
-                            if (it) {
-                                favoritesViewModel.addHike(uiState.feature)
-                            } else {
-                                favoritesViewModel.deleteHike(uiState.feature)
-                            }
-                        }
-                    ) {
-                        val tint by animateColorAsState(if (checkedState.value) Color.Red else Color.Gray)
-                        Icon(
-                            if (checkedState.value) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                            contentDescription = "Toggle favorite",
-                            tint = tint,
-                            modifier = Modifier.align(Alignment.CenterVertically)
-                        )
-                    }
-                    Text(
-                        modifier = Modifier.align(Alignment.CenterVertically),
-                        text = if (checkedState.value) "Fjern fra favoritter" else "Legg til i favoritter"
-                    )
-                }
-            }
+            HikeCard(
+                homeScreenViewModel,
+                hikeScreenviewModel,
+                mapboxViewModel,
+                favoritesViewModel,
+                navController
+            )
         }
     }
 }

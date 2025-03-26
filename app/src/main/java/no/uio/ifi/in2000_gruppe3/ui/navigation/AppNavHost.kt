@@ -14,6 +14,7 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastScreen
 
 @Composable
 fun AppNavHost() {
@@ -57,6 +58,13 @@ fun AppNavHost() {
                 hikeScreenviewModel = hikeScreenViewModel,
                 favoritesViewModel = favoritesViewModel,
                 mapboxViewModel = mapboxViewModel,
+                navController = navController
+            )
+        }
+
+        // Location forecast screen
+        composable(Screen.LocationForecast.route) {
+            LocationForecastScreen(
                 navController = navController
             )
         }
