@@ -1,6 +1,8 @@
 package no.uio.ifi.in2000_gruppe3.ui.locationForecast
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -14,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapStyles
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
@@ -30,22 +33,31 @@ fun getWeatherIconUrl(symbolCode: String): String {
     return iconUrl
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun OneHourForecastDisplay(
+fun ForecastDisplay(
     homeScreenViewModel: HomeScreenViewModel,
-    mapboxViewModel: MapboxViewModel
+    mapboxViewModel: MapboxViewModel,
+    timeseries: String = "instant", // instant som standard
+    date: String = getTodaysDate() // dagens dato som standard
 ) {
     val homeScreenUiState = homeScreenViewModel.homeScreenUIState.collectAsState().value
     val mapboxUiState = mapboxViewModel.mapboxUIState.collectAsState().value
     val mapStyle = mapboxUiState.mapStyle
 
     if (homeScreenUiState.forecast != null) {
-        val firstTimeseries = homeScreenUiState.forecast.properties.timeseries.firstOrNull()
-        val temperature = firstTimeseries?.data?.instant?.details?.air_temperature
 
-        val symbolCode = firstTimeseries?.data?.next_1_hours?.summary?.symbol_code
+        val chosenTimeSeries = when (timeseries) {
+            "instant" -> homeScreenUiState.forecast.properties.timeseries.firstOrNull()
+            "00-06" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T00:00:00Z" }
+            "06-12" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T06:00:00Z" }
+            "12-18" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T12:00:00Z" }
+            "18-00" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T18:00:00Z" }
+            else -> homeScreenUiState.forecast.properties.timeseries.firstOrNull()
+        }
+        val temperature = chosenTimeSeries?.data?.instant?.details?.air_temperature
+        val symbolCode = chosenTimeSeries?.data?.next_1_hours?.summary?.symbol_code
         val iconURL = getWeatherIconUrl(symbolCode.toString())
-
         val temperatureTextColor = if (mapStyle == MapStyles.STANDARD_SATELLITE) Color.White else Color.Black
 
         Box (
@@ -65,7 +77,7 @@ fun OneHourForecastDisplay(
                     style = MaterialTheme.typography.titleMedium,
                     color = temperatureTextColor,
                     modifier = Modifier
-                        .align(Alignment.BottomCenter) // Plasserer teksten i bunnen av boksen
+                        .align(Alignment.BottomCenter)
                         .padding(top = 50.dp)
                 )
             }

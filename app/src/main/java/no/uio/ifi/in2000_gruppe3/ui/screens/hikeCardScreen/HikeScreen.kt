@@ -18,7 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
+import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDayAndTime
 import no.uio.ifi.in2000_gruppe3.ui.hikeCard.HikeCard
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
@@ -39,7 +39,7 @@ fun HikeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {Text(text = getTodaysDate())},
+                title = {Text(text = getTodaysDayAndTime())},
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(

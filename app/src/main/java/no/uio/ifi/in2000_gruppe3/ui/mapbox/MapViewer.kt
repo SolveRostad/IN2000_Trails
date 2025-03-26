@@ -19,7 +19,7 @@ import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
 import com.mapbox.maps.extension.compose.annotation.rememberIconImage
 import com.mapbox.maps.extension.compose.style.MapStyle
 import no.uio.ifi.in2000_gruppe3.R
-import no.uio.ifi.in2000_gruppe3.ui.locationForecast.OneHourForecastDisplay
+import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 /**
@@ -96,7 +96,7 @@ fun MapViewer(
         horizontalArrangement = Arrangement.Center
     ){
         // Legger til temperatur på kartet
-        OneHourForecastDisplay(
+        ForecastDisplay(
             homeScreenViewModel,
             mapboxViewModel
         )

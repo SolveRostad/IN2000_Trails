@@ -1,5 +1,9 @@
 package no.uio.ifi.in2000_gruppe3.ui.locationForecast
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,11 +18,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun LocationForecastSmallCard(
     dag: String,
@@ -47,27 +53,27 @@ fun LocationForecastSmallCard(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Row {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 Box {
                     Text(text = "00-06")
-                    OneHourForecastDisplay(homeScreenViewModel, mapboxViewModel)
+                    ForecastDisplay(homeScreenViewModel, mapboxViewModel, "00-06")
                 }
-                Box {
+                Box  {
                     Text(text = "06-12")
-                    OneHourForecastDisplay(homeScreenViewModel, mapboxViewModel)
+                    ForecastDisplay(homeScreenViewModel, mapboxViewModel, "06-12")
                 }
-                Box {
+                Box  {
                     Text(text = "12-18")
-                    OneHourForecastDisplay(homeScreenViewModel, mapboxViewModel)
+                    ForecastDisplay(homeScreenViewModel, mapboxViewModel, "12-18")
                 }
                 Box {
                     Text(text = "18-00")
-                    OneHourForecastDisplay(homeScreenViewModel, mapboxViewModel)
+                    ForecastDisplay(homeScreenViewModel, mapboxViewModel, "18-00")
                 }
             }
-
         }
-
-
     }
 }
