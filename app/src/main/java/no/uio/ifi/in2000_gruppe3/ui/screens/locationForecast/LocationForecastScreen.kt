@@ -78,6 +78,7 @@ fun LocationForecastScreen(
                         day = orderedWeekdays[index],
                         date = formattedDate,
                         homeScreenViewModel = homeScreenViewModel,
+                        hikeScreenViewModel = hikeScreenViewModel,
                         mapboxViewModel = mapboxViewModel,
                         navController =  navController
                     )

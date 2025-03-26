@@ -1,5 +1,7 @@
 package no.uio.ifi.in2000_gruppe3.ui.mapbox
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +27,7 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 /**
  * MapViewer er en composable som viser et kart med mulighet for å velge kartstil og lysmåte
  */
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MapViewer(
     homeScreenViewModel: HomeScreenViewModel,

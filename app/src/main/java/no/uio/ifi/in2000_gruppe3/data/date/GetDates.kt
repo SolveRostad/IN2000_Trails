@@ -4,7 +4,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import java.text.SimpleDateFormat
 import java.time.DayOfWeek
-import java.time.Instant
 import java.time.LocalDate
 import java.util.*
 
@@ -15,15 +14,13 @@ fun getTodaysDate(): String {
     return formatter.format(Date())
 }
 
-// Returnerer på format 27. mars
+// Returnerer dato på format "dd. MMMM"
 fun getDateFormatted(date: String): String {
-    val inputFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) // Formatet på datoen som blir sendt inn
-    val outputFormatter = SimpleDateFormat("dd. MMMM", Locale("no", "NO")) // Formatet vi ønsker ut
+    val inputFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    val outputFormatter = SimpleDateFormat("dd. MMMM", Locale("no", "NO"))
 
-    // Parsing input datoen
     val parsedDate = inputFormatter.parse(date)
 
-    // Returnerer formatert dato
     return outputFormatter.format(parsedDate)
 }
 
@@ -33,7 +30,7 @@ fun getCurrentTime(): String {
     return formatter.format(Date())
 }
 
-// Returns todays day
+// Returnerer dagens dato
 @RequiresApi(Build.VERSION_CODES.O)
 fun getTodaysDay(): String {
     val dayOfWeek = LocalDate.now().dayOfWeek

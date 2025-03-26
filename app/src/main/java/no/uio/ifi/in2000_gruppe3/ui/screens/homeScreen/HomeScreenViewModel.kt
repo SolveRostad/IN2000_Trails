@@ -55,9 +55,8 @@ class HomeScreenViewModel() : ViewModel() {
         }
     }
 
-
     fun fetchForecast(lat: Double, lon: Double) {
-        viewModelScope.launch(Dispatchers.IO) { //kjører direkte i IO-tråd
+        viewModelScope.launch(Dispatchers.IO) {
             _homeScreenUIState.update {
                 it.copy(isLoading = true)
             }

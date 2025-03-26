@@ -12,8 +12,7 @@ import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Properties
 class HikeScreenViewModel: ViewModel() {
     private val _hikeScreenUIState = MutableStateFlow<HikeScreenUIState> (
         HikeScreenUIState(
-            feature = Feature(
-                Geometry(listOf(), "error"), Properties(0, listOf(), "error"), "error")
+            feature = Feature(Geometry(listOf(), "error"), Properties(0, listOf(), "error"), "error")
         )
     )
     val hikeScreenUIState: StateFlow<HikeScreenUIState> = _hikeScreenUIState.asStateFlow()
@@ -23,10 +22,18 @@ class HikeScreenViewModel: ViewModel() {
             it.copy(feature = feature)
         }
     }
+
+    fun updateDate(day: String, formattedDate: String) {
+        _hikeScreenUIState.update {
+            it.copy(day = day, formattedDate = formattedDate)
+        }
+    }
 }
 
 data class HikeScreenUIState(
     val isLoading: Boolean = false,
     val isFavorite: Boolean = false,
-    val feature: Feature
+    val feature: Feature,
+    val day: String = "",
+    val formattedDate: String = ""
 )
