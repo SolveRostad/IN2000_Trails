@@ -18,11 +18,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
+import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.LocationForecastSmallCard
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
+import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,7 +37,16 @@ fun LocationForecastScreen(
     navController: NavHostController
 ) {
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
+
+    // Variables for weekdays
     val weekdays = listOf("Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag")
+    val todaysDay = getTodaysDay()
+    val startIndex = weekdays.indexOf(todaysDay)
+    val orderedWeekdays = weekdays.drop(startIndex) + weekdays.take(startIndex)
+
+    // Date
+    val todaysDateStr = getTodaysDate()
+    val todaysDate = LocalDate.parse(todaysDateStr)
 
     Scaffold(
         topBar = {
@@ -58,9 +70,13 @@ fun LocationForecastScreen(
                 .padding(16.dp)
         ) {
             item {
-                weekdays.forEach { day ->
+                orderedWeekdays.forEachIndexed { index, day ->
+                    val date = todaysDate.plusDays(index.toLong())
+                    val formattedDate = date.toString()
+
                     LocationForecastSmallCard(
-                        dag = day,
+                        day = orderedWeekdays[index],
+                        date = formattedDate,
                         homeScreenViewModel = homeScreenViewModel,
                         mapboxViewModel = mapboxViewModel,
                         navController =  navController

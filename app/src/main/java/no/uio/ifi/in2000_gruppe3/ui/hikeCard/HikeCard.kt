@@ -1,5 +1,7 @@
 package no.uio.ifi.in2000_gruppe3.ui.hikeCard
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,6 +36,7 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HikeCard(
     homeScreenViewModel: HomeScreenViewModel,

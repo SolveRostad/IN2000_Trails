@@ -49,10 +49,10 @@ fun ForecastDisplay(
 
         val chosenTimeSeries = when (timeseries) {
             "instant" -> homeScreenUiState.forecast.properties.timeseries.firstOrNull()
-            "00-06" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T00:00:00Z" }
-            "06-12" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T06:00:00Z" }
-            "12-18" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T12:00:00Z" }
-            "18-00" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T18:00:00Z" }
+            "00-06" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T06:00:00Z" }
+            "06-12" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T12:00:00Z" }
+            "12-18" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T18:00:00Z" }
+            "18-00" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T23:00:00Z" }
             else -> homeScreenUiState.forecast.properties.timeseries.firstOrNull()
         }
         val temperature = chosenTimeSeries?.data?.instant?.details?.air_temperature

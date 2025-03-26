@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000_gruppe3.ui.locationForecast
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -21,17 +22,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import no.uio.ifi.in2000_gruppe3.data.date.getCurrentTime
+import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun LocationForecastSmallCard(
-    dag: String,
+    day: String,
+    date: String,
     homeScreenViewModel: HomeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
+    val todaysDate = getTodaysDate()
+    val currentTime = getCurrentTime()
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -46,7 +53,7 @@ fun LocationForecastSmallCard(
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Text(
-                text = dag,
+                text = day,
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.align(Alignment.Start)
             )
@@ -57,21 +64,49 @@ fun LocationForecastSmallCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Box {
-                    Text(text = "00-06")
-                    ForecastDisplay(homeScreenViewModel, mapboxViewModel, "00-06")
+                if (date > todaysDate || (date == todaysDate && currentTime < "06:00:00")) {
+                    Box {
+                        Text(text = "00-06")
+                        ForecastDisplay(
+                            homeScreenViewModel = homeScreenViewModel,
+                            mapboxViewModel = mapboxViewModel,
+                            timeseries = "00-06",
+                            date = date
+                        )
+                    }
                 }
-                Box  {
-                    Text(text = "06-12")
-                    ForecastDisplay(homeScreenViewModel, mapboxViewModel, "06-12")
+                if (date > todaysDate || (date == todaysDate && currentTime < "12:00:00")) {
+                    Box {
+                        Text(text = "06-12")
+                        ForecastDisplay(
+                            homeScreenViewModel = homeScreenViewModel,
+                            mapboxViewModel = mapboxViewModel,
+                            timeseries = "06-12",
+                            date = date
+                        )
+                    }
                 }
-                Box  {
-                    Text(text = "12-18")
-                    ForecastDisplay(homeScreenViewModel, mapboxViewModel, "12-18")
+                if (date > todaysDate || (date == todaysDate && currentTime < "18:00:00")) {
+                    Box {
+                        Text(text = "12-18")
+                        ForecastDisplay(
+                            homeScreenViewModel = homeScreenViewModel,
+                            mapboxViewModel = mapboxViewModel,
+                            timeseries = "12-18",
+                            date = date
+                        )
+                    }
                 }
-                Box {
-                    Text(text = "18-00")
-                    ForecastDisplay(homeScreenViewModel, mapboxViewModel, "18-00")
+                if (date > todaysDate || (date == todaysDate && currentTime < "23:59:00")) {
+                    Box {
+                        Text(text = "18-00")
+                        ForecastDisplay(
+                            homeScreenViewModel = homeScreenViewModel,
+                            mapboxViewModel = mapboxViewModel,
+                            timeseries = "18-00",
+                            date = date
+                        )
+                    }
                 }
             }
         }
