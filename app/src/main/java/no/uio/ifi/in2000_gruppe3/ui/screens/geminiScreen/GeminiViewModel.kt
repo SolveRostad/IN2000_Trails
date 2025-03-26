@@ -22,19 +22,19 @@ class GeminiViewModel: ViewModel() {
                 _geminiUIState.update {
                     it.copy(isLoading = true)
                 }
-//                val response = geminiRepository.getResponse(question)
-//                when (response) {
-//                    is GeminiResponse.Success -> {
-//                        _geminiUIState.update {
-//                            it.copy(response = response.text, isLoading = false)
-//                        }
-//                    }
-//                    is GeminiResponse.Error -> {
-//                        _geminiUIState.update {
-//                            it.copy(response = "Error: ${response.message}", isLoading = false)
-//                        }
-//                    }
-//                }
+                val response = geminiRepository.getResponse(question)
+                when (response) {
+                    is GeminiResponse.Success -> {
+                        _geminiUIState.update {
+                            it.copy(response = response.text, isLoading = false)
+                        }
+                    }
+                    is GeminiResponse.Error -> {
+                        _geminiUIState.update {
+                            it.copy(response = "Error: ${response.message}", isLoading = false)
+                        }
+                    }
+                }
             } catch (e: Exception) {
                 Log.e("GeminiViewModel", "Error: ${e.message}")
                 _geminiUIState.update {

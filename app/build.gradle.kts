@@ -56,7 +56,7 @@ dependencies {
     // optional - RxJava3 support
     implementation(libs.androidx.datastore.preferences.rxjava3)
 
-    // mapbox search
+    // Mapbox search
     val mapboxSearchVersion = "2.8.0-rc.1"
     implementation("com.mapbox.search:autofill:$mapboxSearchVersion")
     implementation("com.mapbox.search:discover:$mapboxSearchVersion")
@@ -88,6 +88,7 @@ dependencies {
     implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
     implementation("io.ktor:ktor-client-plugins:$ktorVersion")
     implementation("io.ktor:ktor-client-logging:$ktorVersion")
+    implementation("io.ktor:ktor-client-serialization-jvm:$ktorVersion")
     //implementation("io.ktor:ktor-client-http-timeout:$ktorVersion")
 
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
