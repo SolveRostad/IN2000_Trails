@@ -59,7 +59,7 @@ fun AppNavHost() {
         composable(Screen.HikeScreen.route) {
             HikeScreen(
                 homeScreenViewModel = homeScreenViewModel,
-                hikeScreenviewModel = hikeScreenViewModel,
+                hikeScreenViewModel = hikeScreenViewModel,
                 favoritesViewModel = favoritesViewModel,
                 mapboxViewModel = mapboxViewModel,
                 navController = navController
