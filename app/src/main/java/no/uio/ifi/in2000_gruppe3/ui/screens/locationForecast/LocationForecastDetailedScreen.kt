@@ -16,6 +16,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import no.uio.ifi.in2000_gruppe3.data.date.getDateFormatted
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.LocationForecastCard
@@ -26,10 +27,14 @@ import no.uio.ifi.in2000_gruppe3.ui.locationForecast.LocationForecastCard
 fun WeatherForecastDetailedScreen(
     navController: NavHostController
 ) {
+    val todaysDay = getTodaysDay()
+    val date = getTodaysDate()
+    val dateFormatted = getDateFormatted(date)
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(getTodaysDay()) },
+                title = { Text("$todaysDay $dateFormatted") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(

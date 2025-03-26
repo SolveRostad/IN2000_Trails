@@ -15,6 +15,18 @@ fun getTodaysDate(): String {
     return formatter.format(Date())
 }
 
+// Returnerer på format 27. mars
+fun getDateFormatted(date: String): String {
+    val inputFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) // Formatet på datoen som blir sendt inn
+    val outputFormatter = SimpleDateFormat("dd. MMMM", Locale("no", "NO")) // Formatet vi ønsker ut
+
+    // Parsing input datoen
+    val parsedDate = inputFormatter.parse(date)
+
+    // Returnerer formatert dato
+    return outputFormatter.format(parsedDate)
+}
+
 // Returnerer klokkeslett i formatet "HH:mm:ss"
 fun getCurrentTime(): String {
     val formatter = SimpleDateFormat("HH:mm:ss", Locale.getDefault())

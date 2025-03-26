@@ -22,8 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.mapbox.maps.extension.style.style
 import no.uio.ifi.in2000_gruppe3.data.date.getCurrentTime
+import no.uio.ifi.in2000_gruppe3.data.date.getDateFormatted
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
+import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
@@ -37,7 +40,9 @@ fun LocationForecastSmallCard(
     navController: NavHostController
 ) {
     val todaysDate = getTodaysDate()
+    val dateFormatted = getDateFormatted(date)
     val currentTime = getCurrentTime()
+    val todaysDay = getTodaysDay()
 
     Card(
         modifier = Modifier
@@ -53,7 +58,7 @@ fun LocationForecastSmallCard(
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Text(
-                text = day,
+                text = if (todaysDay == day) "I dag $dateFormatted" else "$day $dateFormatted",
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.align(Alignment.Start)
             )
