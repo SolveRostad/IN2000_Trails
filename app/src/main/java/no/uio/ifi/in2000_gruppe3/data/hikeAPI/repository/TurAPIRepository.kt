@@ -1,7 +1,7 @@
-package no.uio.ifi.in2000_gruppe3.data.turAPI.repository
+package no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository
 
-import no.uio.ifi.in2000_gruppe3.data.turAPI.datasource.TurAPIDatasource
-import no.uio.ifi.in2000_gruppe3.data.turAPI.models.Hikes
+import no.uio.ifi.in2000_gruppe3.data.hikeAPI.datasource.TurAPIDatasource
+import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Hikes
 
 /**
  * Repository for the TurAPI

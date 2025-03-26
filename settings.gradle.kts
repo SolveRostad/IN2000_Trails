@@ -29,6 +29,7 @@ dependencyResolutionManagement {
                 password = providers.gradleProperty("MAPBOX_SECRET_TOKEN").get()
             }
         }
+        maven("https://jitpack.io")
     }
 }
 

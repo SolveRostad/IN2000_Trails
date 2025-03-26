@@ -32,7 +32,6 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 fun FavoriteScreen(
     favoritesViewModel: FavoritesViewModel,
     hikeScreenViewModel: HikeScreenViewModel,
-    homeScreenViewModel: HomeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {

@@ -19,22 +19,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
-fun MapStyleDropdownMenu(
-    mapBoxViewModel: HomeScreenViewModel,
-    mapboxViewModel: MapboxViewModel,
-    modifier: Modifier = Modifier
-) {
-    val uiState by mapBoxViewModel.homeScreenUIState.collectAsState()
-
+fun MapStyleDropdownMenu(mapboxViewModel: MapboxViewModel) {
+    val mapboxUiState = mapboxViewModel.mapboxUIState.collectAsState()
     var expanded by remember { mutableStateOf(false) }
 
     Box(
-        modifier = modifier.padding(5.dp, 30.dp),
+        modifier = Modifier.padding(5.dp, 35.dp),
         contentAlignment = Alignment.TopEnd
     ) {
         Column {
@@ -42,50 +37,25 @@ fun MapStyleDropdownMenu(
                 Icon(
                     imageVector = Icons.Default.Settings,
                     contentDescription = "Settings",
+                    tint = if (mapboxUiState.value.mapStyle == MapStyles.OUTDOORS) Color.Unspecified else Color.White
                 )
             }
-
             DropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
                 modifier = Modifier.width(80.dp)
             ) {
                 DropdownMenuItem(
-                    text = {
-                        Text(
-                            "Natur",
-                            modifier = Modifier.width(100.dp),
-                            textAlign = TextAlign.Center
-                        )
-                    },
+                    text = { Text("Natur", modifier = Modifier.width(100.dp), textAlign = TextAlign.Center) },
                     onClick = {
-                        mapboxViewModel.updateMapStyle(MapStyle.OUTDOORS)
+                        mapboxViewModel.updateMapStyle(MapStyles.OUTDOORS)
                         expanded = false
-                    }
+                    },
                 )
                 DropdownMenuItem(
-                    text = {
-                        Text(
-                            "Satellitt",
-                            modifier = Modifier.width(100.dp),
-                            textAlign = TextAlign.Center
-                        )
-                    },
+                    text = { Text("Satellitt", modifier = Modifier.width(100.dp), textAlign = TextAlign.Center) },
                     onClick = {
-                        mapboxViewModel.updateMapStyle(MapStyle.SATELLITE)
-                        expanded = false
-                    }
-                )
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            "Dag",
-                            modifier = Modifier.width(100.dp),
-                            textAlign = TextAlign.Center
-                        )
-                    },
-                    onClick = {
-                        mapboxViewModel.updateMapStyle(MapStyle.STANDARD)
+                        mapboxViewModel.updateMapStyle(MapStyles.STANDARD_SATELLITE)
                         expanded = false
                     }
                 )

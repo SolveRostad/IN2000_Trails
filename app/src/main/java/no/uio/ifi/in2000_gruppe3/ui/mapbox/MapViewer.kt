@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000_gruppe3.ui.mapbox
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -10,12 +11,21 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.mapbox.geojson.Point
+import com.mapbox.maps.Style
 import com.mapbox.maps.dsl.cameraOptions
 import com.mapbox.maps.extension.compose.MapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
 import com.mapbox.maps.extension.compose.annotation.rememberIconImage
+import com.mapbox.maps.extension.compose.style.MapStyle
+import com.mapbox.maps.extension.compose.style.standard.LightPresetValue
+import com.mapbox.maps.extension.compose.style.standard.MapboxStandardStyle
+import com.mapbox.maps.extension.style.layers.addLayer
+import com.mapbox.maps.extension.style.layers.generated.LineLayer
+import com.mapbox.maps.extension.style.sources.addSource
+import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
@@ -59,14 +69,19 @@ fun MapViewer(
     MapboxMap(
         modifier = Modifier.fillMaxSize(),
         mapViewportState = mapViewportState,
-
         onMapClickListener = { point ->
             mapboxViewModel.updatePointerCoordinates(point)
             true
         },
         scaleBar = {},
         logo = {},
-        attribution = {}
+        attribution = {},
+        style = {
+            when (mapboxUIState.mapStyle) {
+                MapStyles.OUTDOORS -> MapStyle(style = Style.OUTDOORS)
+                MapStyles.STANDARD_SATELLITE -> MapStyle(style = Style.STANDARD_SATELLITE)
+            }
+        },
     ) {
         // Adds hikes to map
         MapEffect(homeScreenUIState.hikes) { mapView ->
@@ -86,18 +101,20 @@ fun MapViewer(
     Row(
         modifier = Modifier.fillMaxSize(),
         horizontalArrangement = Arrangement.Center
-    ) {
+    ){
         // Legger til temperatur på kartet
-        ForecastDisplay(homeScreenViewModel, modifier = Modifier.padding(end = 8.dp))
+        ForecastDisplay(
+            homeScreenViewModel,
+            mapboxViewModel
+        )
 
         // Søkefelt for å søke etter steder
-        SearchBarForMap(mapboxViewModel, modifier = Modifier)
+        SearchBarForMap(
+            mapboxViewModel,
+            modifier = Modifier.padding(top = 11.dp)
+        )
 
         // Dropdown menu for å velge kartstil
-        MapStyleDropdownMenu(
-            homeScreenViewModel,
-            mapboxViewModel,
-            modifier = Modifier.padding(start = 8.dp)
-        )
+        MapStyleDropdownMenu(mapboxViewModel)
     }
 }

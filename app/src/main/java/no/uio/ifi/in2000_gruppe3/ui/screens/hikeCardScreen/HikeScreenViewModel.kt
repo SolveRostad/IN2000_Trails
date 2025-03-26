@@ -5,9 +5,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import no.uio.ifi.in2000_gruppe3.data.turAPI.models.Feature
-import no.uio.ifi.in2000_gruppe3.data.turAPI.models.Geometry
-import no.uio.ifi.in2000_gruppe3.data.turAPI.models.Properties
+import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
+import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Geometry
+import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Properties
 
 class HikeScreenViewModel: ViewModel() {
     private val _hikeScreenUIState = MutableStateFlow<HikeScreenUIState> (

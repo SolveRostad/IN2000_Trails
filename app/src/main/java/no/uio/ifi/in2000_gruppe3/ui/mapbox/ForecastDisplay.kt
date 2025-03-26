@@ -22,8 +22,7 @@ fun getWeatherIconUrl(symbolCode: String): String {
         Log.d("WeatherIcon", "symbolCode is null or empty!")
         iconUrl = "https://example.com/default-icon.png"  // Fallback URL
     } else {
-        iconUrl =
-            "https://raw.githubusercontent.com/metno/weathericons/refs/heads/main/weather/png/$symbolCode.png"
+        iconUrl = "https://raw.githubusercontent.com/metno/weathericons/refs/heads/main/weather/png/$symbolCode.png"
     }
     Log.d("WeatherIcon", "Icon URL: $iconUrl")  //logging for URL
     return iconUrl
@@ -31,43 +30,43 @@ fun getWeatherIconUrl(symbolCode: String): String {
 
 @Composable
 fun ForecastDisplay(
-    viewModel: HomeScreenViewModel,
-    modifier: Modifier = Modifier
+    homeScreenViewModel: HomeScreenViewModel,
+    mapboxViewModel: MapboxViewModel
 ) {
-    val uiState = viewModel.homeScreenUIState.collectAsState().value
+    val homeScreenUiState = homeScreenViewModel.homeScreenUIState.collectAsState().value
+    val mapboxUiState = mapboxViewModel.mapboxUIState.collectAsState().value
+    val mapStyle = mapboxUiState.mapStyle
 
-    if (uiState.forecast != null) {
-        val firstTimeseries = uiState.forecast.properties.timeseries.firstOrNull()
+    if (homeScreenUiState.forecast != null) {
+        val firstTimeseries = homeScreenUiState.forecast.properties.timeseries.firstOrNull()
         val temperature = firstTimeseries?.data?.instant?.details?.air_temperature
 
         val symbolCode = firstTimeseries?.data?.next_1_hours?.summary?.symbol_code
         val iconURL = getWeatherIconUrl(symbolCode.toString())
 
-        val temperatureTextColor = Color.White
+        val temperatureTextColor = if (mapStyle == MapStyles.STANDARD_SATELLITE) Color.White else Color.Black
 
-        Box(
-            modifier = modifier.padding(10.dp, 20.dp),
+        Box (
+            modifier = Modifier.padding(10.dp, 20.dp),
             contentAlignment = Alignment.TopStart
-        ) {
-            Image(
-                painter = rememberAsyncImagePainter(iconURL),
-                contentDescription = "Vær-ikon",
-                modifier = Modifier
-                    .size(60.dp)
-                    .padding(end = 10.dp)
-            )
-            Text(
-                text = if (temperature != null) {
-                    "$temperature °C"
-                } else {
-                    "Ingen temperaturdata tilgjengelig"
-                },
-                style = MaterialTheme.typography.titleMedium,
-                color = temperatureTextColor,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter) // Plasserer teksten i bunnen av boksen
-                    .padding(top = 50.dp)
-            )
+        ){
+            if (temperature != null) {
+                Image(
+                    painter = rememberAsyncImagePainter(iconURL),
+                    contentDescription = "Vær-ikon",
+                    modifier = Modifier
+                        .size(60.dp)
+                        .padding(end = 10.dp)
+                )
+                Text(
+                    text = "$temperature°C",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = temperatureTextColor,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter) // Plasserer teksten i bunnen av boksen
+                        .padding(top = 50.dp)
+                )
+            }
         }
     }
 }

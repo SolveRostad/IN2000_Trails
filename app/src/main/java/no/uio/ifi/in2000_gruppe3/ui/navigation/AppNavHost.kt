@@ -8,6 +8,8 @@ import androidx.navigation.compose.rememberNavController
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoriteScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.geminiScreen.GeminiScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.geminiScreen.GeminiViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreen
@@ -17,11 +19,12 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 fun AppNavHost() {
     val navController = rememberNavController()
 
-    //view models
+    // ViewModels
     val homeScreenViewModel: HomeScreenViewModel = viewModel()
     val hikeScreenViewModel: HikeScreenViewModel = viewModel()
     val favoritesViewModel: FavoritesViewModel = viewModel()
     val mapboxViewModel: MapboxViewModel = viewModel()
+    val geminiViewModel: GeminiViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -42,19 +45,26 @@ fun AppNavHost() {
             FavoriteScreen(
                 favoritesViewModel = favoritesViewModel,
                 hikeScreenViewModel = hikeScreenViewModel,
-                homeScreenViewModel = homeScreenViewModel,
                 mapboxViewModel = mapboxViewModel,
                 navController = navController
             )
         }
 
         // HikeCard screen
-        composable(route = Screen.HikeScreen.route) {
+        composable(Screen.HikeScreen.route) {
             HikeScreen(
                 homeScreenViewModel = homeScreenViewModel,
                 hikeScreenviewModel = hikeScreenViewModel,
                 favoritesViewModel = favoritesViewModel,
                 mapboxViewModel = mapboxViewModel,
+                navController = navController
+            )
+        }
+
+        // Gemini screen
+        composable(Screen.Gemini.route) {
+            GeminiScreen(
+                geminiViewModel = geminiViewModel,
                 navController = navController
             )
         }

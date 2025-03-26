@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.data.favorites.repository.FeatureRepository
-import no.uio.ifi.in2000_gruppe3.data.turAPI.models.Feature
+import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 
 class FavoritesViewModel(application: Application): AndroidViewModel(application) {
     private val favoriteRepository =  FeatureRepository()

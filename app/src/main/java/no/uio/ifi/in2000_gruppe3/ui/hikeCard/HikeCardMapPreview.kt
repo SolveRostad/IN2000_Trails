@@ -21,8 +21,8 @@ import com.mapbox.geojson.BoundingBox
 import com.mapbox.geojson.Point
 import no.uio.ifi.in2000_gruppe3.BuildConfig
 import no.uio.ifi.in2000_gruppe3.R
-import no.uio.ifi.in2000_gruppe3.data.turAPI.models.Feature
-import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapStyle
+import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapStyles
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxUIState
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 
@@ -113,10 +113,8 @@ private fun createStaticMapUrl(
     // Velger mapstyle
     val mapStyle = uiState.mapStyle
     var mapStyleUrl = when (mapStyle) {
-        MapStyle.STANDARD -> "streets-v11"
-        MapStyle.SATELLITE -> "satellite-v9"
-        MapStyle.OUTDOORS -> "outdoors-v12"
-        else -> "streets-v11"
+        MapStyles.OUTDOORS -> "outdoors-v12"
+        MapStyles.STANDARD_SATELLITE -> "satellite-v9"
     }
 
     // Turens farge

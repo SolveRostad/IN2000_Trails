@@ -18,14 +18,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import no.uio.ifi.in2000_gruppe3.data.turAPI.models.Feature
+import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 
 class MapboxViewModel() : ViewModel() {
     private val placeAutocomplete = PlaceAutocomplete.create()
 
     private val _mapboxUIState: MutableStateFlow<MapboxUIState> = MutableStateFlow(
         MapboxUIState(
-            mapStyle = MapStyle.OUTDOORS,
+            mapStyle = MapStyles.OUTDOORS,
             pointerCoordinates = Point.fromLngLat(10.661952, 59.846195),
             lineLayers = emptyList(),
             searchResponse = emptyList(),
@@ -34,7 +34,7 @@ class MapboxViewModel() : ViewModel() {
     )
     var mapboxUIState: StateFlow<MapboxUIState> = _mapboxUIState
 
-    fun updateMapStyle(style: MapStyle) {
+    fun updateMapStyle(style: MapStyles) {
         viewModelScope.launch {
             _mapboxUIState.update {
                 it.copy(mapStyle = style)
@@ -154,7 +154,7 @@ class MapboxViewModel() : ViewModel() {
 }
 
 data class MapboxUIState(
-    val mapStyle: MapStyle,
+    val mapStyle: MapStyles,
     val pointerCoordinates: Point,
     val lineLayers: List<LineLayer>,
 
@@ -164,8 +164,7 @@ data class MapboxUIState(
     val isLoading: Boolean = false
 )
 
-enum class MapStyle {
-    STANDARD,
-    SATELLITE,
+enum class MapStyles {
+    STANDARD_SATELLITE,
     OUTDOORS
 }
