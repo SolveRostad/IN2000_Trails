@@ -1,5 +1,7 @@
 package no.uio.ifi.in2000_gruppe3.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -14,9 +16,10 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastDetailedScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastScreen
-import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.WeatherForecastDetailedScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavHost() {
     val navController = rememberNavController()
@@ -75,7 +78,7 @@ fun AppNavHost() {
 
         // Location forecast detailed screen
         composable(Screen.LocationForecastDetailed.route) {
-            WeatherForecastDetailedScreen(
+            LocationForecastDetailedScreen(
                 navController
             )
         }

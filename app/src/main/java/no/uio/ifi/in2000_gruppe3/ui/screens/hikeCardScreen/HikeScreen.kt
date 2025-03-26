@@ -15,8 +15,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -37,8 +35,6 @@ fun HikeScreen(
     mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
-    val uiState by hikeScreenviewModel.hikeScreenUIState.collectAsState()
-
     Scaffold(
         topBar = {
             TopAppBar(

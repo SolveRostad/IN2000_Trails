@@ -1,9 +1,7 @@
 package no.uio.ifi.in2000_gruppe3.ui.locationForecast
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,10 +17,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.mapbox.maps.extension.style.style
 import no.uio.ifi.in2000_gruppe3.data.date.getCurrentTime
 import no.uio.ifi.in2000_gruppe3.data.date.getDateFormatted
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
