@@ -1,9 +1,8 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen
+package no.uio.ifi.in2000_gruppe3.ui.screens.weatherForecast
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,28 +17,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
-import no.uio.ifi.in2000_gruppe3.ui.hikeCard.HikeCard
-import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
-import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.weatherForecast.WeatherForecastSmallCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HikeScreen(
-    homeScreenViewModel: HomeScreenViewModel,
-    favoritesViewModel: FavoritesViewModel,
-    hikeScreenviewModel: HikeScreenViewModel,
-    mapboxViewModel: MapboxViewModel,
+fun LocationForecastScreen(
+    hikeScreenViewModel: HikeScreenViewModel,
     navController: NavHostController
 ) {
-    val uiState by hikeScreenviewModel.hikeScreenUIState.collectAsState()
+    val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
+    val weekdays = listOf("Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag")
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {Text(text = getTodaysDate())},
+                title = { Text(hikeUIState.feature.properties.rutenavn) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -52,20 +46,14 @@ fun HikeScreen(
         },
         bottomBar = { BottomBar(navController = navController) }
     ) { paddingValues ->
-        Column(
+        Column (
             modifier = Modifier
-                .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(16.dp)
         ) {
-            HikeCard(
-                homeScreenViewModel,
-                hikeScreenviewModel,
-                mapboxViewModel,
-                favoritesViewModel,
-                navController
-            )
+            weekdays.forEach { day ->
+                WeatherForecastSmallCard(day, navController)
+            }
         }
     }
 }

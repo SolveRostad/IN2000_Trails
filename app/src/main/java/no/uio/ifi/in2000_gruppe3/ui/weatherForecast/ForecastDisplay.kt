@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.ui.mapbox
+package no.uio.ifi.in2000_gruppe3.ui.weatherForecast
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -14,6 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapStyles
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 fun getWeatherIconUrl(symbolCode: String): String {

@@ -9,5 +9,6 @@ sealed class Screen(val route: String) {
     object HikeScreen : Screen("hikeScreen")
     object Favorites : Screen("favorites")
     object LocationForecast : Screen("locationForecast")
+    object LocationForecastDetailed: Screen("locationForecastDetailed")
     object Gemini : Screen("gemini")
 }
