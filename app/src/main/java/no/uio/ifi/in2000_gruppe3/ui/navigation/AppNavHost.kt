@@ -66,7 +66,9 @@ fun AppNavHost() {
         // Location forecast screen
         composable(Screen.LocationForecast.route) {
             LocationForecastScreen(
-                hikeScreenViewModel,
+                homeScreenViewModel = homeScreenViewModel,
+                hikeScreenViewModel = hikeScreenViewModel,
+                mapboxViewModel = mapboxViewModel,
                 navController = navController
             )
         }

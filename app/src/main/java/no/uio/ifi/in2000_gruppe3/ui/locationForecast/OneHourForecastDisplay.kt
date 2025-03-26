@@ -31,7 +31,7 @@ fun getWeatherIconUrl(symbolCode: String): String {
 }
 
 @Composable
-fun ForecastDisplay(
+fun OneHourForecastDisplay(
     homeScreenViewModel: HomeScreenViewModel,
     mapboxViewModel: MapboxViewModel
 ) {

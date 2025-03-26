@@ -2,6 +2,7 @@ package no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -16,14 +17,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import no.uio.ifi.in2000_gruppe3.ui.locationForecast.LocationForecastSmallCard
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.locationForecast.WeatherForecastSmallCard
+import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LocationForecastScreen(
+    homeScreenViewModel: HomeScreenViewModel,
     hikeScreenViewModel: HikeScreenViewModel,
+    mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
@@ -45,13 +50,20 @@ fun LocationForecastScreen(
         },
         bottomBar = { BottomBar(navController = navController) }
     ) { paddingValues ->
-        Column (
+        LazyColumn (
             modifier = Modifier
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            weekdays.forEach { day ->
-                WeatherForecastSmallCard(day, navController)
+            item {
+                weekdays.forEach { day ->
+                    LocationForecastSmallCard(
+                        day,
+                        homeScreenViewModel,
+                        mapboxViewModel,
+                        navController
+                    )
+                }
             }
         }
     }
