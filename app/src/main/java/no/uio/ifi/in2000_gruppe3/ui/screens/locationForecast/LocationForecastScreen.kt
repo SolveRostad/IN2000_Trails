@@ -1,8 +1,7 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.weatherForecast
+package no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.weatherForecast.WeatherForecastSmallCard
+import no.uio.ifi.in2000_gruppe3.ui.locationForecast.WeatherForecastSmallCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

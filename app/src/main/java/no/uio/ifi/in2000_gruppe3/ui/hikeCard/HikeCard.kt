@@ -28,7 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import no.uio.ifi.in2000_gruppe3.ui.weatherForecast.ForecastDisplay
+import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel

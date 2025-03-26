@@ -14,8 +14,8 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.weatherForecast.LocationForecastScreen
-import no.uio.ifi.in2000_gruppe3.ui.screens.weatherForecast.WeatherForecastDetailedScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.WeatherForecastDetailedScreen
 
 @Composable
 fun AppNavHost() {

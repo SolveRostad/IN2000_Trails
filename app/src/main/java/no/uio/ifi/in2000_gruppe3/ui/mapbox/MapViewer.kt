@@ -20,7 +20,7 @@ import com.mapbox.maps.extension.compose.annotation.rememberIconImage
 import com.mapbox.maps.extension.compose.style.MapStyle
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.weatherForecast.ForecastDisplay
+import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
 
 /**
  * MapViewer er en composable som viser et kart med mulighet for å velge kartstil og lysmåte

@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.weatherForecast
+package no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
-import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
