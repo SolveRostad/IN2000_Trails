@@ -11,11 +11,10 @@ import no.uio.ifi.in2000_gruppe3.data.geminiAI.models.GeminiResponse
 import no.uio.ifi.in2000_gruppe3.data.geminiAI.repository.GeminiRepository
 
 class GeminiViewModel: ViewModel() {
-    //private val geminiRepository = GeminiRepository()
+    private val geminiRepository = GeminiRepository()
 
     private val _geminiUIState = MutableStateFlow(GeminiUIState())
     val geminiUIState: StateFlow<GeminiUIState> = _geminiUIState
-
 
     fun askQuestion(question: String) {
         viewModelScope.launch {
@@ -23,7 +22,8 @@ class GeminiViewModel: ViewModel() {
                 _geminiUIState.update {
                     it.copy(isLoading = true)
                 }
-//                when (val response = geminiRepository.getResponse(question)) {
+//                val response = geminiRepository.getResponse(question)
+//                when (response) {
 //                    is GeminiResponse.Success -> {
 //                        _geminiUIState.update {
 //                            it.copy(response = response.text, isLoading = false)
