@@ -5,7 +5,8 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -39,7 +40,8 @@ fun ForecastDisplay(
     homeScreenViewModel: HomeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     timeseries: String = "instant", // instant som standard
-    date: String = getTodaysDate() // dagens dato som standard
+    date: String = getTodaysDate(), // dagens dato som standard
+    modifier: Modifier = Modifier
 ) {
     val homeScreenUiState = homeScreenViewModel.homeScreenUIState.collectAsState().value
     val mapboxUiState = mapboxViewModel.mapboxUIState.collectAsState().value
@@ -52,7 +54,7 @@ fun ForecastDisplay(
             "00-06" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T06:00:00Z" }
             "06-12" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T12:00:00Z" }
             "12-18" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T18:00:00Z" }
-            "18-00" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T23:00:00Z" }
+            "18-00" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T20:00:00Z" }
             else -> homeScreenUiState.forecast.properties.timeseries.firstOrNull()
         }
         val temperature = chosenTimeSeries?.data?.instant?.details?.air_temperature
@@ -61,7 +63,7 @@ fun ForecastDisplay(
         val temperatureTextColor = if (mapStyle == MapStyles.STANDARD_SATELLITE) Color.White else Color.Black
 
         Box (
-            modifier = Modifier.padding(10.dp, 20.dp),
+            modifier = modifier,
             contentAlignment = Alignment.TopStart
         ){
             if (temperature != null) {
@@ -70,15 +72,17 @@ fun ForecastDisplay(
                     contentDescription = "Vær-ikon",
                     modifier = Modifier
                         .size(60.dp)
-                        .padding(end = 10.dp)
+                        .align(Alignment.TopCenter)
                 )
+
+                Spacer(modifier = Modifier.height(65.dp))
+
                 Text(
                     text = "$temperature°C",
                     style = MaterialTheme.typography.titleMedium,
                     color = temperatureTextColor,
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .padding(top = 50.dp)
                 )
             }
         }
