@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mapbox.geojson.Point
+import com.mapbox.maps.Style
 import com.mapbox.maps.extension.style.layers.generated.LineLayer
 import com.mapbox.search.autocomplete.PlaceAutocomplete
 import com.mapbox.search.autocomplete.PlaceAutocompleteSuggestion
@@ -17,7 +18,7 @@ class MapboxViewModel() : ViewModel() {
 
     private val _mapboxUIState: MutableStateFlow<MapboxUIState> = MutableStateFlow(
         MapboxUIState(
-            mapStyle = MapStyles.OUTDOORS,
+            mapStyle = Style.OUTDOORS,
             pointerCoordinates = Point.fromLngLat(10.661952, 59.846195),
             lineLayers = emptyList(),
             searchResponse = emptyList(),
@@ -26,7 +27,7 @@ class MapboxViewModel() : ViewModel() {
     )
     var mapboxUIState: StateFlow<MapboxUIState> = _mapboxUIState
 
-    fun updateMapStyle(style: MapStyles) {
+    fun updateMapStyle(style: String) {
         viewModelScope.launch {
             _mapboxUIState.update {
                 it.copy(mapStyle = style)
@@ -89,7 +90,7 @@ class MapboxViewModel() : ViewModel() {
 }
 
 data class MapboxUIState(
-    val mapStyle: MapStyles,
+    val mapStyle: String,
     val pointerCoordinates: Point,
     val lineLayers: List<LineLayer>,
 
@@ -98,8 +99,3 @@ data class MapboxUIState(
 
     val isLoading: Boolean = false
 )
-
-enum class MapStyles {
-    STANDARD_SATELLITE,
-    OUTDOORS
-}

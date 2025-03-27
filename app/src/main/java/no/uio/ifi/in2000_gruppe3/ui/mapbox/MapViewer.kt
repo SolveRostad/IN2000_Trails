@@ -2,27 +2,25 @@ package no.uio.ifi.in2000_gruppe3.ui.mapbox
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import com.mapbox.geojson.Point
-import com.mapbox.maps.Style
 import com.mapbox.maps.dsl.cameraOptions
 import com.mapbox.maps.extension.compose.MapboxMap
+import com.mapbox.maps.extension.compose.MapboxMapComposable
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
 import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotation
 import com.mapbox.maps.extension.compose.annotation.rememberIconImage
 import com.mapbox.maps.extension.compose.style.MapStyle
 import no.uio.ifi.in2000_gruppe3.R
-import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
+import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 /**
@@ -36,6 +34,7 @@ fun MapViewer(
 ) {
     val homeScreenUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
+    val focusManager = LocalFocusManager.current
 
     val mapViewportState = rememberMapViewportState {
         setCameraOptions {
@@ -46,7 +45,7 @@ fun MapViewer(
         }
     }
 
-    // Update viewport and fetch turer when pointer coordinates change
+    // Update viewport and fetch hikes when pointer coordinates change
     LaunchedEffect(mapboxUIState.pointerCoordinates, mapboxUIState.mapStyle) {
         mapViewportState.easeTo(
             cameraOptions {
@@ -69,57 +68,38 @@ fun MapViewer(
         modifier = Modifier.fillMaxSize(),
         mapViewportState = mapViewportState,
         onMapClickListener = { point ->
+            focusManager.clearFocus()
             mapboxViewModel.updatePointerCoordinates(point)
             true
         },
         scaleBar = {},
         logo = {},
         attribution = {},
-        style = {
-            when (mapboxUIState.mapStyle) {
-                MapStyles.OUTDOORS -> MapStyle(style = Style.OUTDOORS)
-                MapStyles.STANDARD_SATELLITE -> MapStyle(style = Style.STANDARD_SATELLITE)
-            }
-        },
+        style = { MapStyle(mapboxUIState.mapStyle) }
     ) {
-        // Adds hikes to map
         homeScreenUIState.hikes.forEach { feature ->
-            val points = feature.geometry.coordinates.map { coordinate ->
-                Point.fromLngLat(coordinate[0], coordinate[1])
-            }
-            PolylineAnnotation(
-                points = points
-            ) {
-                lineColor = feature.color
-                lineWidth = 5.0
-                lineOpacity = 0.7
-            }
+            PolyLine(feature)
         }
-
-        // Adds marker for pointer location
         val marker = rememberIconImage(R.drawable.red_marker)
         PointAnnotation(point = mapboxUIState.pointerCoordinates) {
             iconImage = marker
         }
     }
+}
 
-    Row(
-        modifier = Modifier.fillMaxSize(),
-        horizontalArrangement = Arrangement.Center
+@Composable
+@MapboxMapComposable
+fun PolyLine(feature: Feature) {
+    val points = feature.geometry.coordinates.map { coordinate ->
+        Point.fromLngLat(coordinate[0], coordinate[1])
+    }
+    PolylineAnnotation(
+        points = points
     ) {
-        // Legger til temperatur på kartet
-        ForecastDisplay(
-            homeScreenViewModel,
-            mapboxViewModel
-        )
-
-        // Søkefelt for å søke etter steder
-        SearchBarForMap(
-            mapboxViewModel,
-            modifier = Modifier.padding(top = 11.dp)
-        )
-
-        // Dropdown menu for å velge kartstil
-        MapStyleDropdownMenu(mapboxViewModel)
+        lineColor = feature.color
+        lineWidth = 7.0
+        lineOpacity = 0.7
+        lineBorderColor = Color.White
+        lineBorderWidth = 2.0
     }
 }

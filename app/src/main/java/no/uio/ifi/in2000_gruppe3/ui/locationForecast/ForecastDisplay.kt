@@ -16,8 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.mapbox.maps.Style
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
-import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapStyles
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
@@ -27,7 +27,8 @@ fun getWeatherIconUrl(symbolCode: String): String {
         Log.d("WeatherIcon", "symbolCode is null or empty!")
         iconUrl = "https://example.com/default-icon.png"  // Fallback URL
     } else {
-        iconUrl = "https://raw.githubusercontent.com/metno/weathericons/refs/heads/main/weather/png/$symbolCode.png"
+        iconUrl =
+            "https://raw.githubusercontent.com/metno/weathericons/refs/heads/main/weather/png/$symbolCode.png"
     }
     Log.d("WeatherIcon", "Icon URL: $iconUrl")  //logging for URL
     return iconUrl
@@ -38,6 +39,7 @@ fun getWeatherIconUrl(symbolCode: String): String {
 fun ForecastDisplay(
     homeScreenViewModel: HomeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
+    modifier: Modifier = Modifier,
     timeseries: String = "instant", // instant som standard
     date: String = getTodaysDate() // dagens dato som standard
 ) {
@@ -58,12 +60,12 @@ fun ForecastDisplay(
         val temperature = chosenTimeSeries?.data?.instant?.details?.air_temperature
         val symbolCode = chosenTimeSeries?.data?.next_1_hours?.summary?.symbol_code
         val iconURL = getWeatherIconUrl(symbolCode.toString())
-        val temperatureTextColor = if (mapStyle == MapStyles.STANDARD_SATELLITE) Color.White else Color.Black
+        val temperatureTextColor =
+            if (mapStyle == Style.STANDARD_SATELLITE) Color.White else Color.Black
 
-        Box (
-            modifier = Modifier.padding(10.dp, 20.dp),
-            contentAlignment = Alignment.TopStart
-        ){
+        Box(
+            modifier = modifier
+        ) {
             if (temperature != null) {
                 Image(
                     painter = rememberAsyncImagePainter(iconURL),
