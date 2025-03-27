@@ -7,7 +7,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -55,7 +54,7 @@ fun ForecastDisplay(
             "00-06" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T06:00:00Z" }
             "06-12" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T12:00:00Z" }
             "12-18" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T18:00:00Z" }
-            "18-00" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T23:00:00Z" }
+            "18-00" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T20:00:00Z" }
             else -> homeScreenUiState.forecast.properties.timeseries.firstOrNull()
         }
         val temperature = chosenTimeSeries?.data?.instant?.details?.air_temperature
