@@ -51,7 +51,7 @@ fun LocationForecastScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(hikeUIState.feature.properties.rutenavn) },
+                title = { Text(hikeUIState.feature.properties.desc ?: "Ukjent rutenavn") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -64,7 +64,7 @@ fun LocationForecastScreen(
         },
         bottomBar = { BottomBar(navController = navController) }
     ) { paddingValues ->
-        LazyColumn (
+        LazyColumn(
             modifier = Modifier
                 .padding(paddingValues)
                 .padding(16.dp)
@@ -80,7 +80,7 @@ fun LocationForecastScreen(
                         homeScreenViewModel = homeScreenViewModel,
                         hikeScreenViewModel = hikeScreenViewModel,
                         mapboxViewModel = mapboxViewModel,
-                        navController =  navController
+                        navController = navController
                     )
                 }
             }

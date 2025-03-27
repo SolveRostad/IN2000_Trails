@@ -1,11 +1,13 @@
 package no.uio.ifi.in2000_gruppe3.data.hikeAPI.models
 
+import androidx.compose.ui.graphics.Color
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Serializable
 data class Feature(
     val geometry: Geometry,
-    val properties: Properties,
+    val properties: PropertiesX,
     val type: String,
-    var color: String = "rgba(0, 0, 0, 1.0)"
+    @Transient var color: Color? = null
 )

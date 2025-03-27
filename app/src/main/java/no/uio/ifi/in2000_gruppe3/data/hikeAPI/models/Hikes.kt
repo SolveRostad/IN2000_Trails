@@ -4,6 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Hikes(
+    val crs: Crs,
     val features: List<Feature>,
+    val name: String,
     val type: String
 )

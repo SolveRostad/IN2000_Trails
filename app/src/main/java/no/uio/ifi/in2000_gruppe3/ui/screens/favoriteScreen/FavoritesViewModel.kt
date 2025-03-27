@@ -13,18 +13,19 @@ import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.data.favorites.repository.FeatureRepository
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 
-class FavoritesViewModel(application: Application): AndroidViewModel(application) {
-    private val favoriteRepository =  FeatureRepository()
+class FavoritesViewModel(application: Application) : AndroidViewModel(application) {
+    private val favoriteRepository = FeatureRepository()
     private val appContext = getApplication<Application>().applicationContext
 
-    private val _favortiesScreenUIState = MutableStateFlow<FavoritesScreenUIState> (
+    private val _favortiesScreenUIState = MutableStateFlow<FavoritesScreenUIState>(
         FavoritesScreenUIState(favorites = emptyList())
     )
-    val favoritesScreenUIState: StateFlow<FavoritesScreenUIState> = _favortiesScreenUIState.asStateFlow()
+    val favoritesScreenUIState: StateFlow<FavoritesScreenUIState> =
+        _favortiesScreenUIState.asStateFlow()
 
     val hikes = mutableStateListOf<Feature>()
 
-    init{
+    init {
         loadSavedHikes()
     }
 
@@ -72,7 +73,7 @@ class FavoritesViewModel(application: Application): AndroidViewModel(application
         }
     }
 
-    fun viewModelSaveHikes(features: List<Feature>){
+    fun viewModelSaveHikes(features: List<Feature>) {
         viewModelScope.launch {
             _favortiesScreenUIState.update {
                 it.copy(isLoading = true)
@@ -119,7 +120,7 @@ class FavoritesViewModel(application: Application): AndroidViewModel(application
     }
 
     fun isHikeFavorite(feature: Feature): Boolean {
-        return hikes.any { it.properties.rutenavn == feature.properties.rutenavn }
+        return hikes.any { it.properties.desc == feature.properties.desc }
     }
 }
 

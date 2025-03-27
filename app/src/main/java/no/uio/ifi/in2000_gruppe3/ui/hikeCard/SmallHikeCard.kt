@@ -30,7 +30,7 @@ fun SmallHikeCard(
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = feature.properties.rutenavn,
+                text = feature.properties.desc ?: "Ukjent rutenavn",
                 style = MaterialTheme.typography.titleLarge
             )
 

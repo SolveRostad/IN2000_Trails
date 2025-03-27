@@ -40,7 +40,7 @@ fun HikeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {Text(text = hikeUIState.feature.properties.rutenavn)},
+                title = { Text(text = hikeUIState.feature.properties.desc ?: "Ukjent rutenavn") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(

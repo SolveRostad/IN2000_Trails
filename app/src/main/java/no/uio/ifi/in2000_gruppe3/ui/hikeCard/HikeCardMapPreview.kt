@@ -11,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -34,12 +35,8 @@ fun HikeCardMapPreview(
     val coordinates = mutableListOf<Point>()
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
 
-    feature.geometry.coordinates.forEach { coordList ->
-        coordList.forEach { coord ->
-            if (coord.size >= 2) {
-                coordinates.add(Point.fromLngLat(coord[1], coord[0]))
-            }
-        }
+    feature.geometry.coordinates.forEach { coordinate ->
+        coordinates.add(Point.fromLngLat(coordinate[0], coordinate[1]))
     }
 
     // Calculate the center point of the bounding box
@@ -92,42 +89,21 @@ private fun createStaticMapUrl(
     uiState: MapboxUIState,
     feature: Feature
 ): String {
-    // Limit number of coordinates to avoid exceeding URL length limits
-    val simplifiedCoordinates = if (lineCoordinates.size > 100) {
-        simplifyPath(lineCoordinates, 100)
-    } else {
-        lineCoordinates
-    }
-
-    // Build the path string directly from coordinates
-    val polyline = encodePolyline(simplifiedCoordinates)
+    val polyline = encodePolyline(lineCoordinates)
     val encodedPolyline = java.net.URLEncoder.encode(polyline, "UTF-8")
 
-    // Markør for start- og sluttpunkt
-    // Er ikke sikkert dette er riktig punkter
-    val startPoint = simplifiedCoordinates.first()
-    val endPoint = simplifiedCoordinates.last()
+    val startPoint = lineCoordinates.first()
+    val endPoint = lineCoordinates.last()
     val markers = "pin-s+4285F4(${startPoint.longitude()},${startPoint.latitude()})," +
             "pin-s+FF0000(${endPoint.longitude()},${endPoint.latitude()})"
 
-    // Velger mapstyle
     val mapStyle = uiState.mapStyle
     var mapStyleUrl = when (mapStyle) {
         MapStyles.OUTDOORS -> "outdoors-v12"
         MapStyles.STANDARD_SATELLITE -> "satellite-v9"
     }
 
-    // Turens farge
-    val color = rgbaToHex(feature.color)
-
-    /**
-     * Legge til layer på kartet fungerer kanskje for å tegne turen
-     * &addlayer={"id":"road-overlay","type":"line","source":"composite","source-layer":"road","filter":["==",["get","class"],"motorway"],"paint":{"line-color":"%23ff0000","line-width":5}}&before_layer=road-label
-     */
-
-    Log.d("HikeCardMapPreview", "Path string: $encodedPolyline")
-
-    // Build the static map URL with the path
+    val color = colorToHex(feature.color!!)
     return "https://api.mapbox.com/styles/v1/mapbox/${mapStyleUrl}/static/" +
             "path-6+${color}-1($encodedPolyline),${markers}/" +
             "${center.longitude()},${center.latitude()},$zoom,0,0/" +
@@ -136,16 +112,13 @@ private fun createStaticMapUrl(
             "&attribution=false&logo=false" // Remove attribution and logo
 }
 
-// Convert an RGBA color string to a hex color string
-private fun rgbaToHex(rgba: String): String {
-    val regex = Regex("""rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)""")
-    val matchResult = regex.find(rgba)
-    return if (matchResult != null) {
-        val (r, g, b, a) = matchResult.destructured
-        String.format("%02X%02X%02X", r.toInt(), g.toInt(), b.toInt())
-    } else {
-        throw IllegalArgumentException("Invalid RGBA format")
-    }
+private fun colorToHex(color: Color): String {
+    return String.format(
+        "%02x%02x%02x",
+        (color.red * 255).toInt(),
+        (color.green * 255).toInt(),
+        (color.blue * 255).toInt()
+    )
 }
 
 private fun encodePolyline(points: List<Point>): String {
@@ -155,31 +128,6 @@ private fun encodePolyline(points: List<Point>): String {
     )
 }
 
-// Helper function to simplify a path to a maximum number of points
-private fun simplifyPath(points: List<Point>, maxPoints: Int): List<Point> {
-    if (points.size <= maxPoints) return points
-
-    // Always include first and last points
-    val result = mutableListOf(points.first())
-
-    // Calculate how many intermediate points we can include
-    val intermediatePoints = maxPoints - 2
-    if (intermediatePoints <= 0) return listOf(points.first(), points.last())
-
-    // Find critical turning points by measuring distance or angle changes
-    val pointsWithoutEndpoints = points.subList(1, points.size - 1)
-    val step = pointsWithoutEndpoints.size / intermediatePoints
-
-    for (i in 0 until intermediatePoints) {
-        val index = (i * step).coerceAtMost(pointsWithoutEndpoints.size - 1)
-        result.add(pointsWithoutEndpoints[index])
-    }
-
-    result.add(points.last())
-    return result
-}
-
-// Calculate the bounding box of a set of coordinates
 private fun getBoundingBox(points: List<Point>): BoundingBox {
     if (points.isEmpty()) return BoundingBox.fromLngLats(0.0, 0.0, 0.0, 0.0)
 
@@ -196,8 +144,8 @@ private fun getBoundingBox(points: List<Point>): BoundingBox {
     }
 
     // Legg til en buffer basert på størrelsen på bounding box
-    val latBuffer = (maxLat - minLat) * 0.5
-    val lngBuffer = (maxLng - minLng) * 0.5
+    val latBuffer = (maxLat - minLat)
+    val lngBuffer = (maxLng - minLng)
 
     return BoundingBox.fromLngLats(
         minLng - lngBuffer,
