@@ -27,38 +27,40 @@ fun SuggestionColumn(mapboxViewModel: MapboxViewModel) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White)
-            .padding(horizontal = 10.dp),
-        contentPadding = PaddingValues(10.dp)
-    ) {
-        items(mapboxUIState.searchResponse) { suggestion ->
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        mapboxViewModel.getSelectedSearchResultPoint(suggestion)
-                        keyboardController?.hide()
-                        focusManager.clearFocus()
+    if (mapboxUIState.searchResponse.isNotEmpty() && mapboxUIState.searchQuery != "") {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White)
+                .padding(horizontal = 10.dp),
+            contentPadding = PaddingValues(10.dp)
+        ) {
+            items(mapboxUIState.searchResponse) { suggestion ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            mapboxViewModel.getSelectedSearchResultPoint(suggestion)
+                            keyboardController?.hide()
+                            focusManager.clearFocus()
 
-                    }
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = suggestion.name,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-                suggestion.formattedAddress?.let {
+                        }
+                        .padding(16.dp)
+                ) {
                     Text(
-                        text = it,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        text = suggestion.name,
+                        style = MaterialTheme.typography.bodyLarge
                     )
+                    suggestion.formattedAddress?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
+                HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray)
             }
-            HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray)
         }
     }
 }

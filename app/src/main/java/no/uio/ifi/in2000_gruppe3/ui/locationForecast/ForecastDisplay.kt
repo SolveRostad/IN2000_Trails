@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,14 +44,19 @@ fun ForecastDisplay(
     modifier: Modifier = Modifier,
     timeseries: String = "instant", // instant som standard
     date: String = getTodaysDate(), // dagens dato som standard
-    modifier: Modifier = Modifier
 ) {
     val homeScreenUiState = homeScreenViewModel.homeScreenUIState.collectAsState().value
-    val mapboxUiState = mapboxViewModel.mapboxUIState.collectAsState().value
-    val mapStyle = mapboxUiState.mapStyle
+    val mapboxUIState = mapboxViewModel.mapboxUIState.collectAsState().value
+    val mapStyle = mapboxUIState.mapStyle
+
+    LaunchedEffect(mapboxUIState.pointerCoordinates) {
+        homeScreenViewModel.fetchForecast(
+            mapboxUIState.pointerCoordinates.latitude(),
+            mapboxUIState.pointerCoordinates.longitude()
+        )
+    }
 
     if (homeScreenUiState.forecast != null) {
-
         val chosenTimeSeries = when (timeseries) {
             "instant" -> homeScreenUiState.forecast.properties.timeseries.firstOrNull()
             "00-06" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T06:00:00Z" }

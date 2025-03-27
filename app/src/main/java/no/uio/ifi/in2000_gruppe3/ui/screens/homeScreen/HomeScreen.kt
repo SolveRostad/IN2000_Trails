@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import no.uio.ifi.in2000_gruppe3.ui.loaders.HikeManLoader
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
 import no.uio.ifi.in2000_gruppe3.ui.mapSearchbar.SearchBarForMap
 import no.uio.ifi.in2000_gruppe3.ui.mapSearchbar.SuggestionColumn
@@ -29,7 +30,6 @@ import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomSheetDrawer
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     homeScreenViewModel: HomeScreenViewModel,
@@ -37,15 +37,7 @@ fun HomeScreen(
     mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
-    val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
 
-    // Oppdaterer ViewportState når pekerposisjonen endres
-    LaunchedEffect(mapboxUIState.pointerCoordinates) {
-        homeScreenViewModel.fetchForecast(
-            mapboxUIState.pointerCoordinates.latitude(),
-            mapboxUIState.pointerCoordinates.longitude()
-        )
-    }
 
     Scaffold(
         bottomBar = { BottomBar(navController = navController) }
@@ -66,12 +58,15 @@ fun HomeScreen(
                     homeScreenViewModel,
                     mapboxViewModel
                 )
+
+                HikeManLoader()
                 Column {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(
                             3.dp,
                             Alignment.CenterHorizontally
                         ),
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .padding(start = 10.dp, end = 10.dp, top = 25.dp)
                     ) {
@@ -86,9 +81,7 @@ fun HomeScreen(
                             mapboxViewModel
                         )
                     }
-                    if (mapboxUIState.searchResponse.isNotEmpty() && mapboxUIState.searchQuery != "") {
-                        SuggestionColumn(mapboxViewModel)
-                    }
+                    SuggestionColumn(mapboxViewModel)
                 }
             }
         }
