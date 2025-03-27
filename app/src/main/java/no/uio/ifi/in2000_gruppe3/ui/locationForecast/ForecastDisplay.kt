@@ -43,7 +43,6 @@ fun ForecastDisplay(
     modifier: Modifier = Modifier,
     timeseries: String = "instant", // instant som standard
     date: String = getTodaysDate(), // dagens dato som standard
-    modifier: Modifier = Modifier
 ) {
     val homeScreenUiState = homeScreenViewModel.homeScreenUIState.collectAsState().value
     val mapboxUiState = mapboxViewModel.mapboxUIState.collectAsState().value
