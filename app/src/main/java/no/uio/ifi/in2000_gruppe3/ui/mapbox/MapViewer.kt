@@ -7,8 +7,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalFocusManager
 import com.mapbox.geojson.Point
 import com.mapbox.maps.dsl.cameraOptions
@@ -16,9 +18,11 @@ import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.MapboxMapComposable
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
-import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotation
+import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotationGroup
+import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotationGroupState
 import com.mapbox.maps.extension.compose.annotation.rememberIconImage
 import com.mapbox.maps.extension.compose.style.MapStyle
+import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationOptions
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
@@ -63,7 +67,6 @@ fun MapViewer(
             500
         )
     }
-
     MapboxMap(
         modifier = Modifier.fillMaxSize(),
         mapViewportState = mapViewportState,
@@ -77,9 +80,8 @@ fun MapViewer(
         attribution = {},
         style = { MapStyle(mapboxUIState.mapStyle) }
     ) {
-        homeScreenUIState.hikes.forEach { feature ->
-            PolyLine(feature)
-        }
+        PolyLines(homeScreenUIState.hikes, mapboxViewModel)
+
         val marker = rememberIconImage(R.drawable.red_marker)
         PointAnnotation(point = mapboxUIState.pointerCoordinates) {
             iconImage = marker
@@ -89,17 +91,28 @@ fun MapViewer(
 
 @Composable
 @MapboxMapComposable
-fun PolyLine(feature: Feature) {
-    val points = feature.geometry.coordinates.map { coordinate ->
-        Point.fromLngLat(coordinate[0], coordinate[1])
-    }
-    PolylineAnnotation(
-        points = points
-    ) {
-        lineColor = feature.color
-        lineWidth = 7.0
-        lineOpacity = 0.7
-        lineBorderColor = Color.White
-        lineBorderWidth = 2.0
-    }
+fun PolyLines(features: List<Feature>, mapboxViewModel: MapboxViewModel) {
+    mapboxViewModel.setLoaderState(true)
+    val polylineAnnotationGroupState = remember { PolylineAnnotationGroupState() }
+
+    PolylineAnnotationGroup(
+        polylineAnnotationGroupState = polylineAnnotationGroupState,
+        annotations = mutableListOf<PolylineAnnotationOptions>().apply {
+            features.forEach { feature ->
+                add(
+                    PolylineAnnotationOptions()
+                        .withPoints(
+                            feature.geometry.coordinates.map { coordinate ->
+                                Point.fromLngLat(coordinate[0], coordinate[1])
+                            }
+                        )
+                        .withLineColor(feature.color!!.toArgb())
+                        .withLineWidth(7.0)
+                        .withLineOpacity(0.7)
+                        .withLineBorderColor(Color.White.toArgb())
+                        .withLineBorderWidth(2.0)
+                )
+            }
+        }
+    )
 }

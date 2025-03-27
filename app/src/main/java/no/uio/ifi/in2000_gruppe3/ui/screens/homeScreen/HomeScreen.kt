@@ -8,17 +8,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import no.uio.ifi.in2000_gruppe3.ui.loaders.HikeManLoader
+import no.uio.ifi.in2000_gruppe3.ui.loaders.MapLoader
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
 import no.uio.ifi.in2000_gruppe3.ui.mapSearchbar.SearchBarForMap
 import no.uio.ifi.in2000_gruppe3.ui.mapSearchbar.SuggestionColumn
@@ -37,8 +33,6 @@ fun HomeScreen(
     mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
-
-
     Scaffold(
         bottomBar = { BottomBar(navController = navController) }
     ) { paddingValues ->
@@ -47,7 +41,6 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(bottom = paddingValues.calculateBottomPadding())
         ) {
-            // BottomSheetDrawer for å vise turer
             BottomSheetDrawer(
                 homeScreenViewModel = homeScreenViewModel,
                 hikeScreenViewModel = hikeViewModel,
@@ -58,8 +51,9 @@ fun HomeScreen(
                     homeScreenViewModel,
                     mapboxViewModel
                 )
-
-                HikeManLoader()
+                MapLoader(
+                    mapboxViewModel
+                )
                 Column {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(
@@ -81,7 +75,9 @@ fun HomeScreen(
                             mapboxViewModel
                         )
                     }
-                    SuggestionColumn(mapboxViewModel)
+                    SuggestionColumn(
+                        mapboxViewModel
+                    )
                 }
             }
         }

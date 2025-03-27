@@ -73,6 +73,10 @@ class HomeScreenViewModel() : ViewModel() {
                         isLoading = false
                     )
                 }
+            } finally {
+                _homeScreenUIState.update {
+                    it.copy(isLoading = false)
+                }
             }
         }
     }
@@ -96,6 +100,10 @@ class HomeScreenViewModel() : ViewModel() {
                         errorMessage = e.message ?: "Unknown error",
                         isLoading = false
                     )
+                }
+            } finally {
+                _homeScreenUIState.update {
+                    it.copy(isLoading = false)
                 }
             }
         }

@@ -87,6 +87,14 @@ class MapboxViewModel() : ViewModel() {
             }
         }
     }
+
+    fun setLoaderState(isLoading: Boolean) {
+        viewModelScope.launch {
+            _mapboxUIState.update {
+                it.copy(isLoading = isLoading)
+            }
+        }
+    }
 }
 
 data class MapboxUIState(
