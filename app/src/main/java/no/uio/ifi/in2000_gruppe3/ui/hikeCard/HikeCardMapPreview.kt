@@ -20,10 +20,10 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.mapbox.geojson.BoundingBox
 import com.mapbox.geojson.Point
+import com.mapbox.maps.Style
 import no.uio.ifi.in2000_gruppe3.BuildConfig
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
-import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapStyles
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxUIState
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 
@@ -99,8 +99,8 @@ private fun createStaticMapUrl(
 
     val mapStyle = uiState.mapStyle
     var mapStyleUrl = when (mapStyle) {
-        MapStyles.OUTDOORS -> "outdoors-v12"
-        MapStyles.STANDARD_SATELLITE -> "satellite-v9"
+        Style.STANDARD_SATELLITE -> "satellite-v9"
+        else -> "outdoors-v12"
     }
 
     val color = colorToHex(feature.color!!)
