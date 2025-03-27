@@ -1,7 +1,6 @@
 package no.uio.ifi.in2000_gruppe3.ui.mapbox
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -84,12 +83,10 @@ fun MapViewer(
         },
     ) {
         // Adds hikes to map
-        Log.d("BBBBBBB", "Hikes: ${homeScreenUIState.hikes}")
         homeScreenUIState.hikes.forEach { feature ->
             val points = feature.geometry.coordinates.map { coordinate ->
                 Point.fromLngLat(coordinate[0], coordinate[1])
             }
-            Log.d("AAAA", "Points: $points")
             PolylineAnnotation(
                 points = points
             ) {

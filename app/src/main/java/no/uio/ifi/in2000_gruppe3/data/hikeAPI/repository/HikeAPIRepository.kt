@@ -28,16 +28,16 @@ class HikeAPIRepository {
 
     private fun getColor(): Color {
         val colors = listOf(
-            Color(0xFF3388FF),    // Bright blue
-            Color(0xFF32CD32),    // Lime green
-            Color(0xFFFF8C00),    // Dark orange
-            Color(0xFFE91E63),    // Pink
-            Color(0xFF9C27B0),    // Purple
-            Color(0xFF00BCD4),    // Cyan
-            Color(0xFFFF5252),    // Red
-            Color(0xFF795548),    // Brown
-            Color(0xFF607D8B),    // Blue grey
-            Color(0xFFFFEB3B)     // Yellow
+            Color(0xFFFF4500),    // Vermilion
+            Color(0xFF008000),    // Forest Green
+            Color(0xFFFF6347),    // Tomato Red
+            Color(0xFF4169E1),    // Royal Blue
+            Color(0xFFDA70D6),    // Orchid
+            Color(0xFF2E8B57),    // Sea Green
+            Color(0xFFFF8C69),    // Salmon
+            Color(0xFF8A2BE2),    // Blue Violet
+            Color(0xFFD2691E),    // Chocolate
+            Color(0xFF20B2AA)     // Light Sea Green
         )
         val color = colors[colorIndex]
 
