@@ -72,7 +72,7 @@ fun BottomSheetDrawer(
                     modifier = Modifier.clipToBounds(),
                     contentPadding = PaddingValues(16.dp),
                 ) {
-                    if (homeScreenUIState.hikes.features.isEmpty()) {
+                    if (homeScreenUIState.hikes.isEmpty()) {
                         item {
                             Text(
                                 text = "Ingen turer funnet 😕",
@@ -81,7 +81,7 @@ fun BottomSheetDrawer(
                             )
                         }
                     }
-                    items(homeScreenUIState.hikes.features) { feature ->
+                    items(homeScreenUIState.hikes) { feature ->
                         SmallHikeCard(
                             mapboxViewModel,
                             feature = feature,

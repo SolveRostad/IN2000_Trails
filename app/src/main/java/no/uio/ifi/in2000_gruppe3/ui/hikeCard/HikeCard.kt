@@ -76,7 +76,7 @@ fun HikeCard(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        Text(text = "Avstand til turen: ${hikeUIState.feature.properties.distance_meters.toFloat() / 1000.0} km")
+                        Text(text = "Avstand til turen: ${hikeUIState.feature.properties.distance_to_point.toFloat() / 1000.0} km")
                         Text(text = if (hikeUIState.feature.properties.gradering.isEmpty()) "Vanskelighetsgrad: Ukjent" else "Vanskelighetsgrad: ${hikeUIState.feature.properties.gradering.first()}")
                         Text(text = "Forhold: ")
                         Text(text = "Type: ")

@@ -7,12 +7,26 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Geometry
-import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Properties
+import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.PropertiesX
 
-class HikeScreenViewModel: ViewModel() {
-    private val _hikeScreenUIState = MutableStateFlow<HikeScreenUIState> (
+class HikeScreenViewModel : ViewModel() {
+    private val _hikeScreenUIState = MutableStateFlow<HikeScreenUIState>(
         HikeScreenUIState(
-            feature = Feature(Geometry(listOf(), "error"), Properties(0, listOf(), "error"), "error")
+            feature = Feature(
+                Geometry(listOf(), "error"),
+                properties = PropertiesX(
+                    cmt = "error",
+                    desc = "error",
+                    distance_meters = -1.0,
+                    distance_to_point = -1.0,
+                    fid = -1,
+                    name = "error",
+                    src = "error",
+                    type = "error",
+                    gradering = "error"
+                ),
+                "error"
+            )
         )
     )
     val hikeScreenUIState: StateFlow<HikeScreenUIState> = _hikeScreenUIState.asStateFlow()

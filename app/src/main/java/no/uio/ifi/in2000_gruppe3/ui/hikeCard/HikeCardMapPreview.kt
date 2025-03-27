@@ -34,12 +34,8 @@ fun HikeCardMapPreview(
     val coordinates = mutableListOf<Point>()
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
 
-    feature.geometry.coordinates.forEach { coordList ->
-        coordList.forEach { coord ->
-            if (coord.size >= 2) {
-                coordinates.add(Point.fromLngLat(coord[1], coord[0]))
-            }
-        }
+    feature.geometry.coordinates.forEach { coordinate ->
+        coordinates.add(Point.fromLngLat(coordinate[1], coordinate[0]))
     }
 
     // Calculate the center point of the bounding box
@@ -118,7 +114,7 @@ private fun createStaticMapUrl(
     }
 
     // Turens farge
-    val color = rgbaToHex(feature.color)
+    val color = feature.color.toString()
 
     /**
      * Legge til layer på kartet fungerer kanskje for å tegne turen

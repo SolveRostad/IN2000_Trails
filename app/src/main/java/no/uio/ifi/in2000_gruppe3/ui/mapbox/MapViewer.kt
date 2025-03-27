@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000_gruppe3.ui.mapbox
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -12,12 +13,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.mapbox.geojson.Point
 import com.mapbox.maps.Style
 import com.mapbox.maps.dsl.cameraOptions
-import com.mapbox.maps.extension.compose.MapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
+import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotation
 import com.mapbox.maps.extension.compose.annotation.rememberIconImage
 import com.mapbox.maps.extension.compose.style.MapStyle
 import no.uio.ifi.in2000_gruppe3.R
@@ -58,7 +60,9 @@ fun MapViewer(
         homeScreenViewModel.fetchHikes(
             mapboxUIState.pointerCoordinates.latitude(),
             mapboxUIState.pointerCoordinates.longitude(),
-            5
+            5,
+            "Fotrute",
+            500
         )
     }
 
@@ -80,11 +84,19 @@ fun MapViewer(
         },
     ) {
         // Adds hikes to map
-        MapEffect(homeScreenUIState.hikes) { mapView ->
-            val mapboxMap = mapView.mapboxMap
-            val style = mapboxMap.style
-
-            mapboxViewModel.updateLineStringsFromFeatures(homeScreenUIState.hikes.features, style)
+        Log.d("BBBBBBB", "Hikes: ${homeScreenUIState.hikes}")
+        homeScreenUIState.hikes.forEach { feature ->
+            val points = feature.geometry.coordinates.map { coordinate ->
+                Point.fromLngLat(coordinate[0], coordinate[1])
+            }
+            Log.d("AAAA", "Points: $points")
+            PolylineAnnotation(
+                points = points
+            ) {
+                lineColor = feature.color
+                lineWidth = 5.0
+                lineOpacity = 0.7
+            }
         }
 
         // Adds marker for pointer location
@@ -97,7 +109,7 @@ fun MapViewer(
     Row(
         modifier = Modifier.fillMaxSize(),
         horizontalArrangement = Arrangement.Center
-    ){
+    ) {
         // Legger til temperatur på kartet
         ForecastDisplay(
             homeScreenViewModel,

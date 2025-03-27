@@ -3,22 +3,14 @@ package no.uio.ifi.in2000_gruppe3.ui.mapbox
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mapbox.geojson.FeatureCollection
-import com.mapbox.geojson.LineString
-import com.mapbox.geojson.MultiLineString
 import com.mapbox.geojson.Point
-import com.mapbox.maps.Style
-import com.mapbox.maps.extension.style.layers.addLayer
 import com.mapbox.maps.extension.style.layers.generated.LineLayer
-import com.mapbox.maps.extension.style.sources.addSource
-import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource
 import com.mapbox.search.autocomplete.PlaceAutocomplete
 import com.mapbox.search.autocomplete.PlaceAutocompleteSuggestion
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 
 class MapboxViewModel() : ViewModel() {
     private val placeAutocomplete = PlaceAutocomplete.create()
@@ -38,63 +30,6 @@ class MapboxViewModel() : ViewModel() {
         viewModelScope.launch {
             _mapboxUIState.update {
                 it.copy(mapStyle = style)
-            }
-        }
-    }
-
-    fun updateLineStringsFromFeatures(features: List<Feature>, style: Style?) {
-        viewModelScope.launch {
-            _mapboxUIState.update {
-                it.copy(isLoading = true, lineLayers = emptyList())
-            }
-            val lineLayers: MutableList<LineLayer> = mutableListOf<LineLayer>()
-
-            if (style == null) {
-                return@launch
-            }
-
-            // Remove all existing sources and layers
-            style.styleSources.forEach { source ->
-                if (source.id.startsWith("source-")) {
-                    style.removeStyleSource(source.id)
-                }
-            }
-            style.styleLayers.forEach { layer ->
-                if (layer.id.startsWith("layer-")) {
-                    style.removeStyleLayer(layer.id)
-                }
-            }
-            // Add new sources and layers
-            features.forEach { feature ->
-                val sourceId = "source-${feature.hashCode()}"
-                val layerId = "layer-${feature.hashCode()}"
-
-                val lineStrings = feature.geometry.coordinates.map { coords ->
-                    val points = coords.map { Point.fromLngLat(it[1], it[0]) }
-                    LineString.fromLngLats(points)
-                }
-
-                val multiLineString = MultiLineString.fromLineStrings(lineStrings)
-                val geoJsonFeature = com.mapbox.geojson.Feature.fromGeometry(multiLineString)
-                val featureCollection = FeatureCollection.fromFeatures(listOf(geoJsonFeature))
-
-                val source = GeoJsonSource.Builder(sourceId)
-                    .data(featureCollection.toJson())
-                    .build()
-                style.addSource(source)
-
-                val lineLayer = LineLayer(layerId, sourceId)
-
-                lineLayer.lineColor(feature.color)
-                lineLayer.lineWidth(3.0)
-                lineLayer.lineOpacity(0.8)
-
-                lineLayers.add(lineLayer)
-                style.addLayer(lineLayer)
-            }
-
-            _mapboxUIState.update {
-                it.copy(isLoading = false, lineLayers = lineLayers)
             }
         }
     }

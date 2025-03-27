@@ -14,7 +14,7 @@ class FeatureRepository() {
     suspend fun deleteHike(featureToDelete: Feature, context: Context): List<Feature> {
         val currentFeatures = getHikes(context).first()
         val updatedFeatures = currentFeatures.filter { feature ->
-            feature.properties.rutenavn != featureToDelete.properties.rutenavn
+            feature.properties.desc != featureToDelete.properties.desc
         }
         saveHikes(updatedFeatures, context)
         return updatedFeatures
