@@ -109,8 +109,9 @@ fun MapViewer(
     ) {
         // Legger til temperatur på kartet
         ForecastDisplay(
-            homeScreenViewModel,
-            mapboxViewModel
+            homeScreenViewModel = homeScreenViewModel,
+            mapboxViewModel = mapboxViewModel,
+            modifier = Modifier.padding(10.dp, 30.dp)
         )
 
         // Søkefelt for å søke etter steder

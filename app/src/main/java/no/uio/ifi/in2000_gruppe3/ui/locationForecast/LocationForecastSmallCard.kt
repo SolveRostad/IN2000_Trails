@@ -42,6 +42,13 @@ fun LocationForecastSmallCard(
     val currentTime = getCurrentTime()
     val todaysDay = getTodaysDay()
 
+    val visibleBoxesCount = listOf(
+        date > todaysDate || (date == todaysDate && currentTime < "06:00:00"),
+        date > todaysDate || (date == todaysDate && currentTime < "12:00:00"),
+        date > todaysDate || (date == todaysDate && currentTime < "18:00:00"),
+        date > todaysDate || (date == todaysDate && currentTime < "23:59:00")
+    ).count { it }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -56,62 +63,106 @@ fun LocationForecastSmallCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
+            horizontalAlignment = Alignment.Start
+        ) {
             Text(
                 text = if (todaysDay == day) "I dag $dateFormatted" else "$day $dateFormatted",
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.align(Alignment.Start)
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.Start)
             ) {
                 if (date > todaysDate || (date == todaysDate && currentTime < "06:00:00")) {
-                    Box {
-                        Text(text = "00-06")
-                        ForecastDisplay(
-                            homeScreenViewModel = homeScreenViewModel,
-                            mapboxViewModel = mapboxViewModel,
-                            timeseries = "00-06",
-                            date = date
-                        )
+                    Box(
+                        modifier = Modifier
+                            .then(if (visibleBoxesCount == 4) Modifier.weight(1f) else Modifier)
+                            .padding(4.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(text = "00-06")
+                            Spacer(modifier = Modifier.height(10.dp))
+                            ForecastDisplay(
+                                homeScreenViewModel = homeScreenViewModel,
+                                mapboxViewModel = mapboxViewModel,
+                                timeseries = "00-06",
+                                date = date
+                            )
+                        }
                     }
                 }
                 if (date > todaysDate || (date == todaysDate && currentTime < "12:00:00")) {
-                    Box {
-                        Text(text = "06-12")
-                        ForecastDisplay(
-                            homeScreenViewModel = homeScreenViewModel,
-                            mapboxViewModel = mapboxViewModel,
-                            timeseries = "06-12",
-                            date = date
-                        )
+                    Box(
+                        modifier = Modifier
+                            .then(if (visibleBoxesCount == 4) Modifier.weight(1f) else Modifier)
+                            .padding(4.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(text = "06-12")
+                            Spacer(modifier = Modifier.height(10.dp))
+                            ForecastDisplay(
+                                homeScreenViewModel = homeScreenViewModel,
+                                mapboxViewModel = mapboxViewModel,
+                                timeseries = "06-12",
+                                date = date
+                            )
+                        }
                     }
                 }
                 if (date > todaysDate || (date == todaysDate && currentTime < "18:00:00")) {
-                    Box {
-                        Text(text = "12-18")
-                        ForecastDisplay(
-                            homeScreenViewModel = homeScreenViewModel,
-                            mapboxViewModel = mapboxViewModel,
-                            timeseries = "12-18",
-                            date = date
-                        )
+                    Box(
+                        modifier = Modifier
+                            .then(if (visibleBoxesCount == 4) Modifier.weight(1f) else Modifier)
+                            .padding(4.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(text = "12-18")
+                            Spacer(modifier = Modifier.height(10.dp))
+                            ForecastDisplay(
+                                homeScreenViewModel = homeScreenViewModel,
+                                mapboxViewModel = mapboxViewModel,
+                                timeseries = "12-18",
+                                date = date
+                            )
+                        }
                     }
                 }
                 if (date > todaysDate || (date == todaysDate && currentTime < "23:59:00")) {
-                    Box {
-                        Text(text = "18-00")
-                        ForecastDisplay(
-                            homeScreenViewModel = homeScreenViewModel,
-                            mapboxViewModel = mapboxViewModel,
-                            timeseries = "18-00",
-                            date = date
-                        )
+                    Box(
+                        modifier = Modifier
+                            .then(if (visibleBoxesCount == 4) Modifier.weight(1f) else Modifier)
+                            .padding(4.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(text = "18-00")
+                            Spacer(modifier = Modifier.height(10.dp))
+                            ForecastDisplay(
+                                homeScreenViewModel = homeScreenViewModel,
+                                mapboxViewModel = mapboxViewModel,
+                                timeseries = "18-00",
+                                date = date
+                            )
+                        }
                     }
                 }
             }
