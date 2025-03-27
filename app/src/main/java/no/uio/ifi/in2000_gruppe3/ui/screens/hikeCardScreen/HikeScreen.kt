@@ -15,10 +15,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
 import no.uio.ifi.in2000_gruppe3.ui.hikeCard.HikeCard
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
@@ -31,14 +32,15 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 fun HikeScreen(
     homeScreenViewModel: HomeScreenViewModel,
     favoritesViewModel: FavoritesViewModel,
-    hikeScreenviewModel: HikeScreenViewModel,
+    hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
+    val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {Text(text = getTodaysDay())},
+                title = {Text(text = hikeUIState.feature.properties.rutenavn)},
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -59,11 +61,11 @@ fun HikeScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             HikeCard(
-                homeScreenViewModel,
-                hikeScreenviewModel,
-                mapboxViewModel,
-                favoritesViewModel,
-                navController
+                homeScreenViewModel = homeScreenViewModel,
+                hikeScreenViewModel = hikeScreenViewModel,
+                favoritesViewModel = favoritesViewModel,
+                mapboxViewModel = mapboxViewModel,
+                navController = navController
             )
         }
     }

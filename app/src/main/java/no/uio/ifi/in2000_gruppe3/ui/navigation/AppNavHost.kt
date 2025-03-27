@@ -59,7 +59,7 @@ fun AppNavHost() {
         composable(Screen.HikeScreen.route) {
             HikeScreen(
                 homeScreenViewModel = homeScreenViewModel,
-                hikeScreenviewModel = hikeScreenViewModel,
+                hikeScreenViewModel = hikeScreenViewModel,
                 favoritesViewModel = favoritesViewModel,
                 mapboxViewModel = mapboxViewModel,
                 navController = navController
@@ -79,7 +79,9 @@ fun AppNavHost() {
         // Location forecast detailed screen
         composable(Screen.LocationForecastDetailed.route) {
             LocationForecastDetailedScreen(
-                navController
+                homeScreenViewModel = homeScreenViewModel,
+                hikeScreenViewModel = hikeScreenViewModel,
+                navController = navController
             )
         }
 

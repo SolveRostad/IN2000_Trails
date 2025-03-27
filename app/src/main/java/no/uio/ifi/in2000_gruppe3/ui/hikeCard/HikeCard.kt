@@ -40,12 +40,12 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 @Composable
 fun HikeCard(
     homeScreenViewModel: HomeScreenViewModel,
-    hikeScreenviewModel: HikeScreenViewModel,
-    mapboxViewModel: MapboxViewModel,
+    hikeScreenViewModel: HikeScreenViewModel,
     favoritesViewModel: FavoritesViewModel,
-    navcontroller: NavHostController
+    mapboxViewModel: MapboxViewModel,
+    navController: NavHostController
 ) {
-    val hikeUIState by hikeScreenviewModel.hikeScreenUIState.collectAsState()
+    val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
     val checkedState = remember {
         mutableStateOf(favoritesViewModel.isHikeFavorite(hikeUIState.feature))
     }
@@ -55,21 +55,12 @@ fun HikeCard(
             modifier = Modifier.padding(16.dp)
         ) {
             item {
-                Text(
-                    text = hikeUIState.feature.properties.rutenavn,
-                    style = MaterialTheme.typography.titleLarge,
-                )
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
-
                 HikeCardMapPreview(mapboxViewModel, hikeUIState.feature)
-
-                Spacer(modifier = Modifier.height(16.dp))
             }
 
             item {
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -111,25 +102,25 @@ fun HikeCard(
                 Text(
                     text = "This is a detailed description of the hiking route. It includes information about the terrain, landmarks, and what to expect along the trail."
                 )
-
-                Spacer(modifier = Modifier.height(20.dp))
             }
 
             item {
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Button(
                     modifier = Modifier
                         .padding(8.dp)
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally),
-                    onClick = { navcontroller.navigate("locationForecast") }
+                    onClick = { navController.navigate("locationForecast") }
                 ) {
                     Text(text = "Se flere dager")
                 }
-
-                Spacer(modifier = Modifier.height(20.dp))
             }
 
             item {
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
