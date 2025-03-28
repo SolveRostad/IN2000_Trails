@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.mapbox.maps.Style
+import no.uio.ifi.in2000_gruppe3.data.date.getCurrentTime
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
@@ -45,11 +46,22 @@ fun ForecastDisplay(
     val mapboxUiState = mapboxViewModel.mapboxUIState.collectAsState().value
     val mapStyle = mapboxUiState.mapStyle
 
+    val currentTime = getCurrentTime()
+    val todaysDate = getTodaysDate()
+
     if (homeScreenUiState.forecast != null) {
+
         val chosenTimeSeries = when (timeseries) {
             "instant" -> homeScreenUiState.forecast.properties.timeseries.firstOrNull()
-            else -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T${timeseries}Z" }
+            else -> {
+                if (todaysDate == date && currentTime > timeseries) {
+                    homeScreenUiState.forecast.properties.timeseries.firstOrNull()
+                } else {
+                    homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T${timeseries}Z" }
+                }
+            }
         }
+
 
         val temperature = chosenTimeSeries?.data?.instant?.details?.air_temperature
         val temperatureTextColor = if (mapStyle == Style.STANDARD_SATELLITE && visableOnMap) Color.White else Color.Black
