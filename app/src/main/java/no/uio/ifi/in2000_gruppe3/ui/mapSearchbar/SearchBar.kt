@@ -2,6 +2,7 @@ package no.uio.ifi.in2000_gruppe3.ui.mapSearchbar
 
 import android.util.Log
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -45,6 +46,7 @@ fun SearchBarForMap(
             mapboxViewModel.updateSearchQuery(newQuery)
         },
         modifier = modifier
+            .fillMaxWidth()
             .clip(RoundedCornerShape(30.dp))
             .border(1.dp, Color.Gray, RoundedCornerShape(30.dp))
             .onKeyEvent { keyEvent ->

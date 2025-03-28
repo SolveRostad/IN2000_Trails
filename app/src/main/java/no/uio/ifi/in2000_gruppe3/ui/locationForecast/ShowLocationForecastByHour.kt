@@ -26,8 +26,8 @@ fun ShowForecastByHour(
     }
 
     val iconSymbolCode = when (summaryKey) {
-        "next_1_hours.summary.symbol_code" -> forecast?.data?.next_1_hours?.summary?.symbol_code
-        "next_6_hours.summary.symbol_code" -> forecast?.data?.next_6_hours?.summary?.symbol_code
+        "1_hour" -> forecast?.data?.next_1_hours?.summary?.symbol_code
+        "6_hours" -> forecast?.data?.next_6_hours?.summary?.symbol_code
         else -> null
     } ?: "--"
 
@@ -35,13 +35,15 @@ fun ShowForecastByHour(
     val windSpeed = forecast?.data?.instant?.details?.wind_speed ?: "--"
     val humidity = forecast?.data?.instant?.details?.relative_humidity ?: "--"
 
-    LocationForecastByHour(
-        tid = formattedHour,
-        icon = iconSymbolCode.toString(),
-        temperature = temperature.toString(),
-        windSpeed = windSpeed.toString(),
-        humidity = humidity.toString()
-    )
+    if (temperature != "--") {
+        LocationForecastByHour(
+            tid = formattedHour,
+            icon = iconSymbolCode.toString(),
+            temperature = temperature.toString(),
+            windSpeed = windSpeed.toString(),
+            humidity = humidity.toString()
+        )
 
-    HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f))
+        HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f))
+    }
 }

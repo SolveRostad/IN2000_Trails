@@ -3,6 +3,8 @@ package no.uio.ifi.in2000_gruppe3.ui.hikeCard
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,11 +13,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
@@ -52,96 +57,114 @@ fun HikeCard(
         mutableStateOf(favoritesViewModel.isHikeFavorite(hikeUIState.feature))
     }
 
-    Card {
-        LazyColumn(
-            modifier = Modifier.padding(16.dp)
-        ) {
+    Card(
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.5f)),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
+    ) {
+        LazyColumn {
             item {
                 HikeCardMapPreview(mapboxViewModel, hikeUIState.feature)
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
-                    Column(
-                        modifier = Modifier.weight(1f)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.Top
                     ) {
-                        Text(
-                            text = "Rute detaljer",
-                            style = MaterialTheme.typography.headlineMedium
-                        )
+                        Column(
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(
+                                text = "Rute detaljer",
+                                style = MaterialTheme.typography.headlineMedium
+                            )
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
 
-                        Text(text = "Type: ${hikeUIState.feature.properties.type}")
-                        Text(text = "Lengde: ${String.format(Locale("nb", "NO"), "%.2f", hikeUIState.feature.properties.distance_meters.toFloat() / 1000.0)} km")
-                        Text(text = "Luftfuktighet: ${homeUIState.forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.relative_humidity} %")
-                        Text(text = "Vindhastighet: ${homeUIState.forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.wind_speed} m/s")
-                    }
-
-                    ForecastDisplay(
-                        homeScreenViewModel,
-                        mapboxViewModel
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = "Rute beskrivelse",
-                    style = MaterialTheme.typography.titleMedium
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "This is a detailed description of the hiking route. It includes information about the terrain, landmarks, and what to expect along the trail."
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Button(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .fillMaxWidth()
-                        .align(Alignment.CenterHorizontally),
-                    onClick = { navController.navigate("locationForecast") }
-                ) {
-                    Text(text = "Se flere dager")
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    IconToggleButton(
-                        checked = checkedState.value,
-                        onCheckedChange = {
-                            checkedState.value = it
-                            if (it) {
-                                favoritesViewModel.addHike(hikeUIState.feature)
-                            } else {
-                                favoritesViewModel.deleteHike(hikeUIState.feature)
-                            }
+                            Text(text = "Type: ${hikeUIState.feature.properties.type}")
+                            Text(
+                                text = "Lengde: ${
+                                    String.format(
+                                        Locale("nb", "NO"),
+                                        "%.2f",
+                                        hikeUIState.feature.properties.distance_meters.toFloat() / 1000.0
+                                    )
+                                } km"
+                            )
+                            Text(text = "Luftfuktighet: ${homeUIState.forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.relative_humidity} %")
+                            Text(text = "Vindhastighet: ${homeUIState.forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.wind_speed} m/s")
                         }
-                    ) {
-                        val tint by animateColorAsState(if (checkedState.value) Color.Red else Color.Gray)
-                        Icon(
-                            if (checkedState.value) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                            contentDescription = "Toggle favorite",
-                            tint = tint,
-                            modifier = Modifier.align(Alignment.CenterVertically)
+
+                        ForecastDisplay(
+                            homeScreenViewModel,
+                            mapboxViewModel
                         )
                     }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
                     Text(
-                        modifier = Modifier.align(Alignment.CenterVertically),
-                        text = if (checkedState.value) "Fjern fra favoritter" else "Legg til i favoritter"
+                        text = "Rute beskrivelse",
+                        style = MaterialTheme.typography.titleMedium
                     )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "This is a detailed description of the hiking route. It includes information about the terrain, landmarks, and what to expect along the trail."
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Button(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth()
+                            .align(Alignment.CenterHorizontally),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B9FF)),
+                        onClick = { navController.navigate("locationForecast") }
+                    ) {
+                        Text(text = "Se været andre dager")
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        IconToggleButton(
+                            checked = checkedState.value,
+                            onCheckedChange = {
+                                checkedState.value = it
+                                if (it) {
+                                    favoritesViewModel.addHike(hikeUIState.feature)
+                                } else {
+                                    favoritesViewModel.deleteHike(hikeUIState.feature)
+                                }
+                            }
+                        ) {
+                            val tint by animateColorAsState(if (checkedState.value) Color.Red else Color.Gray)
+                            Icon(
+                                if (checkedState.value) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                                contentDescription = "Toggle favorite",
+                                tint = tint,
+                                modifier = Modifier.align(Alignment.CenterVertically)
+                            )
+                        }
+                        Text(
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                            text = if (checkedState.value) "Fjern fra favoritter" else "Legg til i favoritter"
+                        )
+                    }
                 }
             }
         }
