@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.ui.loader
+package no.uio.ifi.in2000_gruppe3.ui.loaders
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
