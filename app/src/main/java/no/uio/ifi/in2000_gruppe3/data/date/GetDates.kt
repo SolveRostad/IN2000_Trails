@@ -7,6 +7,14 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.util.*
 
+enum class Weekdays {
+    Mandag, Tirsdag, Onsdag, Torsdag, Fredag, Lørdag, Søndag;
+
+    companion object {
+        fun indexOf(dayName: String): Int = entries.toTypedArray().indexOfFirst { it.name == dayName }
+    }
+}
+
 @RequiresApi(Build.VERSION_CODES.O)
 // Returnerer dato i formatet "YYYY-MM-DD"
 fun getTodaysDate(): String {

@@ -92,62 +92,18 @@ fun LocationForecastSmallCard(
                     modifier = Modifier.padding(4.dp)
                 )
 
-                if (visibleBoxesCount == 4) {
+                val timeRanges = listOf("00-06" to "00:00:00", "06-12" to "06:00:00", "12-18" to "12:00:00", "18-00" to "18:00:00")
+
+                timeRanges.take(visibleBoxesCount).forEach { (label, timeseries) ->
                     Box(contentAlignment = Alignment.Center) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(text = "00-06")
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(text = label)
                             ForecastDisplay(
                                 homeScreenViewModel = homeScreenViewModel,
                                 mapboxViewModel = mapboxViewModel,
-                                timeseries = "00:00:00",
-                                date = date
-                            )
-                        }
-                    }
-                }
-                if (visibleBoxesCount >= 3) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(text = "06-12")
-                            ForecastDisplay(
-                                homeScreenViewModel = homeScreenViewModel,
-                                mapboxViewModel = mapboxViewModel,
-                                timeseries = "06:00:00",
-                                date = date
-                            )
-                        }
-                    }
-                }
-                if (visibleBoxesCount >= 2) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(text = "12-18")
-                            ForecastDisplay(
-                                homeScreenViewModel = homeScreenViewModel,
-                                mapboxViewModel = mapboxViewModel,
-                                timeseries = "12:00:00",
-                                date = date
-                            )
-                        }
-                    }
-                }
-                if (visibleBoxesCount >= 1) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(text = "18-00")
-                            ForecastDisplay(
-                                homeScreenViewModel = homeScreenViewModel,
-                                mapboxViewModel = mapboxViewModel,
-                                timeseries = "18:00:00",
-                                date = date
+                                timeseries = timeseries,
+                                date = date,
+                                showTemperature = false
                             )
                         }
                     }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,12 +27,13 @@ fun LocationForecastByHour(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = tid,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.width(35.dp)
         )
 
         val iconURL = getWeatherIconUrl(icon)
@@ -40,22 +42,15 @@ fun LocationForecastByHour(
             contentDescription = "Weather-icon",
             modifier = Modifier
                 .size(40.dp)
-                .padding(horizontal = 8.dp)
+                .weight(0.8f)
         )
 
-        Text(
-            text = "$temperature°C",
-            style = MaterialTheme.typography.bodyMedium
-        )
-
-        Text(
-            text = windSpeed,
-            style = MaterialTheme.typography.bodyMedium
-        )
-
-        Text(
-            text = humidity,
-            style = MaterialTheme.typography.bodyMedium
-        )
+        listOf(temperature, windSpeed, humidity).forEach { text ->
+            Text(
+                text = if (text == temperature) "${temperature}°C" else text,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = if (text == temperature) Modifier.weight(1f).padding(start = 4.dp) else Modifier.weight(1f)
+            )
+        }
     }
 }
