@@ -35,6 +35,7 @@ import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
+import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -76,7 +77,7 @@ fun HikeCard(
                         Spacer(modifier = Modifier.height(8.dp))
 
                         Text(text = "Type: ${hikeUIState.feature.properties.type}")
-                        Text(text = "Lengde: ${String.format("%.2f", hikeUIState.feature.properties.distance_meters.toFloat() / 1000.0)} km")
+                        Text(text = "Lengde: ${String.format(Locale("nb", "NO"), "%.2f", hikeUIState.feature.properties.distance_meters.toFloat() / 1000.0)} km")
                         Text(text = "Luftfuktighet: ${homeUIState.forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.relative_humidity} %")
                         Text(text = "Vindhastighet: ${homeUIState.forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.wind_speed} m/s")
                     }

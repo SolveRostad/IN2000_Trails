@@ -40,7 +40,8 @@ fun ForecastDisplay(
     mapboxViewModel: MapboxViewModel,
     timeseries: String = "instant", // instant som standard
     date: String = getTodaysDate(), // dagens dato som standard
-    visableOnMap: Boolean = false
+    visableOnMap: Boolean = false,
+    showTemperature: Boolean = true
 ) {
     val homeScreenUiState = homeScreenViewModel.homeScreenUIState.collectAsState().value
     val mapboxUiState = mapboxViewModel.mapboxUIState.collectAsState().value
@@ -62,7 +63,6 @@ fun ForecastDisplay(
             }
         }
 
-
         val temperature = chosenTimeSeries?.data?.instant?.details?.air_temperature
         val temperatureTextColor = if (mapStyle == Style.STANDARD_SATELLITE && visableOnMap) Color.White else Color.Black
 
@@ -83,11 +83,13 @@ fun ForecastDisplay(
                     modifier = Modifier
                         .size(60.dp)
                 )
-                Text(
-                    text = "$temperature°C",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = temperatureTextColor,
-                )
+                if (showTemperature) {
+                    Text(
+                        text = "$temperature°C",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = temperatureTextColor,
+                    )
+                }
             }
         }
     }

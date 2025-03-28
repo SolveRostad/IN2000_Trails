@@ -26,9 +26,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import no.uio.ifi.in2000_gruppe3.data.date.Weekdays
 import no.uio.ifi.in2000_gruppe3.data.date.getCurrentTime
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
-import no.uio.ifi.in2000_gruppe3.ui.locationForecast.LocationForecastByHour
+import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ShowForecastByHour
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
@@ -43,11 +44,24 @@ fun LocationForecastDetailedScreen(
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
     val homeUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
 
+    // Date variables
     val todaysDay = getTodaysDay()
     val selectedDay = hikeUIState.day
     val currentTime = getCurrentTime()
     val currentHour = currentTime.substring(0, 2).toInt()
     val startHour = if (selectedDay == todaysDay) currentHour else 0
+
+    // Calculate the difference from selected day to todays day
+    val todayIndex = Weekdays.indexOf(todaysDay)
+    val selectedIndex = Weekdays.indexOf(selectedDay)
+    val daysAhead = if (selectedIndex >= todayIndex) {
+        selectedIndex - todayIndex
+    } else {
+        7 - todayIndex + selectedIndex
+    }
+
+    val forecastUpdatedAt = homeUIState.forecast?.properties?.meta?.updated_at
+    val forecastUpdatedAtHour = forecastUpdatedAt?.substring(11, 13)!!.toInt()
 
     Scaffold(
         topBar = {
@@ -83,40 +97,52 @@ fun LocationForecastDetailedScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "Tid", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
-                        Text(text = "Vær", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
-                        Text(text = "Temp.", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
-                        Text(text = "Vind (m/s)", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
-                        Text(text = "Luftfuktighet (%)", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
+                        listOf("Tid", "Vær", "Temp.", "Vind (m/s)", "Luftfuktighet (%)").forEach { header ->
+                            Text(
+                                text = header,
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Bold,
+                                modifier = when (header) {
+                                    "Tid" -> Modifier.weight(0.8f).padding(start = 4.dp)
+                                    "Temp" -> Modifier.weight(0.9f)
+                                    "Vind (m/s)" -> Modifier.weight(1.3f)
+                                    "Luftfuktighet (%)" -> Modifier.weight(2f)
+                                    else -> Modifier.weight(0.8f)
+                                }
+
+                            )
+                        }
                     }
 
                     // Divider line
                     HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f))
 
-                    // Location forecast for each hour
-                    for (hour in startHour..23) {
-                        val formattedHour = String.format("%02d:00", hour) // Hour:min
-                        val formattedHMS = String.format("%02d:%02d:%02d", hour, 0, 0) // Hour:min:sec
-
-                        val forecast = homeUIState.forecast?.properties?.timeseries?.find {
-                            it.time == "${hikeUIState.date}T${formattedHMS}Z"
+                    // Hours based on days ahead
+                    val hours = when (daysAhead) {
+                        0 -> (startHour..23)
+                        1 -> (0..23)
+                        2 -> if (forecastUpdatedAtHour + 6 > 23) { (0..23) }
+                             else { (0..forecastUpdatedAtHour + 6) }
+                        3 -> if (forecastUpdatedAtHour + 6 > 23) {
+                                val hoursInDay3 = forecastUpdatedAtHour + 6 - 23
+                                val hoursList = (0 until hoursInDay3).toList()
+                                val additionalHours = listOf(0, 6, 12, 18).filter { it !in hoursList }
+                                hoursList + additionalHours
+                            } else {
+                                listOf(0, 6, 12, 18)
                         }
+                        else -> listOf(0, 6, 12, 18)
+                    }
 
-                        val iconSymbolCode = forecast?.data?.next_1_hours?.summary?.symbol_code ?: "--"
-                        val temperature = forecast?.data?.instant?.details?.air_temperature ?: "--"
-                        val windSpeed = forecast?.data?.instant?.details?.wind_speed ?: "--"
-                        val humidity = forecast?.data?.instant?.details?.relative_humidity ?: "--"
-
-                        LocationForecastByHour(
-                            tid = formattedHour,
-                            icon = iconSymbolCode,
-                            temperature = temperature.toString(),
-                            windSpeed = windSpeed.toString(),
-                            humidity = humidity.toString()
+                    // Show forecast for each hour
+                    hours.forEach { hour ->
+                        val summaryKey = if (daysAhead < 3) "next_1_hours.summary.symbol_code" else "next_6_hours.summary.symbol_code"
+                        ShowForecastByHour(
+                            hour = hour,
+                            summaryKey = summaryKey,
+                            homeViewModel = homeScreenViewModel,
+                            hikeViewModel = hikeScreenViewModel
                         )
-
-                        // Divider between rows
-                        HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f))
                     }
                 }
             }

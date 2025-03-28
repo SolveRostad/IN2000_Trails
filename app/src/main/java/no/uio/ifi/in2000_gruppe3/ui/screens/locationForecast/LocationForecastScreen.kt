@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import no.uio.ifi.in2000_gruppe3.data.date.Weekdays
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.LocationForecastSmallCard
@@ -39,10 +40,10 @@ fun LocationForecastScreen(
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
 
     // Variables for weekdays
-    val weekdays = listOf("Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag")
     val todaysDay = getTodaysDay()
-    val startIndex = weekdays.indexOf(todaysDay)
-    val orderedWeekdays = weekdays.drop(startIndex) + weekdays.take(startIndex)
+    val startIndex = Weekdays.indexOf(todaysDay)
+    val weekdaysList = Weekdays.entries.toList()
+    val orderedWeekdays = weekdaysList.drop(startIndex) + weekdaysList.take(startIndex)
 
     // Date
     val todaysDateStr = getTodaysDate()
@@ -75,7 +76,7 @@ fun LocationForecastScreen(
                     val formattedDate = date.toString()
 
                     LocationForecastSmallCard(
-                        day = orderedWeekdays[index],
+                        day = day.toString(),
                         date = formattedDate,
                         homeScreenViewModel = homeScreenViewModel,
                         hikeScreenViewModel = hikeScreenViewModel,
