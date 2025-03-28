@@ -4,9 +4,7 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -28,8 +26,7 @@ fun getWeatherIconUrl(symbolCode: String): String {
         Log.d("WeatherIcon", "symbolCode is null or empty!")
         iconUrl = "https://example.com/default-icon.png"  // Fallback URL
     } else {
-        iconUrl =
-            "https://raw.githubusercontent.com/metno/weathericons/refs/heads/main/weather/png/$symbolCode.png"
+        iconUrl = "https://raw.githubusercontent.com/metno/weathericons/refs/heads/main/weather/png/$symbolCode.png"
     }
     Log.d("WeatherIcon", "Icon URL: $iconUrl")  //logging for URL
     return iconUrl
@@ -40,51 +37,44 @@ fun getWeatherIconUrl(symbolCode: String): String {
 fun ForecastDisplay(
     homeScreenViewModel: HomeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
-    modifier: Modifier = Modifier,
     timeseries: String = "instant", // instant som standard
     date: String = getTodaysDate(), // dagens dato som standard
+    visableOnMap: Boolean = false
 ) {
     val homeScreenUiState = homeScreenViewModel.homeScreenUIState.collectAsState().value
     val mapboxUiState = mapboxViewModel.mapboxUIState.collectAsState().value
     val mapStyle = mapboxUiState.mapStyle
 
     if (homeScreenUiState.forecast != null) {
-
         val chosenTimeSeries = when (timeseries) {
             "instant" -> homeScreenUiState.forecast.properties.timeseries.firstOrNull()
-            "00-06" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T06:00:00Z" }
-            "06-12" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T12:00:00Z" }
-            "12-18" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T18:00:00Z" }
-            "18-00" -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T20:00:00Z" }
-            else -> homeScreenUiState.forecast.properties.timeseries.firstOrNull()
+            else -> homeScreenUiState.forecast.properties.timeseries.find { it.time == "${date}T${timeseries}Z" }
         }
+
         val temperature = chosenTimeSeries?.data?.instant?.details?.air_temperature
-        val symbolCode = chosenTimeSeries?.data?.next_1_hours?.summary?.symbol_code
+        val temperatureTextColor = if (mapStyle == Style.STANDARD_SATELLITE && visableOnMap) Color.White else Color.Black
+
+        val symbolCode = when (timeseries) {
+            "instant" -> chosenTimeSeries?.data?.next_1_hours?.summary?.symbol_code
+            else -> chosenTimeSeries?.data?.next_6_hours?.summary?.symbol_code
+        }
         val iconURL = getWeatherIconUrl(symbolCode.toString())
-        val temperatureTextColor =
-            if (mapStyle == Style.STANDARD_SATELLITE) Color.White else Color.Black
 
-        Box(
-            modifier = modifier
+        Column(
+            modifier = Modifier,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             if (temperature != null) {
                 Image(
                     painter = rememberAsyncImagePainter(iconURL),
                     contentDescription = "Vær-ikon",
                     modifier = Modifier
                         .size(60.dp)
-                        .align(Alignment.TopCenter)
                 )
-
-                Spacer(modifier = Modifier.height(65.dp))
-
                 Text(
                     text = "$temperature°C",
                     style = MaterialTheme.typography.titleMedium,
                     color = temperatureTextColor,
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
                 )
             }
         }

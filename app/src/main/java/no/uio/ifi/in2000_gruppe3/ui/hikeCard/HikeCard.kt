@@ -45,6 +45,7 @@ fun HikeCard(
     mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
+    val homeUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
     val checkedState = remember {
         mutableStateOf(favoritesViewModel.isHikeFavorite(hikeUIState.feature))
@@ -56,15 +57,13 @@ fun HikeCard(
         ) {
             item {
                 HikeCardMapPreview(mapboxViewModel, hikeUIState.feature)
-            }
 
-            item {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.Top
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(
                         modifier = Modifier.weight(1f)
@@ -76,9 +75,10 @@ fun HikeCard(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
+                        Text(text = "Type: ${hikeUIState.feature.properties.type}")
                         Text(text = "Lengde: ${String.format("%.2f", hikeUIState.feature.properties.distance_meters.toFloat() / 1000.0)} km")
-                        Text(text = "Type: ${hikeUIState.feature.type}")
-                        Text(text = "Forhold: ")
+                        Text(text = "Luftfuktighet: ${homeUIState.forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.relative_humidity} %")
+                        Text(text = "Vindhastighet: ${homeUIState.forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.wind_speed} m/s")
                     }
 
                     ForecastDisplay(
@@ -86,9 +86,7 @@ fun HikeCard(
                         mapboxViewModel
                     )
                 }
-            }
 
-            item {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
@@ -101,9 +99,7 @@ fun HikeCard(
                 Text(
                     text = "This is a detailed description of the hiking route. It includes information about the terrain, landmarks, and what to expect along the trail."
                 )
-            }
 
-            item {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
@@ -115,9 +111,7 @@ fun HikeCard(
                 ) {
                     Text(text = "Se flere dager")
                 }
-            }
 
-            item {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Row(
