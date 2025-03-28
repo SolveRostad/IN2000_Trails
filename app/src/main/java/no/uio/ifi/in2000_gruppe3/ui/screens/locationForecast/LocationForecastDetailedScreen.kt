@@ -43,16 +43,18 @@ fun LocationForecastDetailedScreen(
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
     val homeUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
 
-    val currentTime = getCurrentTime()
-    val currentHour = currentTime.substring(0, 2).toInt()
     val todaysDay = getTodaysDay()
     val selectedDay = hikeUIState.day
+    val currentTime = getCurrentTime()
+    val currentHour = currentTime.substring(0, 2).toInt()
     val startHour = if (selectedDay == todaysDay) currentHour else 0
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("$selectedDay ${hikeUIState.formattedDate}") },
+                title = { Text(
+                    if (selectedDay == todaysDay) "I dag ${hikeUIState.formattedDate}"
+                    else "$selectedDay ${hikeUIState.formattedDate}") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -84,23 +86,33 @@ fun LocationForecastDetailedScreen(
                         Text(text = "Tid", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
                         Text(text = "Vær", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
                         Text(text = "Temp.", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
+                        Text(text = "Vind (m/s)", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
+                        Text(text = "Luftfuktighet (%)", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
                     }
 
                     // Divider line
                     HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f))
 
-                    // Tegner location forecast for hver time
+                    // Location forecast for each hour
                     for (hour in startHour..23) {
-                        val formattedHour = String.format("%02d:00", hour)
-                        val forecast = homeUIState.forecast?.properties?.timeseries
-                            ?.firstOrNull { it.time.substring(11, 13) == formattedHour.substring(0, 2) }
+                        val formattedHour = String.format("%02d:00", hour) // Hour:min
+                        val formattedHMS = String.format("%02d:%02d:%02d", hour, 0, 0) // Hour:min:sec
 
-                        val iconSymbolCode = forecast?.data?.next_1_hours?.summary?.symbol_code ?: ""
+                        val forecast = homeUIState.forecast?.properties?.timeseries?.find {
+                            it.time == "${hikeUIState.date}T${formattedHMS}Z"
+                        }
+
+                        val iconSymbolCode = forecast?.data?.next_1_hours?.summary?.symbol_code ?: "--"
+                        val temperature = forecast?.data?.instant?.details?.air_temperature ?: "--"
+                        val windSpeed = forecast?.data?.instant?.details?.wind_speed ?: "--"
+                        val humidity = forecast?.data?.instant?.details?.relative_humidity ?: "--"
 
                         LocationForecastByHour(
                             tid = formattedHour,
-                            temperature = forecast?.data?.instant?.details?.air_temperature?.toString() ?: "--",
-                            icon = iconSymbolCode
+                            icon = iconSymbolCode,
+                            temperature = temperature.toString(),
+                            windSpeed = windSpeed.toString(),
+                            humidity = humidity.toString()
                         )
 
                         // Divider between rows

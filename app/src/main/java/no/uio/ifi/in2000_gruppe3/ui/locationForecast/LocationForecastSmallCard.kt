@@ -15,6 +15,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -25,6 +27,7 @@ import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenUIState
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -37,10 +40,15 @@ fun LocationForecastSmallCard(
     mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
+    val homeUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
+
+    val todaysDay = getTodaysDay()
     val todaysDate = getTodaysDate()
     val dateFormatted = getDateFormatted(date)
     val currentTime = getCurrentTime()
-    val todaysDay = getTodaysDay()
+
+    val daysHighestTemp = daysHighestTemp(homeUIState, date)
+    val daysLowestTemp = daysLowestTemp(homeUIState, date)
 
     val visibleBoxesCount = listOf(
         date > todaysDate || (date == todaysDate && currentTime < "06:00:00"),
@@ -55,7 +63,7 @@ fun LocationForecastSmallCard(
             .padding(8.dp),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
         onClick = {
-            hikeScreenViewModel.updateDate(day, dateFormatted)
+            hikeScreenViewModel.updateDate(day, date, dateFormatted)
             navController.navigate("locationForecastDetailed")
         }
     ) {
@@ -74,92 +82,71 @@ fun LocationForecastSmallCard(
             Spacer(modifier = Modifier.height(10.dp))
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.Start)
+                horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
+                verticalAlignment = Alignment.Top
             ) {
-                if (date > todaysDate || (date == todaysDate && currentTime < "06:00:00")) {
-                    Box(
-                        modifier = Modifier
-                            .then(if (visibleBoxesCount == 4) Modifier.weight(1f) else Modifier)
-                            .padding(4.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
+                Text(
+                    text = "$daysHighestTemp°\n${daysLowestTemp}°",
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    modifier = Modifier.padding(4.dp)
+                )
+
+                if (visibleBoxesCount == 4) {
+                    Box(contentAlignment = Alignment.Center) {
                         Column(
-                            modifier = Modifier.padding(8.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(text = "00-06")
-                            Spacer(modifier = Modifier.height(10.dp))
                             ForecastDisplay(
                                 homeScreenViewModel = homeScreenViewModel,
                                 mapboxViewModel = mapboxViewModel,
-                                timeseries = "00-06",
+                                timeseries = "00:00:00",
                                 date = date
                             )
                         }
                     }
                 }
-                if (date > todaysDate || (date == todaysDate && currentTime < "12:00:00")) {
-                    Box(
-                        modifier = Modifier
-                            .then(if (visibleBoxesCount == 4) Modifier.weight(1f) else Modifier)
-                            .padding(4.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
+                if (visibleBoxesCount >= 3) {
+                    Box(contentAlignment = Alignment.Center) {
                         Column(
-                            modifier = Modifier.padding(8.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(text = "06-12")
-                            Spacer(modifier = Modifier.height(10.dp))
                             ForecastDisplay(
                                 homeScreenViewModel = homeScreenViewModel,
                                 mapboxViewModel = mapboxViewModel,
-                                timeseries = "06-12",
+                                timeseries = "06:00:00",
                                 date = date
                             )
                         }
                     }
                 }
-                if (date > todaysDate || (date == todaysDate && currentTime < "18:00:00")) {
-                    Box(
-                        modifier = Modifier
-                            .then(if (visibleBoxesCount == 4) Modifier.weight(1f) else Modifier)
-                            .padding(4.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
+                if (visibleBoxesCount >= 2) {
+                    Box(contentAlignment = Alignment.Center) {
                         Column(
-                            modifier = Modifier.padding(8.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(text = "12-18")
-                            Spacer(modifier = Modifier.height(10.dp))
                             ForecastDisplay(
                                 homeScreenViewModel = homeScreenViewModel,
                                 mapboxViewModel = mapboxViewModel,
-                                timeseries = "12-18",
+                                timeseries = "12:00:00",
                                 date = date
                             )
                         }
                     }
                 }
-                if (date > todaysDate || (date == todaysDate && currentTime < "23:59:00")) {
-                    Box(
-                        modifier = Modifier
-                            .then(if (visibleBoxesCount == 4) Modifier.weight(1f) else Modifier)
-                            .padding(4.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
+                if (visibleBoxesCount >= 1) {
+                    Box(contentAlignment = Alignment.Center) {
                         Column(
-                            modifier = Modifier.padding(8.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(text = "18-00")
-                            Spacer(modifier = Modifier.height(10.dp))
                             ForecastDisplay(
                                 homeScreenViewModel = homeScreenViewModel,
                                 mapboxViewModel = mapboxViewModel,
-                                timeseries = "18-00",
+                                timeseries = "18:00:00",
                                 date = date
                             )
                         }
@@ -168,4 +155,16 @@ fun LocationForecastSmallCard(
             }
         }
     }
+}
+
+private fun daysHighestTemp(homeUIState: HomeScreenUIState, date: String): Double {
+     return homeUIState.forecast?.properties?.timeseries
+         ?.filter { it.time.startsWith(date) }
+         ?.maxOfOrNull { it.data.instant.details.air_temperature } ?: Double.MIN_VALUE
+}
+
+private fun daysLowestTemp(homeUIState: HomeScreenUIState, date: String): Double {
+    return homeUIState.forecast?.properties?.timeseries
+        ?.filter { it.time.startsWith(date) }
+        ?.minOfOrNull { it.data.instant.details.air_temperature } ?: Double.MAX_VALUE
 }
