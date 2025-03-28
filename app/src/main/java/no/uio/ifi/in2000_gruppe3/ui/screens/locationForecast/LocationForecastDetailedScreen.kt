@@ -42,6 +42,7 @@ fun LocationForecastDetailedScreen(
     navController: NavHostController
 ) {
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
+    val homeUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
 
     // Date variables
     val todaysDay = getTodaysDay()
@@ -58,6 +59,9 @@ fun LocationForecastDetailedScreen(
     } else {
         7 - todayIndex + selectedIndex
     }
+
+    val forecastUpdatedAt = homeUIState.forecast?.properties?.meta?.updated_at
+    val forecastUpdatedAtHour = forecastUpdatedAt?.substring(11, 13)!!.toInt()
 
     Scaffold(
         topBar = {
@@ -114,9 +118,19 @@ fun LocationForecastDetailedScreen(
                     HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f))
 
                     // Hours based on days ahead
-                    val hours = when {
-                        daysAhead < 2 -> (startHour..23)
-                        daysAhead == 2 -> (startHour..17)
+                    val hours = when (daysAhead) {
+                        0 -> (startHour..23)
+                        1 -> (0..23)
+                        2 -> if (forecastUpdatedAtHour + 6 > 23) { (0..23) }
+                             else { (0..forecastUpdatedAtHour + 6) }
+                        3 -> if (forecastUpdatedAtHour + 6 > 23) {
+                                val hoursInDay3 = forecastUpdatedAtHour + 6 - 23
+                                val hoursList = (0 until hoursInDay3).toList()
+                                val additionalHours = listOf(0, 6, 12, 18).filter { it !in hoursList }
+                                hoursList + additionalHours
+                            } else {
+                                listOf(0, 6, 12, 18)
+                        }
                         else -> listOf(0, 6, 12, 18)
                     }
 
