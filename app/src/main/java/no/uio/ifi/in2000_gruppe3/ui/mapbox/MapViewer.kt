@@ -44,7 +44,7 @@ fun MapViewer(
     }
 
     // Update viewport and fetch hikes when pointer coordinates change
-    LaunchedEffect(mapboxUIState.pointerCoordinates, mapboxUIState.mapStyle) {
+    LaunchedEffect(mapboxUIState.pointerCoordinates) {
         mapViewportState.easeTo(
             cameraOptions {
                 zoom(12.0)
@@ -60,6 +60,10 @@ fun MapViewer(
             5,
             "Fotrute",
             500
+        )
+        homeScreenViewModel.fetchForecast(
+            mapboxUIState.pointerCoordinates.latitude(),
+            mapboxUIState.pointerCoordinates.longitude()
         )
     }
     LaunchedEffect(homeScreenUIState.hikes) {
