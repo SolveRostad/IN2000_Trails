@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000_gruppe3.ui.mapbox
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
@@ -22,11 +23,16 @@ import androidx.compose.ui.unit.dp
 import com.mapbox.maps.Style
 
 @Composable
-fun MapStyleDropdownMenu(mapboxViewModel: MapboxViewModel, modifier: Modifier = Modifier) {
+fun MapStyleDropdownMenu(
+    mapboxViewModel: MapboxViewModel,
+    modifier: Modifier = Modifier
+) {
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
     var expanded by remember { mutableStateOf(false) }
 
-    Column {
+    Column(
+        modifier = modifier.fillMaxWidth()
+    ) {
         IconButton(onClick = { expanded = !expanded }) {
             Icon(
                 imageVector = Icons.Default.Settings,

@@ -2,6 +2,7 @@ package no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -66,9 +67,7 @@ fun LocationForecastScreen(
         bottomBar = { BottomBar(navController = navController) }
     ) { paddingValues ->
         LazyColumn(
-            modifier = Modifier
-                .padding(paddingValues)
-                .padding(16.dp)
+            modifier = Modifier.padding(paddingValues)
         ) {
             item {
                 orderedWeekdays.forEachIndexed { index, day ->

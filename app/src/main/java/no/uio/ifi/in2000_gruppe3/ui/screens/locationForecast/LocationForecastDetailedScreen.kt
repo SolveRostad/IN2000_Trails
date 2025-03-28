@@ -97,19 +97,12 @@ fun LocationForecastDetailedScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        listOf("Tid", "Vær", "Temp.", "Vind (m/s)", "Luftfuktighet (%)").forEach { header ->
+                        listOf("Tid", "Vær", "Temp.", "Vind", "Luftfuktighet").forEach { header ->
                             Text(
                                 text = header,
-                                style = MaterialTheme.typography.bodyLarge,
+                                style = MaterialTheme.typography.bodySmall,
                                 fontWeight = FontWeight.Bold,
-                                modifier = when (header) {
-                                    "Tid" -> Modifier.weight(0.8f).padding(start = 4.dp)
-                                    "Temp" -> Modifier.weight(0.9f)
-                                    "Vind (m/s)" -> Modifier.weight(1.3f)
-                                    "Luftfuktighet (%)" -> Modifier.weight(2f)
-                                    else -> Modifier.weight(0.8f)
-                                }
-
+                                modifier = Modifier.weight(1f),
                             )
                         }
                     }

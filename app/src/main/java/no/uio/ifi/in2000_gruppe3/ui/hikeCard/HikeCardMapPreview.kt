@@ -63,9 +63,8 @@ fun HikeCardMapPreview(
     Surface(
         modifier = Modifier
             .height(160.dp)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp)),
-        shape = RoundedCornerShape(8.dp)
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
     ) {
         // Tegner kartet som et bilde
         AsyncImage(

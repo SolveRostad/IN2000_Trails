@@ -2,6 +2,7 @@ package no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -58,25 +59,25 @@ fun HomeScreen(
                 )
                 Column {
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(
-                            3.dp,
-                            Alignment.CenterHorizontally
-                        ),
+                        horizontalArrangement = Arrangement.spacedBy(3.dp, Alignment.CenterHorizontally),
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 10.dp, end = 10.dp, top = 10.dp)
+                            .padding(start = 10.dp, end = 10.dp, top = 20.dp)
                     ) {
                         ForecastDisplay(
                             homeScreenViewModel,
                             mapboxViewModel,
-                            visableOnMap = true
+                            visableOnMap = true,
+                            modifier = Modifier.weight(0.35f)
                         )
                         SearchBarForMap(
                             mapboxViewModel,
+                            modifier = Modifier.weight(1.5f)
                         )
                         MapStyleDropdownMenu(
-                            mapboxViewModel
+                            mapboxViewModel,
+                            modifier = Modifier.weight(0.25f)
                         )
                     }
                     SuggestionColumn(
