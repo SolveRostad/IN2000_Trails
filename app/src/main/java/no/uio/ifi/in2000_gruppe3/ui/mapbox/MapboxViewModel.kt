@@ -101,9 +101,6 @@ class MapboxViewModel() : ViewModel() {
     }
 
     fun updatePolylineAnnotationsFromFeatures(features: List<Feature>) {
-        _mapboxUIState.update {
-            it.copy(isLoading = true)
-        }
         viewModelScope.launch {
             val annotations = mutableListOf<PolylineAnnotationOptions>().apply {
                 features.forEach { feature ->
