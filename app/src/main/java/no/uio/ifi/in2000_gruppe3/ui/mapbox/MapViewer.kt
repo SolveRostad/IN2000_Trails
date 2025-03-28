@@ -7,24 +7,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalFocusManager
-import com.mapbox.geojson.Point
 import com.mapbox.maps.dsl.cameraOptions
 import com.mapbox.maps.extension.compose.MapboxMap
-import com.mapbox.maps.extension.compose.MapboxMapComposable
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
 import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotationGroup
 import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotationGroupState
 import com.mapbox.maps.extension.compose.annotation.rememberIconImage
 import com.mapbox.maps.extension.compose.style.MapStyle
-import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationOptions
 import no.uio.ifi.in2000_gruppe3.R
-import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 /**
@@ -39,6 +32,7 @@ fun MapViewer(
     val homeScreenUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
     val focusManager = LocalFocusManager.current
+    val polylineAnnotationGroupState = PolylineAnnotationGroupState()
 
     val mapViewportState = rememberMapViewportState {
         setCameraOptions {
@@ -59,6 +53,7 @@ fun MapViewer(
                 bearing(0.0)
             }
         )
+        mapboxViewModel.setLoaderState(isLoading = true)
         homeScreenViewModel.fetchHikes(
             mapboxUIState.pointerCoordinates.latitude(),
             mapboxUIState.pointerCoordinates.longitude(),
@@ -67,6 +62,10 @@ fun MapViewer(
             500
         )
     }
+    LaunchedEffect(homeScreenUIState.hikes) {
+        mapboxViewModel.updatePolylineAnnotationsFromFeatures(homeScreenUIState.hikes)
+    }
+
     MapboxMap(
         modifier = Modifier.fillMaxSize(),
         mapViewportState = mapViewportState,
@@ -80,7 +79,10 @@ fun MapViewer(
         attribution = {},
         style = { MapStyle(mapboxUIState.mapStyle) }
     ) {
-        PolyLines(homeScreenUIState.hikes, mapboxViewModel)
+        PolylineAnnotationGroup(
+            mapboxUIState.polylineAnnotations,
+            polylineAnnotationGroupState = polylineAnnotationGroupState
+        )
 
         val marker = rememberIconImage(R.drawable.red_marker)
         PointAnnotation(point = mapboxUIState.pointerCoordinates) {
@@ -89,30 +91,3 @@ fun MapViewer(
     }
 }
 
-@Composable
-@MapboxMapComposable
-fun PolyLines(features: List<Feature>, mapboxViewModel: MapboxViewModel) {
-    mapboxViewModel.setLoaderState(true)
-    val polylineAnnotationGroupState = remember { PolylineAnnotationGroupState() }
-
-    PolylineAnnotationGroup(
-        polylineAnnotationGroupState = polylineAnnotationGroupState,
-        annotations = mutableListOf<PolylineAnnotationOptions>().apply {
-            features.forEach { feature ->
-                add(
-                    PolylineAnnotationOptions()
-                        .withPoints(
-                            feature.geometry.coordinates.map { coordinate ->
-                                Point.fromLngLat(coordinate[0], coordinate[1])
-                            }
-                        )
-                        .withLineColor(feature.color!!.toArgb())
-                        .withLineWidth(7.0)
-                        .withLineOpacity(0.7)
-                        .withLineBorderColor(Color.White.toArgb())
-                        .withLineBorderWidth(2.0)
-                )
-            }
-        }
-    )
-}

@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.GifDecoder
@@ -54,8 +53,7 @@ fun MapLoaderComposable(gifEnabledLoader: ImageLoader) {
             .background(
                 color = Color.Black.copy(alpha = 0.7f)
             )
-            .padding(top = 300.dp)
-            .zIndex(1f),
+            .padding(top = 300.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         AsyncImage(

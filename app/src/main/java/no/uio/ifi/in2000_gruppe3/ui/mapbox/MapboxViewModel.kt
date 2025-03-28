@@ -1,17 +1,21 @@
 package no.uio.ifi.in2000_gruppe3.ui.mapbox
 
 import android.util.Log
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
 import com.mapbox.maps.Style
-import com.mapbox.maps.extension.style.layers.generated.LineLayer
+import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationOptions
 import com.mapbox.search.autocomplete.PlaceAutocomplete
 import com.mapbox.search.autocomplete.PlaceAutocompleteSuggestion
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 
 class MapboxViewModel() : ViewModel() {
     private val placeAutocomplete = PlaceAutocomplete.create()
@@ -20,7 +24,7 @@ class MapboxViewModel() : ViewModel() {
         MapboxUIState(
             mapStyle = Style.OUTDOORS,
             pointerCoordinates = Point.fromLngLat(10.661952, 59.846195),
-            lineLayers = emptyList(),
+            polylineAnnotations = emptyList(),
             searchResponse = emptyList(),
             searchQuery = "",
         )
@@ -95,15 +99,44 @@ class MapboxViewModel() : ViewModel() {
             }
         }
     }
+
+    fun updatePolylineAnnotationsFromFeatures(features: List<Feature>) {
+        _mapboxUIState.update {
+            it.copy(isLoading = true)
+        }
+        viewModelScope.launch {
+            val annotations = mutableListOf<PolylineAnnotationOptions>().apply {
+                features.forEach { feature ->
+                    val lineString = LineString.fromLngLats(
+                        feature.geometry.coordinates.map {
+                            Point.fromLngLat(it[0], it[1])
+                        }
+                    )
+                    add(
+                        PolylineAnnotationOptions()
+                            .withGeometry(lineString)
+                            .withLineColor(feature.color!!.toArgb())
+                            .withLineWidth(7.0)
+                            .withLineOpacity(0.7)
+                            .withLineBorderColor(Color.White.toArgb())
+                            .withLineBorderWidth(2.0)
+                    )
+                }
+            }
+            _mapboxUIState.update {
+                it.copy(polylineAnnotations = annotations, isLoading = false)
+            }
+        }
+    }
 }
 
 data class MapboxUIState(
     val mapStyle: String,
     val pointerCoordinates: Point,
-    val lineLayers: List<LineLayer>,
+    val polylineAnnotations: List<PolylineAnnotationOptions>,
 
     val searchResponse: List<PlaceAutocompleteSuggestion>,
     val searchQuery: String,
 
-    val isLoading: Boolean = false
+    val isLoading: Boolean = true
 )
