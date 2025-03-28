@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -128,9 +129,10 @@ fun HikeCard(
                             .padding(8.dp)
                             .fillMaxWidth()
                             .align(Alignment.CenterHorizontally),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B9FF)),
                         onClick = { navController.navigate("locationForecast") }
                     ) {
-                        Text(text = "Se flere dager")
+                        Text(text = "Se været andre dager")
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))

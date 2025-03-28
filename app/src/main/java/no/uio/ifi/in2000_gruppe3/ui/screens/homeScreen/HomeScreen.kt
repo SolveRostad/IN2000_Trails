@@ -63,12 +63,13 @@ fun HomeScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 10.dp, end = 10.dp, top = 20.dp)
+                            .padding(start = 10.dp, end = 10.dp, top = 25.dp)
                     ) {
                         ForecastDisplay(
                             homeScreenViewModel,
                             mapboxViewModel,
                             visableOnMap = true,
+                            showTemperature = false,
                             modifier = Modifier.weight(0.35f)
                         )
                         SearchBarForMap(
