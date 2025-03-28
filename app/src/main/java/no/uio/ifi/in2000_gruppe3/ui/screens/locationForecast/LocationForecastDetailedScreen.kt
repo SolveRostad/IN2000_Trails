@@ -110,26 +110,11 @@ fun LocationForecastDetailedScreen(
                     // Divider line
                     HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f))
 
-                    // Hours based on days ahead
-                    val hours = when (daysAhead) {
-                        0 -> (startHour..23)
-                        1 -> (0..23)
-                        2 -> if (forecastUpdatedAtHour + 6 > 23) { (0..23) }
-                             else { (0..forecastUpdatedAtHour + 6) }
-                        3 -> if (forecastUpdatedAtHour + 6 > 23) {
-                                val hoursInDay3 = forecastUpdatedAtHour + 6 - 23
-                                val hoursList = (0 until hoursInDay3).toList()
-                                val additionalHours = listOf(0, 6, 12, 18).filter { it !in hoursList }
-                                hoursList + additionalHours
-                            } else {
-                                listOf(0, 6, 12, 18)
-                        }
-                        else -> listOf(0, 6, 12, 18)
-                    }
-
                     // Show forecast for each hour
-                    hours.forEach { hour ->
-                        val summaryKey = if (daysAhead < 3) "next_1_hours.summary.symbol_code" else "next_6_hours.summary.symbol_code"
+                    (0..23).forEach { hour ->
+                        val summaryKey = if (daysAhead < 3) "1_hour"
+                                         else if (daysAhead == 3 && hour !in listOf(0, 6, 12, 18)) "1_hour"
+                                         else "6_hours"
                         ShowForecastByHour(
                             hour = hour,
                             summaryKey = summaryKey,
