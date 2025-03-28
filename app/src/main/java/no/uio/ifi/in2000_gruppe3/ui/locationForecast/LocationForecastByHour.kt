@@ -15,7 +15,13 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 
 @Composable
-fun LocationForecastByHour(tid: String, icon: String, temperature: String) {
+fun LocationForecastByHour(
+    tid: String,
+    icon: String,
+    temperature: String,
+    windSpeed: String,
+    humidity: String
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -23,7 +29,10 @@ fun LocationForecastByHour(tid: String, icon: String, temperature: String) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = tid, style = MaterialTheme.typography.bodyMedium)
+        Text(
+            text = tid,
+            style = MaterialTheme.typography.bodyMedium
+        )
 
         val iconURL = getWeatherIconUrl(icon)
         Image(
@@ -34,6 +43,19 @@ fun LocationForecastByHour(tid: String, icon: String, temperature: String) {
                 .padding(horizontal = 8.dp)
         )
 
-        Text(text = "$temperature°C", style = MaterialTheme.typography.bodyMedium)
+        Text(
+            text = "$temperature°C",
+            style = MaterialTheme.typography.bodyMedium
+        )
+
+        Text(
+            text = windSpeed,
+            style = MaterialTheme.typography.bodyMedium
+        )
+
+        Text(
+            text = humidity,
+            style = MaterialTheme.typography.bodyMedium
+        )
     }
 }

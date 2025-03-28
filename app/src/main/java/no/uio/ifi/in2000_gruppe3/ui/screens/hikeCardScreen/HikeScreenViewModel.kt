@@ -37,9 +37,13 @@ class HikeScreenViewModel : ViewModel() {
         }
     }
 
-    fun updateDate(day: String, formattedDate: String) {
+    fun updateDate(day: String, date: String, formattedDate: String) {
         _hikeScreenUIState.update {
-            it.copy(day = day, formattedDate = formattedDate)
+            it.copy(
+                day = day,
+                date = date,
+                formattedDate = formattedDate
+            )
         }
     }
 }
@@ -49,5 +53,6 @@ data class HikeScreenUIState(
     val isFavorite: Boolean = false,
     val feature: Feature,
     val day: String = "",
+    val date: String = "",
     val formattedDate: String = ""
 )
