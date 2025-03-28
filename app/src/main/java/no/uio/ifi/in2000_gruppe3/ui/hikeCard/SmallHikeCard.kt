@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
+import java.util.Locale
 
 
 @Composable
@@ -41,7 +42,7 @@ fun SmallHikeCard(
     feature: Feature,
     onClick: () -> Unit
 ) {
-    val difficulty = getDifficultyInfo(feature.properties.gradering ?: "")
+    val difficulty = getDifficultyInfo(feature.properties.gradering)
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -102,6 +103,7 @@ fun SmallHikeCard(
                         icon = Icons.Rounded.LocationOn,
                         label = "Avstand til start",
                         value = String.format(
+                            Locale("nb", "NO"),
                             "%.3f km",
                             feature.properties.distance_to_point.toFloat() / 1000.0
                         ),
@@ -111,6 +113,7 @@ fun SmallHikeCard(
                         icon = ImageVector.vectorResource(id = R.drawable.distance_icon),
                         label = "Turens lengde",
                         value = String.format(
+                            Locale("nb", "NO"),
                             "%.3f km",
                             feature.properties.distance_meters.toFloat() / 1000.0
                         ),
@@ -119,7 +122,7 @@ fun SmallHikeCard(
                     InfoItem(
                         icon = ImageVector.vectorResource(id = R.drawable.terrain_icon),
                         label = "Vanskelighet",
-                        value = getDifficultyName(feature.properties.gradering ?: ""),
+                        value = getDifficultyName(feature.properties.gradering),
                         iconTint = difficulty.color
                     )
                 }
