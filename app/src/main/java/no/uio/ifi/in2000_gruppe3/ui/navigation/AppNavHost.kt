@@ -62,6 +62,7 @@ fun AppNavHost() {
                 hikeScreenViewModel = hikeScreenViewModel,
                 favoritesViewModel = favoritesViewModel,
                 mapboxViewModel = mapboxViewModel,
+                geminiViewModel = geminiViewModel,
                 navController = navController
             )
         }

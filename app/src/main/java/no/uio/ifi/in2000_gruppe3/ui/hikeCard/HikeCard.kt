@@ -4,7 +4,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,10 +33,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import dev.jeziellago.compose.markdowntext.MarkdownText
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.geminiScreen.GeminiViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 import java.util.Locale
@@ -49,13 +51,22 @@ fun HikeCard(
     hikeScreenViewModel: HikeScreenViewModel,
     favoritesViewModel: FavoritesViewModel,
     mapboxViewModel: MapboxViewModel,
+    geminiViewModel: GeminiViewModel,
     navController: NavHostController
 ) {
     val homeUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
+    val geminiUIState by geminiViewModel.geminiUIState.collectAsState()
+
     val checkedState = remember {
         mutableStateOf(favoritesViewModel.isHikeFavorite(hikeUIState.feature))
     }
+
+    geminiViewModel.updateHikeDescription(
+        name = hikeUIState.feature.properties.desc.toString(),
+        homeScreenViewModel = homeScreenViewModel,
+        hikeScreenViewModel = hikeScreenViewModel
+    )
 
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -118,8 +129,10 @@ fun HikeCard(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    Text(
-                        text = "This is a detailed description of the hiking route. It includes information about the terrain, landmarks, and what to expect along the trail."
+                    MarkdownText(
+                        markdown = geminiUIState.response,
+                        modifier = Modifier.padding(8.dp),
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
