@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
-import no.uio.ifi.in2000_gruppe3.ui.loader.Loader
+import no.uio.ifi.in2000_gruppe3.ui.loaders.Loader
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import dev.jeziellago.compose.markdowntext.MarkdownText
 

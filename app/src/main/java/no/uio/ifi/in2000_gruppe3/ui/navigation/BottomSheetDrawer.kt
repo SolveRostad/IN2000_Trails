@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000_gruppe3.ui.navigation
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,10 +25,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import kotlinx.coroutines.delay
 import no.uio.ifi.in2000_gruppe3.ui.hikeCard.SmallHikeCard
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
@@ -45,10 +51,13 @@ fun BottomSheetDrawer(
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
     val homeScreenUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
 
+    val sheetPeekHeight = if (homeScreenUIState.hikes.isEmpty()) 40.dp else 200.dp
+
     // Bottom sheet state for å kunne åpne og lukke bottom sheet
     var bottomSheetState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(
-            initialValue = SheetValue.PartiallyExpanded
+            initialValue = SheetValue.PartiallyExpanded,
+            skipHiddenState = false,
         )
     )
 
@@ -56,6 +65,10 @@ fun BottomSheetDrawer(
         if (mapboxUIState.searchResponse.isNotEmpty()) {
             bottomSheetState.bottomSheetState.partialExpand()
         }
+    }
+
+    LaunchedEffect(homeScreenUIState.hikes) {
+        bottomSheetState.bottomSheetState.partialExpand()
     }
 
     BottomSheetScaffold(
@@ -72,7 +85,7 @@ fun BottomSheetDrawer(
                     modifier = Modifier.clipToBounds(),
                     contentPadding = PaddingValues(16.dp),
                 ) {
-                    if (homeScreenUIState.hikes.features.isEmpty()) {
+                    if (homeScreenUIState.hikes.isEmpty()) {
                         item {
                             Text(
                                 text = "Ingen turer funnet 😕",
@@ -81,7 +94,7 @@ fun BottomSheetDrawer(
                             )
                         }
                     }
-                    items(homeScreenUIState.hikes.features) { feature ->
+                    items(homeScreenUIState.hikes) { feature ->
                         SmallHikeCard(
                             mapboxViewModel,
                             feature = feature,
@@ -95,7 +108,7 @@ fun BottomSheetDrawer(
                 }
             }
         },
-        sheetPeekHeight = 40.dp,
+        sheetPeekHeight = sheetPeekHeight,
         sheetDragHandle = { BottomSheetDefaults.DragHandle() },
         sheetContainerColor = MaterialTheme.colorScheme.surface,
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
