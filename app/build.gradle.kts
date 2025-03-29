@@ -49,14 +49,10 @@ dependencies {
 
     //DataStore
     implementation(libs.androidx.datastore.preferences)
-
-    // optional - RxJava2 support
     implementation(libs.androidx.datastore.preferences.rxjava2)
-
-    // optional - RxJava3 support
     implementation(libs.androidx.datastore.preferences.rxjava3)
 
-    // mapbox search
+    // Mapbox search
     val mapboxSearchVersion = "2.8.0-rc.1"
     implementation("com.mapbox.search:autofill:$mapboxSearchVersion")
     implementation("com.mapbox.search:discover:$mapboxSearchVersion")
@@ -75,7 +71,7 @@ dependencies {
     // Coil
     implementation("io.coil-kt:coil-compose:2.7.0")
 
-    // Navcontroller
+    // Navigation and compose
     implementation("androidx.compose.ui:ui:1.7.8")
     implementation("androidx.compose.material:material:1.7.8")
     implementation("androidx.compose.ui:ui-tooling-preview:1.7.8")
@@ -83,19 +79,11 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.8.2")
 
     // Ktor
-    val ktorVersion = "3.1.1"
-    implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
-    implementation("io.ktor:ktor-client-plugins:$ktorVersion")
-    implementation("io.ktor:ktor-client-logging:$ktorVersion")
-    //implementation("io.ktor:ktor-client-http-timeout:$ktorVersion")
-
-    implementation("io.ktor:ktor-client-cio:$ktorVersion")
-    implementation("io.ktor:ktor-client-android:$ktorVersion")
-    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-    implementation("io.ktor:ktor-serialization-kotlinx-cbor:$ktorVersion")
-    implementation("io.ktor:ktor-serialization-kotlinx-protobuf:$ktorVersion")
+    implementation("io.ktor:ktor-client-android:2.3.5")
+    implementation("io.ktor:ktor-client-core:2.3.5")
+    implementation("io.ktor:ktor-client-cio:2.3.5")
+    implementation("io.ktor:ktor-client-content-negotiation:2.3.5")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.5")
 
     // Markdown text
     implementation("com.github.jeziellago:compose-markdown:0.5.7")
@@ -104,11 +92,11 @@ dependencies {
     implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
 
     // ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0") // 2
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
 
     // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
 
     // Standard libs
     implementation(libs.androidx.core.ktx)

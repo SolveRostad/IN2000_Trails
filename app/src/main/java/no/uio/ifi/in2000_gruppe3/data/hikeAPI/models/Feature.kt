@@ -9,5 +9,5 @@ data class Feature(
     val geometry: Geometry,
     val properties: PropertiesX,
     val type: String,
-    @Transient var color: Color? = null
+    @Transient var color: Color? = Color.Blue
 )

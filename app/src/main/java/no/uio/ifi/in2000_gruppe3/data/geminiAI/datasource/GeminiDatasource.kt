@@ -28,7 +28,6 @@ class GeminiDatasource {
                 GeminiResponse.Error("Response was not in expected text format")
             }
         } catch (e: Exception) {
-            Log.e("GeminiDatasource", "Error: ${e.message}")
             GeminiResponse.Error("Error: ${e.message}")
         }
     }

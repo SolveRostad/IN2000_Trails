@@ -11,7 +11,6 @@ import java.util.Locale
 @Composable
 fun ShowForecastByHour(
     hour: Int,
-    summaryKey: String,
     homeViewModel: HomeScreenViewModel,
     hikeViewModel: HikeScreenViewModel,
 ) {
@@ -25,11 +24,9 @@ fun ShowForecastByHour(
         it.time == "${hikeUIState.value.date}T${formattedHMS}Z"
     }
 
-    val iconSymbolCode = when (summaryKey) {
-        "1_hour" -> forecast?.data?.next_1_hours?.summary?.symbol_code
-        "6_hours" -> forecast?.data?.next_6_hours?.summary?.symbol_code
-        else -> null
-    } ?: "--"
+    val symbolCode1Hour = forecast?.data?.next_1_hours?.summary?.symbol_code ?: "--"
+    val symbolCode6Hours = forecast?.data?.next_6_hours?.summary?.symbol_code ?: "--"
+    val iconSymbolCode = if (symbolCode1Hour != "--") symbolCode1Hour else symbolCode6Hours
 
     val temperature = forecast?.data?.instant?.details?.air_temperature ?: "--"
     val windSpeed = forecast?.data?.instant?.details?.wind_speed ?: "--"

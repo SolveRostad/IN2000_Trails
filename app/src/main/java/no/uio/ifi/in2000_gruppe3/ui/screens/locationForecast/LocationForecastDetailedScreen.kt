@@ -26,10 +26,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import no.uio.ifi.in2000_gruppe3.data.date.Weekdays
-import no.uio.ifi.in2000_gruppe3.data.date.getCurrentTime
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ShowForecastByHour
+import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
@@ -42,26 +41,10 @@ fun LocationForecastDetailedScreen(
     navController: NavHostController
 ) {
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
-    val homeUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
 
     // Date variables
     val todaysDay = getTodaysDay()
     val selectedDay = hikeUIState.day
-    val currentTime = getCurrentTime()
-    val currentHour = currentTime.substring(0, 2).toInt()
-    val startHour = if (selectedDay == todaysDay) currentHour else 0
-
-    // Calculate the difference from selected day to todays day
-    val todayIndex = Weekdays.indexOf(todaysDay)
-    val selectedIndex = Weekdays.indexOf(selectedDay)
-    val daysAhead = if (selectedIndex >= todayIndex) {
-        selectedIndex - todayIndex
-    } else {
-        7 - todayIndex + selectedIndex
-    }
-
-    val forecastUpdatedAt = homeUIState.forecast?.properties?.meta?.updated_at
-    val forecastUpdatedAtHour = forecastUpdatedAt?.substring(11, 13)!!.toInt()
 
     Scaffold(
         topBar = {
@@ -78,7 +61,8 @@ fun LocationForecastDetailedScreen(
                     }
                 }
             )
-        }
+        },
+        bottomBar = { BottomBar(navController = navController) }
     ) { contentPadding ->
         LazyColumn(
             modifier = Modifier
@@ -112,12 +96,8 @@ fun LocationForecastDetailedScreen(
 
                     // Show forecast for each hour
                     (0..23).forEach { hour ->
-                        val summaryKey = if (daysAhead < 3) "1_hour"
-                                         else if (daysAhead == 3 && hour !in listOf(0, 6, 12, 18)) "1_hour"
-                                         else "6_hours"
                         ShowForecastByHour(
                             hour = hour,
-                            summaryKey = summaryKey,
                             homeViewModel = homeScreenViewModel,
                             hikeViewModel = hikeScreenViewModel
                         )
