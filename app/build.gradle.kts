@@ -56,7 +56,7 @@ dependencies {
     // optional - RxJava3 support
     implementation(libs.androidx.datastore.preferences.rxjava3)
 
-    // mapbox search
+    // Mapbox search
     val mapboxSearchVersion = "2.8.0-rc.1"
     implementation("com.mapbox.search:autofill:$mapboxSearchVersion")
     implementation("com.mapbox.search:discover:$mapboxSearchVersion")
@@ -75,7 +75,7 @@ dependencies {
     // Coil
     implementation("io.coil-kt:coil-compose:2.7.0")
 
-    // Navcontroller
+    // Navigation and compose
     implementation("androidx.compose.ui:ui:1.7.8")
     implementation("androidx.compose.material:material:1.7.8")
     implementation("androidx.compose.ui:ui-tooling-preview:1.7.8")

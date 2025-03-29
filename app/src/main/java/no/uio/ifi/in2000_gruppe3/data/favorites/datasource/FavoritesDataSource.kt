@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 
-
 val Context.favoritesDataStore: DataStore<Preferences> by preferencesDataStore(name = "feature_preferences")
 
 class FavoritesDataSource(){
@@ -41,7 +40,6 @@ class FavoritesDataSource(){
         return try {
             json.decodeFromString<List<Feature>>(featuresString)
         } catch (e: Exception) {
-            Log.e("FavoritesDataSource", "Error deserializing features: ${e.message}")
             emptyList()
         }
     }

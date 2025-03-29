@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.map
 import no.uio.ifi.in2000_gruppe3.data.favorites.datasource.FavoritesDataSource
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 
-class FeatureRepository() {
+class FavoritesRepository() {
 
     private val dataSource = FavoritesDataSource()
 
