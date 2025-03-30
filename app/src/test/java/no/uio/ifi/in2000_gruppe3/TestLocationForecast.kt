@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.data.locationForecastAPI
+package no.uio.ifi.in2000_gruppe3
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -18,4 +18,3 @@ fun main() = runBlocking {
         println("Test feilet! Ingen data mottatt.")
     }
 }
-

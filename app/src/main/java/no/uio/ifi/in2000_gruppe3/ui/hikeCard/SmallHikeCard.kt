@@ -86,7 +86,7 @@ fun SmallHikeCard(
             ) {
                 Text(
                     text = feature.properties.desc ?: "Ukjent rutenavn",
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis

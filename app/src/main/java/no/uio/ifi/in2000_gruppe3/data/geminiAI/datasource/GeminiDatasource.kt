@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000_gruppe3.data.geminiAI.datasource
 
-import android.util.Log
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.GenerateContentResponse
 import com.google.ai.client.generativeai.type.TextPart

@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.data.metAlertsAPI
+package no.uio.ifi.in2000_gruppe3
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
