@@ -134,7 +134,7 @@ fun HikeCard(
                                 InfoItem(
                                     icon = ImageVector.vectorResource(R.drawable.terrain_icon),
                                     label = "Type",
-                                    value = difficulty.label,
+                                    value = hikeUIState.feature.properties.type,
                                     iconTint = MaterialTheme.colorScheme.primary
                                 )
                                 InfoItem(
