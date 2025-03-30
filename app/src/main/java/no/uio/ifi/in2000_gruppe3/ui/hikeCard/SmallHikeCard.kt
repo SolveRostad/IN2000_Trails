@@ -35,7 +35,6 @@ import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import java.util.Locale
 
-
 @Composable
 fun SmallHikeCard(
     mapboxViewModel: MapboxViewModel,
@@ -132,7 +131,7 @@ fun SmallHikeCard(
 }
 
 @Composable
-private fun InfoItem(
+internal fun InfoItem(
     icon: ImageVector,
     label: String,
     value: String,

@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,6 +24,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -32,10 +34,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import dev.jeziellago.compose.markdowntext.MarkdownText
+import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
@@ -62,10 +69,9 @@ fun HikeCard(
         mutableStateOf(favoritesViewModel.isHikeFavorite(hikeUIState.feature))
     }
 
-    geminiViewModel.updateHikeDescription(
-        name = hikeUIState.feature.properties.desc.toString(),
+    hikeScreenViewModel.getHikeDescription(
         homeScreenViewModel = homeScreenViewModel,
-        hikeScreenViewModel = hikeScreenViewModel
+        geminiViewModel = geminiViewModel
     )
 
     Card(
@@ -78,53 +84,84 @@ fun HikeCard(
     ) {
         LazyColumn {
             item {
-                HikeCardMapPreview(mapboxViewModel, hikeUIState.feature)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    contentAlignment = Alignment.TopEnd
+                ) {
+                    HikeCardMapPreview(mapboxViewModel, hikeUIState.feature)
+
+                    Surface(
+                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0f)
+                    ) {
+                        ForecastDisplay(
+                            homeScreenViewModel,
+                            mapboxViewModel,
+                            showTemperature = false
+                        )
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Column(
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .weight(1f)
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.Top
                     ) {
-                        Column(
-                            modifier = Modifier.weight(1f)
-                        ) {
+                        Column {
                             Text(
                                 text = "Rute detaljer",
-                                style = MaterialTheme.typography.headlineMedium
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                overflow = TextOverflow.Ellipsis
                             )
 
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(12.dp))
 
-                            Text(text = "Type: ${hikeUIState.feature.properties.type}")
-                            Text(
-                                text = "Lengde: ${
-                                    String.format(
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceAround
+                            ) {
+                                InfoItem(
+                                    icon = ImageVector.vectorResource(R.drawable.terrain_icon),
+                                    label = "Type",
+                                    value = hikeUIState.feature.properties.type,
+                                    iconTint = MaterialTheme.colorScheme.primary
+                                )
+                                InfoItem(
+                                    icon = ImageVector.vectorResource(id = R.drawable.distance_icon),
+                                    label = "Lengde",
+                                    value = String.format(
                                         Locale("nb", "NO"),
-                                        "%.2f",
+                                        "%.2f km",
                                         hikeUIState.feature.properties.distance_meters.toFloat() / 1000.0
-                                    )
-                                } km"
-                            )
-                            Text(text = "Luftfuktighet: ${homeUIState.forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.relative_humidity} %")
-                            Text(text = "Vindhastighet: ${homeUIState.forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.wind_speed} m/s")
+                                    ),
+                                    iconTint = Color(0xFF4CAF50)
+                                )
+                                InfoItem(
+                                    icon = ImageVector.vectorResource(id = R.drawable.windmill),
+                                    label = "Vindhastighet",
+                                    value = "${homeUIState.forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.wind_speed} m/s",
+                                    iconTint = Color(0xFF2196F3)
+                                )
+                            }
                         }
-
-                        ForecastDisplay(
-                            homeScreenViewModel,
-                            mapboxViewModel
-                        )
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
                         text = "Rute beskrivelse",
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        overflow = TextOverflow.Ellipsis
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))

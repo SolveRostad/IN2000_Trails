@@ -11,7 +11,6 @@ class HikeAPIRepository {
     private val hikeAPIDatasource = HikeAPIDatasource()
     private var colorIndex = 0
 
-
     suspend fun getHikes(
         lat: Double,
         lng: Double,

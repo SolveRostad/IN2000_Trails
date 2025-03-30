@@ -95,7 +95,7 @@ fun LocationForecastSmallCard(
             Spacer(modifier = Modifier.height(10.dp))
 
             Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
+                horizontalArrangement = Arrangement.spacedBy(14.dp, Alignment.Start),
                 verticalAlignment = Alignment.Top
             ) {
                 Text(
@@ -114,7 +114,7 @@ fun LocationForecastSmallCard(
 
                 val timeRanges = listOf("00-06" to "00:00:00", "06-12" to "06:00:00", "12-18" to "12:00:00", "18-00" to "18:00:00")
                 timeRanges.takeLast(visibleBoxesCount).forEach { (label, timeseries) ->
-                    Box(modifier = Modifier.weight(1f)) {
+                    Box {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(text = label)
                             ForecastDisplay(

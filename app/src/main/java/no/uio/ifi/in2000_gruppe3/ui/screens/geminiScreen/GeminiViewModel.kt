@@ -8,8 +8,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.data.geminiAI.models.GeminiResponse
 import no.uio.ifi.in2000_gruppe3.data.geminiAI.repository.GeminiRepository
-import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 class GeminiViewModel : ViewModel() {
     private val geminiRepository = GeminiRepository()
@@ -35,21 +33,6 @@ class GeminiViewModel : ViewModel() {
                 }
             }
         }
-    }
-
-    fun updateHikeDescription(
-        name: String,
-        hikeScreenViewModel: HikeScreenViewModel,
-        homeScreenViewModel: HomeScreenViewModel
-    ) {
-        val prompt = "Gi en kort, engasjerende beskrivelse av turen \"$name\" som ligger på koordinatene " +
-                "${hikeScreenViewModel.hikeScreenUIState.value.feature.geometry.coordinates}. " +
-                "Ikke nevn koordinatene direkte, men bruk stedsnavn og rutenavn hvis mulig. " +
-                "Beskriv hva som gjør turen spesiell, og gi anbefalinger basert på værforholdene her: " +
-                "${homeScreenViewModel.homeScreenUIState.value.forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.air_temperature}°C. " +
-                "Hvis temperaturen ikke er tilgjengelig, utelat værrelatert informasjon."
-
-        askQuestion(prompt)
     }
 }
 
