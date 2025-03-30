@@ -69,6 +69,8 @@ fun HikeCard(
         mutableStateOf(favoritesViewModel.isHikeFavorite(hikeUIState.feature))
     }
 
+    val difficulty = getDifficultyInfo(hikeUIState.feature.properties.gradering)
+
     hikeScreenViewModel.getHikeDescription(
         homeScreenViewModel = homeScreenViewModel,
         geminiViewModel = geminiViewModel
@@ -132,8 +134,14 @@ fun HikeCard(
                                 InfoItem(
                                     icon = ImageVector.vectorResource(R.drawable.terrain_icon),
                                     label = "Type",
-                                    value = hikeUIState.feature.properties.type,
+                                    value = difficulty.label,
                                     iconTint = MaterialTheme.colorScheme.primary
+                                )
+                                InfoItem(
+                                    icon = ImageVector.vectorResource(R.drawable.mountain),
+                                    label = "Vanskelighet",
+                                    value = difficulty.label,
+                                    iconTint = difficulty.color
                                 )
                                 InfoItem(
                                     icon = ImageVector.vectorResource(id = R.drawable.distance_icon),

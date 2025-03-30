@@ -172,12 +172,13 @@ fun getDifficultyName(grade: String): String {
 
 data class DifficultyInfo(val label: String, val color: Color)
 
+@Composable
 fun getDifficultyInfo(grade: String): DifficultyInfo {
     return when (grade.lowercase()) {
         "enkel" -> DifficultyInfo("ENKEL", Color(0xFF4CAF50)) // Green
         "middels" -> DifficultyInfo("MIDDELS", Color(0xFFFFC107)) // Yellow/Amber
         "krevende" -> DifficultyInfo("KREVENDE", Color(0xFFFF9800)) // Orange
         "ekspert" -> DifficultyInfo("EKSPERT", Color(0xFFF44336)) // Red
-        else -> DifficultyInfo("UKJENT", Color.Gray)
+        else -> DifficultyInfo("UKJENT", MaterialTheme.colorScheme.primary)
     }
 }
