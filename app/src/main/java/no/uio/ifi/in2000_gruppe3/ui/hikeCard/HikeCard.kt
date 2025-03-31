@@ -67,7 +67,7 @@ fun HikeCard(
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
     val geminiUIState by geminiViewModel.geminiUIState.collectAsState()
 
-    val difficulty = getDifficultyInfo(hikeUIState.feature.properties.gradering)
+    val difficulty = getDifficultyInfo(hikeUIState.feature.properties.gradering ?: "Ukjent")
 
     hikeScreenViewModel.getHikeDescription(
         homeScreenViewModel = homeScreenViewModel,
