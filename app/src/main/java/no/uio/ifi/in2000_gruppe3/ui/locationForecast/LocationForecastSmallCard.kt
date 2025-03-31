@@ -3,7 +3,6 @@ package no.uio.ifi.in2000_gruppe3.ui.locationForecast
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -117,10 +116,11 @@ fun LocationForecastSmallCard(
                     )
 
                     Row(
-                        modifier = Modifier.fillMaxWidth().weight(1f).padding(start = 8.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .padding(start = 8.dp)
                     ) {
-
-
                         timeRanges.takeLast(visibleBoxesCount).forEach { (label, timeseries) ->
                             Box {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {

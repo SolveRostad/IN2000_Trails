@@ -9,7 +9,7 @@ import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Hikes
 
 /**
- * Datasource for fetching turdata from the TurDB API
+ * Datasource for fetching data from Hike API
  */
 class HikeAPIDatasource {
 

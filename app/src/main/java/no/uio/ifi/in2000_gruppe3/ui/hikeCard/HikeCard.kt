@@ -31,8 +31,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -133,7 +131,7 @@ fun HikeCard(
                                 InfoItem(
                                     icon = ImageVector.vectorResource(R.drawable.mountain),
                                     label = "Type",
-                                    value = hikeUIState.feature.properties.type,
+                                    value = "Gåtur", //hikeUIState.feature.properties.type
                                     iconTint = MaterialTheme.colorScheme.primary
                                 )
                                 InfoItem(

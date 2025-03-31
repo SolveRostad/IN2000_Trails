@@ -43,6 +43,7 @@ fun GeminiScreen(
     navController: NavHostController
 ) {
     val geminiUIState by geminiViewModel.geminiUIState.collectAsState()
+
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
     var input by remember { mutableStateOf("") }

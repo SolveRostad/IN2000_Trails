@@ -20,9 +20,6 @@ import com.mapbox.maps.extension.compose.style.MapStyle
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
-/**
- * MapViewer er en composable som viser et kart med mulighet for å velge kartstil og lysmåte
- */
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MapViewer(
@@ -31,6 +28,7 @@ fun MapViewer(
 ) {
     val homeScreenUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
+
     val focusManager = LocalFocusManager.current
     val polylineAnnotationGroupState = PolylineAnnotationGroupState()
 
@@ -66,6 +64,7 @@ fun MapViewer(
             mapboxUIState.pointerCoordinates.longitude()
         )
     }
+
     LaunchedEffect(homeScreenUIState.hikes) {
         mapboxViewModel.updatePolylineAnnotationsFromFeatures(homeScreenUIState.hikes)
     }
@@ -94,4 +93,3 @@ fun MapViewer(
         }
     }
 }
-

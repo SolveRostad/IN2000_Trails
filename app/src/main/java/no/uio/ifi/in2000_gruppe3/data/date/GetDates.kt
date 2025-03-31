@@ -16,13 +16,13 @@ enum class Weekdays {
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-// Returnerer dato i formatet "YYYY-MM-DD"
+// Returns date on format "YYYY-MM-DD"
 fun getTodaysDate(): String {
     val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     return formatter.format(Date())
 }
 
-// Returnerer dato på format "dd. MMMM"
+// Returns date on format "dd. MMMM"
 fun getDateFormatted(date: String): String {
     val inputFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val outputFormatter = SimpleDateFormat("dd. MMMM", Locale("no", "NO"))
@@ -32,13 +32,13 @@ fun getDateFormatted(date: String): String {
     return outputFormatter.format(parsedDate)
 }
 
-// Returnerer klokkeslett i formatet "HH:mm:ss"
+// Returns current time on format "HH:mm:ss"
 fun getCurrentTime(): String {
     val formatter = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
     return formatter.format(Date())
 }
 
-// Returnerer dagens dato
+// Returns today's day
 @RequiresApi(Build.VERSION_CODES.O)
 fun getTodaysDay(): String {
     val dayOfWeek = LocalDate.now().dayOfWeek

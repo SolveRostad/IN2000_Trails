@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000_gruppe3.ui.navigation
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,15 +24,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import kotlinx.coroutines.delay
 import no.uio.ifi.in2000_gruppe3.ui.hikeCard.SmallHikeCard
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
@@ -53,7 +47,7 @@ fun BottomSheetDrawer(
 
     val sheetPeekHeight = if (homeScreenUIState.hikes.isEmpty()) 40.dp else 200.dp
 
-    // Bottom sheet state for å kunne åpne og lukke bottom sheet
+    // Bottom sheet state to remember sheet height position
     var bottomSheetState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(
             initialValue = SheetValue.PartiallyExpanded,
@@ -80,7 +74,6 @@ fun BottomSheetDrawer(
                     .heightIn(max = 670.dp)
                     .clipToBounds()
             ) {
-                // Innholdet i bottom sheet
                 LazyColumn(
                     modifier = Modifier.clipToBounds(),
                     contentPadding = PaddingValues(16.dp),
@@ -96,7 +89,7 @@ fun BottomSheetDrawer(
                     }
                     items(homeScreenUIState.hikes) { feature ->
                         SmallHikeCard(
-                            mapboxViewModel,
+                            mapboxViewModel = mapboxViewModel,
                             feature = feature,
                             onClick = {
                                 hikeScreenViewModel.updateHike(feature)
@@ -114,7 +107,7 @@ fun BottomSheetDrawer(
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         modifier = Modifier.fillMaxSize()
     ) {
-        // Hovedinnholdet i skjermen
+        // Content above sheet drawer
         Box(modifier = Modifier.fillMaxSize()) {
             content()
         }

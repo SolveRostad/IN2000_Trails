@@ -40,8 +40,8 @@ fun ForecastDisplay(
     homeScreenViewModel: HomeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     modifier: Modifier = Modifier,
-    timeseries: String = "instant", // instant som standard
-    date: String = getTodaysDate(), // dagens dato som standard
+    timeseries: String = "instant", // instant as standard
+    date: String = getTodaysDate(), // todays date as standard
     visableOnMap: Boolean = false,
     showTemperature: Boolean = true
 ) {
@@ -53,7 +53,6 @@ fun ForecastDisplay(
     val todaysDate = getTodaysDate()
 
     if (homeScreenUiState.forecast != null) {
-
         val chosenTimeSeries = when (timeseries) {
             "instant" -> homeScreenUiState.forecast.properties.timeseries.firstOrNull()
             else -> {

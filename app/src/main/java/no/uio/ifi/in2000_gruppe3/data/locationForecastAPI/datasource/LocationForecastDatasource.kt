@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000_gruppe3.data.locationForecastAPI.datasource
 
+import android.util.Log
 import kotlinx.serialization.json.Json
 import no.uio.ifi.in2000_gruppe3.data.locationForecastAPI.models.Locationforecast
 import java.net.HttpURLConnection
@@ -34,7 +35,7 @@ class LocationForecastDatasource {
                 null
             }
         } catch (e: Exception) {
-            println("Feil ved parsing av JSON: ${e.message}")
+            Log.e("LocationForecastDatasource", "Feil ved parsing av JSON: ${e.message}")
             null
         }
     }

@@ -2,7 +2,6 @@ package no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,7 +13,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.ui.loaders.MapLoader
@@ -51,12 +49,14 @@ fun HomeScreen(
                 navController = navController
             ) {
                 MapViewer(
-                    homeScreenViewModel,
-                    mapboxViewModel
+                    homeScreenViewModel = homeScreenViewModel,
+                    mapboxViewModel = mapboxViewModel
                 )
+
                 MapLoader(
-                    mapboxViewModel
+                    mapboxViewModel = mapboxViewModel
                 )
+
                 Column {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(3.dp, Alignment.CenterHorizontally),
@@ -66,23 +66,26 @@ fun HomeScreen(
                             .padding(start = 10.dp, end = 10.dp, top = 25.dp)
                     ) {
                         ForecastDisplay(
-                            homeScreenViewModel,
-                            mapboxViewModel,
+                            homeScreenViewModel = homeScreenViewModel,
+                            mapboxViewModel = mapboxViewModel,
                             visableOnMap = true,
                             showTemperature = false,
                             modifier = Modifier.weight(0.35f)
                         )
+
                         SearchBarForMap(
-                            mapboxViewModel,
+                            mapboxViewModel = mapboxViewModel,
                             modifier = Modifier.weight(1.5f)
                         )
+
                         MapStyleDropdownMenu(
-                            mapboxViewModel,
+                            mapboxViewModel = mapboxViewModel,
                             modifier = Modifier.weight(0.25f)
                         )
                     }
+
                     SuggestionColumn(
-                        mapboxViewModel
+                        mapboxViewModel = mapboxViewModel
                     )
                 }
             }

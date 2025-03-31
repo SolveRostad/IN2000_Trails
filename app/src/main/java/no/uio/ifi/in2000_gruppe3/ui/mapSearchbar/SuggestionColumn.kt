@@ -39,13 +39,12 @@ fun SuggestionColumn(mapboxViewModel: MapboxViewModel) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(16.dp)
                         .clickable {
                             mapboxViewModel.getSelectedSearchResultPoint(suggestion)
                             keyboardController?.hide()
                             focusManager.clearFocus()
-
                         }
-                        .padding(16.dp)
                 ) {
                     Text(
                         text = suggestion.name,

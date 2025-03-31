@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000_gruppe3.data.metAlertsAPI.datasource
 
+import android.util.Log
 import kotlinx.serialization.json.Json
 import no.uio.ifi.in2000_gruppe3.data.metAlertsAPI.models.MetAlerts
 import java.net.HttpURLConnection
@@ -32,7 +33,7 @@ class MetAlertsDatasource {
                 null
             }
         } catch (e: Exception) {
-            println("Feil ved parsing av JSON: ${e.message}")
+            Log.e("MetAlertsDatasource", "Feil ved parsing av JSON: ${e.message}")
             null
         }
     }
