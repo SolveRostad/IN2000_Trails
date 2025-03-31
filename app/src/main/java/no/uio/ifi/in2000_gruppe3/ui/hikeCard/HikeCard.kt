@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -23,11 +24,11 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -60,15 +61,12 @@ fun HikeCard(
     favoritesViewModel: FavoritesViewModel,
     mapboxViewModel: MapboxViewModel,
     geminiViewModel: GeminiViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    checkedState: MutableState<Boolean>
 ) {
     val homeUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
     val geminiUIState by geminiViewModel.geminiUIState.collectAsState()
-
-    val checkedState = remember {
-        mutableStateOf(favoritesViewModel.isHikeFavorite(hikeUIState.feature))
-    }
 
     val difficulty = getDifficultyInfo(hikeUIState.feature.properties.gradering)
 
@@ -188,33 +186,32 @@ fun HikeCard(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        IconToggleButton(
-                            checked = checkedState.value,
-                            onCheckedChange = {
-                                checkedState.value = it
-                                if (it) {
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                checkedState.value = !checkedState.value
+                                if (checkedState.value) {
                                     favoritesViewModel.addHike(hikeUIState.feature)
                                 } else {
                                     favoritesViewModel.deleteHike(hikeUIState.feature)
                                 }
-                            }
-                        ) {
-                            val tint by animateColorAsState(if (checkedState.value) Color.Red else Color.Gray)
-                            Icon(
-                                if (checkedState.value) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                                contentDescription = "Toggle favorite",
-                                tint = tint,
-                                modifier = Modifier.align(Alignment.CenterVertically)
-                            )
-                        }
-                        Text(
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                            text = if (checkedState.value) "Fjern fra favoritter" else "Legg til i favoritter"
+                            },
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        val tint by animateColorAsState(if (checkedState.value) Color.Red else Color.Gray)
+                        Icon(
+                            imageVector = if (checkedState.value) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                            contentDescription = "Toggle favorite",
+                            tint = tint
                         )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Text(text = if (checkedState.value) "Fjern fra favoritter" else "Legg til i favoritter")
                     }
+
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }

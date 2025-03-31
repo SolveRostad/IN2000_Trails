@@ -21,6 +21,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,6 +47,11 @@ fun HikeScreen(
     navController: NavHostController
 ) {
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
+
+    val checkedState = remember {
+        mutableStateOf(favoritesViewModel.isHikeFavorite(hikeUIState.feature))
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -54,6 +61,23 @@ fun HikeScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {
+                        checkedState.value = !checkedState.value
+                        if (checkedState.value) {
+                            favoritesViewModel.addHike(hikeUIState.feature)
+                        } else {
+                            favoritesViewModel.deleteHike(hikeUIState.feature)
+                        }
+                    }) {
+                        val tint by animateColorAsState(if (checkedState.value) Color.Red else Color.Gray)
+                        Icon(
+                            imageVector = if (checkedState.value) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                            contentDescription = "Toggle favorite",
+                            tint = tint
                         )
                     }
                 }
@@ -74,7 +98,8 @@ fun HikeScreen(
                 favoritesViewModel = favoritesViewModel,
                 mapboxViewModel = mapboxViewModel,
                 geminiViewModel = geminiViewModel,
-                navController = navController
+                navController = navController,
+                checkedState = checkedState
             )
         }
     }
