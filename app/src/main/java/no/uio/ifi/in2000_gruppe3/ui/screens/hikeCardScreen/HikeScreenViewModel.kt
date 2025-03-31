@@ -53,7 +53,7 @@ class HikeScreenViewModel : ViewModel() {
         homeScreenViewModel: HomeScreenViewModel,
         geminiViewModel: GeminiViewModel
     ) {
-        val prompt = "Gi en kort, engasjerende beskrivelse av turen \"${hikeScreenUIState.value.feature.properties.desc}\"" +
+        val prompt = "Gi en kort, morsom og engasjerende beskrivelse av turen \"${hikeScreenUIState.value.feature.properties.desc}\"" +
                 "som ligger på koordinatene ${hikeScreenUIState.value.feature.geometry.coordinates}. " +
                 "Ikke nevn koordinatene direkte, men bruk stedsnavn og rutenavn hvis mulig. " +
                 "Beskriv hva som gjør turen spesiell, og fortell om kjente steder (hvis det er noen) på turen som kan være interessant. " +
@@ -64,7 +64,8 @@ class HikeScreenViewModel : ViewModel() {
                 "Avslutt med en hyggelig og motiverende melding som 'God tur'. " +
                 "Bruk markdown text med * for å gi en bedre brukeroppplevelse. " +
                 "Bruk små overskrifter i fet skrift for å dele opp beskrivelsen i de ulike punktene. " +
-                "Ikke start med 'Her er en  beskrivelse..' start med tittelen som en liten overskrift og gi meg beskrivelsen."
+                "Ikke start med 'Her er en  beskrivelse..' start med tittelen som en liten overskrift og gi meg beskrivelsen. " +
+                "Ikke bruk noen paranteser i beskrivelsen som gjentar noe av teksten sendt inn. "
 
         geminiViewModel.askQuestion(prompt)
 

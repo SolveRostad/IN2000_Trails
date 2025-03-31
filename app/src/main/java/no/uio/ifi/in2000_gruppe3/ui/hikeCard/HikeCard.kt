@@ -131,13 +131,13 @@ fun HikeCard(
                                 horizontalArrangement = Arrangement.SpaceAround
                             ) {
                                 InfoItem(
-                                    icon = ImageVector.vectorResource(R.drawable.terrain_icon),
+                                    icon = ImageVector.vectorResource(R.drawable.mountain),
                                     label = "Type",
                                     value = hikeUIState.feature.properties.type,
                                     iconTint = MaterialTheme.colorScheme.primary
                                 )
                                 InfoItem(
-                                    icon = ImageVector.vectorResource(R.drawable.mountain),
+                                    icon = ImageVector.vectorResource(R.drawable.terrain_icon),
                                     label = "Vanskelighet",
                                     value = difficulty.label,
                                     iconTint = difficulty.color
