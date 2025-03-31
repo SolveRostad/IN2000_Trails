@@ -2,12 +2,15 @@ package no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,7 +20,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.ui.hikeCard.HikeCard
@@ -39,6 +45,11 @@ fun HikeScreen(
     navController: NavHostController
 ) {
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
+
+    val checkedState = remember {
+        mutableStateOf(favoritesViewModel.isHikeFavorite(hikeUIState.feature))
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -48,6 +59,23 @@ fun HikeScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {
+                        checkedState.value = !checkedState.value
+                        if (checkedState.value) {
+                            favoritesViewModel.addHike(hikeUIState.feature)
+                        } else {
+                            favoritesViewModel.deleteHike(hikeUIState.feature)
+                        }
+                    }) {
+                        val tint by animateColorAsState(if (checkedState.value) Color.Red else Color.Gray)
+                        Icon(
+                            imageVector = if (checkedState.value) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                            contentDescription = "Toggle favorite",
+                            tint = tint
                         )
                     }
                 }
@@ -68,7 +96,8 @@ fun HikeScreen(
                 favoritesViewModel = favoritesViewModel,
                 mapboxViewModel = mapboxViewModel,
                 geminiViewModel = geminiViewModel,
-                navController = navController
+                navController = navController,
+                checkedState = checkedState
             )
         }
     }

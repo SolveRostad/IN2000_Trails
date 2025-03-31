@@ -4,13 +4,16 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -21,21 +24,25 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import dev.jeziellago.compose.markdowntext.MarkdownText
+import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
@@ -52,20 +59,18 @@ fun HikeCard(
     favoritesViewModel: FavoritesViewModel,
     mapboxViewModel: MapboxViewModel,
     geminiViewModel: GeminiViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    checkedState: MutableState<Boolean>
 ) {
     val homeUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
     val geminiUIState by geminiViewModel.geminiUIState.collectAsState()
 
-    val checkedState = remember {
-        mutableStateOf(favoritesViewModel.isHikeFavorite(hikeUIState.feature))
-    }
+    val difficulty = getDifficultyInfo(hikeUIState.feature.properties.gradering)
 
-    geminiViewModel.updateHikeDescription(
-        name = hikeUIState.feature.properties.desc.toString(),
+    hikeScreenViewModel.getHikeDescription(
         homeScreenViewModel = homeScreenViewModel,
-        hikeScreenViewModel = hikeScreenViewModel
+        geminiViewModel = geminiViewModel
     )
 
     Card(
@@ -78,56 +83,84 @@ fun HikeCard(
     ) {
         LazyColumn {
             item {
-                HikeCardMapPreview(mapboxViewModel, hikeUIState.feature)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    contentAlignment = Alignment.TopEnd
+                ) {
+                    HikeCardMapPreview(mapboxViewModel, hikeUIState.feature)
+
+                    Surface(
+                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0f)
+                    ) {
+                        ForecastDisplay(
+                            homeScreenViewModel,
+                            mapboxViewModel,
+                            showTemperature = false
+                        )
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Column(
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .weight(1f)
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.Top
                     ) {
-                        Column(
-                            modifier = Modifier.weight(1f)
-                        ) {
+                        Column {
                             Text(
                                 text = "Rute detaljer",
-                                style = MaterialTheme.typography.headlineMedium
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                overflow = TextOverflow.Ellipsis
                             )
 
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(12.dp))
 
-                            Text(text = "Type: ${hikeUIState.feature.properties.type}")
-                            Text(
-                                text = "Lengde: ${
-                                    String.format(
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceAround
+                            ) {
+                                InfoItem(
+                                    icon = ImageVector.vectorResource(R.drawable.mountain),
+                                    label = "Type",
+                                    value = "Gåtur", //hikeUIState.feature.properties.type
+                                    iconTint = MaterialTheme.colorScheme.primary
+                                )
+                                InfoItem(
+                                    icon = ImageVector.vectorResource(R.drawable.terrain_icon),
+                                    label = "Vanskelighet",
+                                    value = difficulty.label,
+                                    iconTint = difficulty.color
+                                )
+                                InfoItem(
+                                    icon = ImageVector.vectorResource(id = R.drawable.distance_icon),
+                                    label = "Lengde",
+                                    value = String.format(
                                         Locale("nb", "NO"),
-                                        "%.2f",
+                                        "%.2f km",
                                         hikeUIState.feature.properties.distance_meters.toFloat() / 1000.0
-                                    )
-                                } km"
-                            )
-                            Text(text = "Luftfuktighet: ${homeUIState.forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.relative_humidity} %")
-                            Text(text = "Vindhastighet: ${homeUIState.forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.wind_speed} m/s")
+                                    ),
+                                    iconTint = Color(0xFF4CAF50)
+                                )
+                                InfoItem(
+                                    icon = ImageVector.vectorResource(id = R.drawable.windmill),
+                                    label = "Vindhastighet",
+                                    value = "${homeUIState.forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.wind_speed} m/s",
+                                    iconTint = Color(0xFF2196F3)
+                                )
+                            }
                         }
-
-                        ForecastDisplay(
-                            homeScreenViewModel,
-                            mapboxViewModel
-                        )
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(
-                        text = "Rute beskrivelse",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
 
                     MarkdownText(
                         markdown = geminiUIState.response,
@@ -151,33 +184,32 @@ fun HikeCard(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        IconToggleButton(
-                            checked = checkedState.value,
-                            onCheckedChange = {
-                                checkedState.value = it
-                                if (it) {
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                checkedState.value = !checkedState.value
+                                if (checkedState.value) {
                                     favoritesViewModel.addHike(hikeUIState.feature)
                                 } else {
                                     favoritesViewModel.deleteHike(hikeUIState.feature)
                                 }
-                            }
-                        ) {
-                            val tint by animateColorAsState(if (checkedState.value) Color.Red else Color.Gray)
-                            Icon(
-                                if (checkedState.value) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                                contentDescription = "Toggle favorite",
-                                tint = tint,
-                                modifier = Modifier.align(Alignment.CenterVertically)
-                            )
-                        }
-                        Text(
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                            text = if (checkedState.value) "Fjern fra favoritter" else "Legg til i favoritter"
+                            },
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        val tint by animateColorAsState(if (checkedState.value) Color.Red else Color.Gray)
+                        Icon(
+                            imageVector = if (checkedState.value) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                            contentDescription = "Toggle favorite",
+                            tint = tint
                         )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Text(text = if (checkedState.value) "Fjern fra favoritter" else "Legg til i favoritter")
                     }
+
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }

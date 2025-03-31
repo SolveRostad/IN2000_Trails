@@ -26,7 +26,7 @@ import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 
 @Composable
-fun MapLoader(mapBoxViewModel: MapboxViewModel) {
+fun MapLoader(mapboxViewModel: MapboxViewModel) {
     val context = LocalContext.current
     val gifEnabledLoader = remember {
         ImageLoader.Builder(context)
@@ -38,7 +38,7 @@ fun MapLoader(mapBoxViewModel: MapboxViewModel) {
                 }
             }.build()
     }
-    val mapBoxUIState by mapBoxViewModel.mapboxUIState.collectAsState()
+    val mapBoxUIState by mapboxViewModel.mapboxUIState.collectAsState()
 
     if (mapBoxUIState.isLoading) {
         MapLoaderComposable(gifEnabledLoader)

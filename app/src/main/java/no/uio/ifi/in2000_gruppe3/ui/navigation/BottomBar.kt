@@ -25,15 +25,12 @@ import androidx.navigation.NavHostController
 @Composable
 fun BottomBar(navController: NavHostController) {
     BottomAppBar(
-        modifier = Modifier
-            .height(100.dp),
+        modifier = Modifier.height(100.dp),
         containerColor = MaterialTheme.colorScheme.surface
     ) {
         Column {
-            // Linje som skiller bottom bar fra resten av skjermen
             HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f))
 
-            // Knapper for å navigere mellom skjermer
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -41,11 +38,13 @@ fun BottomBar(navController: NavHostController) {
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                // Navigate to home screen
                 IconButton(
                     onClick = {
                         if (navController.currentDestination?.route != "home")
                             navController.navigate(Screen.Home.route)
-                    }) {
+                    }
+                ) {
                     Icon(
                         imageVector = Icons.Default.Home,
                         contentDescription = "Home",
@@ -55,11 +54,14 @@ fun BottomBar(navController: NavHostController) {
                             LocalContentColor.current
                     )
                 }
+
+                // Navigate to favorites screen
                 IconButton(
                     onClick = {
                         if (navController.currentDestination?.route != "favorites")
                             navController.navigate(Screen.Favorites.route)
-                    }) {
+                    }
+                ) {
                     Icon(
                         imageVector = Icons.Default.Favorite,
                         contentDescription = "Favorites",
@@ -69,11 +71,14 @@ fun BottomBar(navController: NavHostController) {
                             LocalContentColor.current
                     )
                 }
+
+                // Navigate to gemini screen
                 IconButton(
                     onClick = {
                         if (navController.currentDestination?.route != "gemini")
                             navController.navigate(Screen.Gemini.route)
-                    }) {
+                    }
+                ) {
                     Icon(
                         imageVector = Icons.Default.Face,
                         contentDescription = "Gemini",

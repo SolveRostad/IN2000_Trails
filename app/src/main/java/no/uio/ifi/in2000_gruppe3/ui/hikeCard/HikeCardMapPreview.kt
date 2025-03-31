@@ -16,7 +16,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.mapbox.geojson.BoundingBox
 import com.mapbox.geojson.Point
@@ -66,7 +65,7 @@ fun HikeCardMapPreview(
             .fillMaxWidth(),
         shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
     ) {
-        // Tegner kartet som et bilde
+        // Static image of map
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(staticMapUrl)
@@ -103,12 +102,13 @@ private fun createStaticMapUrl(
     }
 
     val color = colorToHex(feature.color)
+
     return "https://api.mapbox.com/styles/v1/mapbox/${mapStyleUrl}/static/" +
             "path-6+${color}-1($encodedPolyline),${markers}/" +
             "${center.longitude()},${center.latitude()},$zoom,0,0/" +
             "600x500@2x" + // widthxheight@2x
             "?access_token=${BuildConfig.MAPBOX_SECRET_TOKEN}" +
-            "&attribution=false&logo=false" // Remove attribution and logo
+            "&attribution=false&logo=false"
 }
 
 private fun colorToHex(color: Color?): String {
@@ -142,9 +142,8 @@ private fun getBoundingBox(points: List<Point>): BoundingBox {
         maxLng = maxOf(maxLng, point.longitude())
     }
 
-    // Legg til en buffer basert på størrelsen på bounding box
-    val latBuffer = (maxLat - minLat)
-    val lngBuffer = (maxLng - minLng)
+    val latBuffer = (maxLat - minLat) * 0.01
+    val lngBuffer = (maxLng - minLng) * 0.01
 
     return BoundingBox.fromLngLats(
         minLng - lngBuffer,

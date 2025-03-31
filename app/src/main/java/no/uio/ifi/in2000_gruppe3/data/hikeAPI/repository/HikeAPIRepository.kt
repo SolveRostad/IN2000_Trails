@@ -5,12 +5,11 @@ import no.uio.ifi.in2000_gruppe3.data.hikeAPI.datasource.HikeAPIDatasource
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 
 /**
- * Repository for the TurAPI
+ * Repository for the Hike API
  */
 class HikeAPIRepository {
     private val hikeAPIDatasource = HikeAPIDatasource()
     private var colorIndex = 0
-
 
     suspend fun getHikes(
         lat: Double,
@@ -28,16 +27,16 @@ class HikeAPIRepository {
 
     private fun getColor(): Color {
         val colors = listOf(
-            Color(0xFFFF0000),
-            Color(0xFFFFA500),
-            Color(0xFFFF00FF),
+            Color(0xFF1E90FF),
+            Color(0xFF4535C0),
             Color(0xFF0000FF),
-            Color(0xFFFFFF00),
+            Color(0xFFA205A2),
+            Color(0xFFF84E9D),
             Color(0xFFFF1493),
+            Color(0xFFFF00FF),
+            Color(0xFFFFFF00),
             Color(0xFFFF4500),
-            Color(0xFF800080),
-            Color(0xFFFF69B4),
-            Color(0xFF1E90FF)
+            Color(0xFFFF0000),
         )
         val color = colors[colorIndex]
 

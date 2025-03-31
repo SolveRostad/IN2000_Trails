@@ -20,7 +20,6 @@ class HomeScreenViewModel() : ViewModel() {
     private val locationForecastRepository = LocationForecastRepository()
     private val metAlertsRepository = MetAlertsRepository()
 
-
     // UI state
     private val _homeScreenUIState = MutableStateFlow<HomeScreenUIState>(
         HomeScreenUIState(
@@ -31,8 +30,14 @@ class HomeScreenViewModel() : ViewModel() {
     )
     val homeScreenUIState: StateFlow<HomeScreenUIState> = _homeScreenUIState.asStateFlow()
 
-    // Henter turer fra TurAPI
-    fun fetchHikes(lat: Double, lng: Double, limit: Int, featureType: String, minDistance: Int) {
+    // Fetches hikes from Hike API
+    fun fetchHikes(
+        lat: Double,
+        lng: Double,
+        limit: Int,
+        featureType: String,
+        minDistance: Int
+    ) {
         viewModelScope.launch {
             _homeScreenUIState.update {
                 it.copy(isLoading = true)

@@ -20,6 +20,7 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
     private val _favoritesScreenUIState = MutableStateFlow<FavoritesScreenUIState>(
         FavoritesScreenUIState(favorites = emptyList())
     )
+
     val favoritesScreenUIState: StateFlow<FavoritesScreenUIState> =
         _favoritesScreenUIState.asStateFlow()
 

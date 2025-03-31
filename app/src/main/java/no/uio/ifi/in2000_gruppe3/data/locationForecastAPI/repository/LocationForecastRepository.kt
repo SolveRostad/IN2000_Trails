@@ -7,7 +7,7 @@ import no.uio.ifi.in2000_gruppe3.data.locationForecastAPI.models.Locationforecas
  * Repository for fetching weather data.
  */
 class LocationForecastRepository() {
-    private val fetcher = LocationForecastDatasource()
+    private val datasource = LocationForecastDatasource()
 
     /**
      * Gets the weather forecast for a specific location.
@@ -16,6 +16,6 @@ class LocationForecastRepository() {
      * @return Locationforecast object or null if request fails.
      */
     fun getForecast(lat: Double, lon: Double): Locationforecast? {
-        return fetcher.getLocationForecast(lat, lon)
+        return datasource.getLocationForecast(lat, lon)
     }
 }

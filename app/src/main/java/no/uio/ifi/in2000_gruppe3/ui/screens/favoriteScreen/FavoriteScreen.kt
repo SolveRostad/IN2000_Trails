@@ -47,7 +47,6 @@ fun FavoriteScreen(
                     modifier = Modifier.padding(16.dp)
                 )
             }
-
             else -> {
                 LazyColumn(
                     modifier = Modifier
@@ -58,7 +57,7 @@ fun FavoriteScreen(
                 ) {
                     items(favoriteUIState.favorites) { feature ->
                         SmallHikeCard(
-                            mapboxViewModel,
+                            mapboxViewModel = mapboxViewModel,
                             feature = feature,
                             onClick = {
                                 hikeScreenViewModel.updateHike(feature)
