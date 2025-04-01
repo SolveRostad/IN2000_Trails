@@ -116,6 +116,34 @@ class HomeScreenViewModel() : ViewModel() {
             }
         }
     }
+
+    fun daysHighestTemp(date: String): Double {
+        return homeScreenUIState.value.forecast?.properties?.timeseries
+            ?.filter { it.time.startsWith(date) }
+            ?.maxOfOrNull { it.data.instant.details.air_temperature } ?: Double.NEGATIVE_INFINITY
+    }
+
+    fun daysLowestTemp(date: String): Double {
+        return homeScreenUIState.value.forecast?.properties?.timeseries
+            ?.filter { it.time.startsWith(date) }
+            ?.minOfOrNull { it.data.instant.details.air_temperature } ?: Double.POSITIVE_INFINITY
+    }
+
+    fun daysAverageTemp(date: String): Double {
+        val temps = homeScreenUIState.value.forecast?.properties?.timeseries
+            ?.filter { it.time.startsWith(date) }
+            ?.map { it.data.instant.details.air_temperature }
+
+        return temps?.average() ?: -1.0
+    }
+
+    fun daysAverageWindSpeed(date: String): Double {
+        val windSpeeds = homeScreenUIState.value.forecast?.properties?.timeseries
+            ?.filter { it.time.startsWith(date) }
+            ?.map { it.data.instant.details.wind_speed }
+
+        return windSpeeds?.average() ?: -1.0
+    }
 }
 
 data class HomeScreenUIState(

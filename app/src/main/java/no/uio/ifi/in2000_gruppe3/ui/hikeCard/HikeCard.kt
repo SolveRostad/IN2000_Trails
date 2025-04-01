@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000_gruppe3.ui.hikeCard
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
@@ -28,9 +29,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,17 +44,18 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import dev.jeziellago.compose.markdowntext.MarkdownText
 import no.uio.ifi.in2000_gruppe3.R
-import no.uio.ifi.in2000_gruppe3.ui.loaders.Loader
+import no.uio.ifi.in2000_gruppe3.data.date.calculateDaysAhead
+import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
+import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.geminiScreen.GeminiViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
+import java.time.LocalDate
 import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -69,10 +75,30 @@ fun HikeCard(
 
     val difficulty = getDifficultyInfo(hikeUIState.feature.properties.gradering ?: "Ukjent")
 
-    hikeScreenViewModel.getHikeDescription(
-        homeScreenViewModel = homeScreenViewModel,
-        geminiViewModel = geminiViewModel
-    )
+    val todaysDay = getTodaysDay()
+    var selectedDay by remember { mutableStateOf(todaysDay) }
+    var selectedDate by remember { mutableStateOf(getTodaysDate()) }
+
+    var firstTimeSeries by remember { mutableStateOf(homeUIState.forecast?.properties?.timeseries?.firstOrNull()) }
+
+    var averageTemperature by remember { mutableStateOf(firstTimeSeries?.data?.instant?.details?.air_temperature) }
+    var averageWindSpeed by remember { mutableStateOf(firstTimeSeries?.data?.instant?.details?.wind_speed) }
+
+    LaunchedEffect(selectedDay) {
+        val daysAhead = calculateDaysAhead(todaysDay, selectedDay)
+        selectedDate = LocalDate.now().plusDays(daysAhead.toLong()).toString()
+
+        averageTemperature = homeScreenViewModel.daysAverageTemp(selectedDate)
+        averageWindSpeed = homeScreenViewModel.daysAverageWindSpeed(selectedDate)
+    }
+
+//    LaunchedEffect(selectedDay) {
+//        hikeScreenViewModel.getHikeDescription(
+//            homeScreenViewModel = homeScreenViewModel,
+//            geminiViewModel = geminiViewModel,
+//            forecastTimeseries = forecastTimeseries
+//        )
+//    }
 
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -93,13 +119,19 @@ fun HikeCard(
                     HikeCardMapPreview(mapboxViewModel, hikeUIState.feature)
 
                     Surface(
-                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0f)
+                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)
                     ) {
-                        ForecastDisplay(
-                            homeScreenViewModel,
-                            mapboxViewModel,
-                            showTemperature = false
-                        )
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            ForecastDisplay(
+                                homeScreenViewModel = homeScreenViewModel,
+                                mapboxViewModel = mapboxViewModel,
+                                showTemperature = false,
+                                date = selectedDate
+                            )
+                            Text(text = averageTemperature?.let { "%.1f°C".format(it) } ?: "N/A")
+                        }
                     }
                 }
 
@@ -113,21 +145,32 @@ fun HikeCard(
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.Top
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column {
-                            Text(
-                                text = "Rute detaljer",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                overflow = TextOverflow.Ellipsis
-                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Rute detaljer",
+                                    style = MaterialTheme.typography.titleLarge,
+                                    fontWeight = FontWeight.Bold,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+
+                                WeekdaySelector(onDaySelected = { newDay ->
+                                    selectedDay = newDay
+                                })
+                            }
 
                             Spacer(modifier = Modifier.height(12.dp))
 
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceAround
+                                horizontalArrangement = Arrangement.SpaceAround,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
                                 InfoItem(
                                     icon = ImageVector.vectorResource(R.drawable.mountain),
@@ -154,7 +197,7 @@ fun HikeCard(
                                 InfoItem(
                                     icon = ImageVector.vectorResource(id = R.drawable.windmill),
                                     label = "Vindhastighet",
-                                    value = "${homeUIState.forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.wind_speed} m/s",
+                                    value = averageWindSpeed?.let { "%.1f m/s".format(it) } ?: "N/A",
                                     iconTint = Color(0xFF2196F3)
                                 )
                             }
@@ -163,20 +206,20 @@ fun HikeCard(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    if (geminiUIState.isLoading) {
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Loader()
-                        }
-                    } else {
-                        MarkdownText(
-                            markdown = geminiUIState.response,
-                            modifier = Modifier.padding(8.dp),
-                            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
-                        )
-                    }
+//                    if (geminiUIState.isLoading) {
+//                        Box(
+//                            modifier = Modifier.fillMaxWidth(),
+//                            contentAlignment = Alignment.Center
+//                        ) {
+//                            Loader()
+//                        }
+//                    } else {
+//                        MarkdownText(
+//                            markdown = geminiUIState.response,
+//                            modifier = Modifier.padding(8.dp),
+//                            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
+//                        )
+//                    }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
