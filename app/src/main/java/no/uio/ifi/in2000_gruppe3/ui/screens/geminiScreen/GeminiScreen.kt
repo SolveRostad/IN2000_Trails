@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
-import no.uio.ifi.in2000_gruppe3.ui.loader.Loader
+import no.uio.ifi.in2000_gruppe3.ui.loaders.Loader
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
@@ -42,7 +42,8 @@ fun GeminiScreen(
     geminiViewModel: GeminiViewModel,
     navController: NavHostController
 ) {
-    val geminiUiState by geminiViewModel.geminiUIState.collectAsState()
+    val geminiUIState by geminiViewModel.geminiUIState.collectAsState()
+
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
     var input by remember { mutableStateOf("") }
@@ -101,7 +102,7 @@ fun GeminiScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            if (geminiUiState.isLoading) {
+            if (geminiUIState.isLoading) {
                 Loader()
             } else {
                 Box(
@@ -112,7 +113,7 @@ fun GeminiScreen(
                         .verticalScroll(scrollState)
                 ) {
                     MarkdownText(
-                        markdown = geminiUiState.response,
+                        markdown = geminiUIState.response,
                         modifier = Modifier.padding(8.dp),
                         style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
                     )

@@ -7,14 +7,14 @@ import kotlinx.coroutines.flow.map
 import no.uio.ifi.in2000_gruppe3.data.favorites.datasource.FavoritesDataSource
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 
-class FeatureRepository() {
+class FavoritesRepository() {
 
     private val dataSource = FavoritesDataSource()
 
     suspend fun deleteHike(featureToDelete: Feature, context: Context): List<Feature> {
         val currentFeatures = getHikes(context).first()
         val updatedFeatures = currentFeatures.filter { feature ->
-            feature.properties.rutenavn != featureToDelete.properties.rutenavn
+            feature.properties.desc != featureToDelete.properties.desc
         }
         saveHikes(updatedFeatures, context)
         return updatedFeatures

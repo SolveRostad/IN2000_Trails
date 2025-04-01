@@ -75,7 +75,7 @@ fun ForecastDisplay(
 
         Column(
             modifier = if (visableOnMap) modifier.fillMaxWidth()
-            else Modifier,
+                       else Modifier,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (temperature != null) {

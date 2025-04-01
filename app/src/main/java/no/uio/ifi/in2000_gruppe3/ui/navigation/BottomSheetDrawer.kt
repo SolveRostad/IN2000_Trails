@@ -45,10 +45,13 @@ fun BottomSheetDrawer(
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
     val homeScreenUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
 
-    // Bottom sheet state for å kunne åpne og lukke bottom sheet
+    val sheetPeekHeight = if (homeScreenUIState.hikes.isEmpty()) 40.dp else 200.dp
+
+    // Bottom sheet state to remember sheet height position
     var bottomSheetState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(
-            initialValue = SheetValue.PartiallyExpanded
+            initialValue = SheetValue.PartiallyExpanded,
+            skipHiddenState = false,
         )
     )
 
@@ -56,6 +59,10 @@ fun BottomSheetDrawer(
         if (mapboxUIState.searchResponse.isNotEmpty()) {
             bottomSheetState.bottomSheetState.partialExpand()
         }
+    }
+
+    LaunchedEffect(homeScreenUIState.hikes) {
+        bottomSheetState.bottomSheetState.partialExpand()
     }
 
     BottomSheetScaffold(
@@ -67,12 +74,11 @@ fun BottomSheetDrawer(
                     .heightIn(max = 670.dp)
                     .clipToBounds()
             ) {
-                // Innholdet i bottom sheet
                 LazyColumn(
                     modifier = Modifier.clipToBounds(),
                     contentPadding = PaddingValues(16.dp),
                 ) {
-                    if (homeScreenUIState.hikes.features.isEmpty()) {
+                    if (homeScreenUIState.hikes.isEmpty()) {
                         item {
                             Text(
                                 text = "Ingen turer funnet 😕",
@@ -81,9 +87,9 @@ fun BottomSheetDrawer(
                             )
                         }
                     }
-                    items(homeScreenUIState.hikes.features) { feature ->
+                    items(homeScreenUIState.hikes) { feature ->
                         SmallHikeCard(
-                            mapboxViewModel,
+                            mapboxViewModel = mapboxViewModel,
                             feature = feature,
                             onClick = {
                                 hikeScreenViewModel.updateHike(feature)
@@ -95,13 +101,13 @@ fun BottomSheetDrawer(
                 }
             }
         },
-        sheetPeekHeight = 40.dp,
+        sheetPeekHeight = sheetPeekHeight,
         sheetDragHandle = { BottomSheetDefaults.DragHandle() },
         sheetContainerColor = MaterialTheme.colorScheme.surface,
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         modifier = Modifier.fillMaxSize()
     ) {
-        // Hovedinnholdet i skjermen
+        // Content above sheet drawer
         Box(modifier = Modifier.fillMaxSize()) {
             content()
         }

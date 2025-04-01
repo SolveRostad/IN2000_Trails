@@ -1,7 +1,6 @@
 package no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,7 +24,6 @@ import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,19 +41,12 @@ fun FavoriteScreen(
     ) { paddingValues ->
         when {
             favoriteUIState.favorites.isEmpty() -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                        .padding(16.dp)
-                ) {
-                    Text(
-                        text = "Her var det tomt gitt 🤔",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
+                Text(
+                    text = "Her var det tomt gitt 🤔",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(16.dp)
+                )
             }
-
             else -> {
                 LazyColumn(
                     modifier = Modifier
@@ -66,7 +57,7 @@ fun FavoriteScreen(
                 ) {
                     items(favoriteUIState.favorites) { feature ->
                         SmallHikeCard(
-                            mapboxViewModel,
+                            mapboxViewModel = mapboxViewModel,
                             feature = feature,
                             onClick = {
                                 hikeScreenViewModel.updateHike(feature)

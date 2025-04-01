@@ -1,12 +1,11 @@
 package no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -15,7 +14,6 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -24,7 +22,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -33,32 +30,52 @@ import no.uio.ifi.in2000_gruppe3.ui.hikeCard.HikeCard
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.geminiScreen.GeminiViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HikeScreen(
-    favoritesViewModel: FavoritesViewModel,
-    hikeScreenviewModel: HikeScreenViewModel,
     homeScreenViewModel: HomeScreenViewModel,
+    favoritesViewModel: FavoritesViewModel,
+    hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
+    geminiViewModel: GeminiViewModel,
     navController: NavHostController
 ) {
-    val uiState by hikeScreenviewModel.hikeScreenUIState.collectAsState()
+    val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
 
     val checkedState = remember {
-        mutableStateOf(favoritesViewModel.isHikeFavorite(uiState.feature))
+        mutableStateOf(favoritesViewModel.isHikeFavorite(hikeUIState.feature))
     }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = uiState.feature.properties.rutenavn) },
+                title = { Text(text = hikeUIState.feature.properties.desc ?: "Ukjent rutenavn") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {
+                        checkedState.value = !checkedState.value
+                        if (checkedState.value) {
+                            favoritesViewModel.addHike(hikeUIState.feature)
+                        } else {
+                            favoritesViewModel.deleteHike(hikeUIState.feature)
+                        }
+                    }) {
+                        val tint by animateColorAsState(if (checkedState.value) Color.Red else Color.Gray)
+                        Icon(
+                            imageVector = if (checkedState.value) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                            contentDescription = "Toggle favorite",
+                            tint = tint
                         )
                     }
                 }
@@ -70,43 +87,18 @@ fun HikeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp),
+                .padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            HikeCard(hikeScreenviewModel, mapboxViewModel)
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Row(
-                    modifier = Modifier
-                ) {
-                    IconToggleButton(
-                        checked = checkedState.value,
-                        onCheckedChange = {
-                            checkedState.value = it
-                            if (it) {
-                                favoritesViewModel.addHike(uiState.feature)
-                            } else {
-                                favoritesViewModel.deleteHike(uiState.feature)
-                            }
-                        }
-                    ) {
-                        val tint by animateColorAsState(if (checkedState.value) Color.Red else Color.Gray)
-                        Icon(
-                            if (checkedState.value) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                            contentDescription = "Toggle favorite",
-                            tint = tint,
-                            modifier = Modifier.align(Alignment.CenterVertically)
-                        )
-                    }
-                    Text(
-                        modifier = Modifier.align(Alignment.CenterVertically),
-                        text = if (checkedState.value) "Fjern fra favoritter" else "Legg til i favoritter"
-                    )
-                }
-            }
+            HikeCard(
+                homeScreenViewModel = homeScreenViewModel,
+                hikeScreenViewModel = hikeScreenViewModel,
+                favoritesViewModel = favoritesViewModel,
+                mapboxViewModel = mapboxViewModel,
+                geminiViewModel = geminiViewModel,
+                navController = navController,
+                checkedState = checkedState
+            )
         }
     }
 }
