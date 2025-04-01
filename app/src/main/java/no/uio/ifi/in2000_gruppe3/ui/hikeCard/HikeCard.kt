@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import dev.jeziellago.compose.markdowntext.MarkdownText
 import no.uio.ifi.in2000_gruppe3.R
+import no.uio.ifi.in2000_gruppe3.ui.loaders.Loader
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
@@ -66,7 +67,7 @@ fun HikeCard(
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
     val geminiUIState by geminiViewModel.geminiUIState.collectAsState()
 
-    val difficulty = getDifficultyInfo(hikeUIState.feature.properties.gradering)
+    val difficulty = getDifficultyInfo(hikeUIState.feature.properties.gradering ?: "Ukjent")
 
     hikeScreenViewModel.getHikeDescription(
         homeScreenViewModel = homeScreenViewModel,
@@ -162,11 +163,20 @@ fun HikeCard(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    MarkdownText(
-                        markdown = geminiUIState.response,
-                        modifier = Modifier.padding(8.dp),
-                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
-                    )
+                    if (geminiUIState.isLoading) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Loader()
+                        }
+                    } else {
+                        MarkdownText(
+                            markdown = geminiUIState.response,
+                            modifier = Modifier.padding(8.dp),
+                            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(16.dp))
 

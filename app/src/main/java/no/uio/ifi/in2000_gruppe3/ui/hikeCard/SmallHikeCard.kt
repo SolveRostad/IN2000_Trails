@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000_gruppe3.ui.hikeCard
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,7 +42,7 @@ fun SmallHikeCard(
     feature: Feature,
     onClick: () -> Unit
 ) {
-    val difficulty = getDifficultyInfo(feature.properties.gradering)
+    val difficulty = getDifficultyInfo(feature.properties.gradering ?: "Ukjent")
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -121,7 +122,7 @@ fun SmallHikeCard(
                     InfoItem(
                         icon = ImageVector.vectorResource(id = R.drawable.terrain_icon),
                         label = "Vanskelighet",
-                        value = getDifficultyName(feature.properties.gradering),
+                        value = difficulty.label,
                         iconTint = difficulty.color
                     )
                 }
@@ -160,25 +161,16 @@ internal fun InfoItem(
     }
 }
 
-fun getDifficultyName(grade: String): String {
-    return when (grade.lowercase()) {
-        "enkel" -> "Enkel"
-        "middels" -> "Middels"
-        "krevende" -> "Krevende"
-        "ekspert" -> "Ekspert"
-        else -> "Ukjent"
-    }
-}
-
 data class DifficultyInfo(val label: String, val color: Color)
 
 @Composable
 fun getDifficultyInfo(grade: String): DifficultyInfo {
-    return when (grade.lowercase()) {
-        "enkel" -> DifficultyInfo("ENKEL", Color(0xFF4CAF50)) // Green
-        "middels" -> DifficultyInfo("MIDDELS", Color(0xFFFFC107)) // Yellow/Amber
-        "krevende" -> DifficultyInfo("KREVENDE", Color(0xFFFF9800)) // Orange
-        "ekspert" -> DifficultyInfo("EKSPERT", Color(0xFFF44336)) // Red
+    Log.d("TAG", "getDifficultyName: $grade")
+    return when (grade) {
+        "G" -> DifficultyInfo("ENKEL", Color(0xFF4CAF50)) // Green
+        "B" -> DifficultyInfo("MIDDELS", Color(0xFFFFC107)) // Yellow/Amber
+        "R" -> DifficultyInfo("KREVENDE", Color(0xFFFF9800)) // Orange
+        "S" -> DifficultyInfo("EKSPERT", Color(0xFFF44336)) // Red
         else -> DifficultyInfo("UKJENT", MaterialTheme.colorScheme.primary)
     }
 }
