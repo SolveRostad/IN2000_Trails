@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -100,6 +101,8 @@ class HomeScreenViewModel() : ViewModel() {
             }
             try {
                 val result = metAlertsRepository.getAlerts() //henter data fra repository
+                Log.d("FetchAlerts", "Alerts fetched: $result")
+
                 if (result != null) {
                     _homeScreenUIState.update {
                         it.copy(alerts = result)
@@ -127,6 +130,6 @@ data class HomeScreenUIState(
     val isError: Boolean = false,
     val errorMessage: String = "",
     val hikes: List<Feature>,
-    val alerts: MetAlerts,
-    val forecast: Locationforecast?,
+    val alerts: MetAlerts?,
+    val forecast: Locationforecast?
 )
