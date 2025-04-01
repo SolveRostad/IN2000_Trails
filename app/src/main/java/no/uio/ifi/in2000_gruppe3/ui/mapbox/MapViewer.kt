@@ -108,6 +108,12 @@ fun MapViewer(
             mapboxViewModel
         )
 
+        //legger til farevarsel på kartet
+        AlertsDisplay(
+            homeScreenViewModel,
+            mapboxViewModel
+        )
+
         // Søkefelt for å søke etter steder
         SearchBarForMap(
             mapboxViewModel,

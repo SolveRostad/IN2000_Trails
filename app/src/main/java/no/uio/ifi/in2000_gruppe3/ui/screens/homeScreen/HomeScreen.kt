@@ -33,6 +33,7 @@ fun HomeScreen(
             mapboxUIState.pointerCoordinates.latitude(),
             mapboxUIState.pointerCoordinates.longitude()
         )
+        homeScreenViewModel.fetchAlerts()
     }
 
     Scaffold(

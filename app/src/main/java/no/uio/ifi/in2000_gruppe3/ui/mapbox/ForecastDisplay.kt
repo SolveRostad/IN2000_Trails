@@ -63,7 +63,7 @@ fun ForecastDisplay(
                     style = MaterialTheme.typography.titleMedium,
                     color = temperatureTextColor,
                     modifier = Modifier
-                        .align(Alignment.BottomCenter) // Plasserer teksten i bunnen av boksen
+                        .align(Alignment.BottomCenter)
                         .padding(top = 50.dp)
                 )
             }
