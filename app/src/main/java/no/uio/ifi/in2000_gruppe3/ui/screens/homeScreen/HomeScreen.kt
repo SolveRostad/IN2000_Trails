@@ -69,7 +69,6 @@ fun HomeScreen(
                             homeScreenViewModel = homeScreenViewModel,
                             mapboxViewModel = mapboxViewModel,
                             visableOnMap = true,
-                            showTemperature = false,
                             modifier = Modifier.weight(0.35f)
                         )
 

@@ -12,9 +12,11 @@ import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository.HikeAPIRepository
 import no.uio.ifi.in2000_gruppe3.data.locationForecastAPI.models.Locationforecast
+import no.uio.ifi.in2000_gruppe3.data.locationForecastAPI.models.TimeSeries
 import no.uio.ifi.in2000_gruppe3.data.locationForecastAPI.repository.LocationForecastRepository
 import no.uio.ifi.in2000_gruppe3.data.metAlertsAPI.models.MetAlerts
 import no.uio.ifi.in2000_gruppe3.data.metAlertsAPI.repository.MetAlertsRepository
+import java.sql.Time
 
 class HomeScreenViewModel() : ViewModel() {
     private val hikeAPIRepository = HikeAPIRepository()
@@ -117,29 +119,30 @@ class HomeScreenViewModel() : ViewModel() {
         }
     }
 
-    fun daysHighestTemp(date: String): Double {
+    fun timeseriesFromDate(date: String): List<TimeSeries>? {
         return homeScreenUIState.value.forecast?.properties?.timeseries
             ?.filter { it.time.startsWith(date) }
+    }
+
+    fun daysHighestTemp(date: String): Double {
+        return timeseriesFromDate(date)
             ?.maxOfOrNull { it.data.instant.details.air_temperature } ?: Double.NEGATIVE_INFINITY
     }
 
     fun daysLowestTemp(date: String): Double {
-        return homeScreenUIState.value.forecast?.properties?.timeseries
-            ?.filter { it.time.startsWith(date) }
+        return timeseriesFromDate(date)
             ?.minOfOrNull { it.data.instant.details.air_temperature } ?: Double.POSITIVE_INFINITY
     }
 
     fun daysAverageTemp(date: String): Double {
-        val temps = homeScreenUIState.value.forecast?.properties?.timeseries
-            ?.filter { it.time.startsWith(date) }
+        val temps = timeseriesFromDate(date)
             ?.map { it.data.instant.details.air_temperature }
 
         return temps?.average() ?: -1.0
     }
 
     fun daysAverageWindSpeed(date: String): Double {
-        val windSpeeds = homeScreenUIState.value.forecast?.properties?.timeseries
-            ?.filter { it.time.startsWith(date) }
+        val windSpeeds = timeseriesFromDate(date)
             ?.map { it.data.instant.details.wind_speed }
 
         return windSpeeds?.average() ?: -1.0

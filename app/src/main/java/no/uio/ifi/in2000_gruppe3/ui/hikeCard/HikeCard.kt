@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,17 +39,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import dev.jeziellago.compose.markdowntext.MarkdownText
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.data.date.calculateDaysAhead
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
+import no.uio.ifi.in2000_gruppe3.data.locationForecastAPI.models.TimeSeries
+import no.uio.ifi.in2000_gruppe3.ui.loaders.Loader
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
@@ -79,34 +85,33 @@ fun HikeCard(
     var selectedDay by remember { mutableStateOf(todaysDay) }
     var selectedDate by remember { mutableStateOf(getTodaysDate()) }
 
-    var firstTimeSeries by remember { mutableStateOf(homeUIState.forecast?.properties?.timeseries?.firstOrNull()) }
-
-    var averageTemperature by remember { mutableStateOf(firstTimeSeries?.data?.instant?.details?.air_temperature) }
-    var averageWindSpeed by remember { mutableStateOf(firstTimeSeries?.data?.instant?.details?.wind_speed) }
+    // Shows current temperature and wind speed on launch, then shows average based on selected day
+    var displayTimeSeries = homeUIState.forecast?.properties?.timeseries?.firstOrNull()
+    var averageTemperature by remember { mutableStateOf(displayTimeSeries?.data?.instant?.details?.air_temperature) }
+    var averageWindSpeed by remember { mutableStateOf(displayTimeSeries?.data?.instant?.details?.wind_speed) }
 
     LaunchedEffect(selectedDay) {
         val daysAhead = calculateDaysAhead(todaysDay, selectedDay)
         selectedDate = LocalDate.now().plusDays(daysAhead.toLong()).toString()
 
+        displayTimeSeries = homeScreenViewModel.timeseriesFromDate(selectedDate)?.firstOrNull()
+
         averageTemperature = homeScreenViewModel.daysAverageTemp(selectedDate)
         averageWindSpeed = homeScreenViewModel.daysAverageWindSpeed(selectedDate)
-    }
 
-//    LaunchedEffect(selectedDay) {
-//        hikeScreenViewModel.getHikeDescription(
-//            homeScreenViewModel = homeScreenViewModel,
-//            geminiViewModel = geminiViewModel,
-//            forecastTimeseries = forecastTimeseries
-//        )
-//    }
+        hikeScreenViewModel.getHikeDescription(
+            homeScreenViewModel = homeScreenViewModel,
+            geminiViewModel = geminiViewModel,
+            selectedDay = selectedDay,
+            selectedDate = selectedDate,
+        )
+    }
 
     Card(
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.5f)),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         LazyColumn {
             item {
@@ -119,7 +124,13 @@ fun HikeCard(
                     HikeCardMapPreview(mapboxViewModel, hikeUIState.feature)
 
                     Surface(
-                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                            .background(
+                                color = Color.White.copy(alpha = 0.6f),
+                                shape = RoundedCornerShape(8.dp)
+                            ),
+                        color = Color.Transparent
                     ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally
@@ -130,7 +141,11 @@ fun HikeCard(
                                 showTemperature = false,
                                 date = selectedDate
                             )
-                            Text(text = averageTemperature?.let { "%.1f°C".format(it) } ?: "N/A")
+                            Text(
+                                text = averageTemperature?.let { "%.1f°C".format(it) } ?: "N/A",
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
                 }
@@ -206,20 +221,20 @@ fun HikeCard(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-//                    if (geminiUIState.isLoading) {
-//                        Box(
-//                            modifier = Modifier.fillMaxWidth(),
-//                            contentAlignment = Alignment.Center
-//                        ) {
-//                            Loader()
-//                        }
-//                    } else {
-//                        MarkdownText(
-//                            markdown = geminiUIState.response,
-//                            modifier = Modifier.padding(8.dp),
-//                            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
-//                        )
-//                    }
+                    if (geminiUIState.isLoading) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Loader()
+                        }
+                    } else {
+                        MarkdownText(
+                            markdown = geminiUIState.response,
+                            modifier = Modifier.padding(8.dp),
+                            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
