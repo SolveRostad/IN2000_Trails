@@ -65,6 +65,7 @@ fun MapViewer(
                 500
             )
             homeScreenViewModel.fetchForecast(mapboxUIState.pointerCoordinates!!)
+
         }
     }
 
@@ -104,6 +105,7 @@ fun MapViewer(
                                 .build()
                         )
                         homeScreenViewModel.fetchForecast(point)
+                        homeScreenViewModel.fetchAlerts()
                         mapView.location.removeOnIndicatorPositionChangedListener(this)
                     }
                 }

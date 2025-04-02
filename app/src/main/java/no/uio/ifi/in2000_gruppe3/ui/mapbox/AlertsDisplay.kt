@@ -72,7 +72,7 @@ fun AlertsDisplay(
         val alertText = firstTimeSeries?.properties?.description
         val alertColor = firstTimeSeries?.properties?.riskMatrixColor
 
-        //Log.d("AlertsDisplay", "alertEvent: ${homeScreenUiState.alerts}")
+        Log.d("AlertsDisplay", "alertEvent: ${homeScreenUiState.alerts}")
 
         val iconURL = getAlertsIconUrl(alertEvent, alertColor) // Henter icon-URL
         Log.d("SVG-URL", "Henter ikon fra: $iconURL")
