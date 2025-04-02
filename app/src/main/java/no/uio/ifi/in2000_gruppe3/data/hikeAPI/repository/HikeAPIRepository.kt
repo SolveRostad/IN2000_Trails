@@ -2,6 +2,7 @@ package no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository
 
 import androidx.compose.ui.graphics.Color
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.datasource.HikeAPIDatasource
+import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.DifficultyInfo
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 
 /**
@@ -21,6 +22,7 @@ class HikeAPIRepository {
         val features = hikeAPIDatasource.getHikes(lat, lng, limit, featureType, minDistance)
         features.forEach { feature ->
             feature.color = getColor()
+            feature.difficultyInfo = getDifficultyInfo(feature.properties.gradering ?: "Ukjent")
         }
         return features
     }
@@ -46,5 +48,15 @@ class HikeAPIRepository {
             colorIndex++
         }
         return color
+    }
+
+    private fun getDifficultyInfo(gradering: String): DifficultyInfo {
+        return when (gradering) {
+            "G" -> DifficultyInfo("ENKEL", Color(0xFF4CAF50)) // Green
+            "B" -> DifficultyInfo("MIDDELS", Color(0xFFFFC107)) // Yellow/Amber
+            "R" -> DifficultyInfo("KREVENDE", Color(0xFFFF9800)) // Orange
+            "S" -> DifficultyInfo("EKSPERT", Color(0xFFF44336)) // Red
+            else -> DifficultyInfo("UKJENT", Color(0xFF757575)) // Medium Gray
+        }
     }
 }

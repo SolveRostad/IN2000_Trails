@@ -1,9 +1,10 @@
 package no.uio.ifi.in2000_gruppe3.ui.mapbox
 
+import android.app.Application
 import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
@@ -17,16 +18,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 
-class MapboxViewModel() : ViewModel() {
+class MapboxViewModel(application: Application) : AndroidViewModel(application) {
     private val placeAutocomplete = PlaceAutocomplete.create()
 
     private val _mapboxUIState: MutableStateFlow<MapboxUIState> = MutableStateFlow(
         MapboxUIState(
             mapStyle = Style.OUTDOORS,
-            pointerCoordinates = Point.fromLngLat(10.661952, 59.846195),
             polylineAnnotations = emptyList(),
             searchResponse = emptyList(),
-            searchQuery = "",
+            searchQuery = ""
         )
     )
     var mapboxUIState: StateFlow<MapboxUIState> = _mapboxUIState
@@ -101,6 +101,15 @@ class MapboxViewModel() : ViewModel() {
     }
 
     fun updatePolylineAnnotationsFromFeatures(features: List<Feature>) {
+        if (features.isEmpty()) {
+            _mapboxUIState.update {
+                it.copy(polylineAnnotations = emptyList())
+            }
+            return
+        }
+        _mapboxUIState.update {
+            it.copy(isLoading = true)
+        }
         viewModelScope.launch {
             val annotations = mutableListOf<PolylineAnnotationOptions>().apply {
                 features.forEach { feature ->
@@ -129,11 +138,13 @@ class MapboxViewModel() : ViewModel() {
 
 data class MapboxUIState(
     val mapStyle: String,
-    val pointerCoordinates: Point,
+    val pointerCoordinates: Point? = null,
+    val latestUserPosition: Point? = null,
     val polylineAnnotations: List<PolylineAnnotationOptions>,
+
 
     val searchResponse: List<PlaceAutocompleteSuggestion>,
     val searchQuery: String,
 
-    val isLoading: Boolean = true
+    val isLoading: Boolean = false
 )

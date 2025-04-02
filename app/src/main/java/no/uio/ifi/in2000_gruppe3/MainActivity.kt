@@ -24,3 +24,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+/*
+ALL ICONS ARE FROM https://thenounproject.com/
+ */

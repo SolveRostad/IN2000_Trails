@@ -29,11 +29,14 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000_gruppe3.R
+import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.SheetDrawerDetent
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
 fun SearchBarForMap(
     mapboxViewModel: MapboxViewModel,
+    homeScreenViewModel: HomeScreenViewModel,
     modifier: Modifier = Modifier
 ) {
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
@@ -50,6 +53,7 @@ fun SearchBarForMap(
             .clip(RoundedCornerShape(30.dp))
             .border(1.dp, Color.Gray, RoundedCornerShape(30.dp))
             .onKeyEvent { keyEvent ->
+                homeScreenViewModel.setSheetState(SheetDrawerDetent.SEMIPEEK)
                 if (keyEvent.type == KeyEventType.KeyUp && keyEvent.key == Key.Enter) {
                     mapboxViewModel.updateSearchQuery("")
                     keyboardController?.hide()

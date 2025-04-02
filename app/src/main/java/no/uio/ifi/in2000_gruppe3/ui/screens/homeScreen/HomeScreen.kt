@@ -1,6 +1,9 @@
 package no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen
 
+import android.Manifest
 import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,10 +15,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.BottomSheetDrawer
 import no.uio.ifi.in2000_gruppe3.ui.loaders.MapLoader
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
 import no.uio.ifi.in2000_gruppe3.ui.mapSearchbar.SearchBarForMap
@@ -25,7 +30,7 @@ import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapStyleDropdownMenu
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapViewer
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
-import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomSheetDrawer
+import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -34,8 +39,22 @@ fun HomeScreen(
     homeScreenViewModel: HomeScreenViewModel,
     hikeViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
+    favoritesViewModel: FavoritesViewModel,
     navController: NavHostController
 ) {
+    val locationPermissionRequest = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) {}
+
+    LaunchedEffect(Unit) {
+        locationPermissionRequest.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        )
+    }
+
     Scaffold(
         bottomBar = { BottomBar(navController = navController) }
     ) { paddingValues ->
@@ -44,58 +63,62 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(bottom = paddingValues.calculateBottomPadding())
         ) {
-            BottomSheetDrawer(
+            MapViewer(
                 homeScreenViewModel = homeScreenViewModel,
-                hikeScreenViewModel = hikeViewModel,
                 mapboxViewModel = mapboxViewModel,
-                navController = navController
-            ) {
-                MapViewer(
-                    homeScreenViewModel = homeScreenViewModel,
-                    mapboxViewModel = mapboxViewModel
-                )
+                favoritesViewModel = favoritesViewModel,
+            )
+            MapLoader(
+                mapboxViewModel = mapboxViewModel
+            )
 
-                MapLoader(
-                    mapboxViewModel = mapboxViewModel
-                )
+            Column {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(
+                        3.dp,
+                        Alignment.CenterHorizontally
+                    ),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 10.dp, end = 10.dp, top = 25.dp)
+                ) {
+                    ForecastDisplay(
+                        homeScreenViewModel = homeScreenViewModel,
+                        mapboxViewModel = mapboxViewModel,
+                        visableOnMap = true,
+                        showTemperature = true,
+                        modifier = Modifier.weight(0.35f)
+                    )
 
-                Column {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(3.dp, Alignment.CenterHorizontally),
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 10.dp, end = 10.dp, top = 25.dp)
-                    ) {
-                        ForecastDisplay(
-                            homeScreenViewModel = homeScreenViewModel,
-                            mapboxViewModel = mapboxViewModel,
-                            visableOnMap = true,
-                            showTemperature = false,
-                            modifier = Modifier.weight(0.35f)
-                        )
-
-                        SearchBarForMap(
-                            mapboxViewModel = mapboxViewModel,
-                            modifier = Modifier.weight(1.5f)
-                        )
-
-                        MapStyleDropdownMenu(
-                            mapboxViewModel = mapboxViewModel,
-                            modifier = Modifier.weight(0.25f)
-                        )
-                    }
+                    SearchBarForMap(
+                        mapboxViewModel = mapboxViewModel,
+                        homeScreenViewModel = homeScreenViewModel,
+                        modifier = Modifier.weight(1.5f)
+                    )
 
                     AlertsDisplay(
                         homeScreenViewModel = homeScreenViewModel,
                         mapboxViewModel = mapboxViewModel,
                         modifier = Modifier.weight(0.01f)
                     )
-                    SuggestionColumn(
-                        mapboxViewModel = mapboxViewModel
+                    
+                    MapStyleDropdownMenu(
+                        mapboxViewModel = mapboxViewModel,
+                        modifier = Modifier.weight(0.25f)
                     )
                 }
+
+                SuggestionColumn(
+                    mapboxViewModel = mapboxViewModel
+                )
             }
+            BottomSheetDrawer(
+                homeScreenViewModel = homeScreenViewModel,
+                hikeScreenViewModel = hikeViewModel,
+                mapboxViewModel = mapboxViewModel,
+                navController = navController
+            )
         }
     }
 }

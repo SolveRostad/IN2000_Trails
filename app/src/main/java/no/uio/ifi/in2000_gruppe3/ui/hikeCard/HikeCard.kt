@@ -67,7 +67,6 @@ fun HikeCard(
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
     val geminiUIState by geminiViewModel.geminiUIState.collectAsState()
 
-    val difficulty = getDifficultyInfo(hikeUIState.feature.properties.gradering ?: "Ukjent")
 
     hikeScreenViewModel.getHikeDescription(
         homeScreenViewModel = homeScreenViewModel,
@@ -98,7 +97,7 @@ fun HikeCard(
                         ForecastDisplay(
                             homeScreenViewModel,
                             mapboxViewModel,
-                            showTemperature = false
+                            showTemperature = false,
                         )
                     }
                 }
@@ -138,8 +137,8 @@ fun HikeCard(
                                 InfoItem(
                                     icon = ImageVector.vectorResource(R.drawable.terrain_icon),
                                     label = "Vanskelighet",
-                                    value = difficulty.label,
-                                    iconTint = difficulty.color
+                                    value = hikeUIState.feature.difficultyInfo.label,
+                                    iconTint = hikeUIState.feature.difficultyInfo.color
                                 )
                                 InfoItem(
                                     icon = ImageVector.vectorResource(id = R.drawable.distance_icon),

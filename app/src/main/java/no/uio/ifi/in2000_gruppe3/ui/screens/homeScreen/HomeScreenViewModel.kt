@@ -3,6 +3,7 @@ package no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mapbox.geojson.Point
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,23 +16,29 @@ import no.uio.ifi.in2000_gruppe3.data.locationForecastAPI.models.Locationforecas
 import no.uio.ifi.in2000_gruppe3.data.locationForecastAPI.repository.LocationForecastRepository
 import no.uio.ifi.in2000_gruppe3.data.metAlertsAPI.models.MetAlerts
 import no.uio.ifi.in2000_gruppe3.data.metAlertsAPI.repository.MetAlertsRepository
+import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.SheetDrawerDetent
 
 class HomeScreenViewModel() : ViewModel() {
     private val hikeAPIRepository = HikeAPIRepository()
     private val locationForecastRepository = LocationForecastRepository()
     private val metAlertsRepository = MetAlertsRepository()
+    private val _sheetStateTarget = MutableStateFlow(SheetDrawerDetent.SEMIPEEK)
 
-    // UI state
     private val _homeScreenUIState = MutableStateFlow<HomeScreenUIState>(
         HomeScreenUIState(
             hikes = emptyList(),
             alerts = MetAlerts(listOf(), "", "", ""),
-            forecast = null
+            forecast = null,
         )
     )
-    val homeScreenUIState: StateFlow<HomeScreenUIState> = _homeScreenUIState.asStateFlow()
 
-    // Fetches hikes from Hike API
+    val homeScreenUIState: StateFlow<HomeScreenUIState> = _homeScreenUIState.asStateFlow()
+    val sheetStateTarget: StateFlow<SheetDrawerDetent> = _sheetStateTarget.asStateFlow()
+
+    fun setSheetState(target: SheetDrawerDetent) {
+        _sheetStateTarget.value = target
+    }
+
     fun fetchHikes(
         lat: Double,
         lng: Double,
@@ -57,17 +64,21 @@ class HomeScreenViewModel() : ViewModel() {
                 _homeScreenUIState.update {
                     it.copy(isLoading = false)
                 }
+                _sheetStateTarget.value = SheetDrawerDetent.PEEK
             }
         }
     }
 
-    fun fetchForecast(lat: Double, lon: Double) {
+    fun fetchForecast(point: Point) {
+        val lat = point.latitude()
+        val lng = point.longitude()
+
         viewModelScope.launch(Dispatchers.IO) {
             _homeScreenUIState.update {
                 it.copy(isLoading = true)
             }
             try {
-                val result = locationForecastRepository.getForecast(lat, lon)
+                val result = locationForecastRepository.getForecast(lat, lng)
                 _homeScreenUIState.update {
                     it.copy(forecast = result, isError = false, isLoading = false)
                 }
@@ -122,7 +133,7 @@ data class HomeScreenUIState(
     val isLoading: Boolean = false,
     val isError: Boolean = false,
     val errorMessage: String = "",
-    val alerts: MetAlerts?,
     val hikes: List<Feature>,
+    val alerts: MetAlerts?,
     val forecast: Locationforecast?
 )
