@@ -3,6 +3,7 @@ package no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mapbox.geojson.Point
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -68,13 +69,16 @@ class HomeScreenViewModel() : ViewModel() {
         }
     }
 
-    fun fetchForecast(lat: Double, lon: Double) {
+    fun fetchForecast(point: Point) {
+        val lat = point.latitude()
+        val lng = point.longitude()
+
         viewModelScope.launch(Dispatchers.IO) {
             _homeScreenUIState.update {
                 it.copy(isLoading = true)
             }
             try {
-                val result = locationForecastRepository.getForecast(lat, lon)
+                val result = locationForecastRepository.getForecast(lat, lng)
                 _homeScreenUIState.update {
                     it.copy(forecast = result, isError = false, isLoading = false)
                 }

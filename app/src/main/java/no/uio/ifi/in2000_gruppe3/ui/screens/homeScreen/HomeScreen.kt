@@ -30,6 +30,7 @@ import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapStyleDropdownMenu
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapViewer
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
+import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -38,6 +39,7 @@ fun HomeScreen(
     homeScreenViewModel: HomeScreenViewModel,
     hikeViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
+    favoritesViewModel: FavoritesViewModel,
     navController: NavHostController
 ) {
     val context = LocalContext.current
@@ -81,7 +83,8 @@ fun HomeScreen(
         ) {
             MapViewer(
                 homeScreenViewModel = homeScreenViewModel,
-                mapboxViewModel = mapboxViewModel
+                mapboxViewModel = mapboxViewModel,
+                favoritesViewModel = favoritesViewModel,
             )
             MapLoader(
                 mapboxViewModel = mapboxViewModel

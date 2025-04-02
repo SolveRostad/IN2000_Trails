@@ -25,6 +25,7 @@ import com.mapbox.maps.plugin.locationcomponent.createDefault2DPuck
 import com.mapbox.maps.plugin.locationcomponent.location
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.SheetDrawerDetent
+import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -32,6 +33,7 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 fun MapViewer(
     homeScreenViewModel: HomeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
+    favoritesViewModel: FavoritesViewModel
 ) {
     val homeScreenUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
@@ -62,10 +64,7 @@ fun MapViewer(
                 "Fotrute",
                 500
             )
-            homeScreenViewModel.fetchForecast(
-                mapboxUIState.pointerCoordinates!!.latitude(),
-                mapboxUIState.pointerCoordinates!!.longitude()
-            )
+            homeScreenViewModel.fetchForecast(mapboxUIState.pointerCoordinates!!)
         }
     }
 
@@ -104,6 +103,7 @@ fun MapViewer(
                                 .zoom(12.0)
                                 .build()
                         )
+                        homeScreenViewModel.fetchForecast(point)
                         mapView.location.removeOnIndicatorPositionChangedListener(this)
                     }
                 }
@@ -112,6 +112,9 @@ fun MapViewer(
             mapView.location.updateSettings {
                 locationPuck = createDefault2DPuck(withBearing = true)
                 enabled = true
+            }
+            mapView.location.addOnIndicatorPositionChangedListener { point ->
+                favoritesViewModel.updateUserLocation(point)
             }
             mapView.mapboxMap.subscribeCameraChanged {
                 homeScreenViewModel.setSheetState(SheetDrawerDetent.SEMIPEEK)
