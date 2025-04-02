@@ -2,7 +2,6 @@ package no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen
 
 import android.Manifest
 import android.os.Build
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -18,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.BottomSheetDrawer
@@ -42,28 +40,10 @@ fun HomeScreen(
     favoritesViewModel: FavoritesViewModel,
     navController: NavHostController
 ) {
-    val context = LocalContext.current
-    val activity = context as? ComponentActivity
-
     val locationPermissionRequest = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        when {
-            permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-                // Precise location access granted - start location updates
-                mapboxViewModel.startLocationUpdates()
-            }
+    ) {}
 
-            permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
-                // Only approximate location access granted
-                mapboxViewModel.startLocationUpdates()
-            }
-
-            else -> {
-                // No location access granted - use default location
-            }
-        }
-    }
     LaunchedEffect(Unit) {
         locationPermissionRequest.launch(
             arrayOf(

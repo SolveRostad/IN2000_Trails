@@ -17,11 +17,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
-import no.uio.ifi.in2000_gruppe3.data.userLocation.repository.UserLocationRepository
 
 class MapboxViewModel(application: Application) : AndroidViewModel(application) {
     private val placeAutocomplete = PlaceAutocomplete.create()
-    private val userLocationRepository = UserLocationRepository(application.applicationContext)
 
     private val _mapboxUIState: MutableStateFlow<MapboxUIState> = MutableStateFlow(
         MapboxUIState(
@@ -39,10 +37,6 @@ class MapboxViewModel(application: Application) : AndroidViewModel(application) 
                 it.copy(mapStyle = style)
             }
         }
-    }
-
-    fun startLocationUpdates() {
-        userLocationRepository.startLocationUpdates()
     }
 
     fun updatePointerCoordinates(point: Point) {
