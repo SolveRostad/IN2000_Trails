@@ -96,18 +96,18 @@ fun HomeScreen(
                         homeScreenViewModel = homeScreenViewModel,
                         modifier = Modifier.weight(1.5f)
                     )
-
-                    AlertsDisplay(
-                        homeScreenViewModel = homeScreenViewModel,
-                        mapboxViewModel = mapboxViewModel,
-                        modifier = Modifier.weight(0.01f)
-                    )
                     
                     MapStyleDropdownMenu(
                         mapboxViewModel = mapboxViewModel,
                         modifier = Modifier.weight(0.25f)
                     )
                 }
+
+                AlertsDisplay(
+                    homeScreenViewModel = homeScreenViewModel,
+                    mapboxViewModel = mapboxViewModel,
+                    modifier = Modifier.weight(0.01f)
+                )
 
                 SuggestionColumn(
                     mapboxViewModel = mapboxViewModel

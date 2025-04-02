@@ -69,7 +69,7 @@ fun AlertsDisplay(
     if(homeScreenUiState.alerts != null){
         val firstTimeSeries = homeScreenUiState.alerts.features.firstOrNull()
         val alertEvent = firstTimeSeries?.properties?.event
-        val alertText = firstTimeSeries?.properties?.description
+        val alertText = firstTimeSeries?.properties?.description  //bruker senere
         val alertColor = firstTimeSeries?.properties?.riskMatrixColor
 
         Log.d("AlertsDisplay", "alertEvent: ${homeScreenUiState.alerts}")
@@ -85,20 +85,18 @@ fun AlertsDisplay(
                 .build()
         )
 
-        Column(modifier = Modifier.padding(10.dp)) {
+        Column(modifier = Modifier.padding(20.dp)) {
             Image(
                 painter = painter,
                 contentDescription = "Varsel-ikon",
-                modifier = Modifier.size(80.dp)
+                modifier = Modifier.size(50.dp)
             )
             if(alertEvent != null){
                 Text(text = alertEvent, style = MaterialTheme.typography.bodyMedium)
             }
             Box(modifier = Modifier.align(Alignment.CenterHorizontally), content = {
             })
-            /*if (alertText != null) {
-                Text(text = alertText, style = MaterialTheme.typography.bodyMedium)
-            }*/
+
         }
     }
 }
