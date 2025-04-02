@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import com.mapbox.geojson.Point
@@ -21,7 +20,6 @@ import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotation
 import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotationGroupState
 import com.mapbox.maps.extension.compose.annotation.rememberIconImage
 import com.mapbox.maps.extension.compose.style.MapStyle
-import com.mapbox.maps.plugin.gestures.gestures
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
 import com.mapbox.maps.plugin.locationcomponent.createDefault2DPuck
 import com.mapbox.maps.plugin.locationcomponent.location
@@ -39,23 +37,8 @@ fun MapViewer(
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
     val focusManager = LocalFocusManager.current
     val polylineAnnotationGroupState = PolylineAnnotationGroupState()
-    var initialLaunch = remember { true }
     val mapViewportState = rememberMapViewportState()
 
-    LaunchedEffect(mapboxUIState.latestUserPosition) {
-        if (mapboxUIState.latestUserPosition != null && initialLaunch) {
-            mapViewportState.setCameraOptions(
-                cameraOptions {
-                    zoom(12.0)
-                    center(mapboxUIState.latestUserPosition)
-                    pitch(0.0)
-                    bearing(0.0)
-                }
-            )
-            initialLaunch = false
-            mapboxViewModel.setLoaderState(false)
-        }
-    }
     LaunchedEffect(homeScreenUIState.hikes) {
         mapboxViewModel.updatePolylineAnnotationsFromFeatures(homeScreenUIState.hikes)
     }
@@ -111,18 +94,20 @@ fun MapViewer(
             }
         }
         MapEffect(Unit) { mapView ->
-            val onIndicatorPositionChangedListener = OnIndicatorPositionChangedListener {
-                mapViewportState.setCameraOptions(
-                    CameraOptions.Builder()
-                        .center(it)
-                        .zoom(12.0)
-                        .build()
-                )
-                mapView.gestures.focalPoint = mapView.mapboxMap.pixelForCoordinate(it)
-            }
             mapView.location.apply {
                 enabled = true
-                addOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener)
+                val oneTimePositionListener = object : OnIndicatorPositionChangedListener {
+                    override fun onIndicatorPositionChanged(point: Point) {
+                        mapViewportState.setCameraOptions(
+                            CameraOptions.Builder()
+                                .center(point)
+                                .zoom(12.0)
+                                .build()
+                        )
+                        mapView.location.removeOnIndicatorPositionChangedListener(this)
+                    }
+                }
+                addOnIndicatorPositionChangedListener(oneTimePositionListener)
             }
             mapView.location.updateSettings {
                 locationPuck = createDefault2DPuck(withBearing = true)

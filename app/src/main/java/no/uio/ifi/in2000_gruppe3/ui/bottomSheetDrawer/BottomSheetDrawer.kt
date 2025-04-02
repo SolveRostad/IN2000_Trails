@@ -75,7 +75,7 @@ fun BottomSheetDrawer(
             DragIndication(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .padding(top = 16.dp)
+                    .padding(16.dp)
                     .background(Color.Black.copy(0.4f), RoundedCornerShape(100))
                     .width(32.dp)
                     .height(4.dp)
