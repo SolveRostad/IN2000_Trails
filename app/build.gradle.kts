@@ -16,8 +16,16 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        buildConfigField("String", "MAPBOX_ACCESS_TOKEN", "\"${properties["MAPBOX_ACCESS_TOKEN"]}\"")
-        buildConfigField("String", "MAPBOX_SECRET_TOKEN", "\"${properties["MAPBOX_SECRET_TOKEN"]}\"")
+        buildConfigField(
+            "String",
+            "MAPBOX_ACCESS_TOKEN",
+            "\"${properties["MAPBOX_ACCESS_TOKEN"]}\""
+        )
+        buildConfigField(
+            "String",
+            "MAPBOX_SECRET_TOKEN",
+            "\"${properties["MAPBOX_SECRET_TOKEN"]}\""
+        )
         buildConfigField("String", "GEMINI_API_KEY", "\"${properties["GEMINI_API_KEY"]}\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -46,11 +54,17 @@ android {
 }
 
 dependencies {
+    // Location
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 
-    //DataStore
+    // Custom BottomSheet
+    implementation("com.composables:core:1.20.1")
+
+    // DataStore
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.datastore.preferences.rxjava2)
     implementation(libs.androidx.datastore.preferences.rxjava3)
+    implementation(libs.volley)
 
     // Mapbox search
     val mapboxSearchVersion = "2.8.0-rc.1"
@@ -70,6 +84,8 @@ dependencies {
 
     // Coil
     implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation("io.coil-kt:coil-svg:2.4.0")
+
 
     // Navigation and compose
     implementation("androidx.compose.ui:ui:1.7.8")

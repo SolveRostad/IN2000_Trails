@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000_gruppe3.ui.hikeCard
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -42,7 +41,6 @@ fun SmallHikeCard(
     feature: Feature,
     onClick: () -> Unit
 ) {
-    val difficulty = getDifficultyInfo(feature.properties.gradering ?: "Ukjent")
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -68,10 +66,10 @@ fun SmallHikeCard(
                         .align(Alignment.TopEnd)
                         .padding(8.dp),
                     shape = RoundedCornerShape(12.dp),
-                    color = difficulty.color.copy(alpha = 0.9f)
+                    color = feature.difficultyInfo.color.copy(alpha = 0.9f)
                 ) {
                     Text(
-                        text = difficulty.label,
+                        text = feature.difficultyInfo.label,
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Bold,
                         color = Color.White,
@@ -121,8 +119,8 @@ fun SmallHikeCard(
                     InfoItem(
                         icon = ImageVector.vectorResource(id = R.drawable.terrain_icon),
                         label = "Vanskelighet",
-                        value = difficulty.label,
-                        iconTint = difficulty.color
+                        value = feature.difficultyInfo.label,
+                        iconTint = feature.difficultyInfo.color
                     )
                 }
             }
@@ -157,19 +155,5 @@ internal fun InfoItem(
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.SemiBold
         )
-    }
-}
-
-data class DifficultyInfo(val label: String, val color: Color)
-
-@Composable
-fun getDifficultyInfo(grade: String): DifficultyInfo {
-    Log.d("TAG", "getDifficultyName: $grade")
-    return when (grade) {
-        "G" -> DifficultyInfo("ENKEL", Color(0xFF4CAF50)) // Green
-        "B" -> DifficultyInfo("MIDDELS", Color(0xFFFFC107)) // Yellow/Amber
-        "R" -> DifficultyInfo("KREVENDE", Color(0xFFFF9800)) // Orange
-        "S" -> DifficultyInfo("EKSPERT", Color(0xFFF44336)) // Red
-        else -> DifficultyInfo("UKJENT", MaterialTheme.colorScheme.primary)
     }
 }

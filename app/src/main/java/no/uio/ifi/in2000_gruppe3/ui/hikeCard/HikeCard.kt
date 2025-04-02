@@ -1,7 +1,6 @@
 package no.uio.ifi.in2000_gruppe3.ui.hikeCard
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
@@ -39,7 +38,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
@@ -53,7 +51,6 @@ import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.data.date.calculateDaysAhead
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
-import no.uio.ifi.in2000_gruppe3.data.locationForecastAPI.models.TimeSeries
 import no.uio.ifi.in2000_gruppe3.ui.loaders.Loader
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
@@ -78,8 +75,6 @@ fun HikeCard(
     val homeUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
     val geminiUIState by geminiViewModel.geminiUIState.collectAsState()
-
-    val difficulty = getDifficultyInfo(hikeUIState.feature.properties.gradering ?: "Ukjent")
 
     val todaysDay = getTodaysDay()
     var selectedDay by remember { mutableStateOf(todaysDay) }
@@ -196,8 +191,8 @@ fun HikeCard(
                                 InfoItem(
                                     icon = ImageVector.vectorResource(R.drawable.terrain_icon),
                                     label = "Vanskelighet",
-                                    value = difficulty.label,
-                                    iconTint = difficulty.color
+                                    value = hikeUIState.feature.difficultyInfo.label,
+                                    iconTint = hikeUIState.feature.difficultyInfo.color
                                 )
                                 InfoItem(
                                     icon = ImageVector.vectorResource(id = R.drawable.distance_icon),
