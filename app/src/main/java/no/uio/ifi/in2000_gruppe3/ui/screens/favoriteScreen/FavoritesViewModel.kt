@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.mapbox.geojson.Point
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +19,10 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
     private val appContext = getApplication<Application>().applicationContext
 
     private val _favoritesScreenUIState = MutableStateFlow<FavoritesScreenUIState>(
-        FavoritesScreenUIState(favorites = emptyList())
+        FavoritesScreenUIState(
+            favorites = emptyList(),
+            userLocation = Point.fromLngLat(10.441649, 59.542819)
+        )
     )
 
     val favoritesScreenUIState: StateFlow<FavoritesScreenUIState> =
@@ -123,6 +127,12 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
     fun isHikeFavorite(feature: Feature): Boolean {
         return hikes.any { it.properties.desc == feature.properties.desc }
     }
+
+    fun updateUserLocation(point: Point) {
+        _favoritesScreenUIState.update {
+            it.copy(userLocation = point)
+        }
+    }
 }
 
 data class FavoritesScreenUIState(
@@ -131,4 +141,5 @@ data class FavoritesScreenUIState(
     val isLoading: Boolean = false,
     val isFavorite: Boolean = false,
     val favorites: List<Feature>,
+    val userLocation: Point
 )
