@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,6 +25,7 @@ import no.uio.ifi.in2000_gruppe3.ui.loaders.MapLoader
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
 import no.uio.ifi.in2000_gruppe3.ui.mapSearchbar.SearchBarForMap
 import no.uio.ifi.in2000_gruppe3.ui.mapSearchbar.SuggestionColumn
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.AlertsDisplay
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapStyleDropdownMenu
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapViewer
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
@@ -95,6 +97,12 @@ fun HomeScreen(
                         modifier = Modifier.weight(1.5f)
                     )
 
+                    AlertsDisplay(
+                        homeScreenViewModel = homeScreenViewModel,
+                        mapboxViewModel = mapboxViewModel,
+                        modifier = Modifier.weight(0.01f)
+                    )
+                    
                     MapStyleDropdownMenu(
                         mapboxViewModel = mapboxViewModel,
                         modifier = Modifier.weight(0.25f)

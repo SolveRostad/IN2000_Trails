@@ -9,7 +9,8 @@ import no.uio.ifi.in2000_gruppe3.data.metAlertsAPI.models.MetAlerts
 class MetAlertsRepository() {
     private val datasource = MetAlertsDatasource()
 
-    fun getAlerts(): MetAlerts? {
+    suspend fun getAlerts(): MetAlerts? {
+        println("Kaller getMetAlerts()")
         return datasource.getMetAlerts()
     }
 }
