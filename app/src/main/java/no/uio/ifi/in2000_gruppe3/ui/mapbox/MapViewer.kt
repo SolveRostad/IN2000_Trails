@@ -63,6 +63,7 @@ fun MapViewer(
             mapboxUIState.pointerCoordinates.latitude(),
             mapboxUIState.pointerCoordinates.longitude()
         )
+        homeScreenViewModel.fetchAlerts()
     }
 
     LaunchedEffect(homeScreenUIState.hikes) {

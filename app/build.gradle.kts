@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.datastore.preferences.rxjava2)
     implementation(libs.androidx.datastore.preferences.rxjava3)
+    implementation(libs.volley)
 
     // Mapbox search
     val mapboxSearchVersion = "2.8.0-rc.1"
@@ -70,6 +71,8 @@ dependencies {
 
     // Coil
     implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation("io.coil-kt:coil-svg:2.4.0")
+
 
     // Navigation and compose
     implementation("androidx.compose.ui:ui:1.7.8")
