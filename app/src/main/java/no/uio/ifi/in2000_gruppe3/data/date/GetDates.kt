@@ -15,6 +15,13 @@ enum class Weekdays {
     }
 }
 
+// Returns a list of all weekdays, starting on todays day
+fun getOrderedWeekdays(todaysDay: String): List<Weekdays> {
+    val startIndex = Weekdays.indexOf(todaysDay)
+    val weekdaysList = Weekdays.entries.toList()
+    return weekdaysList.drop(startIndex) + weekdaysList.take(startIndex)
+}
+
 @RequiresApi(Build.VERSION_CODES.O)
 // Returns date on format "YYYY-MM-DD"
 fun getTodaysDate(): String {
@@ -52,4 +59,15 @@ fun getTodaysDay(): String {
         DayOfWeek.SUNDAY to "Søndag"
     )
     return daysMap[dayOfWeek] ?: "Ukjent dag"
+}
+
+fun calculateDaysAhead(todaysDay: String, selectedDay: String): Int {
+    val todayIndex = Weekdays.indexOf(todaysDay)
+    val selectedIndex = Weekdays.indexOf(selectedDay)
+
+    return if (selectedIndex >= todayIndex) {
+        selectedIndex - todayIndex
+    } else {
+        7 - todayIndex + selectedIndex
+    }
 }

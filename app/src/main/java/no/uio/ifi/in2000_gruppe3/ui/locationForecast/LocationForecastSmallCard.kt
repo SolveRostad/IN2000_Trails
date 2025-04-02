@@ -20,8 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,7 +32,6 @@ import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenUIState
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -47,15 +44,13 @@ fun LocationForecastSmallCard(
     mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
-    val homeUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
-
     val todaysDay = getTodaysDay()
     val todaysDate = getTodaysDate()
     val dateFormatted = getDateFormatted(date)
     val currentTime = getCurrentTime()
 
-    val daysHighestTemp = daysHighestTemp(homeUIState, date)
-    val daysLowestTemp = daysLowestTemp(homeUIState, date)
+    val daysHighestTemp = homeScreenViewModel.daysHighestTemp(date)
+    val daysLowestTemp = homeScreenViewModel.daysLowestTemp(date)
 
     val visibleBoxesCount = listOf(
         date > todaysDate || (date == todaysDate && currentTime < "06:00:00"),
@@ -141,16 +136,4 @@ fun LocationForecastSmallCard(
             }
         }
     }
-}
-
-private fun daysHighestTemp(homeUIState: HomeScreenUIState, date: String): Double {
-     return homeUIState.forecast?.properties?.timeseries
-         ?.filter { it.time.startsWith(date) }
-         ?.maxOfOrNull { it.data.instant.details.air_temperature } ?: Double.MIN_VALUE
-}
-
-private fun daysLowestTemp(homeUIState: HomeScreenUIState, date: String): Double {
-    return homeUIState.forecast?.properties?.timeseries
-        ?.filter { it.time.startsWith(date) }
-        ?.minOfOrNull { it.data.instant.details.air_temperature } ?: Double.MAX_VALUE
 }

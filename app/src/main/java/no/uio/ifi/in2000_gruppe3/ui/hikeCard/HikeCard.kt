@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,9 +29,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,6 +48,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import dev.jeziellago.compose.markdowntext.MarkdownText
 import no.uio.ifi.in2000_gruppe3.R
+import no.uio.ifi.in2000_gruppe3.data.date.calculateDaysAhead
+import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
+import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
 import no.uio.ifi.in2000_gruppe3.ui.loaders.Loader
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
@@ -50,6 +58,7 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.geminiScreen.GeminiViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
+import java.time.LocalDate
 import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -67,19 +76,37 @@ fun HikeCard(
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
     val geminiUIState by geminiViewModel.geminiUIState.collectAsState()
 
+    val todaysDay = getTodaysDay()
+    var selectedDay by remember { mutableStateOf(todaysDay) }
+    var selectedDate by remember { mutableStateOf(getTodaysDate()) }
 
-    hikeScreenViewModel.getHikeDescription(
-        homeScreenViewModel = homeScreenViewModel,
-        geminiViewModel = geminiViewModel
-    )
+    // Shows current temperature and wind speed on launch, then shows average based on selected day
+    var displayTimeSeries = homeUIState.forecast?.properties?.timeseries?.firstOrNull()
+    var averageTemperature by remember { mutableStateOf(displayTimeSeries?.data?.instant?.details?.air_temperature) }
+    var averageWindSpeed by remember { mutableStateOf(displayTimeSeries?.data?.instant?.details?.wind_speed) }
+
+    LaunchedEffect(selectedDay) {
+        val daysAhead = calculateDaysAhead(todaysDay, selectedDay)
+        selectedDate = LocalDate.now().plusDays(daysAhead.toLong()).toString()
+
+        displayTimeSeries = homeScreenViewModel.timeseriesFromDate(selectedDate)?.firstOrNull()
+
+        averageTemperature = homeScreenViewModel.daysAverageTemp(selectedDate)
+        averageWindSpeed = homeScreenViewModel.daysAverageWindSpeed(selectedDate)
+
+        hikeScreenViewModel.getHikeDescription(
+            homeScreenViewModel = homeScreenViewModel,
+            geminiViewModel = geminiViewModel,
+            selectedDay = selectedDay,
+            selectedDate = selectedDate,
+        )
+    }
 
     Card(
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.5f)),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         LazyColumn {
             item {
@@ -92,13 +119,29 @@ fun HikeCard(
                     HikeCardMapPreview(mapboxViewModel, hikeUIState.feature)
 
                     Surface(
-                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0f)
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                            .background(
+                                color = Color.White.copy(alpha = 0.6f),
+                                shape = RoundedCornerShape(8.dp)
+                            ),
+                        color = Color.Transparent
                     ) {
-                        ForecastDisplay(
-                            homeScreenViewModel,
-                            mapboxViewModel,
-                            showTemperature = false,
-                        )
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            ForecastDisplay(
+                                homeScreenViewModel = homeScreenViewModel,
+                                mapboxViewModel = mapboxViewModel,
+                                showTemperature = false,
+                                date = selectedDate
+                            )
+                            Text(
+                                text = averageTemperature?.let { "%.1f°C".format(it) } ?: "N/A",
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
                 }
 
@@ -112,21 +155,32 @@ fun HikeCard(
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.Top
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column {
-                            Text(
-                                text = "Rute detaljer",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                overflow = TextOverflow.Ellipsis
-                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Rute detaljer",
+                                    style = MaterialTheme.typography.titleLarge,
+                                    fontWeight = FontWeight.Bold,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+
+                                WeekdaySelector(onDaySelected = { newDay ->
+                                    selectedDay = newDay
+                                })
+                            }
 
                             Spacer(modifier = Modifier.height(12.dp))
 
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceAround
+                                horizontalArrangement = Arrangement.SpaceAround,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
                                 InfoItem(
                                     icon = ImageVector.vectorResource(R.drawable.mountain),
@@ -153,7 +207,7 @@ fun HikeCard(
                                 InfoItem(
                                     icon = ImageVector.vectorResource(id = R.drawable.windmill),
                                     label = "Vindhastighet",
-                                    value = "${homeUIState.forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.wind_speed} m/s",
+                                    value = averageWindSpeed?.let { "%.1f m/s".format(it) } ?: "N/A",
                                     iconTint = Color(0xFF2196F3)
                                 )
                             }

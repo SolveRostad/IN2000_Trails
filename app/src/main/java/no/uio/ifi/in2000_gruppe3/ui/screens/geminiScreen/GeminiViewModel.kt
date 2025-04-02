@@ -28,7 +28,7 @@ class GeminiViewModel : ViewModel() {
                 }
                 is GeminiResponse.Error -> {
                     _geminiUIState.update {
-                        it.copy(response = "Error: ${response.message}", isLoading = false)
+                        it.copy(response = response.message, isLoading = false)
                     }
                 }
             }

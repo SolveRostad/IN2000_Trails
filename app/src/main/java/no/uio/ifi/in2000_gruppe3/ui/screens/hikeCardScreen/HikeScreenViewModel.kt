@@ -51,21 +51,27 @@ class HikeScreenViewModel : ViewModel() {
 
     fun getHikeDescription(
         homeScreenViewModel: HomeScreenViewModel,
-        geminiViewModel: GeminiViewModel
+        geminiViewModel: GeminiViewModel,
+        selectedDay: String,
+        selectedDate: String,
     ) {
-        val prompt = "Gi en kort, morsom og engasjerende beskrivelse av turen \"${hikeScreenUIState.value.feature.properties.desc}\"" +
-                "som ligger på koordinatene ${hikeScreenUIState.value.feature.geometry.coordinates}. " +
-                "Ikke nevn koordinatene direkte, men bruk stedsnavn og rutenavn hvis mulig. " +
-                "Beskriv hva som gjør turen spesiell, og fortell om kjente steder (hvis det er noen) på turen som kan være interessant. " +
-                "Gi også gi anbefalinger til en nordmann om hva man burde ha på seg og om man trenger å ha med seg noe på turen " +
-                "basert på værforholdene her (en nordmann bruker ikke lue og votter når det er plussgrader): " +
-                "${homeScreenViewModel.homeScreenUIState.value.forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details}" +
-                "Hvis temperaturen ikke er tilgjengelig, utelat værrelatert informasjon. " +
-                "Avslutt med en hyggelig og motiverende melding som 'God tur'. " +
-                "Bruk markdown text med * for å gi en bedre brukeroppplevelse. " +
-                "Bruk små overskrifter i fet skrift for å dele opp beskrivelsen i de ulike punktene. " +
-                "Ikke start med 'Her er en  beskrivelse..' start med tittelen som en liten overskrift og gi meg beskrivelsen. " +
-                "Ikke bruk noen paranteser i beskrivelsen som gjentar noe av teksten sendt inn. "
+        val prompt = "Du er en turguide i en turapp. " +
+                "Gi meg en kort beskrivelse av turen med navnet \"${hikeScreenUIState.value.feature.properties.desc}\". " +
+                "Hvis rutenavnet er ukjent så finn et passende rutenavn. " +
+                "Turen ligger på koordinatene ${hikeScreenUIState.value.feature.geometry.coordinates}, så sørg for å gi informasjon om riktig tur. " +
+                "Du skal IKKE nevne koordinatene, men finne hvilket sted som ligger på koordinatene for så å bruke stedsnavnet. " +
+                "Fortell om hva som gjør turen spesiell og om det er noen gjente steder på turen. " +
+                "Det skal kun være ett kort avsnitt. " +
+                "I tillegg skal du skrive et kort avsnitt om temperaturen for dagen og datoen basert på værforholdene sendt inn. " +
+                "I avsnittet skal du komme med anbefalinger om hvordan man burde kle seg for turen og hva man burde ha med i sekken. " +
+                "Ta i betraktning at de som bruker appen er nordmenn og er vandt til kalde temperaturer, altså bruker man ikke lue og votter når det er 5 grader ute, men ikke nevn det i beskrivelsen. " +
+                "I tillegg skal du skrive et kort avsnitt som inneholder en anbefaling av hvilken dag, utover i dag, man burde gå på tur basert på værforholdet de neste 7 dagene. " +
+                "Du skal altså skrive tre korte avsnitt på formen: \n[Navn på tur]\nInnhold første avnitt med info om turen. \n[Informasjon om været]\nInnhold andre avsnitt om temperatur. \n[Når burde du gå tur?]\nInnhold tredje avsnitt om når det er best vær. " +
+                "Bruk små overskrifter med fet skrifttype og markdown tekst. " +
+                "Du skal IKKE svare som en chatbot, men kun gi meg informasjonen jeg har spurt om. " +
+                "Avslutt med en hyggelig og motiverende melding som 'God tur!'. " +
+                "Den valgte dag- og datoen er \"$selectedDay\", \"$selectedDate\". " +
+                "All informasjonen du trenger om været er dette: \"${homeScreenViewModel.homeScreenUIState.value.forecast?.properties?.timeseries}\". "
 
         geminiViewModel.askQuestion(prompt)
 

@@ -51,17 +51,20 @@ fun BottomSheetDrawer(
         initialDetent = targetSheetState.value,
         detents = detents
     )
+
     val alpha by animateFloatAsState(targetValue = sheetState.offset)
 
     LaunchedEffect(targetSheetState) {
         sheetState.animateTo(targetSheetState.value)
     }
+
     LaunchedEffect(sheetState.currentDetent) {
         homeScreenViewModel.setSheetState(
             SheetDrawerDetent.entries.find { it.value.identifier == sheetState.targetDetent.identifier }
                 ?: SheetDrawerDetent.SEMIPEEK
         )
     }
+
     BottomSheet(
         state = sheetState,
         modifier = Modifier
@@ -69,7 +72,7 @@ fun BottomSheetDrawer(
             .fillMaxWidth()
             .alpha(alpha)
             .background(Color.White)
-            .height(1200.dp),
+            .height(1200.dp)
     ) {
         Column {
             DragIndication(
@@ -83,7 +86,7 @@ fun BottomSheetDrawer(
 
             LazyColumn(
                 modifier = Modifier.clipToBounds(),
-                contentPadding = PaddingValues(16.dp),
+                contentPadding = PaddingValues(16.dp)
             ) {
                 if (homeScreenUIState.hikes.isEmpty()) {
                     item {
