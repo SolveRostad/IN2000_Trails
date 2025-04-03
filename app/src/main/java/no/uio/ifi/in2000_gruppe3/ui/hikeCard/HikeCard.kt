@@ -132,7 +132,6 @@ fun HikeCard(
                         ) {
                             ForecastDisplay(
                                 homeScreenViewModel = homeScreenViewModel,
-                                mapboxViewModel = mapboxViewModel,
                                 showTemperature = false,
                                 date = selectedDate
                             )

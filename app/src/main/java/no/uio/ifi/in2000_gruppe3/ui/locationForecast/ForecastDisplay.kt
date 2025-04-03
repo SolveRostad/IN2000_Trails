@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -38,16 +37,12 @@ fun getWeatherIconUrl(symbolCode: String): String {
 @Composable
 fun ForecastDisplay(
     homeScreenViewModel: HomeScreenViewModel,
-    mapboxViewModel: MapboxViewModel,
     modifier: Modifier = Modifier,
     timeseries: String = "instant", // instant as standard
     date: String = getTodaysDate(), // todays date as standard
-    visableOnMap: Boolean = false,
     showTemperature: Boolean = true
 ) {
     val homeScreenUiState = homeScreenViewModel.homeScreenUIState.collectAsState().value
-    val mapboxUiState = mapboxViewModel.mapboxUIState.collectAsState().value
-    val mapStyle = mapboxUiState.mapStyle
 
     val currentTime = getCurrentTime()
     val todaysDate = getTodaysDate()
@@ -65,7 +60,6 @@ fun ForecastDisplay(
         }
 
         val temperature = chosenTimeSeries?.data?.instant?.details?.air_temperature
-        val temperatureTextColor = if (mapStyle == Style.STANDARD_SATELLITE && visableOnMap) Color.White else Color.Black
 
         val symbolCode = when (timeseries) {
             "instant" -> chosenTimeSeries?.data?.next_1_hours?.summary?.symbol_code
@@ -74,8 +68,7 @@ fun ForecastDisplay(
         val iconURL = getWeatherIconUrl(symbolCode.toString())
 
         Column(
-            modifier = if (visableOnMap) modifier.fillMaxWidth()
-                       else Modifier,
+            modifier = modifier,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (temperature != null) {
@@ -89,7 +82,7 @@ fun ForecastDisplay(
                     Text(
                         text = "$temperature°C",
                         style = MaterialTheme.typography.titleMedium,
-                        color = temperatureTextColor,
+                        color = Color.Black,
                     )
                 }
             }

@@ -122,7 +122,6 @@ fun LocationForecastSmallCard(
                                     Text(text = label)
                                     ForecastDisplay(
                                         homeScreenViewModel = homeScreenViewModel,
-                                        mapboxViewModel = mapboxViewModel,
                                         timeseries = timeseries,
                                         date = date,
                                         showTemperature = false
