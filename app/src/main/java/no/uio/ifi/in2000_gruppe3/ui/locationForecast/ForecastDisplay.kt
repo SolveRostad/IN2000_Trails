@@ -37,16 +37,12 @@ fun getWeatherIconUrl(symbolCode: String): String {
 @Composable
 fun ForecastDisplay(
     homeScreenViewModel: HomeScreenViewModel,
-    mapboxViewModel: MapboxViewModel,
     modifier: Modifier = Modifier,
     timeseries: String = "instant", // instant as standard
     date: String = getTodaysDate(), // todays date as standard
-    visableOnMap: Boolean = false,
     showTemperature: Boolean = true
 ) {
     val homeScreenUiState = homeScreenViewModel.homeScreenUIState.collectAsState().value
-    val mapboxUiState = mapboxViewModel.mapboxUIState.collectAsState().value
-    val mapStyle = mapboxUiState.mapStyle
 
     val currentTime = getCurrentTime()
     val todaysDate = getTodaysDate()
@@ -64,7 +60,6 @@ fun ForecastDisplay(
         }
 
         val temperature = chosenTimeSeries?.data?.instant?.details?.air_temperature
-        val temperatureTextColor = if (mapStyle == Style.STANDARD_SATELLITE && visableOnMap) Color.White else Color.Black
 
         val symbolCode = when (timeseries) {
             "instant" -> chosenTimeSeries?.data?.next_1_hours?.summary?.symbol_code
@@ -87,7 +82,7 @@ fun ForecastDisplay(
                     Text(
                         text = "$temperature°C",
                         style = MaterialTheme.typography.titleMedium,
-                        color = temperatureTextColor,
+                        color = Color.Black,
                     )
                 }
             }

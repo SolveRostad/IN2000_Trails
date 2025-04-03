@@ -95,7 +95,6 @@ fun BottomSheetDrawer(
                 if (sheetState.currentDetent != SheetDrawerDetent.HIDDEN.value) {
                     ForecastDisplay(
                         homeScreenViewModel = homeScreenViewModel,
-                        mapboxViewModel = mapboxViewModel,
                         showTemperature = true,
                     )
                 }
