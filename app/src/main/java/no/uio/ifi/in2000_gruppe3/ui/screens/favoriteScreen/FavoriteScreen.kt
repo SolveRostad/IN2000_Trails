@@ -53,7 +53,7 @@ fun FavoriteScreen(
                         .fillMaxSize()
                         .padding(paddingValues),
                     contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(favoriteUIState.favorites) { feature ->
                         SmallHikeCard(
@@ -64,7 +64,6 @@ fun FavoriteScreen(
                                 navController.navigate(Screen.HikeScreen.route)
                             }
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
             }
