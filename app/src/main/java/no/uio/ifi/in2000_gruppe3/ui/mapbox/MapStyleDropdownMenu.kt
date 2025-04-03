@@ -1,69 +1,70 @@
 package no.uio.ifi.in2000_gruppe3.ui.mapbox
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.mapbox.maps.Style
+import no.uio.ifi.in2000_gruppe3.R
 
 @Composable
 fun MapStyleDropdownMenu(
-    mapboxViewModel: MapboxViewModel,
-    modifier: Modifier = Modifier
+    mapboxViewModel: MapboxViewModel
 ) {
-    val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
     var expanded by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = modifier.fillMaxWidth()
-    ) {
-        IconButton(onClick = { expanded = !expanded }) {
+    Box {
+        IconButton(
+            onClick = { expanded = !expanded },
+            modifier = Modifier
+                .size(56.dp)
+                .shadow(6.dp, CircleShape)
+                .background(MaterialTheme.colorScheme.surface, shape = CircleShape)
+                .padding(8.dp)
+        ) {
             Icon(
-                imageVector = Icons.Default.Settings,
-                contentDescription = "Settings",
-                tint = if (mapboxUIState.mapStyle == Style.OUTDOORS) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.surface
+                painter = painterResource(id = R.drawable.mapstyle),
+                contentDescription = "Bytt kartstil",
+                tint = MaterialTheme.colorScheme.onSurface
             )
         }
+
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            modifier = Modifier.width(80.dp)
+            modifier = Modifier
+                .width(140.dp)
+                .shadow(8.dp, RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(12.dp))
         ) {
             DropdownMenuItem(
                 text = {
                     Text(
-                        "Natur",
-                        modifier = Modifier.width(100.dp),
-                        textAlign = TextAlign.Center
+                        "🌲 Natur",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 },
                 onClick = {
                     mapboxViewModel.updateMapStyle(Style.OUTDOORS)
                     expanded = false
-                },
+                }
             )
             DropdownMenuItem(
                 text = {
                     Text(
-                        "Satellitt",
-                        modifier = Modifier.width(100.dp),
-                        textAlign = TextAlign.Center
+                        "🛰️ Satellitt",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 },
                 onClick = {

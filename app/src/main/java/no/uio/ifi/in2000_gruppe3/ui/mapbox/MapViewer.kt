@@ -65,7 +65,6 @@ fun MapViewer(
                 500
             )
             homeScreenViewModel.fetchForecast(mapboxUIState.pointerCoordinates!!)
-
         }
     }
 
@@ -93,6 +92,7 @@ fun MapViewer(
                 iconImage = marker
             }
         }
+
         MapEffect(Unit) { mapView ->
             mapView.location.apply {
                 enabled = true

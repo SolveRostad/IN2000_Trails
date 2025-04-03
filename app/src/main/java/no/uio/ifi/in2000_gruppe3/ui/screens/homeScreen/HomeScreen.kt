@@ -25,7 +25,6 @@ import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
 import no.uio.ifi.in2000_gruppe3.ui.mapSearchbar.SearchBarForMap
 import no.uio.ifi.in2000_gruppe3.ui.mapSearchbar.SuggestionColumn
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.AlertsDisplay
-import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapStyleDropdownMenu
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapViewer
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
@@ -74,32 +73,12 @@ fun HomeScreen(
 
             Column {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(
-                        3.dp,
-                        Alignment.CenterHorizontally
-                    ),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.dp, end = 10.dp, top = 25.dp)
+                    modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 25.dp)
                 ) {
-                    ForecastDisplay(
-                        homeScreenViewModel = homeScreenViewModel,
-                        mapboxViewModel = mapboxViewModel,
-                        visableOnMap = true,
-                        showTemperature = true,
-                        modifier = Modifier.weight(0.35f)
-                    )
-
                     SearchBarForMap(
                         mapboxViewModel = mapboxViewModel,
                         homeScreenViewModel = homeScreenViewModel,
                         modifier = Modifier.weight(1.5f)
-                    )
-                    
-                    MapStyleDropdownMenu(
-                        mapboxViewModel = mapboxViewModel,
-                        modifier = Modifier.weight(0.25f)
                     )
                 }
 

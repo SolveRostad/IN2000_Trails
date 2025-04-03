@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -24,8 +25,9 @@ import no.uio.ifi.in2000_gruppe3.R
 @Composable
 fun EmptyDrawerInfoCard() {
     Column(
+        modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = "God dag!",
@@ -33,27 +35,27 @@ fun EmptyDrawerInfoCard() {
             color = Color.Black,
             fontFamily = FontFamily.SansSerif,
         )
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Få anbefalinger",
-                fontSize = 20.sp,
-            )
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(Color.LightGray)
-            ) {
-                Image(
-                    modifier = Modifier
-                        .size(45.dp)
-                        .align(Alignment.Center)
-                        .fillMaxSize(),
-                    painter = painterResource(id = R.drawable.ai_sparkle_icon),
-                    contentDescription = "AI Sparkle Icon",
-                )
-            }
-        }
+//        Row(
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//            Text(
+//                text = "Få anbefalinger",
+//                fontSize = 20.sp,
+//            )
+//            Box(
+//                modifier = Modifier
+//                    .clip(RoundedCornerShape(10.dp))
+//                    .background(Color.LightGray)
+//            ) {
+//                Image(
+//                    modifier = Modifier
+//                        .size(45.dp)
+//                        .align(Alignment.Center)
+//                        .fillMaxSize(),
+//                    painter = painterResource(id = R.drawable.ai_sparkle_icon),
+//                    contentDescription = "AI Sparkle Icon",
+//                )
+//            }
+//        }
     }
 }
