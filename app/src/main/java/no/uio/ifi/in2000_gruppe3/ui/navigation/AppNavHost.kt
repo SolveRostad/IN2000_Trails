@@ -6,17 +6,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
-import no.uio.ifi.in2000_gruppe3.ui.openAI.OpenAIViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.openAIScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoriteScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.geminiScreen.GeminiScreen
-import no.uio.ifi.in2000_gruppe3.ui.screens.geminiScreen.GeminiViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.openAIScreen.GeminiViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastDetailedScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.openAIScreen.OpenAIScreen
 
 @Composable
 fun AppNavHost() {
@@ -88,8 +88,8 @@ fun AppNavHost() {
 
         // Gemini screen
         composable(Screen.Gemini.route) {
-            GeminiScreen(
-                geminiViewModel = geminiViewModel,
+            OpenAIScreen(
+                openAIViewModel = openAIViewModel,
                 navController = navController
             )
         }

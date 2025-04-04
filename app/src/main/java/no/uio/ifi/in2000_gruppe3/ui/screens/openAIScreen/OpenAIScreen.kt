@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.geminiScreen
+package no.uio.ifi.in2000_gruppe3.ui.screens.openAIScreen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,11 +38,11 @@ import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
-fun GeminiScreen(
-    geminiViewModel: GeminiViewModel,
+fun OpenAIScreen(
+    openAIViewModel: OpenAIViewModel,
     navController: NavHostController
 ) {
-    val geminiUIState by geminiViewModel.geminiUIState.collectAsState()
+    val openAIUIState by openAIViewModel.openAIUIState.collectAsState()
 
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
@@ -59,7 +59,7 @@ fun GeminiScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "AI Chat",
+                text = "Chat med turbotten Lennard 🤖",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleLarge
@@ -80,7 +80,7 @@ fun GeminiScreen(
                     onDone = {
                         keyboardController?.hide()
                         coroutineScope.launch {
-                            geminiViewModel.askQuestion(input)
+                            openAIViewModel.getCompletionsSamples(input)
                         }
                     }
                 )
@@ -92,7 +92,7 @@ fun GeminiScreen(
                 onClick = {
                     keyboardController?.hide()
                     coroutineScope.launch {
-                        geminiViewModel.askQuestion(input)
+                        openAIViewModel.getCompletionsSamples(input)
                     }
                 },
                 modifier = Modifier.fillMaxWidth(0.6f)
@@ -102,7 +102,7 @@ fun GeminiScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            if (geminiUIState.isLoading) {
+            if (openAIUIState.isLoading) {
                 Loader()
             } else {
                 Box(
@@ -113,7 +113,7 @@ fun GeminiScreen(
                         .verticalScroll(scrollState)
                 ) {
                     MarkdownText(
-                        markdown = geminiUIState.response,
+                        markdown = openAIUIState.response.toString(),
                         modifier = Modifier.padding(8.dp),
                         style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
                     )

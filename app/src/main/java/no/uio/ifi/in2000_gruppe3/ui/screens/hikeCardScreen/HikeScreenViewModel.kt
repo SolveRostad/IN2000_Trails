@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.update
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Geometry
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.PropertiesX
-import no.uio.ifi.in2000_gruppe3.ui.openAI.OpenAIViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.openAIScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 class HikeScreenViewModel : ViewModel() {
