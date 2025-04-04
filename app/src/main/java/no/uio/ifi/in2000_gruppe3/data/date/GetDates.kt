@@ -1,7 +1,5 @@
 package no.uio.ifi.in2000_gruppe3.data.date
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import java.text.SimpleDateFormat
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -22,7 +20,6 @@ fun getOrderedWeekdays(todaysDay: String): List<Weekdays> {
     return weekdaysList.drop(startIndex) + weekdaysList.take(startIndex)
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 // Returns date on format "YYYY-MM-DD"
 fun getTodaysDate(): String {
     val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -46,7 +43,6 @@ fun getCurrentTime(): String {
 }
 
 // Returns today's day
-@RequiresApi(Build.VERSION_CODES.O)
 fun getTodaysDay(): String {
     val dayOfWeek = LocalDate.now().dayOfWeek
     val daysMap = mapOf(

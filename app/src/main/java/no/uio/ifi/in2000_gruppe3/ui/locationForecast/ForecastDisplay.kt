@@ -1,8 +1,6 @@
 package no.uio.ifi.in2000_gruppe3.ui.locationForecast
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
@@ -15,10 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import com.mapbox.maps.Style
 import no.uio.ifi.in2000_gruppe3.data.date.getCurrentTime
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
-import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 fun getWeatherIconUrl(symbolCode: String): String {
@@ -33,7 +29,6 @@ fun getWeatherIconUrl(symbolCode: String): String {
     return iconUrl
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ForecastDisplay(
     homeScreenViewModel: HomeScreenViewModel,

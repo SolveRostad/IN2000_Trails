@@ -1,7 +1,5 @@
 package no.uio.ifi.in2000_gruppe3.ui.mapbox
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,7 +26,6 @@ import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.SheetDrawerDetent
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MapViewer(
     homeScreenViewModel: HomeScreenViewModel,

@@ -1,7 +1,5 @@
 package no.uio.ifi.in2000_gruppe3.ui.hikeCard
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.width
@@ -23,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000_gruppe3.data.date.getOrderedWeekdays
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun WeekdaySelector(
     onDaySelected: (String) -> Unit

@@ -2,7 +2,6 @@ package no.uio.ifi.in2000_gruppe3.ui.openAI
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.azure.ai.openai.models.ChatCompletions
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update

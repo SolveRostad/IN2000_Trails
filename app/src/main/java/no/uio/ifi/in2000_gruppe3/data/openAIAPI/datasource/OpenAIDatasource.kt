@@ -10,19 +10,15 @@ import com.azure.core.credential.AzureKeyCredential
 import no.uio.ifi.in2000_gruppe3.BuildConfig
 
 class OpenAIDatasource {
+    val client: OpenAIClient = OpenAIClientBuilder()
+        .endpoint("https://uio-mn-ifi-in2000-swe1.openai.azure.com/")
+        .credential(AzureKeyCredential(BuildConfig.OPENAI_API_KEY_1))
+        .buildClient()
 
-    fun getCompletionsSamples(prompt: String): ChatCompletions? {
-        val endpoint = "https://uio-mn-ifi-in2000-swe1.openai.azure.com/"
-        val modelID = "gpt-4o"
+    val modelID = "gpt-4o"
 
-        val client: OpenAIClient = OpenAIClientBuilder()
-            .endpoint(endpoint)
-            .credential(AzureKeyCredential(BuildConfig.OPENAI_API_KEY_1))
-            .buildClient()
-
+    fun getCompletionsSamples(prompt: String): ChatCompletions {
         val chatMessages = listOf(ChatMessage(ChatRole.USER, prompt))
-        val completions: ChatCompletions? = client.getChatCompletions(modelID, ChatCompletionsOptions(chatMessages))
-
-        return completions
+        return client.getChatCompletions(modelID, ChatCompletionsOptions(chatMessages))
     }
 }

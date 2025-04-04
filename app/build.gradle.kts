@@ -37,7 +37,6 @@ android {
         }
     }
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true // lagt til for debugging med openAI
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
@@ -48,24 +47,16 @@ android {
         compose = true
         buildConfig = true
     }
-    packaging { // lagt til for debugging med openAI
-        resources {
-            excludes += setOf(
-                "META-INF/INDEX.LIST",
-                "META-INF/io.netty.versions.properties",
-                "META-INF/LICENSE",
-                "META-INF/NOTICE",
-                "META-INF/*.md",
-                "META-INF/*.txt",
-                "META-INF/DEPENDENCIES"
-            )
-        }
-    }
 }
 
 dependencies {
-    // Location
-    implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    // Coil
+    implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation("io.coil-kt:coil-svg:2.4.0")
+
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
 
     // Custom BottomSheet
     implementation("com.composables:core:1.20.1")
@@ -76,6 +67,23 @@ dependencies {
     implementation(libs.androidx.datastore.preferences.rxjava3)
     implementation(libs.volley)
 
+    // Gemini AI
+    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
+
+    // Ktor
+    implementation("io.ktor:ktor-client-android:2.3.5")
+    implementation("io.ktor:ktor-client-core:2.3.5")
+    implementation("io.ktor:ktor-client-cio:2.3.5")
+    implementation("io.ktor:ktor-client-content-negotiation:2.3.5")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.5")
+
+    // Location
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    // Mapbox
+    implementation("com.mapbox.maps:android:11.10.2")
+    implementation("com.mapbox.extension:maps-compose:11.10.2")
+
     // Mapbox search
     val mapboxSearchVersion = "2.8.0-rc.1"
     implementation("com.mapbox.search:autofill:$mapboxSearchVersion")
@@ -85,16 +93,8 @@ dependencies {
     implementation("com.mapbox.search:mapbox-search-android:$mapboxSearchVersion")
     implementation("com.mapbox.search:mapbox-search-android-ui:$mapboxSearchVersion")
 
-    // Serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
-
-    // Mapbox
-    implementation("com.mapbox.maps:android:11.10.2")
-    implementation("com.mapbox.extension:maps-compose:11.10.2")
-
-    // Coil
-    implementation("io.coil-kt:coil-compose:2.7.0")
-    implementation("io.coil-kt:coil-svg:2.4.0")
+    // Markdown text
+    implementation("com.github.jeziellago:compose-markdown:0.5.7")
 
     // Navigation and compose
     implementation("androidx.compose.ui:ui:1.7.8")
@@ -103,31 +103,17 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.9")
     implementation("androidx.activity:activity-compose:1.8.2")
 
-    // Ktor
-    implementation("io.ktor:ktor-client-android:2.3.5")
-    implementation("io.ktor:ktor-client-core:2.3.5")
-    implementation("io.ktor:ktor-client-cio:2.3.5")
-    implementation("io.ktor:ktor-client-content-negotiation:2.3.5")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.5")
-
-    // Markdown text
-    implementation("com.github.jeziellago:compose-markdown:0.5.7")
-
-    // Gemini AI
-    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
-
     // OpenAI
     implementation(group = "com.azure", name = "azure-ai-openai", version = "1.0.0-beta.3")
     implementation("org.slf4j:slf4j-simple:1.7.9")
     implementation("org.slf4j:slf4j-api:2.0.9")
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4") // jasså
+
+    // Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
 
     // ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0") // 2
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
-
-    // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
 
     // Standard libs
     implementation(libs.androidx.core.ktx)
