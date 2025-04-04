@@ -29,6 +29,7 @@ import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.ui.hikeCard.HikeCard
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
+import no.uio.ifi.in2000_gruppe3.ui.openAI.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.geminiScreen.GeminiViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
@@ -41,7 +42,7 @@ fun HikeScreen(
     favoritesViewModel: FavoritesViewModel,
     hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
-    geminiViewModel: GeminiViewModel,
+    openAIViewModel: OpenAIViewModel,
     navController: NavHostController
 ) {
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
@@ -95,7 +96,7 @@ fun HikeScreen(
                 hikeScreenViewModel = hikeScreenViewModel,
                 favoritesViewModel = favoritesViewModel,
                 mapboxViewModel = mapboxViewModel,
-                geminiViewModel = geminiViewModel,
+                openAIViewModel = openAIViewModel,
                 navController = navController,
                 checkedState = checkedState
             )

@@ -11,22 +11,18 @@ android {
 
     defaultConfig {
         applicationId = "no.uio.ifi.in2000_gruppe3"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
-        buildConfigField(
-            "String",
-            "MAPBOX_ACCESS_TOKEN",
-            "\"${properties["MAPBOX_ACCESS_TOKEN"]}\""
-        )
-        buildConfigField(
-            "String",
-            "MAPBOX_SECRET_TOKEN",
-            "\"${properties["MAPBOX_SECRET_TOKEN"]}\""
-        )
+        buildConfigField("String", "MAPBOX_ACCESS_TOKEN", "\"${properties["MAPBOX_ACCESS_TOKEN"]}\"")
+        buildConfigField("String", "MAPBOX_SECRET_TOKEN", "\"${properties["MAPBOX_SECRET_TOKEN"]}\"")
+
         buildConfigField("String", "GEMINI_API_KEY", "\"${properties["GEMINI_API_KEY"]}\"")
+
+        buildConfigField("String", "OPENAI_API_KEY_1", "\"${properties["OPENAI_API_KEY_1"]}\"")
+        buildConfigField("String", "OPENAI_API_KEY_2", "\"${properties["OPENAI_API_KEY_2"]}\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -41,6 +37,7 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true // lagt til for debugging med openAI
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
@@ -50,6 +47,19 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+    packaging { // lagt til for debugging med openAI
+        resources {
+            excludes += setOf(
+                "META-INF/INDEX.LIST",
+                "META-INF/io.netty.versions.properties",
+                "META-INF/LICENSE",
+                "META-INF/NOTICE",
+                "META-INF/*.md",
+                "META-INF/*.txt",
+                "META-INF/DEPENDENCIES"
+            )
+        }
     }
 }
 
@@ -86,7 +96,6 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.7.0")
     implementation("io.coil-kt:coil-svg:2.4.0")
 
-
     // Navigation and compose
     implementation("androidx.compose.ui:ui:1.7.8")
     implementation("androidx.compose.material:material:1.7.8")
@@ -106,6 +115,12 @@ dependencies {
 
     // Gemini AI
     implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
+
+    // OpenAI
+    implementation(group = "com.azure", name = "azure-ai-openai", version = "1.0.0-beta.3")
+    implementation("org.slf4j:slf4j-simple:1.7.9")
+    implementation("org.slf4j:slf4j-api:2.0.9")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4") // jasså
 
     // ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0") // 2

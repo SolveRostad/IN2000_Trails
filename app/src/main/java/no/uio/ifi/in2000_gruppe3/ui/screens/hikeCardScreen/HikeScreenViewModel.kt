@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.update
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Geometry
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.PropertiesX
+import no.uio.ifi.in2000_gruppe3.ui.openAI.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.geminiScreen.GeminiViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
@@ -51,7 +52,7 @@ class HikeScreenViewModel : ViewModel() {
 
     fun getHikeDescription(
         homeScreenViewModel: HomeScreenViewModel,
-        geminiViewModel: GeminiViewModel,
+        openAIViewModel: OpenAIViewModel,
         selectedDay: String,
         selectedDate: String,
     ) {
@@ -73,10 +74,10 @@ class HikeScreenViewModel : ViewModel() {
                 "Den valgte dag- og datoen er \"$selectedDay\", \"$selectedDate\". " +
                 "All informasjonen du trenger om været er dette: \"${homeScreenViewModel.homeScreenUIState.value.forecast?.properties?.timeseries}\". "
 
-        geminiViewModel.askQuestion(prompt)
+        openAIViewModel.getCompletionsSamples(prompt)
 
         _hikeScreenUIState.update {
-            it.copy(description = geminiViewModel.geminiUIState.value.response)
+            it.copy(description = openAIViewModel.openAIUIState.value.response)
         }
     }
 }
@@ -88,5 +89,5 @@ data class HikeScreenUIState(
     val day: String = "",
     val date: String = "",
     val formattedDate: String = "",
-    val description: String = ""
+    val description: String? = ""
 )

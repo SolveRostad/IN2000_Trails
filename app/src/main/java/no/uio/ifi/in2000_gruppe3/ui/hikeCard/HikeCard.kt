@@ -54,6 +54,7 @@ import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
 import no.uio.ifi.in2000_gruppe3.ui.loaders.Loader
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
+import no.uio.ifi.in2000_gruppe3.ui.openAI.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.geminiScreen.GeminiViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
@@ -68,13 +69,13 @@ fun HikeCard(
     hikeScreenViewModel: HikeScreenViewModel,
     favoritesViewModel: FavoritesViewModel,
     mapboxViewModel: MapboxViewModel,
-    geminiViewModel: GeminiViewModel,
+    openAIViewModel: OpenAIViewModel,
     navController: NavHostController,
     checkedState: MutableState<Boolean>
 ) {
     val homeUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
-    val geminiUIState by geminiViewModel.geminiUIState.collectAsState()
+    val openAIUIState by openAIViewModel.openAIUIState.collectAsState()
 
     val todaysDay = getTodaysDay()
     var selectedDay by remember { mutableStateOf(todaysDay) }
@@ -96,7 +97,7 @@ fun HikeCard(
 
         hikeScreenViewModel.getHikeDescription(
             homeScreenViewModel = homeScreenViewModel,
-            geminiViewModel = geminiViewModel,
+            openAIViewModel = openAIViewModel,
             selectedDay = selectedDay,
             selectedDate = selectedDate,
         )
@@ -215,7 +216,7 @@ fun HikeCard(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    if (geminiUIState.isLoading) {
+                    if (openAIUIState.isLoading) {
                         Box(
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.Center
@@ -224,7 +225,7 @@ fun HikeCard(
                         }
                     } else {
                         MarkdownText(
-                            markdown = geminiUIState.response,
+                            markdown = openAIUIState.response.toString(),
                             modifier = Modifier.padding(8.dp),
                             style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
                         )
