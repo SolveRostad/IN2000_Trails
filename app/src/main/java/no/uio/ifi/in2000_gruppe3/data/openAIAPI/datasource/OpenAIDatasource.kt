@@ -1,28 +1,52 @@
 package no.uio.ifi.in2000_gruppe3.data.openAIAPI.datasource
 
-import com.azure.ai.openai.OpenAIClient
-import com.azure.ai.openai.OpenAIClientBuilder
-import com.azure.ai.openai.models.ChatCompletions
-import com.azure.ai.openai.models.ChatCompletionsOptions
-import com.azure.ai.openai.models.ChatMessage
-import com.azure.ai.openai.models.ChatRole
-import com.azure.core.credential.AzureKeyCredential
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.header
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 import no.uio.ifi.in2000_gruppe3.BuildConfig
+import no.uio.ifi.in2000_gruppe3.data.openAIAPI.models.ChatCompletionsRequest
+import no.uio.ifi.in2000_gruppe3.data.openAIAPI.models.ChatCompletionsResponse
+import no.uio.ifi.in2000_gruppe3.data.openAIAPI.models.ChatMessage
 
 class OpenAIDatasource {
-    private val client: OpenAIClient = OpenAIClientBuilder()
-        .endpoint("https://uio-mn-ifi-in2000-swe1.openai.azure.com/")
-        .credential(AzureKeyCredential(BuildConfig.OPENAI_API_KEY_1))
-        .buildClient()
-
-    private val modelID = "gpt-4o"
-
-    suspend fun getCompletionsSamples(prompt: String): ChatCompletions {
-        return withContext(Dispatchers.IO) {
-            val chatMessages = listOf(ChatMessage(ChatRole.USER, prompt))
-            client.getChatCompletions(modelID, ChatCompletionsOptions(chatMessages))
+    private val client = HttpClient {
+        install(ContentNegotiation) {
+            json(
+                Json { ignoreUnknownKeys = true }
+            )
         }
+    }
+
+    private val endpoint = "https://uio-mn-ifi-in2000-swe1.openai.azure.com/"
+    private val apiKey = BuildConfig.OPENAI_API_KEY_1
+    private val modelName = "gpt-4o"
+    private val apiVersion = "2023-05-15"
+
+    suspend fun getCompletionsSamples(prompt: String): ChatCompletionsResponse = withContext(Dispatchers.IO) {
+        val chatRequest = ChatCompletionsRequest(
+            messages = listOf(
+                ChatMessage(
+                    role = "user",
+                    content = prompt
+                )
+            )
+        )
+
+        val completionsUrl = "$endpoint/openai/deployments/$modelName/chat/completions?api-version=$apiVersion"
+
+        client.post(completionsUrl) {
+            contentType(ContentType.Application.Json)
+            header("api-key", apiKey)
+            setBody(chatRequest)
+        }.body()
     }
 }

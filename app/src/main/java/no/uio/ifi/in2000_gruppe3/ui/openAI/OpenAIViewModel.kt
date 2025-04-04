@@ -19,10 +19,16 @@ class OpenAIViewModel: ViewModel() {
             _openAIUIState.update {
                 it.copy(isLoading = true)
             }
-            _openAIUIState.update {
-                val response = openAIRepository.getCompletionsSamples(prompt)
-                val text = response?.choices?.first()?.message?.content
-                it.copy(response = text, isLoading = false)
+            try {
+                _openAIUIState.update {
+                    val response = openAIRepository.getCompletionsSamples(prompt)
+                    val text = response.choices?.first()?.message?.content
+                    it.copy(response = text ?: "No response received", isLoading = false)
+                }
+            } catch (e: Exception) {
+                _openAIUIState.update {
+                    it.copy(response = "Error: ${e.message}", isLoading = false)
+                }
             }
         }
     }

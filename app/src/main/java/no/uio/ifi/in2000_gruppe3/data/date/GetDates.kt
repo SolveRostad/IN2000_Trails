@@ -33,7 +33,7 @@ fun getDateFormatted(date: String): String {
 
     val parsedDate = inputFormatter.parse(date)
 
-    return outputFormatter.format(parsedDate)
+    return outputFormatter.format(parsedDate!!)
 }
 
 // Returns current time on format "HH:mm:ss"
