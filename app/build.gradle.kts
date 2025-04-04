@@ -36,16 +36,34 @@ android {
             )
         }
     }
+
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
+
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+
+    packaging {
+        resources {
+            excludes += setOf(
+                "META-INF/INDEX.LIST",
+                "META-INF/io.netty.versions.properties",
+                "META-INF/LICENSE",
+                "META-INF/NOTICE",
+                "META-INF/*.md",
+                "META-INF/*.txt",
+                "META-INF/DEPENDENCIES"
+            )
+        }
     }
 }
 
@@ -107,6 +125,7 @@ dependencies {
     implementation(group = "com.azure", name = "azure-ai-openai", version = "1.0.0-beta.3")
     implementation("org.slf4j:slf4j-simple:1.7.9")
     implementation("org.slf4j:slf4j-api:2.0.9")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
     // Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
