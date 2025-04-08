@@ -3,25 +3,32 @@ package no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.BottomSheetDrawer
 import no.uio.ifi.in2000_gruppe3.ui.loaders.MapLoader
+import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
 import no.uio.ifi.in2000_gruppe3.ui.mapSearchbar.SearchBarForMap
 import no.uio.ifi.in2000_gruppe3.ui.mapSearchbar.SuggestionColumn
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.AlertsDisplay
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapStyleDropdownMenu
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapViewer
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
+import no.uio.ifi.in2000_gruppe3.ui.navigation.ResetMapCenterButton
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 
@@ -75,13 +82,43 @@ fun HomeScreen(
                     )
                 }
 
-                AlertsDisplay(
-                    homeScreenViewModel = homeScreenViewModel,
-                    mapboxViewModel = mapboxViewModel,
-                    modifier = Modifier.weight(0.01f)
-                )
+                Surface(
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                        .background(
+                            color = Color.White.copy(alpha = 0.6f),
+                            shape = RoundedCornerShape(8.dp)
+                        ),
+                    color = Color.Transparent
+                ) {
+                    ForecastDisplay(
+                        homeScreenViewModel = homeScreenViewModel,
+                    )
+                }
+
+                Surface(
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                        .background(
+                            color = Color.White.copy(alpha = 0.6f),
+                            shape = RoundedCornerShape(8.dp)
+                        ),
+                    color = Color.Transparent
+                ) {
+                    AlertsDisplay(
+                        homeScreenViewModel = homeScreenViewModel,
+                        mapboxViewModel = mapboxViewModel,
+                        modifier = Modifier.weight(0.01f)
+                    )
+                }
 
                 SuggestionColumn(
+                    mapboxViewModel = mapboxViewModel
+                )
+
+                ResetMapCenterButton()
+
+                MapStyleDropdownMenu(
                     mapboxViewModel = mapboxViewModel
                 )
             }

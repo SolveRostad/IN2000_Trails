@@ -60,7 +60,7 @@ class HikeScreenViewModel : ViewModel() {
                 "Hvis rutenavnet er ukjent så finn et passende rutenavn. " +
                 "Turen ligger på koordinatene ${hikeScreenUIState.value.feature.geometry.coordinates}, så sørg for å gi informasjon om riktig tur. " +
                 "Du skal IKKE nevne koordinatene, men finne hvilket sted som ligger på koordinatene for så å bruke stedsnavnet. " +
-                "Fortell om hva som gjør turen spesiell og om det er noen gjente steder på turen. " +
+                "Fortell om hva som gjør turen spesiell og om det er noen kjente steder på turen. " +
                 "Det skal kun være ett kort avsnitt. " +
                 "I tillegg skal du skrive et kort avsnitt om temperaturen for dagen og datoen basert på værforholdene sendt inn. " +
                 "I avsnittet skal du komme med anbefalinger om hvordan man burde kle seg for turen og hva man burde ha med i sekken. " +

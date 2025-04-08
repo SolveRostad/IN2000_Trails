@@ -87,7 +87,7 @@ fun AppNavHost() {
         }
 
         // Gemini screen
-        composable(Screen.Gemini.route) {
+        composable(Screen.OpenAI.route) {
             OpenAIScreen(
                 openAIViewModel = openAIViewModel,
                 navController = navController
