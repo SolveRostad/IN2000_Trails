@@ -1,11 +1,13 @@
 package no.uio.ifi.in2000_gruppe3.ui.navigation
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Favorite
@@ -19,8 +21,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import no.uio.ifi.in2000_gruppe3.R
 
 @Composable
 fun BottomBar(navController: NavHostController) {
@@ -28,34 +33,20 @@ fun BottomBar(navController: NavHostController) {
         modifier = Modifier.height(100.dp),
         containerColor = MaterialTheme.colorScheme.surface
     ) {
-        Column {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
             HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f))
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
+                    .padding(top = 12.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Navigate to home screen
-                IconButton(
-                    onClick = {
-                        if (navController.currentDestination?.route != "home")
-                            navController.navigate(Screen.Home.route)
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Home,
-                        contentDescription = "Home",
-                        tint = if (navController.currentDestination?.route == "home")
-                            MaterialTheme.colorScheme.primary
-                        else
-                            LocalContentColor.current
-                    )
-                }
-
-                // Navigate to favorites screen
+                // Favorites
                 IconButton(
                     onClick = {
                         if (navController.currentDestination?.route != "favorites")
@@ -65,6 +56,7 @@ fun BottomBar(navController: NavHostController) {
                     Icon(
                         imageVector = Icons.Default.Favorite,
                         contentDescription = "Favorites",
+                        modifier = Modifier.size(35.dp),
                         tint = if (navController.currentDestination?.route == "favorites")
                             MaterialTheme.colorScheme.primary
                         else
@@ -72,17 +64,33 @@ fun BottomBar(navController: NavHostController) {
                     )
                 }
 
-                // Navigate to gemini screen
+                // Home (logo)
                 IconButton(
                     onClick = {
-                        if (navController.currentDestination?.route != "gemini")
-                            navController.navigate(Screen.Gemini.route)
+                        if (navController.currentDestination?.route != "home")
+                            navController.navigate(Screen.Home.route)
+                    }
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.logo),
+                        contentDescription = "Home",
+                        modifier = Modifier.size(70.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+
+                // OpenAI
+                IconButton(
+                    onClick = {
+                        if (navController.currentDestination?.route != "openai")
+                            navController.navigate(Screen.OpenAI.route)
                     }
                 ) {
                     Icon(
                         imageVector = Icons.Default.Face,
-                        contentDescription = "Gemini",
-                        tint = if (navController.currentDestination?.route == "gemini")
+                        contentDescription = "OpenAI",
+                        modifier = Modifier.size(35.dp),
+                        tint = if (navController.currentDestination?.route == "openai")
                             MaterialTheme.colorScheme.primary
                         else
                             LocalContentColor.current

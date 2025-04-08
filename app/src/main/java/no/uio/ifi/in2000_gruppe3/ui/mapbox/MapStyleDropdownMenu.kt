@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -18,16 +19,23 @@ import no.uio.ifi.in2000_gruppe3.R
 fun MapStyleDropdownMenu(
     mapboxViewModel: MapboxViewModel
 ) {
+    val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
+    val mapStyle = mapboxUIState.mapStyle
     var expanded by remember { mutableStateOf(false) }
 
-    Box {
+    Surface(
+        modifier = Modifier
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .size(40.dp)
+            .background(
+                color = Color.White.copy(alpha = 0.6f),
+                shape = RoundedCornerShape(8.dp)
+            ),
+        color = Color.Transparent
+    ) {
         IconButton(
             onClick = { expanded = !expanded },
-            modifier = Modifier
-                .size(56.dp)
-                .shadow(6.dp, CircleShape)
-                .background(MaterialTheme.colorScheme.surface, shape = CircleShape)
-                .padding(8.dp)
+            modifier = Modifier.fillMaxSize()
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.mapstyle),
@@ -56,7 +64,11 @@ fun MapStyleDropdownMenu(
                 onClick = {
                     mapboxViewModel.updateMapStyle(Style.OUTDOORS)
                     expanded = false
-                }
+                },
+                modifier = Modifier.background(
+                    if (mapStyle == Style.OUTDOORS) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                    else Color.Transparent
+                )
             )
             DropdownMenuItem(
                 text = {
@@ -70,7 +82,11 @@ fun MapStyleDropdownMenu(
                 onClick = {
                     mapboxViewModel.updateMapStyle(Style.STANDARD_SATELLITE)
                     expanded = false
-                }
+                },
+                modifier = Modifier.background(
+                    if (mapStyle == Style.STANDARD_SATELLITE) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                    else Color.Transparent
+                )
             )
         }
     }

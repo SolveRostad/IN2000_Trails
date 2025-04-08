@@ -1,7 +1,5 @@
 package no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -40,7 +38,6 @@ import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomSheetDrawer(
@@ -81,38 +78,14 @@ fun BottomSheetDrawer(
             .height(1200.dp)
     ) {
         Column {
-            Row(
+            DragIndication(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = if (sheetState.currentDetent == SheetDrawerDetent.HIDDEN.value) {
-                    Arrangement.Center
-                } else {
-                    Arrangement.SpaceBetween
-                }
-            ) {
-                if (sheetState.currentDetent != SheetDrawerDetent.HIDDEN.value) {
-                    ForecastDisplay(
-                        homeScreenViewModel = homeScreenViewModel,
-                        showTemperature = true,
-                    )
-                }
-
-                DragIndication(
-                    modifier = Modifier
-                        .padding(vertical = 16.dp)
-                        .background(Color.Black.copy(0.4f), RoundedCornerShape(100))
-                        .width(42.dp)
-                        .height(4.dp)
-                )
-
-                if (sheetState.currentDetent != SheetDrawerDetent.HIDDEN.value) {
-                    MapStyleDropdownMenu(
-                        mapboxViewModel = mapboxViewModel,
-                    )
-                }
-            }
+                    .padding(vertical = 16.dp)
+                    .background(Color.Black.copy(0.4f), RoundedCornerShape(100))
+                    .width(42.dp)
+                    .height(4.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
 
             LazyColumn(
                 modifier = Modifier.clipToBounds(),

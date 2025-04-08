@@ -41,8 +41,7 @@ fun getAlertsIconUrl(event: String?, riskMatrixColor: String?): String {
 @Composable
 fun AlertsDisplay(
     homeScreenViewModel: HomeScreenViewModel,
-    mapboxViewModel: MapboxViewModel,
-    modifier: Modifier
+    mapboxViewModel: MapboxViewModel
 ) {
     val homeScreenUiState = homeScreenViewModel.homeScreenUIState.collectAsState().value
     val mapboxUiState = mapboxViewModel.mapboxUIState.collectAsState().value
@@ -50,7 +49,7 @@ fun AlertsDisplay(
 
     val uniqueAlerts = homeScreenUiState.alerts?.features?.distinctBy {it.properties.event }
 
-    //finn nærmeste varsel og regner ut avstanden
+    // Finn nærmeste varsel og regner ut avstanden
     val closestAlertWithDistance = uniqueAlerts
         ?.mapNotNull { feature ->
             val coords = feature.geometry.getFirstCoordinate()
@@ -85,11 +84,11 @@ fun AlertsDisplay(
 
     val showAlertInfo = remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.padding(20.dp)) {
+    Column {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .size(50.dp)
+                .size(60.dp)
                 .clickable {
                     if (distance <= 400.0) {
                         showAlertInfo.value = !showAlertInfo.value

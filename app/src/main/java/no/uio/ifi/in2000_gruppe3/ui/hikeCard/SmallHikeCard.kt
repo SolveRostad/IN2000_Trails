@@ -101,7 +101,7 @@ fun SmallHikeCard(
                         label = "Avstand til start",
                         value = String.format(
                             Locale("nb", "NO"),
-                            "%.3f km",
+                            "%.2f km",
                             feature.properties.distance_to_point.toFloat() / 1000.0
                         ),
                         iconTint = MaterialTheme.colorScheme.primary
@@ -111,7 +111,7 @@ fun SmallHikeCard(
                         label = "Turens lengde",
                         value = String.format(
                             Locale("nb", "NO"),
-                            "%.3f km",
+                            "%.2f km",
                             feature.properties.distance_meters.toFloat() / 1000.0
                         ),
                         iconTint = Color(0xFF4CAF50)

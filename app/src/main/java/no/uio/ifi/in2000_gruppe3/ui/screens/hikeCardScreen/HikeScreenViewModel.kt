@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.update
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Geometry
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.PropertiesX
-import no.uio.ifi.in2000_gruppe3.ui.screens.geminiScreen.GeminiViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.openAIScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 class HikeScreenViewModel : ViewModel() {
@@ -51,7 +51,7 @@ class HikeScreenViewModel : ViewModel() {
 
     fun getHikeDescription(
         homeScreenViewModel: HomeScreenViewModel,
-        geminiViewModel: GeminiViewModel,
+        openAIViewModel: OpenAIViewModel,
         selectedDay: String,
         selectedDate: String,
     ) {
@@ -60,7 +60,7 @@ class HikeScreenViewModel : ViewModel() {
                 "Hvis rutenavnet er ukjent så finn et passende rutenavn. " +
                 "Turen ligger på koordinatene ${hikeScreenUIState.value.feature.geometry.coordinates}, så sørg for å gi informasjon om riktig tur. " +
                 "Du skal IKKE nevne koordinatene, men finne hvilket sted som ligger på koordinatene for så å bruke stedsnavnet. " +
-                "Fortell om hva som gjør turen spesiell og om det er noen gjente steder på turen. " +
+                "Fortell om hva som gjør turen spesiell og om det er noen kjente steder på turen. " +
                 "Det skal kun være ett kort avsnitt. " +
                 "I tillegg skal du skrive et kort avsnitt om temperaturen for dagen og datoen basert på værforholdene sendt inn. " +
                 "I avsnittet skal du komme med anbefalinger om hvordan man burde kle seg for turen og hva man burde ha med i sekken. " +
@@ -73,10 +73,10 @@ class HikeScreenViewModel : ViewModel() {
                 "Den valgte dag- og datoen er \"$selectedDay\", \"$selectedDate\". " +
                 "All informasjonen du trenger om været er dette: \"${homeScreenViewModel.homeScreenUIState.value.forecast?.properties?.timeseries}\". "
 
-        geminiViewModel.askQuestion(prompt)
+        openAIViewModel.getCompletionsSamples(prompt)
 
         _hikeScreenUIState.update {
-            it.copy(description = geminiViewModel.geminiUIState.value.response)
+            it.copy(description = openAIViewModel.openAIUIState.value.response)
         }
     }
 }
@@ -88,5 +88,5 @@ data class HikeScreenUIState(
     val day: String = "",
     val date: String = "",
     val formattedDate: String = "",
-    val description: String = ""
+    val description: String? = ""
 )

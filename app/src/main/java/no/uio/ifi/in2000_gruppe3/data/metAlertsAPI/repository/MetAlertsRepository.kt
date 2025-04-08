@@ -10,7 +10,6 @@ class MetAlertsRepository() {
     private val datasource = MetAlertsDatasource()
 
     suspend fun getAlerts(): MetAlerts? {
-        println("Kaller getMetAlerts()")
         return datasource.getMetAlerts()
     }
 }

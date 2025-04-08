@@ -1,37 +1,43 @@
 package no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen
 
 import android.Manifest
-import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import no.uio.ifi.in2000_gruppe3.ui.ai.AanundFigure
 import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.BottomSheetDrawer
 import no.uio.ifi.in2000_gruppe3.ui.loaders.MapLoader
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
 import no.uio.ifi.in2000_gruppe3.ui.mapSearchbar.SearchBarForMap
 import no.uio.ifi.in2000_gruppe3.ui.mapSearchbar.SuggestionColumn
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.AlertsDisplay
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapStyleDropdownMenu
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapViewer
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
+import no.uio.ifi.in2000_gruppe3.ui.navigation.ResetMapCenterButton
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
     homeScreenViewModel: HomeScreenViewModel,
@@ -82,13 +88,66 @@ fun HomeScreen(
                     )
                 }
 
-                AlertsDisplay(
-                    homeScreenViewModel = homeScreenViewModel,
-                    mapboxViewModel = mapboxViewModel,
-                    modifier = Modifier.weight(0.01f)
-                )
-
                 SuggestionColumn(
+                    mapboxViewModel = mapboxViewModel
+                )
+            }
+
+            Column(
+                modifier = Modifier.padding(top = 90.dp)
+            ) {
+                Surface(
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .background(
+                            color = Color.White.copy(alpha = 0.6f),
+                            shape = RoundedCornerShape(8.dp)
+                        ),
+                    color = Color.Transparent
+                ) {
+                    ForecastDisplay(
+                        homeScreenViewModel = homeScreenViewModel,
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Surface(
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .background(
+                            color = Color.White.copy(alpha = 0.6f),
+                            shape = RoundedCornerShape(8.dp)
+                        ),
+                    color = Color.Transparent
+                ) {
+                    AlertsDisplay(
+                        homeScreenViewModel = homeScreenViewModel,
+                        mapboxViewModel = mapboxViewModel
+                    )
+                }
+            }
+
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(bottom = 36.dp)
+            ) {
+                AanundFigure(
+                    navController = navController
+                )
+            }
+
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(bottom = 36.dp)
+            ) {
+                ResetMapCenterButton()
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                MapStyleDropdownMenu(
                     mapboxViewModel = mapboxViewModel
                 )
             }
