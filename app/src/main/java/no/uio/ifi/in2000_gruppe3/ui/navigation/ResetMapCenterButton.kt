@@ -28,7 +28,7 @@ fun ResetMapCenterButton() {
         color = Color.Transparent
     ) {
         IconButton(
-            onClick = { /* tom for nå */ },
+            onClick = { /* TODO */ },
             modifier = Modifier.fillMaxSize()
         ) {
             Icon(

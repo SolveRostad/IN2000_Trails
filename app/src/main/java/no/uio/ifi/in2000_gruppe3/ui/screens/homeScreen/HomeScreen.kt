@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import no.uio.ifi.in2000_gruppe3.ui.ai.AanundFigure
 import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.BottomSheetDrawer
 import no.uio.ifi.in2000_gruppe3.ui.loaders.MapLoader
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
@@ -86,9 +88,17 @@ fun HomeScreen(
                     )
                 }
 
+                SuggestionColumn(
+                    mapboxViewModel = mapboxViewModel
+                )
+            }
+
+            Column(
+                modifier = Modifier.padding(top = 90.dp)
+            ) {
                 Surface(
                     modifier = Modifier
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                        .padding(horizontal = 8.dp)
                         .background(
                             color = Color.White.copy(alpha = 0.6f),
                             shape = RoundedCornerShape(8.dp)
@@ -100,9 +110,11 @@ fun HomeScreen(
                     )
                 }
 
+                Spacer(modifier = Modifier.height(4.dp))
+
                 Surface(
                     modifier = Modifier
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                        .padding(horizontal = 8.dp)
                         .background(
                             color = Color.White.copy(alpha = 0.6f),
                             shape = RoundedCornerShape(8.dp)
@@ -111,13 +123,18 @@ fun HomeScreen(
                 ) {
                     AlertsDisplay(
                         homeScreenViewModel = homeScreenViewModel,
-                        mapboxViewModel = mapboxViewModel,
-                        modifier = Modifier.weight(0.01f)
+                        mapboxViewModel = mapboxViewModel
                     )
                 }
+            }
 
-                SuggestionColumn(
-                    mapboxViewModel = mapboxViewModel
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(bottom = 36.dp)
+            ) {
+                AanundFigure(
+                    navController = navController
                 )
             }
 
