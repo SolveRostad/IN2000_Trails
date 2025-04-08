@@ -29,8 +29,7 @@ fun ResetMapCenterButton() {
     ) {
         IconButton(
             onClick = { /* tom for nå */ },
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.location_arrow),
