@@ -11,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import no.uio.ifi.in2000_gruppe3.data.date.getCurrentTime
@@ -78,6 +79,7 @@ fun ForecastDisplay(
                         text = "$temperature°C",
                         style = MaterialTheme.typography.titleMedium,
                         color = Color.Black,
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }

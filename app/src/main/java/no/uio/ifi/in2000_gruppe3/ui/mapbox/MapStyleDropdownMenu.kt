@@ -19,6 +19,8 @@ import no.uio.ifi.in2000_gruppe3.R
 fun MapStyleDropdownMenu(
     mapboxViewModel: MapboxViewModel
 ) {
+    val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
+    val mapStyle = mapboxUIState.mapStyle
     var expanded by remember { mutableStateOf(false) }
 
     Surface(
@@ -62,7 +64,11 @@ fun MapStyleDropdownMenu(
                 onClick = {
                     mapboxViewModel.updateMapStyle(Style.OUTDOORS)
                     expanded = false
-                }
+                },
+                modifier = Modifier.background(
+                    if (mapStyle == Style.OUTDOORS) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                    else Color.Transparent
+                )
             )
             DropdownMenuItem(
                 text = {
@@ -76,7 +82,11 @@ fun MapStyleDropdownMenu(
                 onClick = {
                     mapboxViewModel.updateMapStyle(Style.STANDARD_SATELLITE)
                     expanded = false
-                }
+                },
+                modifier = Modifier.background(
+                    if (mapStyle == Style.STANDARD_SATELLITE) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                    else Color.Transparent
+                )
             )
         }
     }
