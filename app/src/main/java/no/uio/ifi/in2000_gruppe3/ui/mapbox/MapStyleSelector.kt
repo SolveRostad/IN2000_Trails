@@ -24,7 +24,6 @@ fun MapStyleSelector(
 
     Surface(
         modifier = Modifier
-            .padding(horizontal = 8.dp, vertical = 4.dp)
             .size(40.dp)
             .background(
                 color = Color.White.copy(alpha = 0.6f),
@@ -33,8 +32,7 @@ fun MapStyleSelector(
         color = Color.Transparent
     ) {
         IconButton(
-            onClick = { expanded = !expanded },
-            modifier = Modifier.fillMaxSize()
+            onClick = { expanded = !expanded }
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.map_style),
@@ -47,7 +45,7 @@ fun MapStyleSelector(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             modifier = Modifier
-                .width(140.dp)
+                .width(120.dp)
                 .shadow(8.dp, RoundedCornerShape(12.dp))
                 .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(12.dp))
         ) {

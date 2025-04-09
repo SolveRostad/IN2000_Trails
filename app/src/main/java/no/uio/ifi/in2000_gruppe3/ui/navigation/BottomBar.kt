@@ -1,17 +1,13 @@
 package no.uio.ifi.in2000_gruppe3.ui.navigation
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -30,20 +26,14 @@ import no.uio.ifi.in2000_gruppe3.R
 @Composable
 fun BottomBar(navController: NavHostController) {
     BottomAppBar(
-        modifier = Modifier.height(100.dp),
-        containerColor = MaterialTheme.colorScheme.surface
+        containerColor = Color.White,
+        modifier = Modifier.height(100.dp)
     ) {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
+        Column(modifier = Modifier.fillMaxSize()) {
             HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f))
 
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier.fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // Favorites
@@ -51,12 +41,14 @@ fun BottomBar(navController: NavHostController) {
                     onClick = {
                         if (navController.currentDestination?.route != "favorites")
                             navController.navigate(Screen.Favorites.route)
-                    }
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxSize()
                 ) {
                     Icon(
                         imageVector = Icons.Default.Favorite,
                         contentDescription = "Favorites",
-                        modifier = Modifier.size(35.dp),
                         tint = if (navController.currentDestination?.route == "favorites")
                             MaterialTheme.colorScheme.primary
                         else
@@ -69,12 +61,15 @@ fun BottomBar(navController: NavHostController) {
                     onClick = {
                         if (navController.currentDestination?.route != "home")
                             navController.navigate(Screen.Home.route)
-                    }
+                    },
+                    modifier = Modifier
+                        .weight(1.5f)
+                        .size(70.dp)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.logo),
                         contentDescription = "Home",
-                        modifier = Modifier.size(70.dp),
+                        modifier = Modifier.fillMaxSize(),
                         tint = Color.Unspecified
                     )
                 }
@@ -84,12 +79,14 @@ fun BottomBar(navController: NavHostController) {
                     onClick = {
                         if (navController.currentDestination?.route != "openai")
                             navController.navigate(Screen.OpenAI.route)
-                    }
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxSize()
                 ) {
                     Icon(
                         imageVector = Icons.Default.Face,
                         contentDescription = "OpenAI",
-                        modifier = Modifier.size(35.dp),
                         tint = if (navController.currentDestination?.route == "openai")
                             MaterialTheme.colorScheme.primary
                         else

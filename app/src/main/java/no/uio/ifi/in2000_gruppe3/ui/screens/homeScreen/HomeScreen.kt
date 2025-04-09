@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -33,7 +32,7 @@ import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapStyleSelector
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapViewer
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
-import no.uio.ifi.in2000_gruppe3.ui.navigation.ResetMapCenterButton
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.ResetMapCenterButton
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 
@@ -124,13 +123,13 @@ fun HomeScreen(
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(bottom = 36.dp)
+                    .padding(bottom = 36.dp, end = 8.dp)
             ) {
                 ResetMapCenterButton(
                     mapboxViewModel = mapboxViewModel
                 )
 
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
                 MapStyleSelector(
                     mapboxViewModel = mapboxViewModel
