@@ -2,7 +2,6 @@ package no.uio.ifi.in2000_gruppe3.ui.mapbox
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,7 +15,7 @@ import com.mapbox.maps.Style
 import no.uio.ifi.in2000_gruppe3.R
 
 @Composable
-fun MapStyleDropdownMenu(
+fun MapStyleSelector(
     mapboxViewModel: MapboxViewModel
 ) {
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
@@ -25,7 +24,6 @@ fun MapStyleDropdownMenu(
 
     Surface(
         modifier = Modifier
-            .padding(horizontal = 8.dp, vertical = 4.dp)
             .size(40.dp)
             .background(
                 color = Color.White.copy(alpha = 0.6f),
@@ -34,11 +32,10 @@ fun MapStyleDropdownMenu(
         color = Color.Transparent
     ) {
         IconButton(
-            onClick = { expanded = !expanded },
-            modifier = Modifier.fillMaxSize()
+            onClick = { expanded = !expanded }
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.mapstyle),
+                painter = painterResource(id = R.drawable.map_style),
                 contentDescription = "Bytt kartstil",
                 tint = MaterialTheme.colorScheme.onSurface
             )
@@ -48,7 +45,7 @@ fun MapStyleDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             modifier = Modifier
-                .width(140.dp)
+                .width(120.dp)
                 .shadow(8.dp, RoundedCornerShape(12.dp))
                 .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(12.dp))
         ) {
