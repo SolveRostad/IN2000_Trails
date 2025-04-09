@@ -20,7 +20,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.ui.ai.AanundFigure
@@ -30,7 +29,7 @@ import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
 import no.uio.ifi.in2000_gruppe3.ui.mapSearchbar.SearchBarForMap
 import no.uio.ifi.in2000_gruppe3.ui.mapSearchbar.SuggestionColumn
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.AlertsDisplay
-import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapStyleDropdownMenu
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapStyleSelector
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapViewer
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
@@ -77,22 +76,6 @@ fun HomeScreen(
                 mapboxViewModel = mapboxViewModel
             )
 
-            Column {
-                Row(
-                    modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 25.dp)
-                ) {
-                    SearchBarForMap(
-                        mapboxViewModel = mapboxViewModel,
-                        homeScreenViewModel = homeScreenViewModel,
-                        modifier = Modifier.weight(1.5f)
-                    )
-                }
-
-                SuggestionColumn(
-                    mapboxViewModel = mapboxViewModel
-                )
-            }
-
             Column(
                 modifier = Modifier.padding(top = 90.dp)
             ) {
@@ -131,7 +114,7 @@ fun HomeScreen(
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(bottom = 36.dp)
+                    .padding(bottom = 10.dp)
             ) {
                 AanundFigure(
                     navController = navController
@@ -143,11 +126,28 @@ fun HomeScreen(
                     .align(Alignment.BottomEnd)
                     .padding(bottom = 36.dp)
             ) {
-                ResetMapCenterButton()
+                ResetMapCenterButton(
+                    mapboxViewModel = mapboxViewModel
+                )
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                MapStyleDropdownMenu(
+                MapStyleSelector(
+                    mapboxViewModel = mapboxViewModel
+                )
+            }
+
+            Column {
+                Row(
+                    modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 25.dp)
+                ) {
+                    SearchBarForMap(
+                        mapboxViewModel = mapboxViewModel,
+                        homeScreenViewModel = homeScreenViewModel
+                    )
+                }
+
+                SuggestionColumn(
                     mapboxViewModel = mapboxViewModel
                 )
             }

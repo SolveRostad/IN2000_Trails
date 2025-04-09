@@ -142,7 +142,6 @@ data class MapboxUIState(
     val latestUserPosition: Point? = null,
     val polylineAnnotations: List<PolylineAnnotationOptions>,
 
-
     val searchResponse: List<PlaceAutocompleteSuggestion>,
     val searchQuery: String,
 

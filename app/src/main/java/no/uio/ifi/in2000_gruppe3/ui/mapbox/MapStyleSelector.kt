@@ -2,7 +2,6 @@ package no.uio.ifi.in2000_gruppe3.ui.mapbox
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,7 +15,7 @@ import com.mapbox.maps.Style
 import no.uio.ifi.in2000_gruppe3.R
 
 @Composable
-fun MapStyleDropdownMenu(
+fun MapStyleSelector(
     mapboxViewModel: MapboxViewModel
 ) {
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
@@ -38,7 +37,7 @@ fun MapStyleDropdownMenu(
             modifier = Modifier.fillMaxSize()
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.mapstyle),
+                painter = painterResource(id = R.drawable.map_style),
                 contentDescription = "Bytt kartstil",
                 tint = MaterialTheme.colorScheme.onSurface
             )

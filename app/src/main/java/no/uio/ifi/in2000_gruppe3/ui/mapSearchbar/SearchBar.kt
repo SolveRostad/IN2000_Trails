@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -39,7 +37,6 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 fun SearchBarForMap(
     mapboxViewModel: MapboxViewModel,
     homeScreenViewModel: HomeScreenViewModel,
-    modifier: Modifier = Modifier
 ) {
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -50,7 +47,7 @@ fun SearchBarForMap(
         onValueChange = { newQuery ->
             mapboxViewModel.updateSearchQuery(newQuery)
         },
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(30.dp))
             .border(1.dp, Color.Gray, RoundedCornerShape(30.dp))

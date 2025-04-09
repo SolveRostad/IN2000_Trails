@@ -13,6 +13,6 @@ enum class SheetDrawerDetent(val value: SheetDetent) {
         containerHeight * 0.5f
     }),
     FULLYEXPAND(SheetDetent(identifier = "fullyExpanded") { containerHeight, sheetHeight ->
-        containerHeight * 0.97f
+        containerHeight * 1f
     })
 }
