@@ -52,7 +52,7 @@ fun MapStyleSelector(
             DropdownMenuItem(
                 text = {
                     Text(
-                        "🌲 Natur",
+                        text = "🌲 Natur",
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onSurface
@@ -70,7 +70,7 @@ fun MapStyleSelector(
             DropdownMenuItem(
                 text = {
                     Text(
-                        "🛰️ Satellitt",
+                        text = "🛰️ Satellitt",
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onSurface
