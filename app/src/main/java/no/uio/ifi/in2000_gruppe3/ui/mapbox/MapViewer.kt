@@ -41,11 +41,12 @@ fun MapViewer(
     LaunchedEffect(homeScreenUIState.hikes) {
         mapboxViewModel.updatePolylineAnnotationsFromFeatures(homeScreenUIState.hikes)
     }
+
     LaunchedEffect(mapboxUIState.pointerCoordinates) {
         if (mapboxUIState.pointerCoordinates != null) {
             mapViewportState.easeTo(
                 cameraOptions {
-                    zoom(12.0)
+                    zoom(mapboxUIState.zoom)
                     center(mapboxUIState.pointerCoordinates.let { point ->
                         Point.fromLngLat(point!!.longitude(), point.latitude() - 0.012)
                     })
@@ -63,6 +64,19 @@ fun MapViewer(
             )
             homeScreenViewModel.fetchForecast(mapboxUIState.pointerCoordinates!!)
         }
+    }
+
+    LaunchedEffect(mapboxUIState.zoom) {
+        mapViewportState.easeTo(
+            cameraOptions {
+                zoom(mapboxUIState.zoom)
+                center(mapboxUIState.pointerCoordinates?.let { point ->
+                    Point.fromLngLat(point.longitude(), point.latitude() - 0.012)
+                })
+                pitch(0.0)
+                bearing(0.0)
+            }
+        )
     }
 
     MapboxMap(
@@ -98,7 +112,7 @@ fun MapViewer(
                         mapViewportState.setCameraOptions(
                             CameraOptions.Builder()
                                 .center(point)
-                                .zoom(12.0)
+                                .zoom(mapboxUIState.zoom)
                                 .build()
                         )
                         homeScreenViewModel.fetchForecast(point)

@@ -133,6 +133,22 @@ class MapboxViewModel() : ViewModel() {
             }
         }
     }
+
+    fun zoomIn() {
+        _mapboxUIState.update {
+            it.copy(
+                zoom = if (it.zoom < 22) it.zoom + 1 else 22.0
+            )
+        }
+    }
+
+    fun zoomOut() {
+        _mapboxUIState.update {
+            it.copy(
+                zoom = if (it.zoom > 0) it.zoom - 1 else 0.0
+            )
+        }
+    }
 }
 
 data class MapboxUIState(
@@ -140,6 +156,7 @@ data class MapboxUIState(
     val pointerCoordinates: Point? = null,
     val latestUserPosition: Point? = null,
     val polylineAnnotations: List<PolylineAnnotationOptions>,
+    val zoom: Double = 12.0,
 
     val searchResponse: List<PlaceAutocompleteSuggestion>,
     val searchQuery: String,

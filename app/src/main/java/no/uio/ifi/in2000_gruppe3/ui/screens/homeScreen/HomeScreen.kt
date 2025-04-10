@@ -31,6 +31,7 @@ import no.uio.ifi.in2000_gruppe3.ui.mapbox.AlertsDisplay
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapStyleSelector
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapViewer
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxZoomButtons
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.ResetMapCenterButton
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
@@ -120,6 +121,17 @@ fun HomeScreen(
                 )
             }
 
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 90.dp, end = 8.dp)
+
+            ) {
+                MapboxZoomButtons(
+                    mapboxViewModel = mapboxViewModel
+                )
+            }
+
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
@@ -136,9 +148,16 @@ fun HomeScreen(
                 )
             }
 
+            BottomSheetDrawer(
+                homeScreenViewModel = homeScreenViewModel,
+                hikeScreenViewModel = hikeViewModel,
+                mapboxViewModel = mapboxViewModel,
+                navController = navController
+            )
+
             Column {
                 Row(
-                    modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 25.dp)
+                    modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 25.dp)
                 ) {
                     SearchBarForMap(
                         mapboxViewModel = mapboxViewModel,
@@ -150,13 +169,6 @@ fun HomeScreen(
                     mapboxViewModel = mapboxViewModel
                 )
             }
-
-            BottomSheetDrawer(
-                homeScreenViewModel = homeScreenViewModel,
-                hikeScreenViewModel = hikeViewModel,
-                mapboxViewModel = mapboxViewModel,
-                navController = navController
-            )
         }
     }
 }
