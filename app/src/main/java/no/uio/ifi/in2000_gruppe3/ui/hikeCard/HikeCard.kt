@@ -51,6 +51,7 @@ import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
 import no.uio.ifi.in2000_gruppe3.ui.loaders.Loader
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
+import no.uio.ifi.in2000_gruppe3.ui.locationForecast.LocationForecastSmallCard
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.openAIScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
@@ -226,6 +227,16 @@ fun HikeCard(
                             style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
                         )
                     }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    LocationForecastSmallCard(
+                        day = selectedDay,
+                        date = selectedDate,
+                        homeScreenViewModel = homeScreenViewModel,
+                        hikeScreenViewModel = hikeScreenViewModel,
+                        navController = navController
+                    )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
