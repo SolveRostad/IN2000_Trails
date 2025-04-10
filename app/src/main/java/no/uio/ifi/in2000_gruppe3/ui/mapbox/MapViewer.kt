@@ -116,7 +116,9 @@ fun MapViewer(
                 favoritesViewModel.updateUserLocation(point)
             }
             mapView.mapboxMap.subscribeCameraChanged {
-                homeScreenViewModel.setSheetState(SheetDrawerDetent.SEMIPEEK)
+                if (homeScreenViewModel.sheetStateTarget.value.value.identifier != "hidden") {
+                    homeScreenViewModel.setSheetState(SheetDrawerDetent.SEMIPEEK)
+                }
             }
         }
     }
