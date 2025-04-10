@@ -103,6 +103,7 @@ fun MapViewer(
                         )
                         homeScreenViewModel.fetchForecast(point)
                         homeScreenViewModel.fetchAlerts()
+                        mapboxViewModel.setLoaderState(isLoading = false)
                         mapView.location.removeOnIndicatorPositionChangedListener(this)
                     }
                 }
