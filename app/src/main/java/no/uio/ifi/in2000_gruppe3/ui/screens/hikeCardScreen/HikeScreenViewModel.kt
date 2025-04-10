@@ -72,7 +72,7 @@ class HikeScreenViewModel : ViewModel() {
                     "Du skal altså skrive tre korte avsnitt på formen: \n[Navn på tur]\nInnhold første avnitt med info om turen. \n[Informasjon om været]\nInnhold andre avsnitt om temperatur. \n[Når burde du gå tur?]\nInnhold tredje avsnitt om når det er best vær. " +
                     "Bruk små overskrifter med fet skrifttype og markdown tekst. " +
                     "Du skal IKKE svare som en chatbot, men kun gi meg informasjonen jeg har spurt om. " +
-                    "Avslutt med en hyggelig og motiverende melding som 'God tur!'. " +
+                    "Avslutt med en hyggelig og motiverende melding og en emoji i fet skrift som for eksempel 'God tur!'. " +
                     "Den valgte dag- og datoen er \"$selectedDay\", \"$selectedDate\". " +
                     "All informasjonen du trenger om været er dette: \"${homeScreenViewModel.homeScreenUIState.value.forecast?.properties?.timeseries}\". "
 

@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000_gruppe3.ui.screens.openAIScreen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
