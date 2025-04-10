@@ -1,11 +1,20 @@
 package no.uio.ifi.in2000_gruppe3
 
+import android.app.Application
+import kotlinx.coroutines.runBlocking
+import no.uio.ifi.in2000_gruppe3.data.database.User
+import no.uio.ifi.in2000_gruppe3.data.database.UserFavoritesDatabase
+import no.uio.ifi.in2000_gruppe3.data.user.UserRepository
 import org.junit.Test
+import kotlin.test.assertContains
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 
 
 class UserFavoriteUnitTest {
-    val userRepository = TODO()
-    val userViewModel = TODO()
+    private val userDao = UserFavoritesDatabase.getDatabase(Application()).userDao()
+    private val userRepository = UserRepository(userDao)
+    //val userViewModel = TODO()
 
     //Dummy data til testene
     val bruker1 = User(username = "Aanund")
@@ -15,8 +24,10 @@ class UserFavoriteUnitTest {
     fun testAddUser() {
         println("Tester å legge til bruker: $bruker1")
 
-        userRepository.addUser(bruker1)
-        assertContains(userRepository.getAllUsers(), bruker1, "Bruker ble ikke lagt til")
+        runBlocking {
+            userRepository.addUser(bruker1)
+            assertContains(userRepository.getAllUsers(), bruker1, "Bruker ble ikke lagt til")
+        }
 
         println("---testAddUser PASSERT---")
     }
@@ -25,9 +36,11 @@ class UserFavoriteUnitTest {
     fun testDeleteUser() {
         println("Tester å slette bruker: $bruker1")
 
-        userRepository.addUser(bruker1)
-        userRepository.deleteUser(bruker1)
-        assertFalse(userRepository.getAllUsers().contains(bruker1), "Bruker ble ikke slettet")
+        runBlocking {
+            userRepository.addUser(bruker1)
+            userRepository.deleteUser(bruker1)
+            assertFalse(userRepository.getAllUsers().contains(bruker1), "Bruker ble ikke slettet")
+        }
 
         println("---testDeleteUser PASSERT---")
     }
@@ -35,11 +48,14 @@ class UserFavoriteUnitTest {
     @Test
     fun testGetAllUsers() {
         println("tester å hente alle brukere")
+        val allUsers: List<User>;
 
-        userRepository.addUser(bruker1)
-        userRepository.addUser(bruker2)
+        runBlocking {
+            userRepository.addUser(bruker1)
+            userRepository.addUser(bruker2)
 
-        val allUsers = userRepository.getAllUsers()
+            allUsers = userRepository.getAllUsers()
+        }
 
         assertContains(allUsers, bruker1, "Bruker 1 ble ikke lagt til")
         assertContains(allUsers, bruker2, "Bruker 2 ble ikke lagt til")
@@ -50,11 +66,14 @@ class UserFavoriteUnitTest {
     @Test
     fun testSelectUser() {
         println("Tester å velge bruker: $bruker1")
+        val selectedUser: User?
 
-        userRepository.addUser(bruker1)
-        userViewModel.selectUser(bruker1.username)
+        runBlocking {
+            userRepository.addUser(bruker1)
+            userRepository.selectUser(bruker1.username)
+            selectedUser = userRepository.getSelectedUser()
+        }
 
-        val selectedUser = userViewModel.getSelectedUser()
         assertEquals(selectedUser, bruker1, "Bruker ble ikke valgt")
 
         println("---testSelectUser PASSERT---")
