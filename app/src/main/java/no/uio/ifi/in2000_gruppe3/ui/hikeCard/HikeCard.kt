@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000_gruppe3.ui.hikeCard
 
+import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -23,6 +24,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -212,19 +214,19 @@ fun HikeCard(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    if (openAIUIState.isLoading) {
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Loader()
-                        }
-                    } else {
+                    Column {
                         MarkdownText(
-                            markdown = openAIUIState.response.toString(),
+                            markdown = openAIUIState.response,
                             modifier = Modifier.padding(8.dp),
                             style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
                         )
+                        if (openAIUIState.isStreaming) {
+                            Column(
+                                modifier = Modifier.padding(horizontal = 16.dp)
+                            ) {
+                                Loader()
+                            }
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
