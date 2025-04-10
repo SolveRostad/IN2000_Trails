@@ -18,6 +18,7 @@ import kotlin.test.assertFalse
  * Testklasse for UserRepository.
  * Tester noen utvalgte funksjoner fra userDao og userRepository
  * for å sjekke at SQL spørringene fungerer som de skal.
+ * NB! Vi har ikke skrevet tester for ALL funksjonaliteten
  */
 
 @RunWith(RobolectricTestRunner::class)
