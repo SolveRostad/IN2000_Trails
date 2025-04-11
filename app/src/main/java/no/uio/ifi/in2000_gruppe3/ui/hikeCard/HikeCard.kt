@@ -194,7 +194,7 @@ fun HikeCard(
                         iconTint = Color(0xFF4CAF50)
                     )
                     InfoItem(
-                        icon = ImageVector.vectorResource(id = R.drawable.windmill),
+                        icon = ImageVector.vectorResource(id = R.drawable.wind),
                         label = "Vindhastighet",
                         value = averageWindSpeed?.let { "%.1f m/s".format(it) } ?: "N/A",
                         iconTint = Color(0xFF2196F3)

@@ -121,16 +121,16 @@ fun HomeScreen(
                 )
             }
 
-            Box(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(top = 90.dp, end = 8.dp)
-
-            ) {
-                MapboxZoomButtons(
-                    mapboxViewModel = mapboxViewModel
-                )
-            }
+//            Box(
+//                modifier = Modifier
+//                    .align(Alignment.TopEnd)
+//                    .padding(top = 90.dp, end = 8.dp)
+//
+//            ) {
+//                MapboxZoomButtons(
+//                    mapboxViewModel = mapboxViewModel
+//                )
+//            }
 
             Column(
                 modifier = Modifier
