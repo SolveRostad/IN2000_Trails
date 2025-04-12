@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.ui.navigation
+package no.uio.ifi.in2000_gruppe3.ui.mapbox
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,10 +16,11 @@ import com.composables.core.Icon
 import no.uio.ifi.in2000_gruppe3.R
 
 @Composable
-fun ResetMapCenterButton() {
+fun ResetMapCenterButton(
+    mapboxViewModel: MapboxViewModel
+) {
     Surface(
         modifier = Modifier
-            .padding(horizontal = 8.dp, vertical = 4.dp)
             .size(40.dp)
             .background(
                 color = Color.White.copy(alpha = 0.6f),
@@ -28,14 +29,15 @@ fun ResetMapCenterButton() {
         color = Color.Transparent
     ) {
         IconButton(
-            onClick = { /* TODO */ },
-            modifier = Modifier.fillMaxSize()
+            onClick = { /*TODO*/ }
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.location_arrow),
+                painter = painterResource(id = R.drawable.location_arrow_2),
                 contentDescription = "Sentrer kart",
                 tint = Color.Unspecified,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp)
             )
         }
     }

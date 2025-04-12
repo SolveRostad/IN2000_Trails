@@ -1,10 +1,9 @@
 package no.uio.ifi.in2000_gruppe3.ui.mapbox
 
-import android.app.Application
 import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
@@ -18,7 +17,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 
-class MapboxViewModel(application: Application) : AndroidViewModel(application) {
+class MapboxViewModel() : ViewModel() {
     private val placeAutocomplete = PlaceAutocomplete.create()
 
     private val _mapboxUIState: MutableStateFlow<MapboxUIState> = MutableStateFlow(
@@ -134,6 +133,22 @@ class MapboxViewModel(application: Application) : AndroidViewModel(application) 
             }
         }
     }
+
+    fun zoomIn() {
+        _mapboxUIState.update {
+            it.copy(
+                zoom = if (it.zoom < 22) it.zoom + 1 else 22.0
+            )
+        }
+    }
+
+    fun zoomOut() {
+        _mapboxUIState.update {
+            it.copy(
+                zoom = if (it.zoom > 0) it.zoom - 1 else 0.0
+            )
+        }
+    }
 }
 
 data class MapboxUIState(
@@ -141,10 +156,10 @@ data class MapboxUIState(
     val pointerCoordinates: Point? = null,
     val latestUserPosition: Point? = null,
     val polylineAnnotations: List<PolylineAnnotationOptions>,
-
+    val zoom: Double = 12.0,
 
     val searchResponse: List<PlaceAutocompleteSuggestion>,
     val searchQuery: String,
 
-    val isLoading: Boolean = false
+    val isLoading: Boolean = true
 )

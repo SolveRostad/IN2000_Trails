@@ -2,10 +2,8 @@ package no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,8 +29,6 @@ import com.composables.core.BottomSheet
 import com.composables.core.DragIndication
 import com.composables.core.rememberBottomSheetState
 import no.uio.ifi.in2000_gruppe3.ui.hikeCard.SmallHikeCard
-import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
-import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapStyleDropdownMenu
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
@@ -71,7 +67,14 @@ fun BottomSheetDrawer(
     BottomSheet(
         state = sheetState,
         modifier = Modifier
-            .clip(RoundedCornerShape(16.dp))
+            // Only clip to RoundedCornerShape if not fully expanded
+            .then(
+                if (sheetState.currentDetent.identifier != SheetDrawerDetent.FULLYEXPAND.value.identifier) {
+                    Modifier.clip(RoundedCornerShape(16.dp))
+                } else {
+                    Modifier
+                }
+            )
             .fillMaxWidth()
             .alpha(alpha)
             .background(Color.White)
