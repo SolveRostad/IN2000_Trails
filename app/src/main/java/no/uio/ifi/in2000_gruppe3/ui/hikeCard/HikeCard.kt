@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -203,12 +204,23 @@ fun HikeCard(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                if (openAIUIState.isLoading) {
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Loader()
+                Column {
+                    MarkdownText(
+                        markdown = openAIUIState.response,
+                        modifier = Modifier.padding(8.dp),
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontSize = 16.sp,
+                            lineHeight = 22.sp,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            fontFamily = FontFamily.SansSerif
+                        )
+                    )
+                    if (openAIUIState.isStreaming) {
+                        Column(
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        ) {
+                            Loader()
+                        }
                     }
                 } else {
                     MarkdownText(
