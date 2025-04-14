@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -85,7 +86,7 @@ fun BottomBar(navController: NavHostController) {
                         .fillMaxSize()
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Face,
+                        imageVector = Icons.Default.Person,
                         contentDescription = "OpenAI",
                         tint = if (navController.currentDestination?.route == "openai")
                             MaterialTheme.colorScheme.primary

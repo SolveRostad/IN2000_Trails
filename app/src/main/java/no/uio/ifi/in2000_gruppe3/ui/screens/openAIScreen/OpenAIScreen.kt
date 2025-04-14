@@ -59,7 +59,7 @@ fun OpenAIScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Chat med turbotten Lennard 🤖",
+                text = "Chat med turbotten Ånund 🤖",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleLarge
