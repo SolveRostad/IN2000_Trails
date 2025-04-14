@@ -222,12 +222,6 @@ fun HikeCard(
                             Loader()
                         }
                     }
-                } else {
-                    MarkdownText(
-                        markdown = openAIUIState.response.toString(),
-                        modifier = Modifier.padding(8.dp),
-                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
-                    )
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

@@ -148,13 +148,6 @@ fun HomeScreen(
                 )
             }
 
-            BottomSheetDrawer(
-                homeScreenViewModel = homeScreenViewModel,
-                hikeScreenViewModel = hikeViewModel,
-                mapboxViewModel = mapboxViewModel,
-                navController = navController
-            )
-
             Column {
                 Row(
                     modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 25.dp)
@@ -169,6 +162,13 @@ fun HomeScreen(
                     mapboxViewModel = mapboxViewModel
                 )
             }
+
+            BottomSheetDrawer(
+                homeScreenViewModel = homeScreenViewModel,
+                hikeScreenViewModel = hikeViewModel,
+                mapboxViewModel = mapboxViewModel,
+                navController = navController
+            )
         }
     }
 }

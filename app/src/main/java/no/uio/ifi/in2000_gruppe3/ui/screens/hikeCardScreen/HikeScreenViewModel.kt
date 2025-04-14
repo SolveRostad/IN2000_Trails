@@ -64,7 +64,7 @@ class HikeScreenViewModel : ViewModel() {
                     "Turen ligger på koordinatene ${hikeScreenUIState.value.feature.geometry.coordinates}, så sørg for å gi informasjon om riktig tur. " +
                     "Du skal IKKE nevne koordinatene, men finne hvilket sted som ligger på koordinatene for så å bruke stedsnavnet. " +
                     "Fortell om hva som gjør turen spesiell og om det er noen kjente steder på turen. " +
-                    "Det skal kun være ett kort avsnitt. " +
+                    "Det skal kun være ett kort avsnitt på 4-5 setninger. " +
                     "I tillegg skal du skrive et kort avsnitt om temperaturen for dagen og datoen basert på værforholdene sendt inn. " +
                     "I avsnittet skal du komme med anbefalinger om hvordan man burde kle seg for turen og hva man burde ha med i sekken. " +
                     "Ta i betraktning at de som bruker appen er nordmenn og er vandt til kalde temperaturer, altså bruker man ikke lue og votter når det er 5 grader ute, men ikke nevn det i beskrivelsen. " +
@@ -72,6 +72,7 @@ class HikeScreenViewModel : ViewModel() {
                     "Du skal altså skrive tre korte avsnitt på formen: \n[Navn på tur]\nInnhold første avnitt med info om turen. \n[Informasjon om været]\nInnhold andre avsnitt om temperatur. \n[Når burde du gå tur?]\nInnhold tredje avsnitt om når det er best vær. " +
                     "Bruk små overskrifter med fet skrifttype og markdown tekst. " +
                     "Du skal IKKE svare som en chatbot, men kun gi meg informasjonen jeg har spurt om. " +
+                    "Hvis du nevner dato skal det være formattert som for eksempel 23. mars. " +
                     "Avslutt med en hyggelig og motiverende melding og en emoji i fet skrift som for eksempel 'God tur!'. " +
                     "Den valgte dag- og datoen er \"$selectedDay\", \"$selectedDate\". " +
                     "All informasjonen du trenger om været er dette: \"${homeScreenViewModel.homeScreenUIState.value.forecast?.properties?.timeseries}\". "
