@@ -1,5 +1,6 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.openAIScreen
+package no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen
 
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,6 +15,23 @@ class OpenAIViewModel: ViewModel() {
 
     private val _openAIUIState = MutableStateFlow(OpenAIUIState())
     val openAIUIState: StateFlow<OpenAIUIState> = _openAIUIState
+
+    private val _conversationHistory = mutableStateListOf<ChatbotMessage>()
+    val conversationHistory: List<ChatbotMessage> get() = _conversationHistory
+
+    init {
+        if (_conversationHistory.isEmpty()) {
+            addBotMessage("Hei! Jeg er turbotten Ånund 🤖. Hva kan jeg hjelpe deg med?")
+        }
+    }
+
+    fun addUserMessage(message: String) {
+        _conversationHistory.add(ChatbotMessage(message, true))
+    }
+
+    fun addBotMessage(message: String) {
+        _conversationHistory.add(ChatbotMessage(message, false))
+    }
 
     // Returns a full response from the OpenAI API
     fun getCompletionsSamples(prompt: String) {
@@ -43,9 +61,9 @@ class OpenAIViewModel: ViewModel() {
             }
 
             try {
-                _openAIUIState.update {
-                    it.copy(isLoading = false, isStreaming = true)
-                }
+                val botMessage = ChatbotMessage("", false)
+                _conversationHistory.add(botMessage)
+                val messageIndex = _conversationHistory.size - 1
 
                 // Collect the streaming responses
                 openAIRepository.getCompletionsStream(prompt).collectLatest { chunk ->
@@ -53,13 +71,14 @@ class OpenAIViewModel: ViewModel() {
                         // Append each new chunk to the existing response
                         currentState.copy(
                             response = currentState.response + chunk,
+                            isLoading = false,
                             isStreaming = true
                         )
                     }
-                }
-
-                _openAIUIState.update { currentState ->
-                    currentState.copy(isStreaming = false)
+                    _conversationHistory[messageIndex] =
+                        _conversationHistory[messageIndex].copy(
+                            content = _conversationHistory[messageIndex].content + chunk
+                        )
                 }
             } catch (e: Exception) {
                 _openAIUIState.update {
@@ -68,6 +87,10 @@ class OpenAIViewModel: ViewModel() {
                         isLoading = false,
                         isStreaming = false
                     )
+                }
+            } finally {
+                _openAIUIState.update {
+                    it.copy(isLoading = false, isStreaming = false)
                 }
             }
         }

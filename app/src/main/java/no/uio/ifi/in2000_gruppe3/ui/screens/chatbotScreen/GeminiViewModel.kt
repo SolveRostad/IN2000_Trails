@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.openAIScreen
+package no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
