@@ -1,12 +1,14 @@
 package no.uio.ifi.in2000_gruppe3.ui.mapbox
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.unit.dp
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.dsl.cameraOptions
@@ -90,6 +92,11 @@ fun MapViewer(
         scaleBar = {},
         logo = {},
         attribution = {},
+        compass = {
+            Compass(
+                modifier = Modifier.padding(top = 80.dp, end = 8.dp)
+            )
+        },
         style = { MapStyle(mapboxUIState.mapStyle) }
     ) {
         PolylineAnnotationGroup(
