@@ -43,6 +43,8 @@ fun BottomSheetDrawer(
     navController: NavHostController
 ) {
     val homeScreenUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
+    val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
+
     val targetSheetState by homeScreenViewModel.sheetStateTarget.collectAsState()
     val detents = SheetDrawerDetent.entries.map { it.value }
 
@@ -52,6 +54,14 @@ fun BottomSheetDrawer(
     )
 
     val alpha by animateFloatAsState(targetValue = sheetState.offset)
+
+    LaunchedEffect(mapboxUIState.searchResponse, mapboxUIState.searchQuery) {
+        if (mapboxUIState.searchResponse.isNotEmpty() && mapboxUIState.searchQuery.isNotEmpty()) {
+            sheetState.animateTo(SheetDrawerDetent.HIDDEN.value)
+        } else {
+            sheetState.animateTo(targetSheetState.value)
+        }
+    }
 
     LaunchedEffect(targetSheetState) {
         sheetState.animateTo(targetSheetState.value)
