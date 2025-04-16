@@ -56,14 +56,19 @@ fun MapViewer(
                     bearing(0.0)
                 }
             )
-            mapboxViewModel.setLoaderState(isLoading = true)
-            homeScreenViewModel.fetchHikes(
-                mapboxUIState.pointerCoordinates!!.latitude(),
-                mapboxUIState.pointerCoordinates!!.longitude(),
-                5,
-                "Fotrute",
-                500
-            )
+
+            // Only fetch hikes if the flag is true
+            if (mapboxUIState.shouldFetchHikes) {
+                mapboxViewModel.setLoaderState(isLoading = true)
+                homeScreenViewModel.fetchHikes(
+                    mapboxUIState.pointerCoordinates!!.latitude(),
+                    mapboxUIState.pointerCoordinates!!.longitude(),
+                    5,
+                    "Fotrute",
+                    500
+                )
+                mapboxViewModel.resetShouldFetchHikes()
+            }
             homeScreenViewModel.fetchForecast(mapboxUIState.pointerCoordinates!!)
         }
     }

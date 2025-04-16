@@ -16,8 +16,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
-import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 class MapboxViewModel() : ViewModel() {
     private val placeAutocomplete = PlaceAutocomplete.create()
@@ -42,7 +40,16 @@ class MapboxViewModel() : ViewModel() {
 
     fun updatePointerCoordinates(point: Point?) {
         _mapboxUIState.update {
-            it.copy(pointerCoordinates = point)
+            it.copy(
+                pointerCoordinates = point,
+                shouldFetchHikes = true
+            )
+        }
+    }
+
+    fun resetShouldFetchHikes() {
+        _mapboxUIState.update {
+            it.copy(shouldFetchHikes = false)
         }
     }
 
@@ -165,6 +172,7 @@ data class MapboxUIState(
     val latestUserPosition: Point? = null,
     val polylineAnnotations: List<PolylineAnnotationOptions>,
     val zoom: Double = 12.0,
+    val shouldFetchHikes: Boolean = false,
 
     val searchResponse: List<PlaceAutocompleteSuggestion>,
     val searchQuery: String,
