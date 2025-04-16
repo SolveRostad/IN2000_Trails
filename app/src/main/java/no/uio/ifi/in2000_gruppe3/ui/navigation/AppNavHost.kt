@@ -90,7 +90,6 @@ fun AppNavHost() {
         // Gemini screen
         composable(Screen.Chatbot.route) {
             ChatbotScreen(
-                openAIViewModel = openAIViewModel,
                 navController = navController
             )
         }

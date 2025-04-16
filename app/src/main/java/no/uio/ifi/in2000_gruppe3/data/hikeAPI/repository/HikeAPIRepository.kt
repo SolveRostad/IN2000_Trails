@@ -58,11 +58,7 @@ class HikeAPIRepository(private val openAIViewModel: OpenAIViewModel) {
 
             openAIViewModel.getCompletionsSamples(prompt) { result ->
                 val generatedName = result.trim()
-
-                // Update the feature's description
                 feature.properties.desc = generatedName
-
-                // Cache the generated name
                 generatedNames[feature.properties.fid] = generatedName
             }
         }

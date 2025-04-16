@@ -29,13 +29,14 @@ import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import androidx.compose.foundation.lazy.items
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatbotScreen(
-    openAIViewModel: OpenAIViewModel,
     navController: NavHostController
 ) {
+    val openAIViewModel: OpenAIViewModel = viewModel()
     val openAIUIState by openAIViewModel.openAIUIState.collectAsState()
     val conversationHistory = openAIViewModel.conversationHistory
 
