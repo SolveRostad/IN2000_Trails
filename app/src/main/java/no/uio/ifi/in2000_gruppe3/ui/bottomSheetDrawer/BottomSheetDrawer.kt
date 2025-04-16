@@ -13,6 +13,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -106,19 +108,30 @@ fun BottomSheetDrawer(
             ) {
                 if (homeScreenUIState.hikes.isEmpty()) {
                     item {
-                        EmptyDrawerInfoCard()
+                        EmptyDrawerInfoCard(
+                            navController = navController
+                        )
                     }
-                }
-                items(homeScreenUIState.hikes) { feature ->
-                    SmallHikeCard(
-                        mapboxViewModel = mapboxViewModel,
-                        feature = feature,
-                        onClick = {
-                            hikeScreenViewModel.updateHike(feature)
-                            navController.navigate(Screen.HikeScreen.route)
-                        }
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
+                } else {
+                    item {
+                        Text(
+                            text = "De fem nærmeste rutene",
+                            modifier = Modifier.padding(bottom = 8.dp),
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                    }
+
+                    items(homeScreenUIState.hikes) { feature ->
+                        SmallHikeCard(
+                            mapboxViewModel = mapboxViewModel,
+                            feature = feature,
+                            onClick = {
+                                hikeScreenViewModel.updateHike(feature)
+                                navController.navigate(Screen.HikeScreen.route)
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
                 }
             }
         }

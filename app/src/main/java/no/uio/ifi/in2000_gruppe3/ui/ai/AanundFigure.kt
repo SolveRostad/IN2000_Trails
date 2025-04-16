@@ -45,7 +45,7 @@ fun AanundFigure(
                     .fillMaxWidth()
                     .clickable {
                         showDialog = false
-                        navController.navigate("openai")
+                        navController.navigate("chatbot")
                     }
             ) {
                 Card(

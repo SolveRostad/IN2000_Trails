@@ -75,10 +75,10 @@ fun BottomBar(navController: NavHostController) {
                     )
                 }
 
-                // OpenAI
+                // Chatbot
                 IconButton(
                     onClick = {
-                        if (navController.currentDestination?.route != "openai")
+                        if (navController.currentDestination?.route != "chatbot")
                             navController.navigate(Screen.OpenAI.route)
                     },
                     modifier = Modifier
@@ -87,8 +87,8 @@ fun BottomBar(navController: NavHostController) {
                 ) {
                     Icon(
                         imageVector = Icons.Default.Person,
-                        contentDescription = "OpenAI",
-                        tint = if (navController.currentDestination?.route == "openai")
+                        contentDescription = "Chatbot",
+                        tint = if (navController.currentDestination?.route == "chatbot")
                             MaterialTheme.colorScheme.primary
                         else
                             LocalContentColor.current
