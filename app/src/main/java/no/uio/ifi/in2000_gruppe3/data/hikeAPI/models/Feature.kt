@@ -10,5 +10,6 @@ data class Feature(
     val properties: PropertiesX,
     val type: String,
     @Transient var color: Color? = Color.Blue,
+    @Transient var description: String? = null,
     @Transient var difficultyInfo: DifficultyInfo = DifficultyInfo("UKJENT", Color.Gray)
 )

@@ -164,6 +164,7 @@ fun HomeScreen(
                         .offset(y = sheetOffset)
                 ) {
                     ResetMapCenterButton(
+                        homeScreenViewModel = homeScreenViewModel,
                         mapboxViewModel = mapboxViewModel
                     )
 

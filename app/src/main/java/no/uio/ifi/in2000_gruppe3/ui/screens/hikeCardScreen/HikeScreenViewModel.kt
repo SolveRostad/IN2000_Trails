@@ -64,7 +64,7 @@ class HikeScreenViewModel : ViewModel() {
                     "Turen ligger på koordinatene ${hikeScreenUIState.value.feature.geometry.coordinates}, så sørg for å gi informasjon om riktig tur. " +
                     "Du skal IKKE nevne koordinatene, men finne hvilket sted som ligger på koordinatene for så å bruke stedsnavnet. " +
                     "Fortell om hva som gjør turen spesiell og om det er noen kjente steder på turen. " +
-                    "Det skal kun være ett kort avsnitt på 4-5 setninger. " +
+                    "Det skal kun være ett kort avsnitt på 2-3 setninger. " +
                     "I tillegg skal du skrive et kort avsnitt om temperaturen for dagen og datoen basert på værforholdene sendt inn. " +
                     "I avsnittet skal du komme med anbefalinger om hvordan man burde kle seg for turen og hva man burde ha med i sekken. " +
                     "Ta i betraktning at de som bruker appen er nordmenn og er vandt til kalde temperaturer, altså bruker man ikke lue og votter når det er 5 grader ute, men ikke nevn det i beskrivelsen. " +
@@ -88,6 +88,5 @@ data class HikeScreenUIState(
     val feature: Feature,
     val day: String = "",
     val date: String = "",
-    val formattedDate: String = "",
-    val description: String? = ""
+    val formattedDate: String = ""
 )
