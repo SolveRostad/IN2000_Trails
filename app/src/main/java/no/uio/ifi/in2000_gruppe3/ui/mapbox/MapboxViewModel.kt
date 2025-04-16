@@ -16,6 +16,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
+import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 class MapboxViewModel() : ViewModel() {
     private val placeAutocomplete = PlaceAutocomplete.create()
@@ -38,7 +40,7 @@ class MapboxViewModel() : ViewModel() {
         }
     }
 
-    fun updatePointerCoordinates(point: Point) {
+    fun updatePointerCoordinates(point: Point?) {
         _mapboxUIState.update {
             it.copy(pointerCoordinates = point)
         }
@@ -131,6 +133,12 @@ class MapboxViewModel() : ViewModel() {
             _mapboxUIState.update {
                 it.copy(polylineAnnotations = annotations, isLoading = false)
             }
+        }
+    }
+
+    fun clearPolylineAnnotations() {
+        _mapboxUIState.update { currentState ->
+            currentState.copy(polylineAnnotations = emptyList())
         }
     }
 

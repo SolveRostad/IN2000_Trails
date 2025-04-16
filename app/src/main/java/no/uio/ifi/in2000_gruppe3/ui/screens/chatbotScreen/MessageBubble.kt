@@ -17,11 +17,11 @@ import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
 fun MessageBubble(chatbotMessage: ChatbotMessage) {
-    val alignment = if (chatbotMessage.isFromUser) Alignment.CenterEnd else Alignment.CenterStart
-    val bubbleColor = if (chatbotMessage.isFromUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer
+    val alignment    = if (chatbotMessage.isFromUser) Alignment.CenterEnd else Alignment.CenterStart
+    val bubbleColor  = if (chatbotMessage.isFromUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer
     val contentColor = if (chatbotMessage.isFromUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onPrimaryContainer
-    val bubbleShape = if (chatbotMessage.isFromUser) RoundedCornerShape(16.dp, 4.dp, 16.dp, 16.dp) else RoundedCornerShape(4.dp, 16.dp, 16.dp, 16.dp)
-    val paddingEnd = if (chatbotMessage.isFromUser) 0.dp else 64.dp
+    val bubbleShape  = if (chatbotMessage.isFromUser) RoundedCornerShape(16.dp, 4.dp, 16.dp, 16.dp) else RoundedCornerShape(4.dp, 16.dp, 16.dp, 16.dp)
+    val paddingEnd   = if (chatbotMessage.isFromUser) 0.dp else 64.dp
     val paddingStart = if (chatbotMessage.isFromUser) 64.dp else 0.dp
 
     Box(

@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000_gruppe3.ui.ai
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,15 +32,29 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.composables.core.Icon
 import no.uio.ifi.in2000_gruppe3.R
+import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.SheetDrawerDetent
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
 fun AanundFigure(
+    homeScreenViewModel: HomeScreenViewModel,
+    mapBoxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
     var showDialog by remember { mutableStateOf(false) }
 
     if (showDialog) {
-        Dialog(onDismissRequest = { showDialog = false }) {
+        homeScreenViewModel.setSheetState(SheetDrawerDetent.SEMIPEEK)
+
+        // Clear hikes from map to get AI recommendations
+        homeScreenViewModel.clearHikes()
+        mapBoxViewModel.clearPolylineAnnotations()
+        mapBoxViewModel.updatePointerCoordinates(null)
+
+        Dialog(
+            onDismissRequest = { showDialog = false },
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

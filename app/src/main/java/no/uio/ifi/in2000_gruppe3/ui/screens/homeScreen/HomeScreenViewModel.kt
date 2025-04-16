@@ -18,6 +18,8 @@ import no.uio.ifi.in2000_gruppe3.data.locationForecastAPI.repository.LocationFor
 import no.uio.ifi.in2000_gruppe3.data.metAlertsAPI.models.MetAlerts
 import no.uio.ifi.in2000_gruppe3.data.metAlertsAPI.repository.MetAlertsRepository
 import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.SheetDrawerDetent
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 
 class HomeScreenViewModel() : ViewModel() {
     private val hikeAPIRepository = HikeAPIRepository()
@@ -32,8 +34,6 @@ class HomeScreenViewModel() : ViewModel() {
             forecast = null,
         )
     )
-
-
 
     val homeScreenUIState: StateFlow<HomeScreenUIState> = _homeScreenUIState.asStateFlow()
     val sheetStateTarget: StateFlow<SheetDrawerDetent> = _sheetStateTarget.asStateFlow()
@@ -70,6 +70,21 @@ class HomeScreenViewModel() : ViewModel() {
                 _sheetStateTarget.value = SheetDrawerDetent.PEEK
             }
         }
+    }
+
+    suspend fun getRecommendedHikes(
+        homeScreenViewModel: HomeScreenViewModel,
+        mapBoxViewModel: MapboxViewModel,
+        openAIViewModel: OpenAIViewModel
+    ): List<Feature> {
+        val hikes = hikeAPIRepository.getHikes(
+            mapBoxViewModel.mapboxUIState.value.latestUserPosition?.latitude() ?: 59.811600,
+            mapBoxViewModel.mapboxUIState.value.latestUserPosition?.longitude() ?: 10.798360,
+            100,
+            "Fotrute",
+            500
+        )
+        return hikes.shuffled().take(5)
     }
 
     fun fetchForecast(point: Point) {
@@ -128,6 +143,12 @@ class HomeScreenViewModel() : ViewModel() {
                     it.copy(isLoading = false)
                 }
             }
+        }
+    }
+
+    fun clearHikes() {
+        _homeScreenUIState.update { currentState ->
+            currentState.copy(hikes = emptyList())
         }
     }
 

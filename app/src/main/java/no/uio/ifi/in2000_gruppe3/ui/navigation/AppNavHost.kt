@@ -39,8 +39,9 @@ fun AppNavHost() {
             HomeScreen(
                 homeScreenViewModel = homeScreenViewModel,
                 hikeViewModel = hikeScreenViewModel,
-                mapboxViewModel = mapboxViewModel,
                 favoritesViewModel = favoritesViewModel,
+                mapboxViewModel = mapboxViewModel,
+                openAIViewModel = openAIViewModel,
                 navController = navController
             )
         }

@@ -52,7 +52,6 @@ fun SearchBarForMap(
             .clip(RoundedCornerShape(30.dp))
             .border(1.dp, Color.Gray, RoundedCornerShape(30.dp))
             .onKeyEvent { keyEvent ->
-                homeScreenViewModel.setSheetState(SheetDrawerDetent.SEMIPEEK)
                 if (keyEvent.type == KeyEventType.KeyUp && keyEvent.key == Key.Enter) {
                     mapboxViewModel.updateSearchQuery("")
                     keyboardController?.hide()

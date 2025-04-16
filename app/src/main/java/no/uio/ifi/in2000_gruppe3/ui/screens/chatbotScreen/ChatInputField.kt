@@ -61,7 +61,7 @@ fun ChatInputField(
                 ),
                 keyboardActions = KeyboardActions(
                     onSend = {
-                        if (value.isNotBlank()) {
+                        if (value.isNotBlank() && !openAIUIState.isStreaming) {
                             onSend()
                             keyboardController?.hide()
                         }

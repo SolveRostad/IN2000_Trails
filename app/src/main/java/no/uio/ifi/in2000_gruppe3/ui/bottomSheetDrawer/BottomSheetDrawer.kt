@@ -33,6 +33,7 @@ import com.composables.core.rememberBottomSheetState
 import no.uio.ifi.in2000_gruppe3.ui.hikeCard.SmallHikeCard
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
+import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
@@ -42,6 +43,7 @@ fun BottomSheetDrawer(
     homeScreenViewModel: HomeScreenViewModel,
     hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
+    openAIViewModel: OpenAIViewModel,
     navController: NavHostController
 ) {
     val homeScreenUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
@@ -108,14 +110,18 @@ fun BottomSheetDrawer(
             ) {
                 if (homeScreenUIState.hikes.isEmpty()) {
                     item {
-                        EmptyDrawerInfoCard(
+                        RecommendedHikes(
+                            homeScreenViewModel = homeScreenViewModel,
+                            hikeScreenViewModel = hikeScreenViewModel,
+                            mapBoxViewModel = mapboxViewModel,
+                            openAIViewModel = openAIViewModel,
                             navController = navController
                         )
                     }
                 } else {
                     item {
                         Text(
-                            text = "De fem nærmeste rutene",
+                            text = "De fem nærmeste turene",
                             modifier = Modifier.padding(bottom = 8.dp),
                             style = MaterialTheme.typography.titleLarge
                         )

@@ -34,6 +34,7 @@ import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxZoomButtons
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.ResetMapCenterButton
+import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 
@@ -41,8 +42,9 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 fun HomeScreen(
     homeScreenViewModel: HomeScreenViewModel,
     hikeViewModel: HikeScreenViewModel,
-    mapboxViewModel: MapboxViewModel,
     favoritesViewModel: FavoritesViewModel,
+    mapboxViewModel: MapboxViewModel,
+    openAIViewModel: OpenAIViewModel,
     navController: NavHostController
 ) {
     val locationPermissionRequest = rememberLauncherForActivityResult(
@@ -117,6 +119,8 @@ fun HomeScreen(
                     .padding(bottom = 10.dp)
             ) {
                 AanundFigure(
+                    homeScreenViewModel = homeScreenViewModel,
+                    mapBoxViewModel = mapboxViewModel,
                     navController = navController
                 )
             }
@@ -167,6 +171,7 @@ fun HomeScreen(
                 homeScreenViewModel = homeScreenViewModel,
                 hikeScreenViewModel = hikeViewModel,
                 mapboxViewModel = mapboxViewModel,
+                openAIViewModel = openAIViewModel,
                 navController = navController
             )
         }
