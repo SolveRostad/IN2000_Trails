@@ -6,7 +6,7 @@ package no.uio.ifi.in2000_gruppe3.ui.navigation
  */
 sealed class Screen(val route: String) {
     object Home : Screen("home")
-    object OpenAI : Screen("chatbot")
+    object Chatbot : Screen("chatbot")
     object Favorites : Screen("favorites")
     object HikeScreen : Screen("hikeScreen")
     object LocationForecast : Screen("locationForecast")

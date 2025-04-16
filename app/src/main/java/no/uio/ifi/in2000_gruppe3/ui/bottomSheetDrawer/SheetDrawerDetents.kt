@@ -7,10 +7,10 @@ enum class SheetDrawerDetent(val value: SheetDetent) {
         containerHeight * 0.04f
     }),
     SEMIPEEK(SheetDetent(identifier = "semiPeek") { containerHeight, sheetHeight ->
-        containerHeight * 0.25f
+        containerHeight * 0.28f
     }),
     PEEK(SheetDetent(identifier = "peek") { containerHeight, sheetHeight ->
-        containerHeight * 0.5f
+        containerHeight * 0.63f
     }),
     FULLYEXPAND(SheetDetent(identifier = "fullyExpanded") { containerHeight, sheetHeight ->
         containerHeight * 1f

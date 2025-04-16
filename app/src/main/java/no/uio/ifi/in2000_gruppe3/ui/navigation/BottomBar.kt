@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.BottomAppBar
@@ -79,7 +78,7 @@ fun BottomBar(navController: NavHostController) {
                 IconButton(
                     onClick = {
                         if (navController.currentDestination?.route != "chatbot")
-                            navController.navigate(Screen.OpenAI.route)
+                            navController.navigate(Screen.Chatbot.route)
                     },
                     modifier = Modifier
                         .weight(1f)

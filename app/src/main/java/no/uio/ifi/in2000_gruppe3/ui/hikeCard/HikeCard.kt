@@ -54,6 +54,7 @@ import no.uio.ifi.in2000_gruppe3.ui.loaders.Loader
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.LocationForecastSmallCard
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
+import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
@@ -242,7 +243,7 @@ fun HikeCard(
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B9FF)),
-                    onClick = { navController.navigate("locationForecast") }
+                    onClick = { navController.navigate(Screen.LocationForecast.route) }
                 ) {
                     Text(text = "Se været andre dager")
                 }
