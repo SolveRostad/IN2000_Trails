@@ -68,7 +68,9 @@ fun BottomSheetDrawer(
     }
 
     LaunchedEffect(targetSheetState) {
-        sheetState.animateTo(targetSheetState.value)
+        if (sheetState.currentDetent.identifier != targetSheetState.value.identifier) {
+            sheetState.animateTo(targetSheetState.value)
+        }
     }
 
     LaunchedEffect(sheetState.currentDetent) {
