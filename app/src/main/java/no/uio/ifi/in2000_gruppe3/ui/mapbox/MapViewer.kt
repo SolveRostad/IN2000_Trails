@@ -86,6 +86,19 @@ fun MapViewer(
         )
     }
 
+    LaunchedEffect(mapboxUIState.centerOnUserTrigger) {
+        if (mapboxUIState.centerOnUserTrigger > 0 && mapboxUIState.latestUserPosition != null) {
+            mapViewportState.easeTo(
+                cameraOptions {
+                    zoom(mapboxUIState.zoom)
+                    center(mapboxUIState.latestUserPosition)
+                    pitch(0.0)
+                    bearing(0.0)
+                }
+            )
+        }
+    }
+
     MapboxMap(
         modifier = Modifier.fillMaxSize(),
         mapViewportState = mapViewportState,
@@ -141,6 +154,7 @@ fun MapViewer(
             }
             mapView.location.addOnIndicatorPositionChangedListener { point ->
                 favoritesViewModel.updateUserLocation(point)
+                mapboxViewModel.updateLatestUserPosition(point)
             }
             mapView.mapboxMap.subscribeCameraChanged {
                 if (homeScreenViewModel.sheetStateTarget.value.value.identifier != "hidden") {

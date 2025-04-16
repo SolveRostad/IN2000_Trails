@@ -29,7 +29,7 @@ fun ResetMapCenterButton(
         color = Color.Transparent
     ) {
         IconButton(
-            onClick = { /*TODO*/ }
+            onClick = { mapboxViewModel.centerOnUserPosition() }
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.location_arrow_2),
