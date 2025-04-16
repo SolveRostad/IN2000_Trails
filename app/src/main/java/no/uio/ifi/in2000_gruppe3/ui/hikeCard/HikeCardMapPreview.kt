@@ -1,7 +1,6 @@
 package no.uio.ifi.in2000_gruppe3.ui.hikeCard
 
 import android.util.Log
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,7 +10,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -25,15 +23,16 @@ import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxUIState
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
+import kotlin.math.ln
 
 @Composable
 fun HikeCardMapPreview(
     mapboxViewModel: MapboxViewModel,
     feature: Feature
 ) {
-    val coordinates = mutableListOf<Point>()
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
 
+    val coordinates = mutableListOf<Point>()
     feature.geometry.coordinates.forEach { coordinate ->
         coordinates.add(Point.fromLngLat(coordinate[0], coordinate[1]))
     }
@@ -45,7 +44,7 @@ fun HikeCardMapPreview(
         (bbox.north() + bbox.south()) / 2
     )
 
-    // Calculate zoom level based on the bounding box
+    // Calculate zoom level based on the bounding box and hike length
     val zoom = calculateIdealZoom(bbox)
 
     // Create a static map URL
@@ -72,9 +71,7 @@ fun HikeCardMapPreview(
                 .crossfade(true)
                 .build(),
             contentDescription = "Map preview",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize(),
-            error = painterResource(id = R.drawable.caution)
+            error = painterResource(id = R.drawable.map_error)
         )
     }
 }
@@ -104,9 +101,9 @@ private fun createStaticMapUrl(
     val color = colorToHex(feature.color)
 
     return "https://api.mapbox.com/styles/v1/mapbox/${mapStyleUrl}/static/" +
-            "path-6+${color}-1($encodedPolyline),${markers}/" +
+            "path-10+${color}-1($encodedPolyline),${markers}/" +
             "${center.longitude()},${center.latitude()},$zoom,0,0/" +
-            "600x500@2x" + // widthxheight@2x
+            "1200x500@2x" + // widthxheight@2x
             "?access_token=${BuildConfig.MAPBOX_SECRET_TOKEN}" +
             "&attribution=false&logo=false"
 }
@@ -153,25 +150,22 @@ private fun getBoundingBox(points: List<Point>): BoundingBox {
     )
 }
 
-// Calculate an ideal zoom level based on the bounding box
+// Calculate the ideal zoom level based on the bounding box and hike length
 private fun calculateIdealZoom(bbox: BoundingBox): Double {
     val latDiff = bbox.north() - bbox.south()
     val lngDiff = bbox.east() - bbox.west()
 
-    // Ensure we have a minimum difference to prevent extreme zoom levels
-    val maxDiff = maxOf(latDiff, lngDiff, 0.005)
+    val screenAspectRatio = 1200.0 / 500.0
 
-    // More gradual zoom scaling
-    return when {
-        maxDiff > 10.0 -> 5.0
-        maxDiff > 5.0 -> 7.0
-        maxDiff > 2.0 -> 9.0
-        maxDiff > 1.0 -> 10.0
-        maxDiff > 0.5 -> 10.0
-        maxDiff > 0.2 -> 10.0
-        maxDiff > 0.1 -> 11.0
-        maxDiff > 0.05 -> 12.0
-        maxDiff > 0.01 -> 13.0
-        else -> 13.0
-    }
+    val latZoom = log2(360.0 / (latDiff * screenAspectRatio)) - 1
+    val lngZoom = log2(360.0 / lngDiff) - 1
+
+    val calculatedZoom = minOf(latZoom, lngZoom)
+
+    return calculatedZoom.coerceIn(5.0, 20.0)
+}
+
+// Helper function for logarithm base 2
+private fun log2(value: Double): Double {
+    return ln(value) / ln(2.0)
 }
