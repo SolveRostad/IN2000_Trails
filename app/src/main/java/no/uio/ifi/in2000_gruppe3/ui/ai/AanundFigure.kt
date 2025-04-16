@@ -71,7 +71,7 @@ fun AanundFigure(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = "Hei!\n" +
+                        text = "Hei, mitt navn er Ånund!\n" +
                                 "Jeg er her for å hjelpe deg med å planlegge turer i Oslo/Akershus.\n" +
                                 "\n" +
                                 "Bruk søkefeltet for å finne turer i et bestemt område, eller utforsk det interaktive kartet for å oppdage nye turmuligheter.\n" +

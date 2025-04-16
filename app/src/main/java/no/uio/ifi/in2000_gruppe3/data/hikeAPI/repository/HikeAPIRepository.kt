@@ -31,7 +31,7 @@ class HikeAPIRepository(private val openAIViewModel: OpenAIViewModel) {
             feature.color = getColor()
             feature.difficultyInfo = getDifficultyInfo(feature.properties.gradering ?: "Ukjent")
 
-            if (feature.properties.desc == null) {
+            if (feature.properties.desc == null || feature.properties.desc!!.contains("_")) {
                 val cachedName = generatedNames[feature.properties.fid]
                 if (cachedName != null) {
                     feature.properties.desc = cachedName
@@ -53,7 +53,8 @@ class HikeAPIRepository(private val openAIViewModel: OpenAIViewModel) {
                     "Gi meg kun navnet, ikke skriv noe mer. " +
                     "Ikke bruk noen tegn i navnet. " +
                     "Ikke bruk noen form for ID. " +
-                    "Bruk mellomrom hvis det er flere ord i navnet. "
+                    "Bruk mellomrom mellom ord der det er naturlig. " +
+                    "Bruk koordinatene for å vite hvor turen går. "
 
             openAIViewModel.getCompletionsSamples(prompt) { result ->
                 val generatedName = result.trim()
