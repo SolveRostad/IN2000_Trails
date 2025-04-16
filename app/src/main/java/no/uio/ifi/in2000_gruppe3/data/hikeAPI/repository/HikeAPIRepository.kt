@@ -1,16 +1,23 @@
 package no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository
 
 import androidx.compose.ui.graphics.Color
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.datasource.HikeAPIDatasource
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.DifficultyInfo
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
+import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 
 /**
  * Repository for the Hike API
  */
-class HikeAPIRepository {
+class HikeAPIRepository(private val openAIViewModel: OpenAIViewModel) {
     private val hikeAPIDatasource = HikeAPIDatasource()
     private var colorIndex = 0
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+
+    private val generatedNames = mutableMapOf<Int, String>()
 
     suspend fun getHikes(
         lat: Double,
@@ -23,8 +30,41 @@ class HikeAPIRepository {
         features.forEach { feature ->
             feature.color = getColor()
             feature.difficultyInfo = getDifficultyInfo(feature.properties.gradering ?: "Ukjent")
+
+            if (feature.properties.desc == null) {
+                val cachedName = generatedNames[feature.properties.fid]
+                if (cachedName != null) {
+                    feature.properties.desc = cachedName
+                } else {
+                    generateAndSaveName(feature, openAIViewModel)
+                }
+            }
         }
         return features
+    }
+
+    private fun generateAndSaveName(
+        feature: Feature,
+        openAIViewModel: OpenAIViewModel
+    ) {
+        coroutineScope.launch {
+            val prompt = "Basert på denne turen \"${feature}, " +
+                    "Gi meg et passende navn på turen. " +
+                    "Gi meg kun navnet, ikke skriv noe mer. " +
+                    "Ikke bruk noen tegn i navnet. " +
+                    "Ikke bruk noen form for ID. " +
+                    "Bruk mellomrom hvis det er flere ord i navnet. "
+
+            openAIViewModel.getCompletionsSamples(prompt) { result ->
+                val generatedName = result.trim()
+
+                // Update the feature's description
+                feature.properties.desc = generatedName
+
+                // Cache the generated name
+                generatedNames[feature.properties.fid] = generatedName
+            }
+        }
     }
 
     private fun getColor(): Color {

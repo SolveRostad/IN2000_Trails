@@ -34,21 +34,26 @@ class OpenAIViewModel: ViewModel() {
     }
 
     // Returns a full response from the OpenAI API
-    fun getCompletionsSamples(prompt: String) {
+    fun getCompletionsSamples(prompt: String, onResult: (String) -> Unit) {
         viewModelScope.launch {
             _openAIUIState.update {
                 it.copy(isLoading = true)
             }
             try {
+                val response = openAIRepository.getCompletionsSamples(prompt)
+                val text = response.choices?.first()?.message?.content ?: "No response received"
+
                 _openAIUIState.update {
-                    val response = openAIRepository.getCompletionsSamples(prompt)
-                    val text = response.choices?.first()?.message?.content
-                    it.copy(response = text ?: "No response received", isLoading = false)
+                    it.copy(response = text, isLoading = false)
                 }
+
+                onResult(text)
             } catch (e: Exception) {
+                val error = "Error: ${e.message}"
                 _openAIUIState.update {
-                    it.copy(response = "Error: ${e.message}", isLoading = false)
+                    it.copy(response = error, isLoading = false)
                 }
+                onResult(error)
             }
         }
     }

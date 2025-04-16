@@ -22,10 +22,9 @@ import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 
 class HomeScreenViewModel() : ViewModel() {
-    private val hikeAPIRepository = HikeAPIRepository()
+    private val hikeAPIRepository = HikeAPIRepository(openAIViewModel = OpenAIViewModel())
     private val locationForecastRepository = LocationForecastRepository()
     private val metAlertsRepository = MetAlertsRepository()
-    private val _sheetStateTarget = MutableStateFlow(SheetDrawerDetent.SEMIPEEK)
 
     private val _homeScreenUIState = MutableStateFlow<HomeScreenUIState>(
         HomeScreenUIState(
@@ -34,8 +33,9 @@ class HomeScreenViewModel() : ViewModel() {
             forecast = null,
         )
     )
-
     val homeScreenUIState: StateFlow<HomeScreenUIState> = _homeScreenUIState.asStateFlow()
+
+    private val _sheetStateTarget = MutableStateFlow(SheetDrawerDetent.SEMIPEEK)
     val sheetStateTarget: StateFlow<SheetDrawerDetent> = _sheetStateTarget.asStateFlow()
 
     fun setSheetState(target: SheetDrawerDetent) {
@@ -84,7 +84,7 @@ class HomeScreenViewModel() : ViewModel() {
             "Fotrute",
             500
         )
-        return hikes.shuffled().take(5)
+        return hikes.shuffled().take(3)
     }
 
     fun fetchForecast(point: Point) {

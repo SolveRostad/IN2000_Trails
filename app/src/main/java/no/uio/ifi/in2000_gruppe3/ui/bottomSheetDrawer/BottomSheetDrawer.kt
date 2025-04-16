@@ -123,9 +123,9 @@ fun BottomSheetDrawer(
                 } else {
                     item {
                         Text(
-                            text = "De fem nærmeste turene",
-                            modifier = Modifier.padding(bottom = 8.dp),
-                            style = MaterialTheme.typography.titleLarge
+                            text = "Turruter i nærheten",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontStyle = MaterialTheme.typography.titleLarge.fontStyle,
                         )
                     }
 
