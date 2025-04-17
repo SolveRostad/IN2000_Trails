@@ -96,9 +96,7 @@ class HikeScreenViewModel : ViewModel() {
         }
     }
 
-    // Add this function to check if the description needs to be loaded
     fun needsDescriptionLoading(newDay: String): Boolean {
-        // Load if description hasn't been loaded yet or if day changed
         return !hikeScreenUIState.value.descriptionLoaded || newDay != hikeScreenUIState.value.day
     }
 }
