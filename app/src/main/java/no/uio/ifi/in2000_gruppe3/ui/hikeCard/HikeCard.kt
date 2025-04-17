@@ -93,12 +93,14 @@ fun HikeCard(
         averageTemperature = homeScreenViewModel.daysAverageTemp(selectedDate)
         averageWindSpeed = homeScreenViewModel.daysAverageWindSpeed(selectedDate)
 
-        hikeScreenViewModel.getHikeDescription(
-            homeScreenViewModel = homeScreenViewModel,
-            openAIViewModel = openAIViewModel,
-            selectedDay = selectedDay,
-            selectedDate = selectedDate,
-        )
+        if (hikeScreenViewModel.needsDescriptionLoading(selectedDay)) {
+            hikeScreenViewModel.getHikeDescription(
+                homeScreenViewModel = homeScreenViewModel,
+                openAIViewModel = openAIViewModel,
+                selectedDay = selectedDay,
+                selectedDate = selectedDate
+            )
+        }
     }
 
     Card(
@@ -162,6 +164,7 @@ fun HikeCard(
 
                     WeekdaySelector(onDaySelected = { newDay ->
                         selectedDay = newDay
+                        hikeScreenViewModel.setDescriptionLoaded(false)
                     })
                 }
 

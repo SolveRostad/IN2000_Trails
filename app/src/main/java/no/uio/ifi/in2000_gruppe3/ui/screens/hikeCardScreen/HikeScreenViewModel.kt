@@ -37,7 +37,10 @@ class HikeScreenViewModel : ViewModel() {
 
     fun updateHike(feature: Feature) {
         _hikeScreenUIState.update {
-            it.copy(feature = feature)
+            it.copy(
+                feature = feature,
+                descriptionLoaded = false
+            )
         }
     }
 
@@ -55,30 +58,48 @@ class HikeScreenViewModel : ViewModel() {
         homeScreenViewModel: HomeScreenViewModel,
         openAIViewModel: OpenAIViewModel,
         selectedDay: String,
-        selectedDate: String,
+        selectedDate: String
     ) {
-        viewModelScope.launch {
-            val prompt = "Du er en turguide i en turapp. " +
-                    "Gi meg en kort beskrivelse av turen med navnet \"${hikeScreenUIState.value.feature.properties.desc}\". " +
-                    "Hvis rutenavnet er ukjent så finn et passende rutenavn. " +
-                    "Turen ligger på koordinatene ${hikeScreenUIState.value.feature.geometry.coordinates}, så sørg for å gi informasjon om riktig tur. " +
-                    "Du skal IKKE nevne koordinatene, men finne hvilket sted som ligger på koordinatene for så å bruke stedsnavnet. " +
-                    "Fortell om hva som gjør turen spesiell og om det er noen kjente steder på turen. " +
-                    "Det skal kun være ett kort avsnitt på 2-3 setninger. " +
-                    "I tillegg skal du skrive et kort avsnitt om temperaturen for dagen og datoen basert på værforholdene sendt inn. " +
-                    "I avsnittet skal du komme med anbefalinger om hvordan man burde kle seg for turen og hva man burde ha med i sekken. " +
-                    "Ta i betraktning at de som bruker appen er nordmenn og er vandt til kalde temperaturer, altså bruker man ikke lue og votter når det er 5 grader ute, men ikke nevn det i beskrivelsen. " +
-                    "I tillegg skal du skrive et kort avsnitt som inneholder en anbefaling av hvilken dag, utover i dag, man burde gå på tur basert på værforholdet de neste 7 dagene. " +
-                    "Du skal altså skrive tre korte avsnitt på formen: \n[Navn på tur]\nInnhold første avnitt med info om turen. \n[Informasjon om været]\nInnhold andre avsnitt om temperatur. \n[Når burde du gå tur?]\nInnhold tredje avsnitt om når det er best vær. " +
-                    "Bruk små overskrifter med fet skrifttype og markdown tekst. " +
-                    "Du skal IKKE svare som en chatbot, men kun gi meg informasjonen jeg har spurt om. " +
-                    "Hvis du nevner dato skal det være formattert som for eksempel 23. mars. " +
-                    "Avslutt med en hyggelig og motiverende melding og en emoji i fet skrift som for eksempel 'God tur!'. " +
-                    "Den valgte dag- og datoen er \"$selectedDay\", \"$selectedDate\". " +
-                    "All informasjonen du trenger om været er dette: \"${homeScreenViewModel.homeScreenUIState.value.forecast?.properties?.timeseries}\". "
+        updateDate(selectedDay, selectedDate, selectedDate)
 
-            openAIViewModel.getCompletionsStream(prompt)
+        if (!hikeScreenUIState.value.descriptionLoaded || selectedDay != hikeScreenUIState.value.day) {
+            viewModelScope.launch {
+                setDescriptionLoaded(true)
+
+                val prompt = "Du er en turguide i en turapp. " +
+                        "Gi meg en kort beskrivelse av turen med navnet \"${hikeScreenUIState.value.feature.properties.desc}\". " +
+                        "Hvis rutenavnet er ukjent så finn et passende rutenavn. " +
+                        "Turen ligger på koordinatene ${hikeScreenUIState.value.feature.geometry.coordinates}, så sørg for å gi informasjon om riktig tur. " +
+                        "Du skal IKKE nevne koordinatene, men finne hvilket sted som ligger på koordinatene for så å bruke stedsnavnet. " +
+                        "Fortell om hva som gjør turen spesiell og om det er noen kjente steder på turen. " +
+                        "Det skal kun være ett kort avsnitt på 2-3 setninger. " +
+                        "I tillegg skal du skrive et kort avsnitt om temperaturen for dagen og datoen basert på værforholdene sendt inn. " +
+                        "I avsnittet skal du komme med anbefalinger om hvordan man burde kle seg for turen og hva man burde ha med i sekken. " +
+                        "Ta i betraktning at de som bruker appen er nordmenn og er vandt til kalde temperaturer, altså bruker man ikke lue og votter når det er 5 grader ute, men ikke nevn det i beskrivelsen. " +
+                        "I tillegg skal du skrive et kort avsnitt som inneholder en anbefaling av hvilken dag, utover i dag, man burde gå på tur basert på værforholdet de neste 7 dagene. " +
+                        "Du skal altså skrive tre korte avsnitt på formen: \n[Navn på tur]\nInnhold første avnitt med info om turen. \n[Informasjon om været]\nInnhold andre avsnitt om temperatur. \n[Når burde du gå tur?]\nInnhold tredje avsnitt om når det er best vær. " +
+                        "Bruk små overskrifter med fet skrifttype og markdown tekst med UTF-8. " +
+                        "Du skal IKKE svare som en chatbot, men kun gi meg informasjonen jeg har spurt om. " +
+                        "Hvis du nevner dato skal det være formattert som for eksempel 23. mars. " +
+                        "Avslutt med en hyggelig og motiverende melding og en emoji i fet skrift som for eksempel 'God tur!'. " +
+                        "Den valgte dag- og datoen er \"$selectedDay\", \"$selectedDate\". " +
+                        "All informasjonen du trenger om været er dette: \"${homeScreenViewModel.homeScreenUIState.value.forecast?.properties?.timeseries}\". "
+
+                openAIViewModel.getCompletionsStream(prompt)
+            }
         }
+    }
+
+    fun setDescriptionLoaded(loaded: Boolean) {
+        _hikeScreenUIState.update {
+            it.copy(descriptionLoaded = loaded)
+        }
+    }
+
+    // Add this function to check if the description needs to be loaded
+    fun needsDescriptionLoading(newDay: String): Boolean {
+        // Load if description hasn't been loaded yet or if day changed
+        return !hikeScreenUIState.value.descriptionLoaded || newDay != hikeScreenUIState.value.day
     }
 }
 
@@ -88,5 +109,6 @@ data class HikeScreenUIState(
     val feature: Feature,
     val day: String = "",
     val date: String = "",
-    val formattedDate: String = ""
+    val formattedDate: String = "",
+    val descriptionLoaded: Boolean = false
 )
