@@ -37,32 +37,29 @@ fun FavoriteScreen(
         topBar = { TopAppBar(title = { Text(text = "Favoritt turer") }) },
         bottomBar = { BottomBar(navController = navController) }
     ) { paddingValues ->
-        when {
-            favoriteUIState.favorites.isEmpty() -> {
-                Text(
-                    text = "Her var det tomt gitt 🤔",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
-            else -> {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(favoriteUIState.favorites) { feature ->
-                        SmallHikeCard(
-                            mapboxViewModel = mapboxViewModel,
-                            feature = feature,
-                            onClick = {
-                                hikeScreenViewModel.updateHike(feature)
-                                navController.navigate(Screen.HikeScreen.route)
-                            }
-                        )
-                    }
+        if (favoriteUIState.favorites.isEmpty()) {
+            Text(
+                text = "Her var det tomt gitt 🤔",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(16.dp)
+            )
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(favoriteUIState.favorites) { feature ->
+                    SmallHikeCard(
+                        mapboxViewModel = mapboxViewModel,
+                        feature = feature,
+                        onClick = {
+                            hikeScreenViewModel.updateHike(feature)
+                            navController.navigate(Screen.HikeScreen.route)
+                        }
+                    )
                 }
             }
         }

@@ -18,6 +18,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -29,6 +34,7 @@ fun ChatInputField(
     onValueChange: (String) -> Unit,
     onSend: () -> Unit
 ) {
+    val readyToSend = value.isNotBlank() && !openAIUIState.isStreaming
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Surface(
@@ -48,12 +54,21 @@ fun ChatInputField(
                 placeholder = { Text("Skriv en melding...") },
                 modifier = Modifier
                     .weight(1f)
-                    .padding(8.dp),
+                    .padding(8.dp)
+                    .onKeyEvent { keyEvent ->
+                        if (keyEvent.type == KeyEventType.KeyUp && keyEvent.key == Key.Enter) {
+                            if (readyToSend) {
+                                onSend()
+                                keyboardController?.hide()
+                            }
+                        }
+                        true
+                    },
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    disabledContainerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent
                 ),
                 keyboardOptions = KeyboardOptions.Default.copy(
@@ -61,7 +76,7 @@ fun ChatInputField(
                 ),
                 keyboardActions = KeyboardActions(
                     onSend = {
-                        if (value.isNotBlank() && !openAIUIState.isStreaming) {
+                        if (readyToSend) {
                             onSend()
                             keyboardController?.hide()
                         }
@@ -72,12 +87,12 @@ fun ChatInputField(
 
             IconButton(
                 onClick = {
-                    if (value.isNotBlank() && !openAIUIState.isStreaming) {
+                    if (readyToSend) {
                         onSend()
                         keyboardController?.hide()
                     }
                 },
-                enabled = value.isNotBlank() && !openAIUIState.isStreaming
+                enabled = readyToSend
             ) {
                 Icon(
                     imageVector = Icons.Default.Send,

@@ -72,7 +72,7 @@ fun RecommendedHikes(
             )
 
             Text(
-                text = "Mine anbefaliner i dag",
+                text = "Mine anbefalinger i dag",
                 fontSize = 24.sp,
                 color = Color.Black,
                 fontFamily = FontFamily.SansSerif,

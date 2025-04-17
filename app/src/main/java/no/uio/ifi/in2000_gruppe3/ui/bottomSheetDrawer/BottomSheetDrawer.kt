@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -63,7 +62,7 @@ fun BottomSheetDrawer(
         if (mapboxUIState.searchResponse.isNotEmpty() && mapboxUIState.searchQuery.isNotEmpty()) {
             sheetState.animateTo(SheetDrawerDetent.HIDDEN.value)
         } else {
-            sheetState.animateTo(targetSheetState.value)
+            sheetState.animateTo(SheetDrawerDetent.SEMIPEEK.value)
         }
     }
 
@@ -84,11 +83,11 @@ fun BottomSheetDrawer(
         state = sheetState,
         modifier = Modifier
             // Only clip to RoundedCornerShape if not fully expanded
-            .then(
-                if (sheetState.currentDetent.identifier != SheetDrawerDetent.FULLYEXPAND.value.identifier) {
-                    Modifier.clip(RoundedCornerShape(16.dp))
+            .clip(
+                if (sheetState.currentDetent.identifier == SheetDrawerDetent.FULLYEXPANDED.value.identifier) {
+                    RoundedCornerShape(0.dp)
                 } else {
-                    Modifier
+                    RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
                 }
             )
             .fillMaxWidth()
@@ -127,18 +126,17 @@ fun BottomSheetDrawer(
                             style = MaterialTheme.typography.titleLarge,
                             fontStyle = MaterialTheme.typography.titleLarge.fontStyle,
                         )
-                    }
-
-                    items(homeScreenUIState.hikes) { feature ->
-                        SmallHikeCard(
-                            mapboxViewModel = mapboxViewModel,
-                            feature = feature,
-                            onClick = {
-                                hikeScreenViewModel.updateHike(feature)
-                                navController.navigate(Screen.HikeScreen.route)
-                            }
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
+                        homeScreenUIState.hikes.forEach { feature ->
+                            SmallHikeCard(
+                                mapboxViewModel = mapboxViewModel,
+                                feature = feature,
+                                onClick = {
+                                    hikeScreenViewModel.updateHike(feature)
+                                    navController.navigate(Screen.HikeScreen.route)
+                                }
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
                     }
                 }
             }

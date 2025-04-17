@@ -9,7 +9,6 @@ import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoriteScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.GeminiViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreen
@@ -27,7 +26,6 @@ fun AppNavHost() {
     val hikeScreenViewModel: HikeScreenViewModel = viewModel()
     val favoritesViewModel: FavoritesViewModel = viewModel()
     val mapboxViewModel: MapboxViewModel = viewModel()
-    val geminiViewModel: GeminiViewModel = viewModel()
     val openAIViewModel: OpenAIViewModel = viewModel()
 
     NavHost(
@@ -73,7 +71,6 @@ fun AppNavHost() {
             LocationForecastScreen(
                 homeScreenViewModel = homeScreenViewModel,
                 hikeScreenViewModel = hikeScreenViewModel,
-                mapboxViewModel = mapboxViewModel,
                 navController = navController
             )
         }
@@ -87,7 +84,7 @@ fun AppNavHost() {
             )
         }
 
-        // Gemini screen
+        // Chatbot screen
         composable(Screen.Chatbot.route) {
             ChatbotScreen(
                 navController = navController

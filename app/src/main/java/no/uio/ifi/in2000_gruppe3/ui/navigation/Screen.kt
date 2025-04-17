@@ -1,9 +1,6 @@
 package no.uio.ifi.in2000_gruppe3.ui.navigation
 
-/**
- * Class that represents the different screens in the app.
- * @param route the route of the screen
- */
+// Class for navController to navigate between screens
 sealed class Screen(val route: String) {
     object Home : Screen("home")
     object Chatbot : Screen("chatbot")

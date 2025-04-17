@@ -54,8 +54,7 @@ class HomeScreenViewModel() : ViewModel() {
                 it.copy(isLoading = true)
             }
             try {
-                val hikesResponse =
-                    hikeAPIRepository.getHikes(lat, lng, limit, featureType, minDistance)
+                val hikesResponse = hikeAPIRepository.getHikes(lat, lng, limit, featureType, minDistance)
                 _homeScreenUIState.update {
                     it.copy(hikes = hikesResponse, isError = false)
                 }
@@ -67,7 +66,7 @@ class HomeScreenViewModel() : ViewModel() {
                 _homeScreenUIState.update {
                     it.copy(isLoading = false)
                 }
-                _sheetStateTarget.value = SheetDrawerDetent.PEEK
+                _sheetStateTarget.value = SheetDrawerDetent.SEMIPEEK
             }
         }
     }
@@ -152,30 +151,30 @@ class HomeScreenViewModel() : ViewModel() {
         }
     }
 
-    fun timeseriesFromDate(date: String): List<TimeSeries>? {
+    fun timeSeriesFromDate(date: String): List<TimeSeries>? {
         return homeScreenUIState.value.forecast?.properties?.timeseries
             ?.filter { it.time.startsWith(date) }
     }
 
     fun daysHighestTemp(date: String): Double {
-        return timeseriesFromDate(date)
+        return timeSeriesFromDate(date)
             ?.maxOfOrNull { it.data.instant.details.air_temperature } ?: Double.NEGATIVE_INFINITY
     }
 
     fun daysLowestTemp(date: String): Double {
-        return timeseriesFromDate(date)
+        return timeSeriesFromDate(date)
             ?.minOfOrNull { it.data.instant.details.air_temperature } ?: Double.POSITIVE_INFINITY
     }
 
     fun daysAverageTemp(date: String): Double {
-        val temps = timeseriesFromDate(date)
+        val temps = timeSeriesFromDate(date)
             ?.map { it.data.instant.details.air_temperature }
 
         return temps?.average() ?: -1.0
     }
 
     fun daysAverageWindSpeed(date: String): Double {
-        val windSpeeds = timeseriesFromDate(date)
+        val windSpeeds = timeSeriesFromDate(date)
             ?.map { it.data.instant.details.wind_speed }
 
         return windSpeeds?.average() ?: -1.0

@@ -28,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import kotlinx.coroutines.coroutineScope
 import no.uio.ifi.in2000_gruppe3.ui.ai.AanundFigure
 import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.BottomSheetDrawer
 import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.SheetDrawerDetent
@@ -174,28 +173,12 @@ fun HomeScreen(
                         mapboxViewModel = mapboxViewModel
                     )
                 }
-
-//                Box(
-//                    modifier = Modifier
-//                        .align(Alignment.TopEnd)
-//                        .padding(top = 90.dp, end = 8.dp)
-//
-//                ) {
-//                    MapboxZoomButtons(
-//                        mapboxViewModel = mapboxViewModel
-//                    )
-//                }
             }
 
             Column {
-                Row(
-                    modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 25.dp)
-                ) {
-                    SearchBarForMap(
-                        mapboxViewModel = mapboxViewModel,
-                        homeScreenViewModel = homeScreenViewModel
-                    )
-                }
+                SearchBarForMap(
+                    mapboxViewModel = mapboxViewModel
+                )
 
                 SuggestionColumn(
                     mapboxViewModel = mapboxViewModel

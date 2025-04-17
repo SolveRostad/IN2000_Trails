@@ -62,7 +62,7 @@ fun HikeCardMapPreview(
         modifier = Modifier
             .height(160.dp)
             .fillMaxWidth(),
-        shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
+        shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)
     ) {
         // Static image of map
         AsyncImage(
@@ -102,7 +102,7 @@ private fun createStaticMapUrl(
 
     return "https://api.mapbox.com/styles/v1/mapbox/${mapStyleUrl}/static/" +
             "path-10+${color}-1($encodedPolyline),${markers}/" +
-            "${center.longitude()},${center.latitude()},$zoom,0,0/" +
+            "${center.longitude()},${center.latitude()},${zoom},0,0/" +
             "1200x500@2x" + // widthxheight@2x
             "?access_token=${BuildConfig.MAPBOX_SECRET_TOKEN}" +
             "&attribution=false&logo=false"
@@ -150,7 +150,7 @@ private fun getBoundingBox(points: List<Point>): BoundingBox {
     )
 }
 
-// Calculate the ideal zoom level based on the bounding box and hike length
+// Calculate the ideal zoom level based on the bounding box
 private fun calculateIdealZoom(bbox: BoundingBox): Double {
     val latDiff = bbox.north() - bbox.south()
     val lngDiff = bbox.east() - bbox.west()

@@ -68,11 +68,10 @@ fun HikeScreen(
                             favoritesViewModel.deleteHike(hikeUIState.feature)
                         }
                     }) {
-                        val tint by animateColorAsState(if (checkedState.value) Color.Red else Color.Gray)
                         Icon(
                             imageVector = if (checkedState.value) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                             contentDescription = "Toggle favorite",
-                            tint = tint
+                            tint = if (checkedState.value) Color.Red else Color.Gray
                         )
                     }
                 }

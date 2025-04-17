@@ -72,10 +72,8 @@ fun AanundFigure(
                 ) {
                     Text(
                         text = "Hei, mitt navn er Ånund!\n" +
-                                "Jeg er her for å hjelpe deg med å planlegge turer i Oslo/Akershus.\n" +
-                                "\n" +
-                                "Bruk søkefeltet for å finne turer i et bestemt område, eller utforsk det interaktive kartet for å oppdage nye turmuligheter.\n" +
-                                "\n" +
+                                "Jeg er her for å hjelpe deg med å planlegge turer i Oslo/Akershus.\n\n" +
+                                "Bruk søkefeltet for å finne turer i et bestemt område, eller utforsk det interaktive kartet for å oppdage nye turmuligheter.\n\n" +
                                 "Hvis du trenger inspirasjon, kan du trykke på meg! Jeg vil gi deg mine beste anbefalinger for de fineste turene å gå akkurat i dag.",
                         fontSize = 16.sp,
                         modifier = Modifier.padding(16.dp),
@@ -97,7 +95,8 @@ fun AanundFigure(
     } else {
         Surface(
             modifier = Modifier
-                .size(150.dp),
+                .size(150.dp)
+                .offset(x = (-15).dp),
             color = Color.Transparent
         ) {
             IconButton(

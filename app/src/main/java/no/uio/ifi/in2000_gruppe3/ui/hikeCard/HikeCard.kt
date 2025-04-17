@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000_gruppe3.ui.hikeCard
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
@@ -60,7 +60,6 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 import java.time.LocalDate
-import java.util.Locale
 
 @Composable
 fun HikeCard(
@@ -89,7 +88,7 @@ fun HikeCard(
         val daysAhead = calculateDaysAhead(todaysDay, selectedDay)
         selectedDate = LocalDate.now().plusDays(daysAhead.toLong()).toString()
 
-        displayTimeSeries = homeScreenViewModel.timeseriesFromDate(selectedDate)?.firstOrNull()
+        displayTimeSeries = homeScreenViewModel.timeSeriesFromDate(selectedDate)?.firstOrNull()
 
         averageTemperature = homeScreenViewModel.daysAverageTemp(selectedDate)
         averageWindSpeed = homeScreenViewModel.daysAverageWindSpeed(selectedDate)
@@ -188,11 +187,7 @@ fun HikeCard(
                     InfoItem(
                         icon = ImageVector.vectorResource(id = R.drawable.distance_icon),
                         label = "Lengde",
-                        value = String.format(
-                            Locale("nb", "NO"),
-                            "%.2f km",
-                            hikeUIState.feature.properties.distance_meters.toFloat() / 1000.0
-                        ),
+                        value = (hikeUIState.feature.properties.distance_meters.toFloat() / 1000.0).let { "%.2f km".format(it) },
                         iconTint = Color(0xFF4CAF50)
                     )
                     InfoItem(
@@ -212,11 +207,11 @@ fun HikeCard(
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontSize = 16.sp,
                             lineHeight = 22.sp,
-                            color = MaterialTheme.colorScheme.onBackground,
-                            fontFamily = FontFamily.SansSerif
+                            fontFamily = FontFamily.SansSerif,
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                     )
-                    if (openAIUIState.isStreaming) {
+                    if (openAIUIState.isLoading || openAIUIState.isStreaming) {
                         Column(
                             modifier = Modifier.padding(horizontal = 16.dp)
                         ) {
@@ -254,6 +249,7 @@ fun HikeCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 80.dp)
+                        .clip(RoundedCornerShape(8.dp))
                         .clickable {
                             checkedState.value = !checkedState.value
                             if (checkedState.value) {
@@ -265,11 +261,10 @@ fun HikeCard(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    val tint by animateColorAsState(if (checkedState.value) Color.Red else Color.Gray)
                     Icon(
                         imageVector = if (checkedState.value) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                         contentDescription = "Toggle favorite",
-                        tint = tint
+                        tint = if (checkedState.value) Color.Red else Color.Gray,
                     )
 
                     Spacer(modifier = Modifier.width(8.dp))

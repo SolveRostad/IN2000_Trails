@@ -26,7 +26,6 @@ fun getWeatherIconUrl(symbolCode: String): String {
     } else {
         iconUrl = "https://raw.githubusercontent.com/metno/weathericons/refs/heads/main/weather/png/$symbolCode.png"
     }
-    Log.d("WeatherIcon", "Icon URL: $iconUrl")  //logging for URL
     return iconUrl
 }
 
