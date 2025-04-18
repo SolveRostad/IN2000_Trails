@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000_gruppe3.ui.mapSearchbar
 
-import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -82,22 +81,4 @@ fun SearchBarForMap(
             unfocusedContainerColor = MaterialTheme.colorScheme.surface
         )
     )
-}
-
-fun getIconFromString(iconName: String): Int {
-    return when (iconName) {
-        "marker" -> R.drawable.marker
-        "lodging" -> R.drawable.lodging
-        "building" -> R.drawable.building
-        "information" -> R.drawable.information
-        "restaurant" -> R.drawable.restaurant
-        "bus" -> R.drawable.bus
-        "florist" -> R.drawable.florist
-        "cinema" -> R.drawable.cinema
-        "fast-food" -> R.drawable.fast_food
-        else -> {
-            Log.d("UNKNOWN ICON", iconName)
-            R.drawable.ic_launcher_background
-        }
-    }
 }
