@@ -60,7 +60,6 @@ class MapboxViewModel() : ViewModel() {
             viewModelScope.launch {
                 try {
                     val suggestions = placeAutocomplete.suggestions(query)
-                    Log.d("SearchBarViewModel", "Suggestion : ${suggestions.value}")
 
                     if (suggestions.isValue) {
                         _mapboxUIState.update {

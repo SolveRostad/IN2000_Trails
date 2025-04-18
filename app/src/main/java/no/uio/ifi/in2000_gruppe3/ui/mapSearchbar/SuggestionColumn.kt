@@ -6,9 +6,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
@@ -47,7 +49,7 @@ fun SuggestionColumn(mapboxViewModel: MapboxViewModel) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
+                        .padding(8.dp)
                         .clickable {
                             mapboxViewModel.getSelectedSearchResultPoint(suggestion)
                             keyboardController?.hide()
@@ -55,24 +57,30 @@ fun SuggestionColumn(mapboxViewModel: MapboxViewModel) {
                         },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    val icon = getIconFromString(suggestion.makiIcon.toString(), context)
-                    Image(
-                        painter = painterResource(id = icon),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(24.dp)
-                            .padding(end = 8.dp)
-                    )
+                    Column(
+                        modifier = Modifier.weight(0.2f),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        val icon = getIconFromString(suggestion.makiIcon.toString(), context)
+                        Image(
+                            painter = painterResource(id = icon),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .padding(end = 8.dp)
+                        )
+                        suggestion.distanceMeters?.let {
+                            Text(
+                                text = "%.2f km".format(it / 1000.0),
+                                style = MaterialTheme.typography.bodySmall,
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.width(16.dp))
 
                     Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                            .clickable {
-                                mapboxViewModel.getSelectedSearchResultPoint(suggestion)
-                                keyboardController?.hide()
-                                focusManager.clearFocus()
-                            }
+                        modifier = Modifier.weight(1f)
                     ) {
                         Text(
                             text = suggestion.name,
