@@ -77,8 +77,8 @@ class HomeScreenViewModel() : ViewModel() {
         openAIViewModel: OpenAIViewModel
     ): List<Feature> {
         val hikes = hikeAPIRepository.getHikes(
-            mapBoxViewModel.mapboxUIState.value.latestUserPosition?.latitude() ?: 59.811600,
-            mapBoxViewModel.mapboxUIState.value.latestUserPosition?.longitude() ?: 10.798360,
+            mapBoxViewModel.mapboxUIState.value.latestUserPosition?.latitude() ?: 59.856885,
+            mapBoxViewModel.mapboxUIState.value.latestUserPosition?.longitude() ?: 10.660978,
             100,
             "Fotrute",
             500

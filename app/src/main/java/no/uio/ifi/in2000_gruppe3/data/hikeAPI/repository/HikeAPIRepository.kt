@@ -54,7 +54,8 @@ class HikeAPIRepository(private val openAIViewModel: OpenAIViewModel) {
                     "Ikke bruk noen tegn i navnet. " +
                     "Ikke bruk noen form for ID. " +
                     "Bruk mellomrom mellom ord der det er naturlig. " +
-                    "Bruk koordinatene for å vite hvor turen går. "
+                    "Bruk koordinatene til å finne stedsnavn og for å vite hvor turen går. " +
+                    "Koordinatene er: ${feature.geometry.coordinates}"
 
             openAIViewModel.getCompletionsSamples(prompt) { result ->
                 val generatedName = result.trim()

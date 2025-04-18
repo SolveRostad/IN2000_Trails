@@ -44,16 +44,21 @@ class OpenAIViewModel: ViewModel() {
                 val text = response.choices?.first()?.message?.content ?: "No response received"
 
                 _openAIUIState.update {
-                    it.copy(response = text, isLoading = false)
+                    it.copy(response = text)
                 }
 
                 onResult(text)
             } catch (e: Exception) {
-                val error = "Error: ${e.message}"
+                val error = "Nå har du trykket så mye at serveren er lei av deg. Gå deg en tur!"
                 _openAIUIState.update {
-                    it.copy(response = error, isLoading = false)
+                    it.copy(response = error)
                 }
+
                 onResult(error)
+            } finally {
+                _openAIUIState.update {
+                    it.copy(isLoading = false)
+                }
             }
         }
     }
@@ -88,7 +93,7 @@ class OpenAIViewModel: ViewModel() {
             } catch (e: Exception) {
                 _openAIUIState.update {
                     it.copy(
-                        response = "Error: ${e.message}",
+                        response = "Nå har du trykket så mye at serveren er lei av deg. Gå deg en tur!",
                         isLoading = false,
                         isStreaming = false
                     )
