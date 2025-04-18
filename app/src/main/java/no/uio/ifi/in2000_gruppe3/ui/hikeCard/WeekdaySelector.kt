@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,22 +25,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000_gruppe3.data.date.getOrderedWeekdays
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
+import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 
 @Composable
 fun WeekdaySelector(
-    onDaySelected: (String) -> Unit
+    hikeScreenViewModel: HikeScreenViewModel
 ) {
+    val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
+
     val todaysDay = getTodaysDay()
     val orderedWeekdays = getOrderedWeekdays(todaysDay)
 
     var expanded by remember { mutableStateOf(false) }
-    var selectedDay by remember { mutableStateOf(todaysDay) }
 
     Column {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = if (selectedDay == todaysDay) "I dag" else selectedDay)
+            Text(text = if (hikeUIState.selectedDay == todaysDay) "I dag" else hikeUIState.selectedDay)
 
             IconButton(onClick = { expanded = !expanded }) {
                 Icon(
@@ -51,7 +54,7 @@ fun WeekdaySelector(
 
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false },
+            onDismissRequest = { expanded = !expanded },
             modifier = Modifier
                 .width(80.dp)
                 .background(MaterialTheme.colorScheme.surface)
@@ -67,9 +70,8 @@ fun WeekdaySelector(
                         )
                     },
                     onClick = {
-                        selectedDay = day.toString()
-                        expanded = false
-                        onDaySelected(selectedDay)
+                        hikeScreenViewModel.updateSelectedDay(day.toString())
+                        expanded = !expanded
                     }
                 )
             }

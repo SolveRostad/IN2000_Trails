@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
+import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Geometry
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.PropertiesX
@@ -62,7 +64,6 @@ class HikeScreenViewModel : ViewModel() {
     ) {
         updateDate(selectedDay, selectedDate, selectedDate)
 
-        if (!hikeScreenUIState.value.descriptionLoaded || selectedDay != hikeScreenUIState.value.day) {
             viewModelScope.launch {
                 setDescriptionLoaded(true)
 
@@ -86,7 +87,7 @@ class HikeScreenViewModel : ViewModel() {
                         "All informasjonen du trenger om været er dette: \"${homeScreenViewModel.homeScreenUIState.value.forecast?.properties?.timeseries}\". "
 
                 openAIViewModel.getCompletionsStream(prompt)
-            }
+
         }
     }
 
@@ -99,6 +100,18 @@ class HikeScreenViewModel : ViewModel() {
     fun needsDescriptionLoading(newDay: String): Boolean {
         return !hikeScreenUIState.value.descriptionLoaded || newDay != hikeScreenUIState.value.day
     }
+
+    fun updateSelectedDay(selectedDay: String) {
+        _hikeScreenUIState.update {
+            it.copy(selectedDay = selectedDay)
+        }
+    }
+
+    fun updateSelectedDate(selectedDate: String) {
+        _hikeScreenUIState.update {
+            it.copy(selectedDate = selectedDate)
+        }
+    }
 }
 
 data class HikeScreenUIState(
@@ -108,5 +121,7 @@ data class HikeScreenUIState(
     val day: String = "",
     val date: String = "",
     val formattedDate: String = "",
-    val descriptionLoaded: Boolean = false
+    val descriptionLoaded: Boolean = false,
+    val selectedDay: String = getTodaysDay(),
+    val selectedDate: String = getTodaysDate()
 )

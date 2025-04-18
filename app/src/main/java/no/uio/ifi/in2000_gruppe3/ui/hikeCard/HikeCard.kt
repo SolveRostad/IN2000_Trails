@@ -48,7 +48,6 @@ import androidx.navigation.NavHostController
 import dev.jeziellago.compose.markdowntext.MarkdownText
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.data.date.calculateDaysAhead
-import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
 import no.uio.ifi.in2000_gruppe3.ui.loaders.Loader
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
@@ -76,29 +75,27 @@ fun HikeCard(
     val openAIUIState by openAIViewModel.openAIUIState.collectAsState()
 
     val todaysDay = getTodaysDay()
-    var selectedDay by remember { mutableStateOf(todaysDay) }
-    var selectedDate by remember { mutableStateOf(getTodaysDate()) }
 
     // Shows current temperature and wind speed on launch, then shows average based on selected day
     var displayTimeSeries = homeUIState.forecast?.properties?.timeseries?.firstOrNull()
     var averageTemperature by remember { mutableStateOf(displayTimeSeries?.data?.instant?.details?.air_temperature) }
     var averageWindSpeed by remember { mutableStateOf(displayTimeSeries?.data?.instant?.details?.wind_speed) }
 
-    LaunchedEffect(selectedDay) {
-        val daysAhead = calculateDaysAhead(todaysDay, selectedDay)
-        selectedDate = LocalDate.now().plusDays(daysAhead.toLong()).toString()
+    LaunchedEffect(hikeUIState.selectedDay) {
+        val daysAhead = calculateDaysAhead(todaysDay, hikeUIState.selectedDay)
+        hikeScreenViewModel.updateSelectedDate(LocalDate.now().plusDays(daysAhead.toLong()).toString())
 
-        displayTimeSeries = homeScreenViewModel.timeSeriesFromDate(selectedDate)?.firstOrNull()
+        displayTimeSeries = homeScreenViewModel.timeSeriesFromDate(hikeUIState.selectedDate)?.firstOrNull()
 
-        averageTemperature = homeScreenViewModel.daysAverageTemp(selectedDate)
-        averageWindSpeed = homeScreenViewModel.daysAverageWindSpeed(selectedDate)
+        averageTemperature = homeScreenViewModel.daysAverageTemp(hikeUIState.selectedDate)
+        averageWindSpeed = homeScreenViewModel.daysAverageWindSpeed(hikeUIState.selectedDate)
 
-        if (hikeScreenViewModel.needsDescriptionLoading(selectedDay)) {
+        if (hikeScreenViewModel.needsDescriptionLoading(hikeUIState.selectedDay)) {
             hikeScreenViewModel.getHikeDescription(
                 homeScreenViewModel = homeScreenViewModel,
                 openAIViewModel = openAIViewModel,
-                selectedDay = selectedDay,
-                selectedDate = selectedDate
+                selectedDay = hikeUIState.selectedDay,
+                selectedDate = hikeUIState.selectedDate
             )
         }
     }
@@ -135,7 +132,7 @@ fun HikeCard(
                             ForecastDisplay(
                                 homeScreenViewModel = homeScreenViewModel,
                                 showTemperature = false,
-                                date = selectedDate
+                                date = hikeUIState.selectedDate
                             )
                             Text(
                                 text = averageTemperature?.let { "%.1f°C".format(it) } ?: "N/A",
@@ -162,10 +159,9 @@ fun HikeCard(
                         overflow = TextOverflow.Ellipsis
                     )
 
-                    WeekdaySelector(onDaySelected = { newDay ->
-                        selectedDay = newDay
-                        hikeScreenViewModel.setDescriptionLoaded(false)
-                    })
+                    WeekdaySelector(
+                        hikeScreenViewModel = hikeScreenViewModel
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -226,8 +222,8 @@ fun HikeCard(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 LocationForecastSmallCard(
-                    day = selectedDay,
-                    date = selectedDate,
+                    day = hikeUIState.selectedDay,
+                    date = hikeUIState.selectedDate,
                     homeScreenViewModel = homeScreenViewModel,
                     hikeScreenViewModel = hikeScreenViewModel,
                     navController = navController
