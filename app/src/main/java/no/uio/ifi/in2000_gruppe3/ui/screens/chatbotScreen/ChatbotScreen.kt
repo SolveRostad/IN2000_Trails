@@ -49,12 +49,7 @@ fun ChatbotScreen(
         if (conversationHistory.isNotEmpty()) {
             listState.animateScrollToItem(conversationHistory.size - 1)
         }
-    }
-
-    LaunchedEffect(openAIUIState.isStreaming) {
-        if (!openAIUIState.isStreaming && openAIUIState.response.isNotBlank()) {
-            input = ""
-        }
+        input = ""
     }
 
     Scaffold(
@@ -74,12 +69,10 @@ fun ChatbotScreen(
                     value = input,
                     onValueChange = { input = it },
                     onSend = {
-                        if (input.isNotBlank()) {
-                            keyboardController?.hide()
-                            openAIViewModel.addUserMessage(input)
-                            coroutineScope.launch {
-                                openAIViewModel.getCompletionsStream(input)
-                            }
+                        keyboardController?.hide()
+                        openAIViewModel.addUserMessage(input)
+                        coroutineScope.launch {
+                            openAIViewModel.getCompletionsStream(input)
                         }
                     }
                 )

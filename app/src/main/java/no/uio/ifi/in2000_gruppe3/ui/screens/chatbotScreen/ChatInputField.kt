@@ -23,7 +23,6 @@ import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 
@@ -35,7 +34,6 @@ fun ChatInputField(
     onSend: () -> Unit
 ) {
     val readyToSend = value.isNotBlank() && !openAIUIState.isStreaming
-    val keyboardController = LocalSoftwareKeyboardController.current
 
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -57,10 +55,7 @@ fun ChatInputField(
                     .padding(8.dp)
                     .onKeyEvent { keyEvent ->
                         if (keyEvent.type == KeyEventType.KeyUp && keyEvent.key == Key.Enter) {
-                            if (readyToSend) {
-                                onSend()
-                                keyboardController?.hide()
-                            }
+                            if (readyToSend) { onSend() }
                         }
                         true
                     },
@@ -75,23 +70,13 @@ fun ChatInputField(
                     imeAction = ImeAction.Send
                 ),
                 keyboardActions = KeyboardActions(
-                    onSend = {
-                        if (readyToSend) {
-                            onSend()
-                            keyboardController?.hide()
-                        }
-                    }
+                    onSend = { if (readyToSend) { onSend() } }
                 ),
                 maxLines = 4
             )
 
             IconButton(
-                onClick = {
-                    if (readyToSend) {
-                        onSend()
-                        keyboardController?.hide()
-                    }
-                },
+                onClick = { if (readyToSend) { onSend() } },
                 enabled = readyToSend
             ) {
                 Icon(
