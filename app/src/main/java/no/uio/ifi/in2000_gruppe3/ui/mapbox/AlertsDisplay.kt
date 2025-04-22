@@ -26,7 +26,6 @@ import no.uio.ifi.in2000_gruppe3.data.metAlertsAPI.models.Geometry
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 import kotlin.math.*
 
-
 fun getAlertsIconUrl(event: String?, riskMatrixColor: String?): String {
     val iconId = eventIconMap[event] ?: "icon-warning-generic" // Default hvis event ikke finnes
 

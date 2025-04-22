@@ -6,17 +6,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.openAIScreen.OpenAIViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoriteScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.openAIScreen.GeminiViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastDetailedScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastScreen
-import no.uio.ifi.in2000_gruppe3.ui.screens.openAIScreen.OpenAIScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.ChatbotScreen
 
 @Composable
 fun AppNavHost() {
@@ -27,7 +26,6 @@ fun AppNavHost() {
     val hikeScreenViewModel: HikeScreenViewModel = viewModel()
     val favoritesViewModel: FavoritesViewModel = viewModel()
     val mapboxViewModel: MapboxViewModel = viewModel()
-    val geminiViewModel: GeminiViewModel = viewModel()
     val openAIViewModel: OpenAIViewModel = viewModel()
 
     NavHost(
@@ -39,8 +37,9 @@ fun AppNavHost() {
             HomeScreen(
                 homeScreenViewModel = homeScreenViewModel,
                 hikeViewModel = hikeScreenViewModel,
-                mapboxViewModel = mapboxViewModel,
                 favoritesViewModel = favoritesViewModel,
+                mapboxViewModel = mapboxViewModel,
+                openAIViewModel = openAIViewModel,
                 navController = navController
             )
         }
@@ -72,7 +71,6 @@ fun AppNavHost() {
             LocationForecastScreen(
                 homeScreenViewModel = homeScreenViewModel,
                 hikeScreenViewModel = hikeScreenViewModel,
-                mapboxViewModel = mapboxViewModel,
                 navController = navController
             )
         }
@@ -86,10 +84,9 @@ fun AppNavHost() {
             )
         }
 
-        // Gemini screen
-        composable(Screen.OpenAI.route) {
-            OpenAIScreen(
-                openAIViewModel = openAIViewModel,
+        // Chatbot screen
+        composable(Screen.Chatbot.route) {
+            ChatbotScreen(
                 navController = navController
             )
         }

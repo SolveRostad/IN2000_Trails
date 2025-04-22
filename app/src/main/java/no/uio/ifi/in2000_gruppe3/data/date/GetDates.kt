@@ -57,6 +57,7 @@ fun getTodaysDay(): String {
     return daysMap[dayOfWeek] ?: "Ukjent dag"
 }
 
+// Returns the number of days ahead from today's day to the selected day
 fun calculateDaysAhead(todaysDay: String, selectedDay: String): Int {
     val todayIndex = Weekdays.indexOf(todaysDay)
     val selectedIndex = Weekdays.indexOf(selectedDay)

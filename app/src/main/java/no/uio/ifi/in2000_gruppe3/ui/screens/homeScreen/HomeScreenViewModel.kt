@@ -18,12 +18,13 @@ import no.uio.ifi.in2000_gruppe3.data.locationForecastAPI.repository.LocationFor
 import no.uio.ifi.in2000_gruppe3.data.metAlertsAPI.models.MetAlerts
 import no.uio.ifi.in2000_gruppe3.data.metAlertsAPI.repository.MetAlertsRepository
 import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.SheetDrawerDetent
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 
 class HomeScreenViewModel() : ViewModel() {
-    private val hikeAPIRepository = HikeAPIRepository()
+    private val hikeAPIRepository = HikeAPIRepository(openAIViewModel = OpenAIViewModel())
     private val locationForecastRepository = LocationForecastRepository()
     private val metAlertsRepository = MetAlertsRepository()
-    private val _sheetStateTarget = MutableStateFlow(SheetDrawerDetent.SEMIPEEK)
 
     private val _homeScreenUIState = MutableStateFlow<HomeScreenUIState>(
         HomeScreenUIState(
@@ -32,10 +33,9 @@ class HomeScreenViewModel() : ViewModel() {
             forecast = null,
         )
     )
-
-
-
     val homeScreenUIState: StateFlow<HomeScreenUIState> = _homeScreenUIState.asStateFlow()
+
+    private val _sheetStateTarget = MutableStateFlow(SheetDrawerDetent.SEMIPEEK)
     val sheetStateTarget: StateFlow<SheetDrawerDetent> = _sheetStateTarget.asStateFlow()
 
     fun setSheetState(target: SheetDrawerDetent) {
@@ -54,8 +54,7 @@ class HomeScreenViewModel() : ViewModel() {
                 it.copy(isLoading = true)
             }
             try {
-                val hikesResponse =
-                    hikeAPIRepository.getHikes(lat, lng, limit, featureType, minDistance)
+                val hikesResponse = hikeAPIRepository.getHikes(lat, lng, limit, featureType, minDistance)
                 _homeScreenUIState.update {
                     it.copy(hikes = hikesResponse, isError = false)
                 }
@@ -67,9 +66,24 @@ class HomeScreenViewModel() : ViewModel() {
                 _homeScreenUIState.update {
                     it.copy(isLoading = false)
                 }
-                _sheetStateTarget.value = SheetDrawerDetent.PEEK
+                _sheetStateTarget.value = SheetDrawerDetent.SEMIPEEK
             }
         }
+    }
+
+    suspend fun getRecommendedHikes(
+        homeScreenViewModel: HomeScreenViewModel,
+        mapBoxViewModel: MapboxViewModel,
+        openAIViewModel: OpenAIViewModel
+    ): List<Feature> {
+        val hikes = hikeAPIRepository.getHikes(
+            mapBoxViewModel.mapboxUIState.value.latestUserPosition?.latitude() ?: 59.856885,
+            mapBoxViewModel.mapboxUIState.value.latestUserPosition?.longitude() ?: 10.660978,
+            100,
+            "Fotrute",
+            500
+        )
+        return hikes.shuffled().take(3)
     }
 
     fun fetchForecast(point: Point) {
@@ -131,30 +145,36 @@ class HomeScreenViewModel() : ViewModel() {
         }
     }
 
-    fun timeseriesFromDate(date: String): List<TimeSeries>? {
+    fun clearHikes() {
+        _homeScreenUIState.update { currentState ->
+            currentState.copy(hikes = emptyList())
+        }
+    }
+
+    fun timeSeriesFromDate(date: String): List<TimeSeries>? {
         return homeScreenUIState.value.forecast?.properties?.timeseries
             ?.filter { it.time.startsWith(date) }
     }
 
     fun daysHighestTemp(date: String): Double {
-        return timeseriesFromDate(date)
+        return timeSeriesFromDate(date)
             ?.maxOfOrNull { it.data.instant.details.air_temperature } ?: Double.NEGATIVE_INFINITY
     }
 
     fun daysLowestTemp(date: String): Double {
-        return timeseriesFromDate(date)
+        return timeSeriesFromDate(date)
             ?.minOfOrNull { it.data.instant.details.air_temperature } ?: Double.POSITIVE_INFINITY
     }
 
     fun daysAverageTemp(date: String): Double {
-        val temps = timeseriesFromDate(date)
+        val temps = timeSeriesFromDate(date)
             ?.map { it.data.instant.details.air_temperature }
 
         return temps?.average() ?: -1.0
     }
 
     fun daysAverageWindSpeed(date: String): Double {
-        val windSpeeds = timeseriesFromDate(date)
+        val windSpeeds = timeSeriesFromDate(date)
             ?.map { it.data.instant.details.wind_speed }
 
         return windSpeeds?.average() ?: -1.0

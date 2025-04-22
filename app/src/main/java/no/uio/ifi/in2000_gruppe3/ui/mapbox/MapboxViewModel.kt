@@ -38,9 +38,18 @@ class MapboxViewModel() : ViewModel() {
         }
     }
 
-    fun updatePointerCoordinates(point: Point) {
+    fun updatePointerCoordinates(point: Point?) {
         _mapboxUIState.update {
-            it.copy(pointerCoordinates = point)
+            it.copy(
+                pointerCoordinates = point,
+                shouldFetchHikes = true
+            )
+        }
+    }
+
+    fun resetShouldFetchHikes() {
+        _mapboxUIState.update {
+            it.copy(shouldFetchHikes = false)
         }
     }
 
@@ -51,7 +60,6 @@ class MapboxViewModel() : ViewModel() {
             viewModelScope.launch {
                 try {
                     val suggestions = placeAutocomplete.suggestions(query)
-                    Log.d("SearchBarViewModel", "Suggestion : ${suggestions.value}")
 
                     if (suggestions.isValue) {
                         _mapboxUIState.update {
@@ -134,6 +142,28 @@ class MapboxViewModel() : ViewModel() {
         }
     }
 
+    fun clearPolylineAnnotations() {
+        _mapboxUIState.update { currentState ->
+            currentState.copy(polylineAnnotations = emptyList())
+        }
+    }
+
+    fun centerOnUserPosition() {
+        viewModelScope.launch {
+            _mapboxUIState.update { currentState ->
+                currentState.copy(
+                    centerOnUserTrigger = System.currentTimeMillis()
+                )
+            }
+        }
+    }
+
+    fun updateLatestUserPosition(point: Point) {
+        _mapboxUIState.update { currentState ->
+            currentState.copy(latestUserPosition = point)
+        }
+    }
+
     fun zoomIn() {
         _mapboxUIState.update {
             it.copy(
@@ -155,8 +185,10 @@ data class MapboxUIState(
     val mapStyle: String,
     val pointerCoordinates: Point? = null,
     val latestUserPosition: Point? = null,
+    val centerOnUserTrigger: Long = 0L,
     val polylineAnnotations: List<PolylineAnnotationOptions>,
     val zoom: Double = 12.0,
+    val shouldFetchHikes: Boolean = false,
 
     val searchResponse: List<PlaceAutocompleteSuggestion>,
     val searchQuery: String,

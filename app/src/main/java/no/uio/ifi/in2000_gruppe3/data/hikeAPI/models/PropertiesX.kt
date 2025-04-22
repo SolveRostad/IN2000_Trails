@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PropertiesX(
     val cmt: String?,
-    val desc: String?,
+    var desc: String?,
     val distance_meters: Double,
     val distance_to_point: Double,
     val fid: Int,

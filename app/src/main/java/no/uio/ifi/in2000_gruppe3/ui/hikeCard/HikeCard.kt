@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000_gruppe3.ui.hikeCard
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
@@ -48,18 +48,17 @@ import androidx.navigation.NavHostController
 import dev.jeziellago.compose.markdowntext.MarkdownText
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.data.date.calculateDaysAhead
-import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
 import no.uio.ifi.in2000_gruppe3.ui.loaders.Loader
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.LocationForecastSmallCard
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.openAIScreen.OpenAIViewModel
+import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
+import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 import java.time.LocalDate
-import java.util.Locale
 
 @Composable
 fun HikeCard(
@@ -76,29 +75,29 @@ fun HikeCard(
     val openAIUIState by openAIViewModel.openAIUIState.collectAsState()
 
     val todaysDay = getTodaysDay()
-    var selectedDay by remember { mutableStateOf(todaysDay) }
-    var selectedDate by remember { mutableStateOf(getTodaysDate()) }
 
     // Shows current temperature and wind speed on launch, then shows average based on selected day
     var displayTimeSeries = homeUIState.forecast?.properties?.timeseries?.firstOrNull()
     var averageTemperature by remember { mutableStateOf(displayTimeSeries?.data?.instant?.details?.air_temperature) }
     var averageWindSpeed by remember { mutableStateOf(displayTimeSeries?.data?.instant?.details?.wind_speed) }
 
-    LaunchedEffect(selectedDay) {
-        val daysAhead = calculateDaysAhead(todaysDay, selectedDay)
-        selectedDate = LocalDate.now().plusDays(daysAhead.toLong()).toString()
+    LaunchedEffect(hikeUIState.selectedDay) {
+        val daysAhead = calculateDaysAhead(todaysDay, hikeUIState.selectedDay)
+        hikeScreenViewModel.updateSelectedDate(LocalDate.now().plusDays(daysAhead.toLong()).toString())
 
-        displayTimeSeries = homeScreenViewModel.timeseriesFromDate(selectedDate)?.firstOrNull()
+        displayTimeSeries = homeScreenViewModel.timeSeriesFromDate(hikeUIState.selectedDate)?.firstOrNull()
 
-        averageTemperature = homeScreenViewModel.daysAverageTemp(selectedDate)
-        averageWindSpeed = homeScreenViewModel.daysAverageWindSpeed(selectedDate)
+        averageTemperature = homeScreenViewModel.daysAverageTemp(hikeUIState.selectedDate)
+        averageWindSpeed = homeScreenViewModel.daysAverageWindSpeed(hikeUIState.selectedDate)
 
-        hikeScreenViewModel.getHikeDescription(
-            homeScreenViewModel = homeScreenViewModel,
-            openAIViewModel = openAIViewModel,
-            selectedDay = selectedDay,
-            selectedDate = selectedDate,
-        )
+        if (hikeScreenViewModel.needsDescriptionLoading(hikeUIState.selectedDay)) {
+            hikeScreenViewModel.getHikeDescription(
+                homeScreenViewModel = homeScreenViewModel,
+                openAIViewModel = openAIViewModel,
+                selectedDay = hikeUIState.selectedDay,
+                selectedDate = hikeUIState.selectedDate
+            )
+        }
     }
 
     Card(
@@ -133,7 +132,7 @@ fun HikeCard(
                             ForecastDisplay(
                                 homeScreenViewModel = homeScreenViewModel,
                                 showTemperature = false,
-                                date = selectedDate
+                                date = hikeUIState.selectedDate
                             )
                             Text(
                                 text = averageTemperature?.let { "%.1f°C".format(it) } ?: "N/A",
@@ -160,9 +159,9 @@ fun HikeCard(
                         overflow = TextOverflow.Ellipsis
                     )
 
-                    WeekdaySelector(onDaySelected = { newDay ->
-                        selectedDay = newDay
-                    })
+                    WeekdaySelector(
+                        hikeScreenViewModel = hikeScreenViewModel
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -187,11 +186,7 @@ fun HikeCard(
                     InfoItem(
                         icon = ImageVector.vectorResource(id = R.drawable.distance_icon),
                         label = "Lengde",
-                        value = String.format(
-                            Locale("nb", "NO"),
-                            "%.2f km",
-                            hikeUIState.feature.properties.distance_meters.toFloat() / 1000.0
-                        ),
+                        value = (hikeUIState.feature.properties.distance_meters.toFloat() / 1000.0).let { "%.2f km".format(it) },
                         iconTint = Color(0xFF4CAF50)
                     )
                     InfoItem(
@@ -211,11 +206,11 @@ fun HikeCard(
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontSize = 16.sp,
                             lineHeight = 22.sp,
-                            color = MaterialTheme.colorScheme.onBackground,
-                            fontFamily = FontFamily.SansSerif
+                            fontFamily = FontFamily.SansSerif,
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                     )
-                    if (openAIUIState.isStreaming) {
+                    if (openAIUIState.isLoading || openAIUIState.isStreaming) {
                         Column(
                             modifier = Modifier.padding(horizontal = 16.dp)
                         ) {
@@ -227,8 +222,8 @@ fun HikeCard(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 LocationForecastSmallCard(
-                    day = selectedDay,
-                    date = selectedDate,
+                    day = hikeUIState.selectedDay,
+                    date = hikeUIState.selectedDate,
                     homeScreenViewModel = homeScreenViewModel,
                     hikeScreenViewModel = hikeScreenViewModel,
                     navController = navController
@@ -242,7 +237,7 @@ fun HikeCard(
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B9FF)),
-                    onClick = { navController.navigate("locationForecast") }
+                    onClick = { navController.navigate(Screen.LocationForecast.route) }
                 ) {
                     Text(text = "Se været andre dager")
                 }
@@ -253,6 +248,7 @@ fun HikeCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 80.dp)
+                        .clip(RoundedCornerShape(8.dp))
                         .clickable {
                             checkedState.value = !checkedState.value
                             if (checkedState.value) {
@@ -264,11 +260,10 @@ fun HikeCard(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    val tint by animateColorAsState(if (checkedState.value) Color.Red else Color.Gray)
                     Icon(
                         imageVector = if (checkedState.value) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                         contentDescription = "Toggle favorite",
-                        tint = tint
+                        tint = if (checkedState.value) Color.Red else Color.Gray,
                     )
 
                     Spacer(modifier = Modifier.width(8.dp))
