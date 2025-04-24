@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -114,14 +116,13 @@ fun HomeScreen(
             Column(
                 modifier = Modifier.padding(top = 90.dp)
             ) {
-                Surface(
-                    modifier = Modifier
-                        .padding(horizontal = 8.dp)
-                        .background(
-                            color = Color.White.copy(alpha = 0.6f),
-                            shape = RoundedCornerShape(8.dp)
-                        ),
-                    color = Color.Transparent
+                Card(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White.copy(alpha = 0.85f)
+                    )
                 ) {
                     ForecastDisplay(
                         homeScreenViewModel = homeScreenViewModel,
