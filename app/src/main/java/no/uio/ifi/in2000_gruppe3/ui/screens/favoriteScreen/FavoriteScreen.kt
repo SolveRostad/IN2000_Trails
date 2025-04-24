@@ -26,12 +26,12 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteScreen(
-    favoritesViewModel: FavoritesScreenViewModel,
+    favoritesViewModel: FavoritesViewModel,
     hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
-    val favoriteUIState by favoritesViewModel.favoriteScreenUIState.collectAsState()
+    val favoriteUIState by favoritesViewModel.favoritesScreenUIState.collectAsState()
 
     Scaffold(
         topBar = { TopAppBar(title = { Text(text = "Favoritt turer") }) },
@@ -51,7 +51,7 @@ fun FavoriteScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(favoriteUIState.convertedFavorites) { feature ->
+                items(favoriteUIState.favorites) { feature ->
                     SmallHikeCard(
                         mapboxViewModel = mapboxViewModel,
                         feature = feature,
