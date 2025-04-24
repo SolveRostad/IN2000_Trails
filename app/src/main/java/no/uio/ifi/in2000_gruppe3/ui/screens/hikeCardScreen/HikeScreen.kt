@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,14 +27,14 @@ import no.uio.ifi.in2000_gruppe3.ui.hikeCard.HikeCard
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HikeScreen(
     homeScreenViewModel: HomeScreenViewModel,
-    favoritesViewModel: FavoritesViewModel,
+    favoritesViewModel: FavoritesScreenViewModel,
     hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     openAIViewModel: OpenAIViewModel,
@@ -63,9 +62,9 @@ fun HikeScreen(
                     IconButton(onClick = {
                         checkedState.value = !checkedState.value
                         if (checkedState.value) {
-                            favoritesViewModel.addHike(hikeUIState.feature)
+                            favoritesViewModel.addFavorite(hikeUIState.feature.properties.fid)
                         } else {
-                            favoritesViewModel.deleteHike(hikeUIState.feature)
+                            favoritesViewModel.deleteFavorite(hikeUIState.feature.properties.fid)
                         }
                     }) {
                         Icon(

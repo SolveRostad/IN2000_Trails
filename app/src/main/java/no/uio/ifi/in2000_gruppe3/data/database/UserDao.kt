@@ -22,7 +22,7 @@ interface UserDao {
     suspend fun selectUser(username: String)
 
     @Query("SELECT * FROM user_table WHERE isSelected")
-    suspend fun getSelectedUser(): User?
+    suspend fun getSelectedUser(): User
 
     @Query("UPDATE user_table SET isSelected = 0")
     suspend fun unselectUser()

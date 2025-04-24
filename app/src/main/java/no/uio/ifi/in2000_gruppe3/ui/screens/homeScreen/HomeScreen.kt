@@ -6,7 +6,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -39,19 +38,18 @@ import no.uio.ifi.in2000_gruppe3.ui.mapbox.AlertsDisplay
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapStyleSelector
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapViewer
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
-import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxZoomButtons
-import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.ResetMapCenterButton
+import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.networkSnackbar.NetworkSnackbar
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 
 @Composable
 fun HomeScreen(
     homeScreenViewModel: HomeScreenViewModel,
     hikeViewModel: HikeScreenViewModel,
-    favoritesViewModel: FavoritesViewModel,
+    favoritesViewModel: FavoritesScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     openAIViewModel: OpenAIViewModel,
     navController: NavHostController
@@ -65,7 +63,7 @@ fun HomeScreen(
 
     val targetSheetState by homeScreenViewModel.sheetStateTarget.collectAsState()
     val isControlsVisible = targetSheetState == SheetDrawerDetent.HIDDEN ||
-                            targetSheetState == SheetDrawerDetent.SEMIPEEK
+            targetSheetState == SheetDrawerDetent.SEMIPEEK
 
     // Calculate vertical offset based on sheet state
     val sheetOffset = remember(targetSheetState) {
@@ -88,7 +86,9 @@ fun HomeScreen(
         bottomBar = { BottomBar(navController = navController) },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { paddingValues ->
-        Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)) {
             NetworkSnackbar(snackbarHostState, coroutineScope)
         }
 

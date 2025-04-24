@@ -14,6 +14,6 @@ interface FavoriteDao {
     @Delete
     suspend fun deleteFavorite(favorite: Favorite)
 
-    @Query("SELECT * FROM favorite_table WHERE username LIKE :username")
-    suspend fun getAllFavorites(username: String): List<Favorite>
+    @Query("SELECT hike_id FROM favorite_table WHERE username LIKE :username")
+    suspend fun getAllFavorites(username: String): List<Int>
 }

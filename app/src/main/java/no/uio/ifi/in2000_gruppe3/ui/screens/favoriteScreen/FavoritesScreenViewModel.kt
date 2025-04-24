@@ -35,7 +35,7 @@ class FavoritesScreenViewModel(
         viewModelScope.launch {
             try {
                 setUser()
-                getAllFavorites()
+                getAllFavorites(userRepository.getSelectedUser().username)
                 getAllConverteFavorites()
             } catch (e: Exception) {
                 Log.e("FavoritesViewModel", "Error initializing data: ${e.message}")
@@ -43,16 +43,13 @@ class FavoritesScreenViewModel(
         }
     }
 
-    private fun setUser() {
+    fun setUser() {
         viewModelScope.launch {
             _favoriteScreenUIState.update {
-                if (userRepository.getSelectedUser() != null) {
-                    it.copy(username = userRepository.getSelectedUser()!!.username)
-                } else {
-                    it.copy(username = "")
-                }
+                it.copy(username = userRepository.getSelectedUser().username)
             }
         }
+
     }
 
     fun updateUserLocation(point: Point) {
@@ -62,8 +59,12 @@ class FavoritesScreenViewModel(
     }
 
     // for testing
-    fun getAllFavorites(): List<Int> {
-        return _favoriteScreenUIState.value.favorites
+    suspend fun getAllFavorites(username: String): List<Int> {
+        return favoritesRepository.getAllFavorites(username)
+    }
+
+    fun isHikeFavorite(feature: Feature): Boolean {
+        return _favoriteScreenUIState.value.favorites.contains(feature.properties.fid)
     }
 
     fun getAllConverteFavorites() {
@@ -97,9 +98,9 @@ class FavoritesScreenViewModel(
                 it.copy(isLoading = true)
             }
             try {
-                val newFavorite = Favorite(_favoriteScreenUIState.value.username, id)
+                val currentUser = userRepository.getSelectedUser()
+                val newFavorite = Favorite(currentUser.username, id)
                 favoritesRepository.addFavorite(newFavorite)
-
                 _favoriteScreenUIState.update {
                     it.copy(
                         favorites = _favoriteScreenUIState.value.favorites + newFavorite.hikeId

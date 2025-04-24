@@ -14,6 +14,7 @@ class UserRepository(private val userDao: UserDao) {
     }
 
     suspend fun selectUser(username: String) {
+        unselectUser()
         userDao.selectUser(username)
     }
 
@@ -21,7 +22,7 @@ class UserRepository(private val userDao: UserDao) {
         userDao.unselectUser()
     }
 
-    suspend fun getSelectedUser(): User? {
+    suspend fun getSelectedUser(): User {
         return userDao.getSelectedUser()
     }
 

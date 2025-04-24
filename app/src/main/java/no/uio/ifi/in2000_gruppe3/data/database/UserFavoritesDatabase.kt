@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
  *   hikesDone: Int
  */
 
-@Database(entities = [Favorite::class, User::class], version = 2)
+@Database(entities = [Favorite::class, User::class], version = 1)
 @TypeConverters(Converter::class)
 abstract class UserFavoritesDatabase : RoomDatabase() {
     abstract fun favoriteDao(): FavoriteDao
@@ -42,12 +42,13 @@ abstract class UserFavoritesDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: UserFavoritesDatabase? = null
 
-        private class DatabaseCallBack(private val scope : CoroutineScope) : RoomDatabase.Callback() {
+        private class DatabaseCallBack(private val scope: CoroutineScope) :
+            RoomDatabase.Callback() {
 
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
 
-                scope.launch{
+                scope.launch {
                     populateDatabase()
                 }
             }
@@ -55,7 +56,7 @@ abstract class UserFavoritesDatabase : RoomDatabase() {
             private suspend fun populateDatabase() {
                 val userDao = INSTANCE?.userDao() ?: return
 
-                val defaultUser = User("defaultUser")
+                val defaultUser = User("defaultUser", isSelected = 1)
                 userDao.insertUser(defaultUser)
             }
         }
@@ -66,7 +67,7 @@ abstract class UserFavoritesDatabase : RoomDatabase() {
                     context.applicationContext,
                     UserFavoritesDatabase::class.java,
                     "user_favorites_database"
-                ).addMigrations(MIGRATION_1_2)
+                )
                     .addCallback(DatabaseCallBack(scope))
                     .fallbackToDestructiveMigration(false)
                     .build()

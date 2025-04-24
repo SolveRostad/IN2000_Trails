@@ -1,7 +1,13 @@
 package no.uio.ifi.in2000_gruppe3
 
 import androidx.room.Room
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import no.uio.ifi.in2000_gruppe3.data.database.User
 import no.uio.ifi.in2000_gruppe3.data.database.UserFavoritesDatabase
 import no.uio.ifi.in2000_gruppe3.data.favorites.FavoriteRepository
@@ -9,6 +15,7 @@ import no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository.HikeAPIRepository
 import no.uio.ifi.in2000_gruppe3.data.user.UserRepository
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
+import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -17,6 +24,7 @@ import org.robolectric.annotation.Config
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 /**
  * Testklasse for UserRepository og favoritesViewModel.
@@ -38,19 +46,17 @@ class UserFavoriteUnitTest {
 
     private val userDao = userDatabase.userDao()
     private val favoriteDao = userDatabase.favoriteDao()
-
     private val userRepository = UserRepository(userDao)
 
-    val favoritesScreenViewModel = FavoritesScreenViewModel(
-        application = application,
-        favoritesRepository = FavoriteRepository(favoriteDao),
-        userRepository = userRepository,
-        hikeAPIRepository = HikeAPIRepository(OpenAIViewModel())
-    )
 
     //Dummy data til testene
     val bruker1 = User(username = "Aanund")
     val bruker2 = User(username = "Victor")
+
+    @After
+    fun tearDown() {
+        userDatabase.close()
+    }
 
     @Test
     fun testAddUser() {
@@ -109,44 +115,115 @@ class UserFavoriteUnitTest {
             userRepository.selectUser(bruker1.username)
             selectedUser = userRepository.getSelectedUser()
 
-            assertEquals(selectedUser?.username, bruker1.username, "Bruker ble ikke valgt")
+            assertEquals(selectedUser.username, bruker1.username, "Bruker ble ikke valgt")
         }
 
         println("---testSelectUser PASSERT---")
     }
 
     //Tester for favorites view model.
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testAddFavorite() {
-        favoritesScreenViewModel.addFavorite(1)
-        val favorites = favoritesScreenViewModel.getAllFavorites()
-        assertEquals(favorites.last(), 1, "Favoritt ble ikke lagt til")
+    fun testAddFavorite() = runTest {
+        val testDispatcher = UnconfinedTestDispatcher(testScheduler)
+        Dispatchers.setMain(testDispatcher)
 
+        try {
+            userRepository.clearAllUsers()
+            userRepository.addUser(bruker1)
+            userRepository.selectUser(bruker1.username)
+
+            val favoritesScreenViewModel = FavoritesScreenViewModel(
+                application = application,
+                favoritesRepository = FavoriteRepository(favoriteDao),
+                userRepository = userRepository,
+                hikeAPIRepository = HikeAPIRepository(OpenAIViewModel())
+            )
+
+            favoritesScreenViewModel.addFavorite(1)
+
+            var favorites = favoritesScreenViewModel.getAllFavorites(bruker1.username)
+            // Dette var den eneste måten jeg klarte å vente på at viewmodelscope
+            // coroutine launchen ble ferdig på før hovedtråen fortsetter...
+            while (favorites.isEmpty()) {
+                favorites = favoritesScreenViewModel.getAllFavorites(bruker1.username)
+            }
+
+            assertEquals(1, favorites.last(), "Favoritt ble ikke lagt til")
+        } finally {
+            Dispatchers.resetMain()
+        }
         println("---testAddFavorite PASSERT---")
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testDeleteFavorite() {
-        favoritesScreenViewModel.addFavorite(1)
-        favoritesScreenViewModel.deleteFavorite(1)
+    fun testDeleteFavorite() = runTest {
+        val testDispatcher = UnconfinedTestDispatcher(testScheduler)
+        Dispatchers.setMain(testDispatcher)
 
-        val favorites = favoritesScreenViewModel.getAllFavorites()
+        try {
+            userRepository.clearAllUsers()
+            userRepository.addUser(bruker1)
+            userRepository.selectUser(bruker1.username)
 
-        assertFalse(favorites.isEmpty(), "Favoritt ble ikke slettet")
+            val favoritesScreenViewModel = FavoritesScreenViewModel(
+                application = application,
+                favoritesRepository = FavoriteRepository(favoriteDao),
+                userRepository = userRepository,
+                hikeAPIRepository = HikeAPIRepository(OpenAIViewModel())
+            )
+            favoritesScreenViewModel.addFavorite(1)
+            var favorites = favoritesScreenViewModel.getAllFavorites(bruker1.username)
+            while (favorites.isEmpty()) {
+                favorites = favoritesScreenViewModel.getAllFavorites(bruker1.username)
+            }
+            favoritesScreenViewModel.deleteFavorite(1)
+            while (favorites.isNotEmpty()) {
+                favorites = favoritesScreenViewModel.getAllFavorites(bruker1.username)
+            }
 
-        println("---testDeleteFavorite PASSERT---")
+            assertTrue(favorites.isEmpty(), "Favoritt ble ikke slettet")
+
+            println("---testDeleteFavorite PASSERT---")
+        } finally {
+            Dispatchers.resetMain()
+        }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testGetAllFavorites() {
-        favoritesScreenViewModel.addFavorite(1)
-        favoritesScreenViewModel.addFavorite(2)
+    fun testGetAllFavorites() = runTest {
+        val testDispatcher = UnconfinedTestDispatcher(testScheduler)
+        Dispatchers.setMain(testDispatcher)
 
-        val favorites: List<Int> = favoritesScreenViewModel.getAllFavorites()
+        try {
+            userRepository.clearAllUsers()
+            userRepository.addUser(bruker1)
+            userRepository.selectUser(bruker1.username)
 
-        assertContains(favorites, 1, "hike id 1 ble ikke hentet")
-        assertContains(favorites, 2, "hike id 2 ble ikke hentet")
+            val favoritesScreenViewModel = FavoritesScreenViewModel(
+                application = application,
+                favoritesRepository = FavoriteRepository(favoriteDao),
+                userRepository = userRepository,
+                hikeAPIRepository = HikeAPIRepository(OpenAIViewModel())
+            )
 
+            favoritesScreenViewModel.addFavorite(1)
+            favoritesScreenViewModel.addFavorite(2)
+
+            var favorites = favoritesScreenViewModel.getAllFavorites(bruker1.username)
+
+            while (favorites.size < 2) {
+                favorites = favoritesScreenViewModel.getAllFavorites(bruker1.username)
+            }
+
+            assertContains(favorites, 1, "fikk ikke hentet alle ider")
+            assertContains(favorites, 2, "fikk ikke hentet alle ider")
+
+        } finally {
+            Dispatchers.resetMain()
+        }
         println("---testGetAllFavorites PASSERT---")
     }
 }

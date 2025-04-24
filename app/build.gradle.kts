@@ -79,7 +79,8 @@ android {
 dependencies {
     // For testing
     testImplementation("org.robolectric:robolectric:4.10.3")
-    
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+
     //Room
     val room_version = "2.7.0-rc02"
 
