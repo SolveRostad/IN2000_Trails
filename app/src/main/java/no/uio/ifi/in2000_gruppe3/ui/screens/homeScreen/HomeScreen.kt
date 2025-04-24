@@ -6,7 +6,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -39,7 +38,6 @@ import no.uio.ifi.in2000_gruppe3.ui.mapbox.AlertsDisplay
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapStyleSelector
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapViewer
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
-import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxZoomButtons
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.ResetMapCenterButton
 import no.uio.ifi.in2000_gruppe3.ui.networkSnackbar.NetworkSnackbar
@@ -67,7 +65,7 @@ fun HomeScreen(
     val isControlsVisible = targetSheetState == SheetDrawerDetent.HIDDEN ||
                             targetSheetState == SheetDrawerDetent.SEMIPEEK
 
-    // Calculate vertical offset based on sheet state
+    // Calculate vertical offset based on sheet state for objects above bottom sheet
     val sheetOffset = remember(targetSheetState) {
         when (targetSheetState) {
             SheetDrawerDetent.SEMIPEEK -> (-200).dp
@@ -89,7 +87,13 @@ fun HomeScreen(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
-            NetworkSnackbar(snackbarHostState, coroutineScope)
+            NetworkSnackbar(
+                snackbarHostState = snackbarHostState,
+                coroutineScope = coroutineScope,
+                onNetworkStatusChange = { isConnected ->
+                    homeScreenViewModel.updateNetworkStatus(isConnected)
+                }
+            )
         }
 
         Box(
