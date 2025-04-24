@@ -41,13 +41,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
@@ -108,18 +106,15 @@ fun ChatbotScreen(
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Box(
+                                    AsyncImage(
+                                        model = R.drawable.aanund,
+                                        contentDescription = null,
                                         modifier = Modifier
                                             .size(36.dp)
                                             .clip(CircleShape)
                                             .background(MaterialTheme.colorScheme.onPrimary),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            text = "🤖",
-                                            fontSize = 20.sp
-                                        )
-                                    }
+                                        contentScale = ContentScale.Crop
+                                    )
                                     Text(
                                         "Turbotten Ånund",
                                         modifier = Modifier.padding(start = 12.dp),

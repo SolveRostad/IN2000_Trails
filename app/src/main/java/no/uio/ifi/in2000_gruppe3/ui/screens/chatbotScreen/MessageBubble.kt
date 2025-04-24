@@ -20,10 +20,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import dev.jeziellago.compose.markdowntext.MarkdownText
+import no.uio.ifi.in2000_gruppe3.R
 
 @Composable
 fun MessageBubble(chatbotMessage: ChatbotMessage) {
@@ -61,18 +64,15 @@ fun MessageBubble(chatbotMessage: ChatbotMessage) {
         // Avatar for bot messages
         if (!chatbotMessage.isFromUser) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
+                AsyncImage(
+                    model = R.drawable.aanund,
+                    contentDescription = null,
                     modifier = Modifier
-                        .size(24.dp)
+                        .size(36.dp)
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.primary),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "🤖",
-                        fontSize = 12.sp
-                    )
-                }
+                    contentScale = ContentScale.Crop
+                )
                 Text(
                     text = "Ånund",
                     style = MaterialTheme.typography.labelSmall,
