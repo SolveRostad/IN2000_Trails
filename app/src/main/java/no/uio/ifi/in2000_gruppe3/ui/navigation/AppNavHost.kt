@@ -16,6 +16,7 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastDetailedScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.ChatbotScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.WelcomeScreen
 
 @Composable
 fun AppNavHost() {
@@ -30,8 +31,15 @@ fun AppNavHost() {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route
+        startDestination = Screen.Welcome.route
     ) {
+        // Welcome screen
+        composable(Screen.Welcome.route) {
+            WelcomeScreen(
+                navController = navController
+            )
+        }
+
         // Home screen
         composable(Screen.Home.route) {
             HomeScreen(
