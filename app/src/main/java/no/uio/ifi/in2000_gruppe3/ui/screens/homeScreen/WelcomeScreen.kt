@@ -38,13 +38,13 @@ fun WelcomeScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .padding(horizontal = 24.dp),
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(60.dp))
 
             Icon(
-                painter = painterResource(id = R.drawable.logo),
+                painter = painterResource(id = R.drawable.logo_slogan),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .fillMaxWidth()
@@ -52,27 +52,32 @@ fun WelcomeScreen(
                 tint = Color.Unspecified
             )
 
+            Spacer(modifier = Modifier.height(32.dp))
+
             Text(
-                text = "Planlegg perfekte turer i Oslo og Akershus\nmed sanntidsvær og AI",
+                text = "Planlegg perfekte turer i Oslo og Akershus \n med sanntidsvær og AI",
                 textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 color = Color(0xFF0F172A)
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(250.dp))
 
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(16.dp),
                 onClick = { navController.navigate(Screen.Home.route) },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0F172A))
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40))
             ) {
-                Text("Kom i gang", fontSize = 18.sp)
+                Text(
+                    text = "Kom i gang",
+                    fontSize = 18.sp
+                )
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Button(
                 modifier = Modifier
@@ -80,12 +85,13 @@ fun WelcomeScreen(
                     .height(48.dp),
                 shape = RoundedCornerShape(24.dp),
                 onClick = { /* TODO */ },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0F172A))
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40))
             ) {
-                Text("Logg inn/register", fontSize = 16.sp)
+                Text(
+                    text = "Logg inn/register",
+                    fontSize = 16.sp
+                )
             }
-
-            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
