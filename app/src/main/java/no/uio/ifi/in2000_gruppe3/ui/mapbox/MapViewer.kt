@@ -1,18 +1,21 @@
 package no.uio.ifi.in2000_gruppe3.ui.mapbox
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.unit.dp
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.dsl.cameraOptions
 import com.mapbox.maps.extension.compose.MapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
+import com.mapbox.maps.extension.compose.annotation.IconImage
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
 import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotationGroup
 import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotationGroupState
@@ -41,11 +44,12 @@ fun MapViewer(
     LaunchedEffect(homeScreenUIState.hikes) {
         mapboxViewModel.updatePolylineAnnotationsFromFeatures(homeScreenUIState.hikes)
     }
+
     LaunchedEffect(mapboxUIState.pointerCoordinates) {
         if (mapboxUIState.pointerCoordinates != null) {
             mapViewportState.easeTo(
                 cameraOptions {
-                    zoom(12.0)
+                    zoom(mapboxUIState.zoom)
                     center(mapboxUIState.pointerCoordinates.let { point ->
                         Point.fromLngLat(point!!.longitude(), point.latitude() - 0.012)
                     })
@@ -53,15 +57,46 @@ fun MapViewer(
                     bearing(0.0)
                 }
             )
-            mapboxViewModel.setLoaderState(isLoading = true)
-            homeScreenViewModel.fetchHikes(
-                mapboxUIState.pointerCoordinates!!.latitude(),
-                mapboxUIState.pointerCoordinates!!.longitude(),
-                5,
-                "Fotrute",
-                500
-            )
+
+            // Only fetch hikes if the flag is true
+            if (mapboxUIState.shouldFetchHikes) {
+                mapboxViewModel.setLoaderState(isLoading = true)
+                homeScreenViewModel.fetchHikes(
+                    mapboxUIState.pointerCoordinates!!.latitude(),
+                    mapboxUIState.pointerCoordinates!!.longitude(),
+                    5,
+                    "Fotrute",
+                    500
+                )
+                mapboxViewModel.resetShouldFetchHikes()
+            }
             homeScreenViewModel.fetchForecast(mapboxUIState.pointerCoordinates!!)
+        }
+    }
+
+    LaunchedEffect(mapboxUIState.zoom) {
+        mapViewportState.easeTo(
+            cameraOptions {
+                zoom(mapboxUIState.zoom)
+                center(mapboxUIState.pointerCoordinates?.let { point ->
+                    Point.fromLngLat(point.longitude(), point.latitude() - 0.012)
+                })
+                pitch(0.0)
+                bearing(0.0)
+            }
+        )
+    }
+
+    LaunchedEffect(mapboxUIState.centerOnUserTrigger) {
+        if (mapboxUIState.centerOnUserTrigger > 0 && mapboxUIState.latestUserPosition != null) {
+            mapViewportState.easeTo(
+                cameraOptions {
+                    zoom(mapboxUIState.zoom)
+                    center(mapboxUIState.latestUserPosition)
+                    pitch(0.0)
+                    bearing(0.0)
+                }
+            )
         }
     }
 
@@ -76,6 +111,11 @@ fun MapViewer(
         scaleBar = {},
         logo = {},
         attribution = {},
+        compass = {
+            Compass(
+                modifier = Modifier.padding(top = 80.dp, end = 8.dp)
+            )
+        },
         style = { MapStyle(mapboxUIState.mapStyle) }
     ) {
         PolylineAnnotationGroup(
@@ -98,11 +138,12 @@ fun MapViewer(
                         mapViewportState.setCameraOptions(
                             CameraOptions.Builder()
                                 .center(point)
-                                .zoom(12.0)
+                                .zoom(mapboxUIState.zoom)
                                 .build()
                         )
                         homeScreenViewModel.fetchForecast(point)
                         homeScreenViewModel.fetchAlerts()
+                        mapboxViewModel.setLoaderState(isLoading = false)
                         mapView.location.removeOnIndicatorPositionChangedListener(this)
                     }
                 }
@@ -114,6 +155,7 @@ fun MapViewer(
             }
             mapView.location.addOnIndicatorPositionChangedListener { point ->
                 favoritesViewModel.updateUserLocation(point)
+                mapboxViewModel.updateLatestUserPosition(point)
             }
             mapView.mapboxMap.subscribeCameraChanged {
                 if (homeScreenViewModel.sheetStateTarget.value.value.identifier != "hidden") {

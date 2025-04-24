@@ -31,21 +31,36 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.composables.core.Icon
 import no.uio.ifi.in2000_gruppe3.R
+import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.SheetDrawerDetent
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
+import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
+import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
 fun AanundFigure(
+    homeScreenViewModel: HomeScreenViewModel,
+    mapBoxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
     var showDialog by remember { mutableStateOf(false) }
 
     if (showDialog) {
-        Dialog(onDismissRequest = { showDialog = false }) {
+        homeScreenViewModel.setSheetState(SheetDrawerDetent.SEMIPEEK)
+
+        // Clear hikes from map to get AI recommendations
+        homeScreenViewModel.clearHikes()
+        mapBoxViewModel.clearPolylineAnnotations()
+        mapBoxViewModel.updatePointerCoordinates(null)
+
+        Dialog(
+            onDismissRequest = { showDialog = false },
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
                         showDialog = false
-                        navController.navigate("openai")
+                        navController.navigate(Screen.Chatbot.route)
                     }
             ) {
                 Card(
@@ -56,11 +71,9 @@ fun AanundFigure(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = "Hei!\n" +
-                                "Jeg er her for å hjelpe deg med å planlegge turer i Oslo/Akershus.\n" +
-                                "\n" +
-                                "Bruk søkefeltet for å finne turer i et bestemt område, eller utforsk det interaktive kartet for å oppdage nye turmuligheter.\n" +
-                                "\n" +
+                        text = "Hei, mitt navn er Ånund!\n" +
+                                "Jeg er her for å hjelpe deg med å planlegge turer i Oslo/Akershus.\n\n" +
+                                "Bruk søkefeltet for å finne turer i et bestemt område, eller utforsk det interaktive kartet for å oppdage nye turmuligheter.\n\n" +
                                 "Hvis du trenger inspirasjon, kan du trykke på meg! Jeg vil gi deg mine beste anbefalinger for de fineste turene å gå akkurat i dag.",
                         fontSize = 16.sp,
                         modifier = Modifier.padding(16.dp),
@@ -82,7 +95,8 @@ fun AanundFigure(
     } else {
         Surface(
             modifier = Modifier
-                .size(150.dp),
+                .size(150.dp)
+                .offset(x = (-15).dp),
             color = Color.Transparent
         ) {
             IconButton(

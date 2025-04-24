@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 data class ChatCompletionsRequest(
     val messages: List<ChatMessage>,
     val temperature: Double = 0.7,
-    val max_tokens: Int = 800
+    val max_tokens: Int = 800,
+    val stream: Boolean = false
 )

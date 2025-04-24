@@ -14,9 +14,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.composables.core.Icon
 import no.uio.ifi.in2000_gruppe3.R
+import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
 fun ResetMapCenterButton(
+    homeScreenViewModel: HomeScreenViewModel,
     mapboxViewModel: MapboxViewModel
 ) {
     Surface(
@@ -29,7 +31,12 @@ fun ResetMapCenterButton(
         color = Color.Transparent
     ) {
         IconButton(
-            onClick = { /*TODO*/ }
+            onClick = {
+                mapboxViewModel.centerOnUserPosition()
+                homeScreenViewModel.fetchForecast(
+                    mapboxViewModel.mapboxUIState.value.latestUserPosition!!
+                )
+            }
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.location_arrow_2),

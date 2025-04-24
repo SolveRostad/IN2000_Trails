@@ -28,7 +28,7 @@ import no.uio.ifi.in2000_gruppe3.data.date.getCurrentTime
 import no.uio.ifi.in2000_gruppe3.data.date.getDateFormatted
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
-import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
+import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
@@ -60,7 +60,7 @@ fun LocationForecastSmallCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(vertical = 8.dp),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.5f)),
@@ -69,7 +69,7 @@ fun LocationForecastSmallCard(
         ),
         onClick = {
             hikeScreenViewModel.updateDate(day, date, dateFormatted)
-            navController.navigate("locationForecastDetailed")
+            navController.navigate(Screen.LocationForecastDetailed.route)
         }
     ) {
         Column(

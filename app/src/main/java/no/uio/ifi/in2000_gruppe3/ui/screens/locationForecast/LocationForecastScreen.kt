@@ -14,12 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.data.date.getOrderedWeekdays
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.LocationForecastSmallCard
-import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
@@ -30,14 +30,12 @@ import java.time.LocalDate
 fun LocationForecastScreen(
     homeScreenViewModel: HomeScreenViewModel,
     hikeScreenViewModel: HikeScreenViewModel,
-    mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
 
     val orderedWeekdays = getOrderedWeekdays(getTodaysDay())
 
-    // Date
     val todaysDateStr = getTodaysDate()
     val todaysDate = LocalDate.parse(todaysDateStr)
 
@@ -58,7 +56,9 @@ fun LocationForecastScreen(
         bottomBar = { BottomBar(navController = navController) }
     ) { paddingValues ->
         LazyColumn(
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
+                .padding(paddingValues)
         ) {
             item {
                 orderedWeekdays.forEachIndexed { index, day ->

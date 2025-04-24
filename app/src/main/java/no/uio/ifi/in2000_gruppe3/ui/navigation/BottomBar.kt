@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -74,20 +74,20 @@ fun BottomBar(navController: NavHostController) {
                     )
                 }
 
-                // OpenAI
+                // Chatbot
                 IconButton(
                     onClick = {
-                        if (navController.currentDestination?.route != "openai")
-                            navController.navigate(Screen.OpenAI.route)
+                        if (navController.currentDestination?.route != "chatbot")
+                            navController.navigate(Screen.Chatbot.route)
                     },
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxSize()
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Face,
-                        contentDescription = "OpenAI",
-                        tint = if (navController.currentDestination?.route == "openai")
+                        imageVector = Icons.Default.Person,
+                        contentDescription = "Chatbot",
+                        tint = if (navController.currentDestination?.route == "chatbot")
                             MaterialTheme.colorScheme.primary
                         else
                             LocalContentColor.current

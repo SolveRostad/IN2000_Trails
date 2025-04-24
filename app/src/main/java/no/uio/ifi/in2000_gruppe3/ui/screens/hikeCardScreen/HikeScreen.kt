@@ -27,7 +27,7 @@ import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.ui.hikeCard.HikeCard
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
-import no.uio.ifi.in2000_gruppe3.ui.screens.openAIScreen.OpenAIViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
@@ -68,11 +68,10 @@ fun HikeScreen(
                             favoritesViewModel.deleteHike(hikeUIState.feature)
                         }
                     }) {
-                        val tint by animateColorAsState(if (checkedState.value) Color.Red else Color.Gray)
                         Icon(
                             imageVector = if (checkedState.value) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                             contentDescription = "Toggle favorite",
-                            tint = tint
+                            tint = if (checkedState.value) Color.Red else Color.Gray
                         )
                     }
                 }

@@ -10,9 +10,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -31,6 +32,7 @@ import com.composables.core.rememberBottomSheetState
 import no.uio.ifi.in2000_gruppe3.ui.hikeCard.SmallHikeCard
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
+import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
@@ -40,9 +42,12 @@ fun BottomSheetDrawer(
     homeScreenViewModel: HomeScreenViewModel,
     hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
+    openAIViewModel: OpenAIViewModel,
     navController: NavHostController
 ) {
     val homeScreenUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
+    val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
+
     val targetSheetState by homeScreenViewModel.sheetStateTarget.collectAsState()
     val detents = SheetDrawerDetent.entries.map { it.value }
 
@@ -53,8 +58,18 @@ fun BottomSheetDrawer(
 
     val alpha by animateFloatAsState(targetValue = sheetState.offset)
 
+    LaunchedEffect(mapboxUIState.searchResponse, mapboxUIState.searchQuery) {
+        if (mapboxUIState.searchResponse.isNotEmpty() && mapboxUIState.searchQuery.isNotEmpty()) {
+            sheetState.animateTo(SheetDrawerDetent.HIDDEN.value)
+        } else {
+            sheetState.animateTo(SheetDrawerDetent.SEMIPEEK.value)
+        }
+    }
+
     LaunchedEffect(targetSheetState) {
-        sheetState.animateTo(targetSheetState.value)
+        if (sheetState.currentDetent.identifier != targetSheetState.value.identifier) {
+            sheetState.animateTo(targetSheetState.value)
+        }
     }
 
     LaunchedEffect(sheetState.currentDetent) {
@@ -68,11 +83,11 @@ fun BottomSheetDrawer(
         state = sheetState,
         modifier = Modifier
             // Only clip to RoundedCornerShape if not fully expanded
-            .then(
-                if (sheetState.currentDetent.identifier != SheetDrawerDetent.FULLYEXPAND.value.identifier) {
-                    Modifier.clip(RoundedCornerShape(16.dp))
+            .clip(
+                if (sheetState.currentDetent.identifier == SheetDrawerDetent.FULLYEXPANDED.value.identifier) {
+                    RoundedCornerShape(0.dp)
                 } else {
-                    Modifier
+                    RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
                 }
             )
             .fillMaxWidth()
@@ -96,19 +111,33 @@ fun BottomSheetDrawer(
             ) {
                 if (homeScreenUIState.hikes.isEmpty()) {
                     item {
-                        EmptyDrawerInfoCard()
+                        RecommendedHikes(
+                            homeScreenViewModel = homeScreenViewModel,
+                            hikeScreenViewModel = hikeScreenViewModel,
+                            mapBoxViewModel = mapboxViewModel,
+                            openAIViewModel = openAIViewModel,
+                            navController = navController
+                        )
                     }
-                }
-                items(homeScreenUIState.hikes) { feature ->
-                    SmallHikeCard(
-                        mapboxViewModel = mapboxViewModel,
-                        feature = feature,
-                        onClick = {
-                            hikeScreenViewModel.updateHike(feature)
-                            navController.navigate(Screen.HikeScreen.route)
+                } else {
+                    item {
+                        Text(
+                            text = "Turruter i nærheten",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontStyle = MaterialTheme.typography.titleLarge.fontStyle,
+                        )
+                        homeScreenUIState.hikes.forEach { feature ->
+                            SmallHikeCard(
+                                mapboxViewModel = mapboxViewModel,
+                                feature = feature,
+                                onClick = {
+                                    hikeScreenViewModel.updateHike(feature)
+                                    navController.navigate(Screen.HikeScreen.route)
+                                }
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
                         }
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    }
                 }
             }
         }

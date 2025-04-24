@@ -1,10 +1,9 @@
 package no.uio.ifi.in2000_gruppe3.ui.mapbox
 
-import android.app.Application
 import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
@@ -18,7 +17,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 
-class MapboxViewModel(application: Application) : AndroidViewModel(application) {
+class MapboxViewModel() : ViewModel() {
     private val placeAutocomplete = PlaceAutocomplete.create()
 
     private val _mapboxUIState: MutableStateFlow<MapboxUIState> = MutableStateFlow(
@@ -39,9 +38,18 @@ class MapboxViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    fun updatePointerCoordinates(point: Point) {
+    fun updatePointerCoordinates(point: Point?) {
         _mapboxUIState.update {
-            it.copy(pointerCoordinates = point)
+            it.copy(
+                pointerCoordinates = point,
+                shouldFetchHikes = true
+            )
+        }
+    }
+
+    fun resetShouldFetchHikes() {
+        _mapboxUIState.update {
+            it.copy(shouldFetchHikes = false)
         }
     }
 
@@ -52,7 +60,6 @@ class MapboxViewModel(application: Application) : AndroidViewModel(application) 
             viewModelScope.launch {
                 try {
                     val suggestions = placeAutocomplete.suggestions(query)
-                    Log.d("SearchBarViewModel", "Suggestion : ${suggestions.value}")
 
                     if (suggestions.isValue) {
                         _mapboxUIState.update {
@@ -134,16 +141,57 @@ class MapboxViewModel(application: Application) : AndroidViewModel(application) 
             }
         }
     }
+
+    fun clearPolylineAnnotations() {
+        _mapboxUIState.update { currentState ->
+            currentState.copy(polylineAnnotations = emptyList())
+        }
+    }
+
+    fun centerOnUserPosition() {
+        viewModelScope.launch {
+            _mapboxUIState.update { currentState ->
+                currentState.copy(
+                    centerOnUserTrigger = System.currentTimeMillis()
+                )
+            }
+        }
+    }
+
+    fun updateLatestUserPosition(point: Point) {
+        _mapboxUIState.update { currentState ->
+            currentState.copy(latestUserPosition = point)
+        }
+    }
+
+    fun zoomIn() {
+        _mapboxUIState.update {
+            it.copy(
+                zoom = if (it.zoom < 22) it.zoom + 1 else 22.0
+            )
+        }
+    }
+
+    fun zoomOut() {
+        _mapboxUIState.update {
+            it.copy(
+                zoom = if (it.zoom > 0) it.zoom - 1 else 0.0
+            )
+        }
+    }
 }
 
 data class MapboxUIState(
     val mapStyle: String,
     val pointerCoordinates: Point? = null,
     val latestUserPosition: Point? = null,
+    val centerOnUserTrigger: Long = 0L,
     val polylineAnnotations: List<PolylineAnnotationOptions>,
+    val zoom: Double = 12.0,
+    val shouldFetchHikes: Boolean = false,
 
     val searchResponse: List<PlaceAutocompleteSuggestion>,
     val searchQuery: String,
 
-    val isLoading: Boolean = false
+    val isLoading: Boolean = true
 )
