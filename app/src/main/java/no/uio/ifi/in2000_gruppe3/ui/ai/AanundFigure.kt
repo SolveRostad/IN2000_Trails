@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.IconButton
@@ -73,7 +75,7 @@ fun AanundFigure(
                     Text(
                         text = "Hei, mitt navn er Ånund!\n" +
                                 "Jeg er her for å hjelpe deg med å planlegge turer i Oslo/Akershus.\n\n" +
-                                "Bruk søkefeltet for å finne turer i et bestemt område, eller utforsk det interaktive kartet for å oppdage nye turmuligheter.\n\n" +
+                                "Bruk søkefeltet for å finne turer i et bestemt område, eller trykk på kartet for å oppdage nye turmuligheter.\n\n" +
                                 "Hvis du trenger inspirasjon, kan du trykke på meg! Jeg vil gi deg mine beste anbefalinger for de fineste turene å gå akkurat i dag.",
                         fontSize = 16.sp,
                         modifier = Modifier.padding(16.dp),
@@ -90,6 +92,19 @@ fun AanundFigure(
                         .align(Alignment.TopStart)
                         .offset(x = (-60).dp, y = (-60).dp)
                 )
+
+                IconButton(
+                    onClick = { showDialog = false },
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Close",
+                        tint = Color.Unspecified,
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
             }
         }
     } else {
