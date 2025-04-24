@@ -4,7 +4,10 @@ import androidx.room.Room
 import kotlinx.coroutines.runBlocking
 import no.uio.ifi.in2000_gruppe3.data.database.User
 import no.uio.ifi.in2000_gruppe3.data.database.UserFavoritesDatabase
+import no.uio.ifi.in2000_gruppe3.data.favorites.FavoriteRepository
+import no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository.HikeAPIRepository
 import no.uio.ifi.in2000_gruppe3.data.user.UserRepository
+import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -16,8 +19,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
 /**
- * Testklasse for UserRepository.
- * Tester noen utvalgte funksjoner fra userDao og userRepository
+ * Testklasse for UserRepository og favoritesViewModel.
+ * Tester noen utvalgte funksjoner fra userDao, userRepository og favoritesViewModel
  * for å sjekke at SQL spørringene fungerer som de skal.
  * NB! Vi har ikke skrevet tester for ALL funksjonaliteten
  */
@@ -34,9 +37,16 @@ class UserFavoriteUnitTest {
         .build()
 
     private val userDao = userDatabase.userDao()
+    private val favoriteDao = userDatabase.favoriteDao()
 
     private val userRepository = UserRepository(userDao)
-    val favoritesScreenViewModel = FavoritesScreenViewModel()
+
+    val favoritesScreenViewModel = FavoritesScreenViewModel(
+        application = application,
+        favoritesRepository = FavoriteRepository(favoriteDao),
+        userRepository = userRepository,
+        hikeAPIRepository = HikeAPIRepository(OpenAIViewModel())
+    )
 
     //Dummy data til testene
     val bruker1 = User(username = "Aanund")
@@ -105,20 +115,20 @@ class UserFavoriteUnitTest {
         println("---testSelectUser PASSERT---")
     }
 
-    //Teter for favorites view model.
+    //Tester for favorites view model.
     @Test
     fun testAddFavorite() {
-        favoritesScreenViewModel.addFavorite("1")
+        favoritesScreenViewModel.addFavorite(1)
         val favorites = favoritesScreenViewModel.getAllFavorites()
-        assertEquals(favorites.last, "1", "Favoritt ble ikke lagt til")
+        assertEquals(favorites.last(), 1, "Favoritt ble ikke lagt til")
 
         println("---testAddFavorite PASSERT---")
     }
 
     @Test
     fun testDeleteFavorite() {
-        favoritesScreenViewModel.addFavorite("1")
-        favoritesScreenViewModel.deleteFavorite("1")
+        favoritesScreenViewModel.addFavorite(1)
+        favoritesScreenViewModel.deleteFavorite(1)
 
         val favorites = favoritesScreenViewModel.getAllFavorites()
 
@@ -129,13 +139,13 @@ class UserFavoriteUnitTest {
 
     @Test
     fun testGetAllFavorites() {
-        favoritesScreenViewModel.addFavorite("1")
-        favoritesScreenViewModel.addFavorite("2")
+        favoritesScreenViewModel.addFavorite(1)
+        favoritesScreenViewModel.addFavorite(2)
 
-        val favorites: List<String> = favoritesScreenViewModel.getAllFavorites()
+        val favorites: List<Int> = favoritesScreenViewModel.getAllFavorites()
 
-        assertContains(favorites, "1", "hike id 1 ble ikke hentet")
-        assertContains(favorites, "2", "hike id 2 ble ikke hentet")
+        assertContains(favorites, 1, "hike id 1 ble ikke hentet")
+        assertContains(favorites, 2, "hike id 2 ble ikke hentet")
 
         println("---testGetAllFavorites PASSERT---")
     }

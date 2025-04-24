@@ -19,13 +19,8 @@ import androidx.room.ForeignKey
 )
 
 data class Favorite(
-    @ColumnInfo(name ="username")
+    @ColumnInfo(name = "username")
     val username: String,
     @ColumnInfo(name = "hike_id")
-    val hikeId: String = "",
-//    @ColumnInfo(name = "times_walked")
-//    val timesWalked: Int = 0,
-
-    //@ColumnInfo(name = "isSelected")
-    //val isSelected: Int
+    val hikeId: Int,
 )

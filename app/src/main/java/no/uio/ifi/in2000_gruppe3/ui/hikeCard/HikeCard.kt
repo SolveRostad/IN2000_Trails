@@ -55,7 +55,7 @@ import no.uio.ifi.in2000_gruppe3.ui.locationForecast.LocationForecastSmallCard
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 import java.time.LocalDate
@@ -64,7 +64,7 @@ import java.time.LocalDate
 fun HikeCard(
     homeScreenViewModel: HomeScreenViewModel,
     hikeScreenViewModel: HikeScreenViewModel,
-    favoritesViewModel: FavoritesViewModel,
+    favoritesViewModel: FavoritesScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     openAIViewModel: OpenAIViewModel,
     navController: NavHostController,
@@ -83,9 +83,12 @@ fun HikeCard(
 
     LaunchedEffect(hikeUIState.selectedDay) {
         val daysAhead = calculateDaysAhead(todaysDay, hikeUIState.selectedDay)
-        hikeScreenViewModel.updateSelectedDate(LocalDate.now().plusDays(daysAhead.toLong()).toString())
+        hikeScreenViewModel.updateSelectedDate(
+            LocalDate.now().plusDays(daysAhead.toLong()).toString()
+        )
 
-        displayTimeSeries = homeScreenViewModel.timeSeriesFromDate(hikeUIState.selectedDate)?.firstOrNull()
+        displayTimeSeries =
+            homeScreenViewModel.timeSeriesFromDate(hikeUIState.selectedDate)?.firstOrNull()
 
         averageTemperature = homeScreenViewModel.daysAverageTemp(hikeUIState.selectedDate)
         averageWindSpeed = homeScreenViewModel.daysAverageWindSpeed(hikeUIState.selectedDate)
@@ -186,7 +189,11 @@ fun HikeCard(
                     InfoItem(
                         icon = ImageVector.vectorResource(id = R.drawable.distance_icon),
                         label = "Lengde",
-                        value = (hikeUIState.feature.properties.distance_meters.toFloat() / 1000.0).let { "%.2f km".format(it) },
+                        value = (hikeUIState.feature.properties.distance_meters.toFloat() / 1000.0).let {
+                            "%.2f km".format(
+                                it
+                            )
+                        },
                         iconTint = Color(0xFF4CAF50)
                     )
                     InfoItem(
@@ -252,9 +259,9 @@ fun HikeCard(
                         .clickable {
                             checkedState.value = !checkedState.value
                             if (checkedState.value) {
-                                favoritesViewModel.addHike(hikeUIState.feature)
+                                favoritesViewModel.addFavorite(hikeUIState.feature.properties.fid)
                             } else {
-                                favoritesViewModel.deleteHike(hikeUIState.feature)
+                                favoritesViewModel.deleteFavorite(hikeUIState.feature.properties.fid)
                             }
                         },
                     horizontalArrangement = Arrangement.Center,
