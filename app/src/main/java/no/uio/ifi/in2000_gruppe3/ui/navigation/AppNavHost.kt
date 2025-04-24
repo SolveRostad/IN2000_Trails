@@ -87,6 +87,7 @@ fun AppNavHost() {
         // Chatbot screen
         composable(Screen.Chatbot.route) {
             ChatbotScreen(
+                homeScreenViewModel = homeScreenViewModel,
                 navController = navController
             )
         }
