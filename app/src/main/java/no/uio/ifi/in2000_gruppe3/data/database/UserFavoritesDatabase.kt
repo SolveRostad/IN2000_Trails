@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import androidx.sqlite.db.SupportSQLiteDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 /** Database layout:
  * User
@@ -30,7 +32,7 @@ import androidx.room.TypeConverters
  *   hikesDone: Int
  */
 
-@Database(entities = [Favorite::class, User::class], version = 1)
+@Database(entities = [Favorite::class, User::class], version = 2)
 @TypeConverters(Converter::class)
 abstract class UserFavoritesDatabase : RoomDatabase() {
     abstract fun favoriteDao(): FavoriteDao
@@ -40,13 +42,34 @@ abstract class UserFavoritesDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: UserFavoritesDatabase? = null
 
-        fun getDatabase(context: Context): UserFavoritesDatabase {
+        private class DatabaseCallBack(private val scope : CoroutineScope) : RoomDatabase.Callback() {
+
+            override fun onCreate(db: SupportSQLiteDatabase) {
+                super.onCreate(db)
+
+                scope.launch{
+                    populateDatabase()
+                }
+            }
+
+            private suspend fun populateDatabase() {
+                val userDao = INSTANCE?.userDao() ?: return
+
+                val defaultUser = User("defaultUser")
+                userDao.insertUser(defaultUser)
+            }
+        }
+
+        fun getDatabase(context: Context, scope: CoroutineScope): UserFavoritesDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     UserFavoritesDatabase::class.java,
                     "user_favorites_database"
-                ).build()
+                ).addMigrations(MIGRATION_1_2)
+                    .addCallback(DatabaseCallBack(scope))
+                    .fallbackToDestructiveMigration(false)
+                    .build()
                 INSTANCE = instance
                 instance
             }
