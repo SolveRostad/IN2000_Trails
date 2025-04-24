@@ -5,6 +5,7 @@ import kotlinx.coroutines.runBlocking
 import no.uio.ifi.in2000_gruppe3.data.database.User
 import no.uio.ifi.in2000_gruppe3.data.database.UserFavoritesDatabase
 import no.uio.ifi.in2000_gruppe3.data.user.UserRepository
+import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -35,7 +36,7 @@ class UserFavoriteUnitTest {
     private val userDao = userDatabase.userDao()
 
     private val userRepository = UserRepository(userDao)
-    //val userViewModel = TODO()
+    val favoritesScreenViewModel = FavoritesScreenViewModel()
 
     //Dummy data til testene
     val bruker1 = User(username = "Aanund")
@@ -104,18 +105,38 @@ class UserFavoriteUnitTest {
         println("---testSelectUser PASSERT---")
     }
 
+    //Teter for favorites view model.
     @Test
     fun testAddFavorite() {
-        //TODO test for å legge til hikeID i favoritter
+        favoritesScreenViewModel.addFavorite("1")
+        val favorites = favoritesScreenViewModel.getAllFavorites()
+        assertEquals(favorites.last, "1", "Favoritt ble ikke lagt til")
+
+        println("---testAddFavorite PASSERT---")
     }
 
     @Test
     fun testDeleteFavorite() {
-        //TODO test for å fjerne hikeID fra favoritter
+        favoritesScreenViewModel.addFavorite("1")
+        favoritesScreenViewModel.deleteFavorite("1")
+
+        val favorites = favoritesScreenViewModel.getAllFavorites()
+
+        assertFalse(favorites.isEmpty(), "Favoritt ble ikke slettet")
+
+        println("---testDeleteFavorite PASSERT---")
     }
 
     @Test
     fun testGetAllFavorites() {
-        //TODO test for å hente alle favoritter
+        favoritesScreenViewModel.addFavorite("1")
+        favoritesScreenViewModel.addFavorite("2")
+
+        val favorites: List<String> = favoritesScreenViewModel.getAllFavorites()
+
+        assertContains(favorites, "1", "hike id 1 ble ikke hentet")
+        assertContains(favorites, "2", "hike id 2 ble ikke hentet")
+
+        println("---testGetAllFavorites PASSERT---")
     }
 }
