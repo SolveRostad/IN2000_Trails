@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.data.openAIAPI.repository.OpenAIRepository
+import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 class OpenAIViewModel: ViewModel() {
     private val openAIRepository = OpenAIRepository()
@@ -104,6 +105,26 @@ class OpenAIViewModel: ViewModel() {
                 }
             }
         }
+    }
+
+    fun addLimitationToInputMessage(
+        input: String,
+        homeScreenViewModel: HomeScreenViewModel
+    ) {
+        var prompt = "Du er en turguide i en turapp. " +
+                "Meldingen nederst er sendt til deg fra en bruker av appen. " +
+                "Du skal kun svare på spørsmålet fra brukeren uten å gi noen annen informasjon. " +
+                "Du skal ikke gi noen annen informasjon enn det som er nødvendig for å svare på spørsmålet. " +
+                "Du skal kun svare på spørsmål som er relatert til turer, friluftsliv og været. " +
+                "Hvis spørsmålet ikke er relatert til det så skal du gi en melding som sier at du kun svarer på spørsmål som er relaterte. " +
+                "Svar på en hyggelig måte. " +
+                "Her er medlingen fra bruker: $input"
+
+        if (input.contains("vær") || input.contains("været") || input.contains("værmelding")) {
+            prompt += "Her er informasjonene du trenger om været: ${homeScreenViewModel.homeScreenUIState.value.forecast?.properties?.timeseries}"
+        }
+
+        getCompletionsStream(prompt)
     }
 }
 

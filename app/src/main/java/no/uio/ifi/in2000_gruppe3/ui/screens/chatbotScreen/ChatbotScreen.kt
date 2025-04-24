@@ -30,10 +30,12 @@ import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import androidx.compose.foundation.lazy.items
 import androidx.lifecycle.viewmodel.compose.viewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatbotScreen(
+    homeScreenViewModel: HomeScreenViewModel,
     navController: NavHostController
 ) {
     val openAIViewModel: OpenAIViewModel = viewModel()
@@ -72,7 +74,10 @@ fun ChatbotScreen(
                         keyboardController?.hide()
                         openAIViewModel.addUserMessage(input)
                         coroutineScope.launch {
-                            openAIViewModel.getCompletionsStream(input)
+                            openAIViewModel.addLimitationToInputMessage(
+                                input = input,
+                                homeScreenViewModel = homeScreenViewModel
+                            )
                         }
                     }
                 )
