@@ -3,12 +3,13 @@ package no.uio.ifi.in2000_gruppe3.ui.mapbox
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -64,34 +65,33 @@ fun AlertsDisplay(
     }
 
     if (distance < radius) {
-        Column {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .padding(6.dp)
-                    .clickable { showAlertInfo.value = !showAlertInfo.value }
-            ) {
-                Image(
-                    painter = rememberAsyncImagePainter(
-                        ImageRequest.Builder(LocalContext.current)
-                            .data(getAlertsIconUrl(alertEvent, alertColor))
-                            .decoderFactory(SvgDecoder.Factory())
-                            .build()
-                    ),
-                    contentDescription = "Alert icon",
-                    modifier = Modifier.size(48.dp)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .padding(6.dp)
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() },
+                    onClick = { showAlertInfo.value = !showAlertInfo.value }
                 )
-            }
+        ) {
+            Image(
+                painter = rememberAsyncImagePainter(
+                    ImageRequest.Builder(LocalContext.current)
+                        .data(getAlertsIconUrl(alertEvent, alertColor))
+                        .decoderFactory(SvgDecoder.Factory())
+                        .build()
+                ),
+                contentDescription = "Alert icon",
+                modifier = Modifier.size(48.dp)
+            )
 
             if (showAlertInfo.value) {
-                Surface(
-                    tonalElevation = 4.dp,
-                    shadowElevation = 8.dp,
+                Card(
                     shape = MaterialTheme.shapes.medium,
-                    color = MaterialTheme.colorScheme.background,
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                        .align(Alignment.CenterHorizontally)
+                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                    modifier = Modifier.padding(top = 8.dp)
                 ) {
                     Text(
                         text = """
@@ -100,9 +100,9 @@ fun AlertsDisplay(
                             Konsekvenser: ${closestAlert.properties.consequences ?: "Ingen konsekvenser tilgjengelig"}
                             Alvorlighetsgrad: ${closestAlert.properties.severity ?: "Ukjent alvorlighetsgrad"}
                             Risiko: ${closestAlert.properties.certainty ?: "Ukjent risiko"}
-                            """.trimIndent(),
+                        """.trimIndent(),
                         style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(8.dp)
+                        modifier = Modifier.padding(12.dp)
                     )
                 }
             }
@@ -110,7 +110,7 @@ fun AlertsDisplay(
     }
 }
 
-fun getAlertsIconUrl(event: String?, riskMatrixColor: String?): String {
+private fun getAlertsIconUrl(event: String?, riskMatrixColor: String?): String {
     if (event.isNullOrEmpty() || riskMatrixColor.isNullOrEmpty()) {
         Log.d("AlertsDisplay", "getAlertsIconUrl: event eller color")
         return "null"
@@ -120,18 +120,17 @@ fun getAlertsIconUrl(event: String?, riskMatrixColor: String?): String {
 }
 
 // Returns the event code based on the event name
-fun getEventCode(event: String?): String? {
+private fun getEventCode(event: String?): String? {
     return when (event) {
         "blowingsnow" -> "snow"
         "gale" -> "wind"
-        "icing" -> "generic"
-        "unknown" -> "generic"
+        "icing", "unknown" -> "generic"
         else -> event
     }
 }
 
 // Returns the first coordinate of the alert feature
-fun getFirstCoordinate(geometry: Geometry): Pair<Double, Double>? {
+private fun getFirstCoordinate(geometry: Geometry): Pair<Double, Double>? {
     return when (geometry) {
         is Geometry.Polygon -> {
             geometry.coordinates.firstOrNull()?.firstOrNull()?.let {

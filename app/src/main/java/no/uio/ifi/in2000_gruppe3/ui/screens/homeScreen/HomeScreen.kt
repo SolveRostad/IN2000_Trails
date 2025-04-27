@@ -129,7 +129,7 @@ fun HomeScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Card(
                     modifier = Modifier.padding(horizontal = 8.dp),
