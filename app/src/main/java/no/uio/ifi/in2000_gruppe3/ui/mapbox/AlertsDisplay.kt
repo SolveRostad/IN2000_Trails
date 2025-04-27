@@ -26,15 +26,6 @@ import no.uio.ifi.in2000_gruppe3.data.metAlertsAPI.models.Geometry
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 import kotlin.math.*
 
-fun getAlertsIconUrl(event: String?, riskMatrixColor: String?): String {
-    if (event.isNullOrEmpty() || riskMatrixColor.isNullOrEmpty()) {
-        Log.d("AlertsDisplay", "getAlertsIconUrl: event eller color")
-        return "null"
-    }
-    val eventCode = getEventCode(event)
-    return "https://raw.githubusercontent.com/nrkno/yr-warning-icons/master/design/svg/icon-warning-$eventCode-$riskMatrixColor.svg"
-}
-
 @Composable
 fun AlertsDisplay(
     homeScreenViewModel: HomeScreenViewModel,
@@ -65,7 +56,14 @@ fun AlertsDisplay(
     val alertEvent = closestAlert.properties.event?.lowercase()
     val alertColor = closestAlert.properties.riskMatrixColor?.lowercase()
 
-    if (distance < 400.0) {
+    val radius = when (closestAlert.properties.severity?.lowercase()) {
+        "moderate" -> 30.0
+        "severe" -> 50.0
+        "extreme" -> 70.0
+        else -> 30.0
+    }
+
+    if (distance < radius) {
         Column {
             Box(
                 contentAlignment = Alignment.Center,
@@ -110,6 +108,15 @@ fun AlertsDisplay(
             }
         }
     }
+}
+
+fun getAlertsIconUrl(event: String?, riskMatrixColor: String?): String {
+    if (event.isNullOrEmpty() || riskMatrixColor.isNullOrEmpty()) {
+        Log.d("AlertsDisplay", "getAlertsIconUrl: event eller color")
+        return "null"
+    }
+    val eventCode = getEventCode(event)
+    return "https://raw.githubusercontent.com/nrkno/yr-warning-icons/master/design/svg/icon-warning-$eventCode-$riskMatrixColor.svg"
 }
 
 // Returns the event code based on the event name
