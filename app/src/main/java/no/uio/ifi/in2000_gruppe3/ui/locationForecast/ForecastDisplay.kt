@@ -62,11 +62,11 @@ fun ForecastDisplay(
         }
         val iconURL = getWeatherIconUrl(symbolCode.toString())
 
-        Column(
-            modifier = modifier,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            if (temperature != null) {
+        if (temperature != null) {
+            Column(
+                modifier = modifier,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Image(
                     painter = rememberAsyncImagePainter(iconURL),
                     contentDescription = "Vær-ikon",

@@ -1,7 +1,6 @@
 package no.uio.ifi.in2000_gruppe3.ui.hikeCard
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,7 +22,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -55,7 +53,7 @@ import no.uio.ifi.in2000_gruppe3.ui.locationForecast.LocationForecastSmallCard
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 import java.time.LocalDate
@@ -64,7 +62,7 @@ import java.time.LocalDate
 fun HikeCard(
     homeScreenViewModel: HomeScreenViewModel,
     hikeScreenViewModel: HikeScreenViewModel,
-    favoritesViewModel: FavoritesScreenViewModel,
+    favoritesViewModel: FavoritesViewModel,
     mapboxViewModel: MapboxViewModel,
     openAIViewModel: OpenAIViewModel,
     navController: NavHostController,
@@ -83,12 +81,9 @@ fun HikeCard(
 
     LaunchedEffect(hikeUIState.selectedDay) {
         val daysAhead = calculateDaysAhead(todaysDay, hikeUIState.selectedDay)
-        hikeScreenViewModel.updateSelectedDate(
-            LocalDate.now().plusDays(daysAhead.toLong()).toString()
-        )
+        hikeScreenViewModel.updateSelectedDate(LocalDate.now().plusDays(daysAhead.toLong()).toString())
 
-        displayTimeSeries =
-            homeScreenViewModel.timeSeriesFromDate(hikeUIState.selectedDate)?.firstOrNull()
+        displayTimeSeries = homeScreenViewModel.timeSeriesFromDate(hikeUIState.selectedDate)?.firstOrNull()
 
         averageTemperature = homeScreenViewModel.daysAverageTemp(hikeUIState.selectedDate)
         averageWindSpeed = homeScreenViewModel.daysAverageWindSpeed(hikeUIState.selectedDate)
@@ -119,15 +114,15 @@ fun HikeCard(
                 Box {
                     HikeCardMapPreview(mapboxViewModel, hikeUIState.feature)
 
-                    Surface(
+                    Card(
                         modifier = Modifier
-                            .padding(horizontal = 8.dp, vertical = 4.dp)
-                            .align(Alignment.TopEnd)
-                            .background(
-                                color = Color.White.copy(alpha = 0.6f),
-                                shape = RoundedCornerShape(8.dp)
-                            ),
-                        color = Color.Transparent
+                            .padding(4.dp)
+                            .align(Alignment.TopEnd),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.White.copy(alpha = 0.85f)
+                        )
                     ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally
@@ -139,8 +134,10 @@ fun HikeCard(
                             )
                             Text(
                                 text = averageTemperature?.let { "%.1f°C".format(it) } ?: "N/A",
-                                color = Color.Black,
-                                fontWeight = FontWeight.Bold
+                                style = MaterialTheme.typography.titleMedium,
+                                color = Color.Black.copy(alpha = 0.9f),
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(bottom = 8.dp)
                             )
                         }
                     }
@@ -189,11 +186,7 @@ fun HikeCard(
                     InfoItem(
                         icon = ImageVector.vectorResource(id = R.drawable.distance_icon),
                         label = "Lengde",
-                        value = (hikeUIState.feature.properties.distance_meters.toFloat() / 1000.0).let {
-                            "%.2f km".format(
-                                it
-                            )
-                        },
+                        value = (hikeUIState.feature.properties.distance_meters.toFloat() / 1000.0).let { "%.2f km".format(it) },
                         iconTint = Color(0xFF4CAF50)
                     )
                     InfoItem(
@@ -259,9 +252,9 @@ fun HikeCard(
                         .clickable {
                             checkedState.value = !checkedState.value
                             if (checkedState.value) {
-                                favoritesViewModel.addFavorite(hikeUIState.feature.properties.fid)
+                                favoritesViewModel.addHike(hikeUIState.feature)
                             } else {
-                                favoritesViewModel.deleteFavorite(hikeUIState.feature.properties.fid)
+                                favoritesViewModel.deleteHike(hikeUIState.feature)
                             }
                         },
                     horizontalArrangement = Arrangement.Center,

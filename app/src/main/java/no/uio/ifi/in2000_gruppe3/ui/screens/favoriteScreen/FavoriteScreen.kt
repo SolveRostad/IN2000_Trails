@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.ui.hikeCard.SmallHikeCard
@@ -26,15 +27,25 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteScreen(
-    favoritesViewModel: FavoritesScreenViewModel,
+    favoritesViewModel: FavoritesViewModel,
     hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
-    val favoriteUIState by favoritesViewModel.favoriteScreenUIState.collectAsState()
+    val favoriteUIState by favoritesViewModel.favoritesScreenUIState.collectAsState()
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text(text = "Favoritt turer") }) },
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Favoritt turer",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            )
+        },
         bottomBar = { BottomBar(navController = navController) }
     ) { paddingValues ->
         if (favoriteUIState.favorites.isEmpty()) {
@@ -51,7 +62,7 @@ fun FavoriteScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(favoriteUIState.convertedFavorites) { feature ->
+                items(favoriteUIState.favorites) { feature ->
                     SmallHikeCard(
                         mapboxViewModel = mapboxViewModel,
                         feature = feature,

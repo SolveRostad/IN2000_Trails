@@ -17,16 +17,8 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        buildConfigField(
-            "String",
-            "MAPBOX_ACCESS_TOKEN",
-            "\"${properties["MAPBOX_ACCESS_TOKEN"]}\""
-        )
-        buildConfigField(
-            "String",
-            "MAPBOX_SECRET_TOKEN",
-            "\"${properties["MAPBOX_SECRET_TOKEN"]}\""
-        )
+        buildConfigField("String", "MAPBOX_ACCESS_TOKEN", "\"${properties["MAPBOX_ACCESS_TOKEN"]}\"")
+        buildConfigField("String", "MAPBOX_SECRET_TOKEN", "\"${properties["MAPBOX_SECRET_TOKEN"]}\"")
 
         buildConfigField("String", "GEMINI_API_KEY", "\"${properties["GEMINI_API_KEY"]}\"")
 

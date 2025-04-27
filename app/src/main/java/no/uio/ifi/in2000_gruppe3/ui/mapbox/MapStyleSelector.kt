@@ -5,34 +5,31 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.mapbox.maps.Style
 import no.uio.ifi.in2000_gruppe3.R
 
 @Composable
 fun MapStyleSelector(
     mapboxViewModel: MapboxViewModel
 ) {
-    val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
-    val mapStyle = mapboxUIState.mapStyle
-    var expanded by remember { mutableStateOf(false) }
+    var expanded = remember { mutableStateOf(false) }
 
-    Surface(
+    Card(
         modifier = Modifier
-            .size(40.dp)
-            .background(
-                color = Color.White.copy(alpha = 0.6f),
-                shape = RoundedCornerShape(8.dp)
-            ),
-        color = Color.Transparent
+            .size(48.dp)
+            .padding(4.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+        shape = RoundedCornerShape(10.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White.copy(alpha = 0.85f)
+        )
     ) {
         IconButton(
-            onClick = { expanded = !expanded }
+            onClick = { expanded.value = !expanded.value }
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.map_style),
@@ -41,50 +38,10 @@ fun MapStyleSelector(
             )
         }
 
-        DropdownMenu(
+        MapStyleDropdown(
             expanded = expanded,
-            onDismissRequest = { expanded = false },
+            mapboxViewModel = mapboxViewModel,
             modifier = Modifier
-                .width(120.dp)
-                .shadow(8.dp, RoundedCornerShape(12.dp))
-                .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(12.dp))
-        ) {
-            DropdownMenuItem(
-                text = {
-                    Text(
-                        text = "🌲 Natur",
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                },
-                onClick = {
-                    mapboxViewModel.updateMapStyle(Style.OUTDOORS)
-                    expanded = false
-                },
-                modifier = Modifier.background(
-                    if (mapStyle == Style.OUTDOORS) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
-                    else Color.Transparent
-                )
-            )
-            DropdownMenuItem(
-                text = {
-                    Text(
-                        text = "🛰️ Satellitt",
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                },
-                onClick = {
-                    mapboxViewModel.updateMapStyle(Style.STANDARD_SATELLITE)
-                    expanded = false
-                },
-                modifier = Modifier.background(
-                    if (mapStyle == Style.STANDARD_SATELLITE) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
-                    else Color.Transparent
-                )
-            )
-        }
+        )
     }
 }

@@ -6,16 +6,19 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.ChatbotScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoriteScreen
-import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastDetailedScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.ChatbotScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.WelcomeScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.UserScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.UserSettingsScreen
 
 @Composable
 fun AppNavHost() {
@@ -24,14 +27,21 @@ fun AppNavHost() {
     // ViewModels
     val homeScreenViewModel: HomeScreenViewModel = viewModel()
     val hikeScreenViewModel: HikeScreenViewModel = viewModel()
-    val favoritesViewModel: FavoritesScreenViewModel = viewModel()
+    val favoritesViewModel: FavoritesViewModel = viewModel()
     val mapboxViewModel: MapboxViewModel = viewModel()
     val openAIViewModel: OpenAIViewModel = viewModel()
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route
+        startDestination = Screen.Welcome.route
     ) {
+        // Welcome screen
+        composable(Screen.Welcome.route) {
+            WelcomeScreen(
+                navController = navController
+            )
+        }
+
         // Home screen
         composable(Screen.Home.route) {
             HomeScreen(
@@ -87,8 +97,32 @@ fun AppNavHost() {
         // Chatbot screen
         composable(Screen.Chatbot.route) {
             ChatbotScreen(
+                homeScreenViewModel = homeScreenViewModel,
                 navController = navController
             )
+        }
+
+        // User screen
+        composable(Screen.User.route) {
+             UserScreen(
+                 homeScreenViewModel = homeScreenViewModel,
+                 navController = navController
+             )
+        }
+
+        // Login screen
+        composable(Screen.Login.route) {
+            // LoginScreen(
+            //     navController = navController
+            // )
+        }
+
+        // User settings screen
+        composable(Screen.UserSettings.route) {
+             UserSettingsScreen(
+                 mapboxViewModel = mapboxViewModel,
+                 navController = navController
+             )
         }
     }
 }

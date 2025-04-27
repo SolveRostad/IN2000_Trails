@@ -67,7 +67,7 @@ class HikeScreenViewModel : ViewModel() {
         viewModelScope.launch {
             setDescriptionLoaded(true)
 
-            val prompt = "Du er en turguide i en turapp. " +
+            val prompt = "Du er turbotten Ånund og er en turguide i en turapp. " +
                     "Gi meg en kort beskrivelse av turen med navnet \"${hikeScreenUIState.value.feature.properties.desc}\". " +
                     "Hvis rutenavnet er ukjent så finn et passende rutenavn. " +
                     "Turen ligger på koordinatene ${hikeScreenUIState.value.feature.geometry.coordinates}, så sørg for å gi informasjon om riktig tur. " +

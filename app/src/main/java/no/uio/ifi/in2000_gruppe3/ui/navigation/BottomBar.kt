@@ -49,10 +49,8 @@ fun BottomBar(navController: NavHostController) {
                     Icon(
                         imageVector = Icons.Default.Favorite,
                         contentDescription = "Favorites",
-                        tint = if (navController.currentDestination?.route == "favorites")
-                            MaterialTheme.colorScheme.primary
-                        else
-                            LocalContentColor.current
+                        tint = if (navController.currentDestination?.route == "favorites") MaterialTheme.colorScheme.primary
+                               else LocalContentColor.current
                     )
                 }
 
@@ -74,11 +72,11 @@ fun BottomBar(navController: NavHostController) {
                     )
                 }
 
-                // Chatbot
+                // User
                 IconButton(
                     onClick = {
-                        if (navController.currentDestination?.route != "chatbot")
-                            navController.navigate(Screen.Chatbot.route)
+                        if (navController.currentDestination?.route != "user")
+                            navController.navigate(Screen.User.route)
                     },
                     modifier = Modifier
                         .weight(1f)
@@ -86,11 +84,9 @@ fun BottomBar(navController: NavHostController) {
                 ) {
                     Icon(
                         imageVector = Icons.Default.Person,
-                        contentDescription = "Chatbot",
-                        tint = if (navController.currentDestination?.route == "chatbot")
-                            MaterialTheme.colorScheme.primary
-                        else
-                            LocalContentColor.current
+                        contentDescription = "User",
+                        tint = if (navController.currentDestination?.route == "user") MaterialTheme.colorScheme.primary
+                               else LocalContentColor.current
                     )
                 }
             }
