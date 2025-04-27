@@ -27,14 +27,11 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 import kotlin.math.*
 
 fun getAlertsIconUrl(event: String?, riskMatrixColor: String?): String {
-    val iconId = eventIconMap[event] ?: "icon-warning-generic" // Default hvis event ikke finnes
-
     if (riskMatrixColor.isNullOrEmpty()) {
+        Log.d("AlertsDisplay", "riskMatrixColor is null or empty")
         return "https://example.com/default-icon.png"
     }
-    val iconUrl = "https://raw.githubusercontent.com/nrkno/yr-warning-icons/master/design/svg/$iconId-$riskMatrixColor.svg".lowercase()
-
-    return iconUrl
+    return "https://raw.githubusercontent.com/nrkno/yr-warning-icons/master/design/svg/icon-warning-$event-$riskMatrixColor.svg".lowercase()
 }
 
 @Composable
