@@ -42,18 +42,15 @@ fun AlertsDisplay(
 ) {
     val homeScreenUiState = homeScreenViewModel.homeScreenUIState.collectAsState().value
     val mapboxUiState = mapboxViewModel.mapboxUIState.collectAsState().value
-    val mapCoords = mapboxUiState.pointerCoordinates
+    val pointerCoordinates = mapboxUiState.pointerCoordinates
 
     val showAlertInfo = remember { mutableStateOf(false) }
 
-    val uniqueAlerts = homeScreenUiState.alerts?.features?.distinctBy {it.properties.event }
-
-    val closestAlertWithDistance = uniqueAlerts
+    val closestAlertWithDistance = homeScreenUiState.alerts?.features
         ?.mapNotNull { feature ->
-            val coords = feature.geometry.getFirstCoordinate()
-            coords?.let {
-                val distance = haversineDistance(it, mapCoords)
-                Pair(feature, distance)
+            val coords = getFirstCoordinate(feature.geometry)
+            coords?.let { firstFeature ->
+                Pair(feature, calculateDistance(firstFeature, pointerCoordinates))
             }
         }
         ?.minByOrNull { it.second }
@@ -126,50 +123,37 @@ fun getEventCode(event: String?): String? {
     }
 }
 
-
-fun Geometry.getFirstCoordinate(): Pair<Double, Double>? {
-    //avhengig av om vi har et polygon eller multipolygon, returnerer vi første koordinat
-    return when (this) {
+// Returns the first coordinate of the alert feature
+fun getFirstCoordinate(geometry: Geometry): Pair<Double, Double>? {
+    return when (geometry) {
         is Geometry.Polygon -> {
-            // sjekker om første koordinat finnes og returner den som et pair
-            this.coordinates.firstOrNull()?.firstOrNull()?.let {
+            geometry.coordinates.firstOrNull()?.firstOrNull()?.let {
                 Pair(it[0], it[1])
             }
         }
         is Geometry.MultiPolygon -> {
-            //henter første Polygon, deretter første liste, så koordinater
-            this.coordinates.firstOrNull()?.firstOrNull()?.firstOrNull()?.let {
+            geometry.coordinates.firstOrNull()?.firstOrNull()?.firstOrNull()?.let {
                 Pair(it[0], it[1])
             }
         }
-
     }
 }
 
-//beregner avstand mellom to koordinater med haversine formulen
-fun haversineDistance(coord1: Pair<Double, Double>, coord2: Point?): Double {
-    val R = 6371.0 // jordens radius i km
+// Calculate distance between coordinate from alert and pointer coordinates
+fun calculateDistance(featureCoordinates: Pair<Double, Double>, pointerCoordinates: Point?): Double {
+    val r = 6371.0 // Radius of the Earth in km
 
+    val featureLatitudeRadians = Math.toRadians(featureCoordinates.second)
+    val featureLongitudeRadians = Math.toRadians(featureCoordinates.first)
 
-    // Konverterer MetAlertkoordinatene til radianer
-    //trenger ikke å sjekke om coord1 er null fordi funksjonen hadde blitt brutt før den kom til
-    //haversineDistance
-    val lat1 = Math.toRadians(coord1.second) // latitude
-    val lon1 = Math.toRadians(coord1.first) // longitude
+    val pointerLatitudeRadians = Math.toRadians(pointerCoordinates?.latitude() ?: Double.NEGATIVE_INFINITY)
+    val pointerLongitudeRadians = Math.toRadians(pointerCoordinates?.longitude() ?: Double.NEGATIVE_INFINITY)
 
-    //konverterer Mapboxkoordinatene til radianer. må sjekke om coord2 er null siden det ikke blir
-    //sjekket noen andre steder
-    if (coord2 == null) {
-        return Double.MAX_VALUE
-    }
-    val lat2 = Math.toRadians(coord2.latitude())
-    val lon2 = Math.toRadians(coord2.longitude())
+    val latitudeDelta = pointerLatitudeRadians - featureLatitudeRadians
+    val longitudeDelta = pointerLongitudeRadians - featureLongitudeRadians
 
-    val dLat = lat2 - lat1
-    val dLon = lon2 - lon1
-
-    val a = sin(dLat / 2).pow(2) + cos(lat1) * cos(lat2) * sin(dLon / 2).pow(2)
+    val a = sin(latitudeDelta / 2).pow(2) + cos(featureLatitudeRadians) * cos(pointerLatitudeRadians) * sin(longitudeDelta / 2).pow(2)
     val c = 2 * atan2(sqrt(a), sqrt(1 - a))
 
-    return R * c // Avstand i km
+    return r * c // Distance in km
 }
