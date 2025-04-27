@@ -18,14 +18,15 @@ fun MapStyleSelector(
 ) {
     var expanded = remember { mutableStateOf(false) }
 
-    Surface(
+    Card(
         modifier = Modifier
-            .size(40.dp)
-            .background(
-                color = Color.White.copy(alpha = 0.6f),
-                shape = RoundedCornerShape(8.dp)
-            ),
-        color = Color.Transparent
+            .size(48.dp)
+            .padding(4.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+        shape = RoundedCornerShape(10.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White.copy(alpha = 0.85f)
+        )
     ) {
         IconButton(
             onClick = { expanded.value = !expanded.value }

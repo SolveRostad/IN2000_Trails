@@ -3,7 +3,6 @@ package no.uio.ifi.in2000_gruppe3.ui.locationForecast
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -20,11 +19,14 @@ import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 fun getWeatherIconUrl(symbolCode: String): String {
+    val iconUrl: String
     if (symbolCode.isEmpty()) {
-        Log.d("ForecastDisplay", "Symbol code error")
-        return "https://example.com/default-icon.png"
+        Log.d("WeatherIcon", "symbolCode is null or empty!")
+        iconUrl = "https://example.com/default-icon.png"  // Fallback URL
+    } else {
+        iconUrl = "https://raw.githubusercontent.com/metno/weathericons/refs/heads/main/weather/png/$symbolCode.png"
     }
-    return "https://raw.githubusercontent.com/metno/weathericons/refs/heads/main/weather/png/$symbolCode.png"
+    return iconUrl
 }
 
 @Composable
@@ -60,21 +62,22 @@ fun ForecastDisplay(
         }
         val iconURL = getWeatherIconUrl(symbolCode.toString())
 
-        Column(
-            modifier = modifier.padding(6.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            if (temperature != null) {
+        if (temperature != null) {
+            Column(
+                modifier = modifier,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Image(
                     painter = rememberAsyncImagePainter(iconURL),
                     contentDescription = "Vær-ikon",
-                    modifier = Modifier.size(48.dp)
+                    modifier = Modifier
+                        .size(60.dp)
                 )
                 if (showTemperature) {
                     Text(
                         text = "$temperature°C",
                         style = MaterialTheme.typography.titleMedium,
-                        color = Color.Black.copy(alpha = 0.9f),
+                        color = Color.Black,
                         fontWeight = FontWeight.Bold
                     )
                 }
