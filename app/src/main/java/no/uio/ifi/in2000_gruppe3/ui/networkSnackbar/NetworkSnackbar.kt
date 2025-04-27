@@ -19,27 +19,54 @@ import kotlinx.coroutines.launch
 @Composable
 fun NetworkSnackbar(
     snackbarHostState: SnackbarHostState,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
+    onNetworkStatusChange: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
-    var isConnected by remember { mutableStateOf(checkInternetConnection(context)) }
+    var isConnected by remember { mutableStateOf(true) }
+    var showInitialCheck by remember { mutableStateOf(true) }
 
+    fun checkAndUpdateConnection(): Boolean {
+        val newStatus = checkInternetConnection(context)
+        if (newStatus != isConnected || showInitialCheck) {
+            isConnected = newStatus
+            onNetworkStatusChange(newStatus)
+            showInitialCheck = false
+        }
+        return newStatus
+    }
+
+    // Check at launch
+    LaunchedEffect(Unit) {
+        checkAndUpdateConnection()
+    }
+
+    // Periodic check every 5 seconds
     LaunchedEffect(Unit) {
         while (true) {
-            if (!checkInternetConnection(context)) {
-                coroutineScope.launch {
-                    val result = snackbarHostState.showSnackbar(
-                        message = "Ingen internettforbindelse",
-                        actionLabel = "Prøv igjen"
-                    )
-                    if (result == SnackbarResult.ActionPerformed) {
-                        isConnected = checkInternetConnection(context)
+            delay(5000)
+            checkAndUpdateConnection()
+        }
+    }
+
+    LaunchedEffect(isConnected) {
+        if (!isConnected) {
+            coroutineScope.launch {
+                val result = snackbarHostState.showSnackbar(
+                    message = "Ingen internettforbindelse",
+                    actionLabel = "Prøv igjen"
+                )
+
+                if (result == SnackbarResult.ActionPerformed) {
+                    val currentStatus = checkAndUpdateConnection()
+                    if (!currentStatus) {
+                        snackbarHostState.showSnackbar(
+                            message = "Fortsatt ingen internettforbindelse",
+                            actionLabel = "Prøv igjen"
+                        )
                     }
                 }
-            } else {
-                isConnected = true
             }
-            delay(5000)
         }
     }
 }
