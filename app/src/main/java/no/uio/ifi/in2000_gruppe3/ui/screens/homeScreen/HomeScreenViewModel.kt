@@ -194,5 +194,6 @@ data class HomeScreenUIState(
     val hikes: List<Feature>,
     val alerts: MetAlerts?,
     val forecast: Locationforecast?,
+    val isLoggedIn: Boolean = true, // skal settes til false når login skjerm er laget
     val hasNetworkConnection: Boolean = true
 )
