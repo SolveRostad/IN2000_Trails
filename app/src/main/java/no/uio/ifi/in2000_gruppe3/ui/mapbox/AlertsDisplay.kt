@@ -31,7 +31,7 @@ fun getAlertsIconUrl(event: String?, riskMatrixColor: String?): String {
         Log.d("AlertsDisplay", "riskMatrixColor is null or empty")
         return "https://example.com/default-icon.png"
     }
-    return "https://raw.githubusercontent.com/nrkno/yr-warning-icons/master/design/svg/icon-warning-$event-$riskMatrixColor.svg".lowercase()
+    return "https://raw.githubusercontent.com/nrkno/yr-warning-icons/master/design/svg/icon-warning-$event-$riskMatrixColor.svg"
 }
 
 @Composable
@@ -41,7 +41,7 @@ fun AlertsDisplay(
 ) {
     val homeScreenUiState = homeScreenViewModel.homeScreenUIState.collectAsState().value
     val mapboxUiState = mapboxViewModel.mapboxUIState.collectAsState().value
-    val mapCoords = mapboxUiState.pointerCoordinates //brukerens posisjon
+    val mapCoords = mapboxUiState.pointerCoordinates
 
     val uniqueAlerts = homeScreenUiState.alerts?.features?.distinctBy {it.properties.event }
 
@@ -61,17 +61,18 @@ fun AlertsDisplay(
 
     //hvis det ikke finnes noen varsler eller avstanden er for stor, vis ingenting
    if (closestAlert == null || distance == null || distance > 400.0) {
-        return // ikke vis noe
-    }
+        return
+   }
 
-    val alertEvent = closestAlert.properties.event
     val alertTitle = closestAlert.properties.title
-    val alertColor = closestAlert.properties.riskMatrixColor
+    val alertEvent = closestAlert.properties.event?.lowercase()
+    val alertColor = closestAlert.properties.riskMatrixColor?.lowercase()
 
-    val iconURL = getAlertsIconUrl(alertEvent, alertColor) // Henter icon-URL
+    val eventCode = getEventCode(alertEvent)
+    val iconURL = getAlertsIconUrl(eventCode, alertColor)
+    Log.d("AlertsDisplay", "iconURL: $iconURL")
 
-    // Coil med SVG-support
-    val painter = rememberAsyncImagePainter(
+    val icon = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
             .data(iconURL)
             .decoderFactory(SvgDecoder.Factory())
@@ -80,43 +81,50 @@ fun AlertsDisplay(
 
     val showAlertInfo = remember { mutableStateOf(false) }
 
-    Column {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .size(60.dp)
-                .clickable {
-                    if (distance <= 400.0) {
-                        showAlertInfo.value = !showAlertInfo.value
-                    } else {
-                        Log.d("AlertsDisplay", "Varsel er for langt unna!")
-                    }
-                }
-        ) {
-            Image(
-                painter = painter,
-                contentDescription = "Varsel-ikon",
-                modifier = Modifier.size(50.dp)
-            )
-        }
-        if (showAlertInfo.value) {
-            Surface(
-                tonalElevation = 4.dp,
-                shadowElevation = 8.dp,
-                shape = MaterialTheme.shapes.medium,
-                color = MaterialTheme.colorScheme.background,
+    if (distance < 400.0) {
+        Column {
+            Box(
+                contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .padding(top = 8.dp)
-                    .align(Alignment.CenterHorizontally)
+                    .padding(6.dp)
+                    .clickable { showAlertInfo.value = !showAlertInfo.value }
             ) {
-                Text(
-                    text = alertTitle ?: "Ingen informasjon",
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(8.dp)
+                Image(
+                    painter = icon,
+                    contentDescription = "Alert icon",
+                    modifier = Modifier.size(48.dp)
                 )
             }
-        }
 
+            if (showAlertInfo.value) {
+                Surface(
+                    tonalElevation = 4.dp,
+                    shadowElevation = 8.dp,
+                    shape = MaterialTheme.shapes.medium,
+                    color = MaterialTheme.colorScheme.background,
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .align(Alignment.CenterHorizontally)
+                ) {
+                    Text(
+                        text = alertTitle ?: "Kunne ikke hente informasjon om farevarselet",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+// Returns the event code based on the event name
+fun getEventCode(event: String?): String? {
+    return when (event) {
+        "blowingsnow" -> "snow"
+        "gale" -> "wind"
+        "icing" -> "generic"
+        "unknown" -> "generic"
+        else -> event
     }
 }
 
