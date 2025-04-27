@@ -22,7 +22,7 @@ fun getWeatherIconUrl(symbolCode: String): String {
     val iconUrl: String
     if (symbolCode.isEmpty()) {
         Log.d("WeatherIcon", "symbolCode is null or empty!")
-        iconUrl = "https://example.com/default-icon.png"  // Fallback URL
+        iconUrl = "null"
     } else {
         iconUrl = "https://raw.githubusercontent.com/metno/weathericons/refs/heads/main/weather/png/$symbolCode.png"
     }

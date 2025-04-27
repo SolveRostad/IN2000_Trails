@@ -29,7 +29,7 @@ import kotlin.math.*
 fun getAlertsIconUrl(event: String?, riskMatrixColor: String?): String {
     if (event.isNullOrEmpty() || riskMatrixColor.isNullOrEmpty()) {
         Log.d("AlertsDisplay", "getAlertsIconUrl: event eller color")
-        return "https://example.com/default-icon.png"
+        return "null"
     }
     val eventCode = getEventCode(event)
     return "https://raw.githubusercontent.com/nrkno/yr-warning-icons/master/design/svg/icon-warning-$eventCode-$riskMatrixColor.svg"
@@ -65,7 +65,6 @@ fun AlertsDisplay(
         return
     }
 
-    val alertTitle = closestAlert.properties.title
     val alertEvent = closestAlert.properties.event?.lowercase()
     val alertColor = closestAlert.properties.riskMatrixColor?.lowercase()
 
@@ -100,7 +99,13 @@ fun AlertsDisplay(
                         .align(Alignment.CenterHorizontally)
                 ) {
                     Text(
-                        text = alertTitle ?: "Kunne ikke hente informasjon om farevarselet",
+                        text = """
+                            ${closestAlert.properties.area ?: "Ukjent område"}
+                            ${closestAlert.properties.description ?: "Ingen beskrivelse tilgjengelig"}
+                            Konsekvenser: ${closestAlert.properties.consequences ?: "Ingen konsekvenser tilgjengelig"}
+                            Alvorlighetsgrad: ${closestAlert.properties.severity ?: "Ukjent alvorlighetsgrad"}
+                            Risiko: ${closestAlert.properties.certainty ?: "Ukjent risiko"}
+                            """.trimIndent(),
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(8.dp)
                     )

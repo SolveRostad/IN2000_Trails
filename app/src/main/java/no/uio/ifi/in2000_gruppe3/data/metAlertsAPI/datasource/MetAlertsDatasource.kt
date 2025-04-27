@@ -17,7 +17,7 @@ class MetAlertsDatasource {
      * @return METAlerts object or null if request fails
      */
     suspend fun getMetAlerts(): MetAlerts? {
-        return withContext(Dispatchers.IO) { // 📌 Flytter operasjonen til en bakgrunnstråd
+        return withContext(Dispatchers.IO) {
             val urlString = "https://api.met.no/weatherapi/metalerts/2.0/current.json"
 
         try {
