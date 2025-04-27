@@ -27,11 +27,12 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 import kotlin.math.*
 
 fun getAlertsIconUrl(event: String?, riskMatrixColor: String?): String {
-    if (riskMatrixColor.isNullOrEmpty()) {
-        Log.d("AlertsDisplay", "riskMatrixColor is null or empty")
+    if (event.isNullOrEmpty() || riskMatrixColor.isNullOrEmpty()) {
+        Log.d("AlertsDisplay", "getAlertsIconUrl: event eller color")
         return "https://example.com/default-icon.png"
     }
-    return "https://raw.githubusercontent.com/nrkno/yr-warning-icons/master/design/svg/icon-warning-$event-$riskMatrixColor.svg"
+    val eventCode = getEventCode(event)
+    return "https://raw.githubusercontent.com/nrkno/yr-warning-icons/master/design/svg/icon-warning-$eventCode-$riskMatrixColor.svg"
 }
 
 @Composable
@@ -43,9 +44,10 @@ fun AlertsDisplay(
     val mapboxUiState = mapboxViewModel.mapboxUIState.collectAsState().value
     val mapCoords = mapboxUiState.pointerCoordinates
 
+    val showAlertInfo = remember { mutableStateOf(false) }
+
     val uniqueAlerts = homeScreenUiState.alerts?.features?.distinctBy {it.properties.event }
 
-    // Finn nærmeste varsel og regner ut avstanden
     val closestAlertWithDistance = uniqueAlerts
         ?.mapNotNull { feature ->
             val coords = feature.geometry.getFirstCoordinate()
@@ -54,32 +56,18 @@ fun AlertsDisplay(
                 Pair(feature, distance)
             }
         }
-        ?.minByOrNull { it.second } // finn nærmeste
+        ?.minByOrNull { it.second }
 
     val closestAlert = closestAlertWithDistance?.first
     val distance = closestAlertWithDistance?.second
 
-    //hvis det ikke finnes noen varsler eller avstanden er for stor, vis ingenting
-   if (closestAlert == null || distance == null || distance > 400.0) {
+    if (closestAlert == null || distance == null) {
         return
-   }
+    }
 
     val alertTitle = closestAlert.properties.title
     val alertEvent = closestAlert.properties.event?.lowercase()
     val alertColor = closestAlert.properties.riskMatrixColor?.lowercase()
-
-    val eventCode = getEventCode(alertEvent)
-    val iconURL = getAlertsIconUrl(eventCode, alertColor)
-    Log.d("AlertsDisplay", "iconURL: $iconURL")
-
-    val icon = rememberAsyncImagePainter(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(iconURL)
-            .decoderFactory(SvgDecoder.Factory())
-            .build()
-    )
-
-    val showAlertInfo = remember { mutableStateOf(false) }
 
     if (distance < 400.0) {
         Column {
@@ -90,7 +78,12 @@ fun AlertsDisplay(
                     .clickable { showAlertInfo.value = !showAlertInfo.value }
             ) {
                 Image(
-                    painter = icon,
+                    painter = rememberAsyncImagePainter(
+                        ImageRequest.Builder(LocalContext.current)
+                            .data(getAlertsIconUrl(alertEvent, alertColor))
+                            .decoderFactory(SvgDecoder.Factory())
+                            .build()
+                    ),
                     contentDescription = "Alert icon",
                     modifier = Modifier.size(48.dp)
                 )
@@ -175,24 +168,3 @@ fun haversineDistance(coord1: Pair<Double, Double>, coord2: Point?): Double {
 
     return R * c // Avstand i km
 }
-
-val eventIconMap = mapOf(
-    "avalanches" to "icon-warning-avalanches",
-    "blowingSnow" to "icon-warning-snow",
-    "drivingConditions" to "icon-warning-drivingconditions",
-    "flood" to "icon-warning-flood",
-    "forestFire" to "icon-warning-forestfire",
-    "gale" to "icon-warning-wind",
-    "ice" to "icon-warning-ice",
-    "icing" to "icon-warning-generic",
-    "landslide" to "icon-warning-landslide",
-    "polarLow" to "icon-warning-polarlow",
-    "rain" to "icon-warning-rain",
-    "rainFlood" to "icon-warning-rainflood",
-    "snow" to "icon-warning-snow",
-    "stormSurge" to "icon-warning-stormsurge",
-    "lightning" to "icon-warning-lightning",
-    "wind" to "icon-warning-wind",
-    "unknown" to "icon-warning-generic",
-    "extreme" to "icon-warning-extreme"
-)
