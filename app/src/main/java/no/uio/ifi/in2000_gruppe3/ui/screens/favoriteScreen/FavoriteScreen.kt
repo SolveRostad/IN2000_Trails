@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.ui.hikeCard.SmallHikeCard
@@ -34,7 +35,17 @@ fun FavoriteScreen(
     val favoriteUIState by favoritesViewModel.favoritesScreenUIState.collectAsState()
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text(text = "Favoritt turer") }) },
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Favoritt turer",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            )
+        },
         bottomBar = { BottomBar(navController = navController) }
     ) { paddingValues ->
         if (favoriteUIState.favorites.isEmpty()) {

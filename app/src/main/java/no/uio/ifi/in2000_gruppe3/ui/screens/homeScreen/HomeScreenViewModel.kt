@@ -35,6 +35,12 @@ class HomeScreenViewModel() : ViewModel() {
     )
     val homeScreenUIState: StateFlow<HomeScreenUIState> = _homeScreenUIState.asStateFlow()
 
+    fun updateNetworkStatus(isConnected: Boolean) {
+        _homeScreenUIState.update {
+            it.copy(hasNetworkConnection = isConnected)
+        }
+    }
+
     private val _sheetStateTarget = MutableStateFlow(SheetDrawerDetent.SEMIPEEK)
     val sheetStateTarget: StateFlow<SheetDrawerDetent> = _sheetStateTarget.asStateFlow()
 
@@ -187,5 +193,7 @@ data class HomeScreenUIState(
     val errorMessage: String = "",
     val hikes: List<Feature>,
     val alerts: MetAlerts?,
-    val forecast: Locationforecast?
+    val forecast: Locationforecast?,
+    val isLoggedIn: Boolean = true, // skal settes til false når login skjerm er laget
+    val hasNetworkConnection: Boolean = true
 )

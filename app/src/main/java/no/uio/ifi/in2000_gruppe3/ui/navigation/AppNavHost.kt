@@ -17,6 +17,8 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastDet
 import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.ChatbotScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.WelcomeScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.UserScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.UserSettingsScreen
 
 @Composable
 fun AppNavHost() {
@@ -98,6 +100,29 @@ fun AppNavHost() {
                 homeScreenViewModel = homeScreenViewModel,
                 navController = navController
             )
+        }
+
+        // User screen
+        composable(Screen.User.route) {
+             UserScreen(
+                 homeScreenViewModel = homeScreenViewModel,
+                 navController = navController
+             )
+        }
+
+        // Login screen
+        composable(Screen.Login.route) {
+            // LoginScreen(
+            //     navController = navController
+            // )
+        }
+
+        // User settings screen
+        composable(Screen.UserSettings.route) {
+             UserSettingsScreen(
+                 mapboxViewModel = mapboxViewModel,
+                 navController = navController
+             )
         }
     }
 }
