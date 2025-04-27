@@ -120,6 +120,7 @@ fun AppNavHost() {
         // User settings screen
         composable(Screen.UserSettings.route) {
              UserSettingsScreen(
+                 mapboxViewModel = mapboxViewModel,
                  navController = navController
              )
         }
