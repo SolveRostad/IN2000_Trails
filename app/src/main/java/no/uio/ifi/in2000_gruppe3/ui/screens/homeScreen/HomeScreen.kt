@@ -131,14 +131,13 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                Surface(
-                    modifier = Modifier
-                        .padding(horizontal = 8.dp)
-                        .background(
-                            color = Color.White.copy(alpha = 0.6f),
-                            shape = RoundedCornerShape(8.dp)
-                        ),
-                    color = Color.Transparent
+                Card(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White.copy(alpha = 0.85f)
+                    )
                 ) {
                     AlertsDisplay(
                         homeScreenViewModel = homeScreenViewModel,
