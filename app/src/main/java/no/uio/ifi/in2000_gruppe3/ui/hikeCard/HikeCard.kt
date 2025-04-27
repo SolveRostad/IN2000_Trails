@@ -1,7 +1,6 @@
 package no.uio.ifi.in2000_gruppe3.ui.hikeCard
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,7 +22,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -116,15 +114,15 @@ fun HikeCard(
                 Box {
                     HikeCardMapPreview(mapboxViewModel, hikeUIState.feature)
 
-                    Surface(
+                    Card(
                         modifier = Modifier
-                            .padding(horizontal = 8.dp, vertical = 4.dp)
-                            .align(Alignment.TopEnd)
-                            .background(
-                                color = Color.White.copy(alpha = 0.6f),
-                                shape = RoundedCornerShape(8.dp)
-                            ),
-                        color = Color.Transparent
+                            .padding(4.dp)
+                            .align(Alignment.TopEnd),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.White.copy(alpha = 0.85f)
+                        )
                     ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally
@@ -136,8 +134,10 @@ fun HikeCard(
                             )
                             Text(
                                 text = averageTemperature?.let { "%.1f°C".format(it) } ?: "N/A",
-                                color = Color.Black,
-                                fontWeight = FontWeight.Bold
+                                style = MaterialTheme.typography.titleMedium,
+                                color = Color.Black.copy(alpha = 0.9f),
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(bottom = 8.dp)
                             )
                         }
                     }
