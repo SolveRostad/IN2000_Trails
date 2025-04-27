@@ -29,7 +29,7 @@ class LocationForecastDatasource {
             if (connection.responseCode == HttpURLConnection.HTTP_OK) {
                 val response = connection.inputStream.bufferedReader().readText()
                 val json = Json { ignoreUnknownKeys = true }
-                // Serialize the response to a Locationforecast object
+                // Deserialize the response to a Locationforecast object
                 json.decodeFromString<Locationforecast>(response)
             } else {
                 null
