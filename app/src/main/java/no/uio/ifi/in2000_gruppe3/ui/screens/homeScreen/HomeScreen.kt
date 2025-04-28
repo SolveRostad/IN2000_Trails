@@ -50,7 +50,7 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 @Composable
 fun HomeScreen(
     homeScreenViewModel: HomeScreenViewModel,
-    hikeViewModel: HikeScreenViewModel,
+    hikeScreenViewModel: HikeScreenViewModel,
     favoritesViewModel: FavoritesViewModel,
     mapboxViewModel: MapboxViewModel,
     openAIViewModel: OpenAIViewModel,
@@ -105,6 +105,7 @@ fun HomeScreen(
         ) {
             MapViewer(
                 homeScreenViewModel = homeScreenViewModel,
+                hikeScreenViewModel = hikeScreenViewModel,
                 mapboxViewModel = mapboxViewModel,
                 favoritesViewModel = favoritesViewModel,
             )
@@ -192,7 +193,7 @@ fun HomeScreen(
 
             BottomSheetDrawer(
                 homeScreenViewModel = homeScreenViewModel,
-                hikeScreenViewModel = hikeViewModel,
+                hikeScreenViewModel = hikeScreenViewModel,
                 mapboxViewModel = mapboxViewModel,
                 openAIViewModel = openAIViewModel,
                 navController = navController
