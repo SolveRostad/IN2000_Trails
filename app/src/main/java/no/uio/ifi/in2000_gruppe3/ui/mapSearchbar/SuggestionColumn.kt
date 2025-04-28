@@ -58,7 +58,7 @@ fun SuggestionColumn(mapboxViewModel: MapboxViewModel) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(
-                        modifier = Modifier.weight(0.2f),
+                        modifier = Modifier.weight(0.25f),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         val icon = getIconFromString(suggestion.makiIcon.toString(), context)

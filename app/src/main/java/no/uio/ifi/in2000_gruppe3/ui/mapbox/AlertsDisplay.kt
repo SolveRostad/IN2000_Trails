@@ -3,12 +3,13 @@ package no.uio.ifi.in2000_gruppe3.ui.mapbox
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -26,14 +27,6 @@ import no.uio.ifi.in2000_gruppe3.data.metAlertsAPI.models.Geometry
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 import kotlin.math.*
 
-fun getAlertsIconUrl(event: String?, riskMatrixColor: String?): String {
-    if (riskMatrixColor.isNullOrEmpty()) {
-        Log.d("AlertsDisplay", "riskMatrixColor is null or empty")
-        return "https://example.com/default-icon.png"
-    }
-    return "https://raw.githubusercontent.com/nrkno/yr-warning-icons/master/design/svg/icon-warning-$event-$riskMatrixColor.svg"
-}
-
 @Composable
 fun AlertsDisplay(
     homeScreenViewModel: HomeScreenViewModel,
@@ -41,75 +34,75 @@ fun AlertsDisplay(
 ) {
     val homeScreenUiState = homeScreenViewModel.homeScreenUIState.collectAsState().value
     val mapboxUiState = mapboxViewModel.mapboxUIState.collectAsState().value
-    val mapCoords = mapboxUiState.pointerCoordinates
+    val pointerCoordinates = mapboxUiState.pointerCoordinates
 
-    val uniqueAlerts = homeScreenUiState.alerts?.features?.distinctBy {it.properties.event }
+    val showAlertInfo = remember { mutableStateOf(false) }
 
-    // Finn nærmeste varsel og regner ut avstanden
-    val closestAlertWithDistance = uniqueAlerts
+    val closestAlertWithDistance = homeScreenUiState.alerts?.features
         ?.mapNotNull { feature ->
-            val coords = feature.geometry.getFirstCoordinate()
-            coords?.let {
-                val distance = haversineDistance(it, mapCoords)
-                Pair(feature, distance)
+            val coords = getFirstCoordinate(feature.geometry)
+            coords?.let { firstFeature ->
+                Pair(feature, calculateDistance(firstFeature, pointerCoordinates))
             }
         }
-        ?.minByOrNull { it.second } // finn nærmeste
+        ?.minByOrNull { it.second }
 
     val closestAlert = closestAlertWithDistance?.first
     val distance = closestAlertWithDistance?.second
 
-    //hvis det ikke finnes noen varsler eller avstanden er for stor, vis ingenting
-   if (closestAlert == null || distance == null || distance > 400.0) {
+    if (closestAlert == null || distance == null) {
         return
-   }
+    }
 
-    val alertTitle = closestAlert.properties.title
     val alertEvent = closestAlert.properties.event?.lowercase()
     val alertColor = closestAlert.properties.riskMatrixColor?.lowercase()
 
-    val eventCode = getEventCode(alertEvent)
-    val iconURL = getAlertsIconUrl(eventCode, alertColor)
-    Log.d("AlertsDisplay", "iconURL: $iconURL")
+    val radius = when (closestAlert.properties.severity?.lowercase()) {
+        "moderate" -> 30.0
+        "severe" -> 50.0
+        "extreme" -> 70.0
+        else -> 30.0
+    }
 
-    val icon = rememberAsyncImagePainter(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(iconURL)
-            .decoderFactory(SvgDecoder.Factory())
-            .build()
-    )
-
-    val showAlertInfo = remember { mutableStateOf(false) }
-
-    if (distance < 400.0) {
-        Column {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .padding(6.dp)
-                    .clickable { showAlertInfo.value = !showAlertInfo.value }
-            ) {
-                Image(
-                    painter = icon,
-                    contentDescription = "Alert icon",
-                    modifier = Modifier.size(48.dp)
+    if (distance < radius) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .padding(6.dp)
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() },
+                    onClick = { showAlertInfo.value = !showAlertInfo.value }
                 )
-            }
+        ) {
+            Image(
+                painter = rememberAsyncImagePainter(
+                    ImageRequest.Builder(LocalContext.current)
+                        .data(getAlertsIconUrl(alertEvent, alertColor))
+                        .decoderFactory(SvgDecoder.Factory())
+                        .build()
+                ),
+                contentDescription = "Alert icon",
+                modifier = Modifier.size(48.dp)
+            )
 
             if (showAlertInfo.value) {
-                Surface(
-                    tonalElevation = 4.dp,
-                    shadowElevation = 8.dp,
+                Card(
                     shape = MaterialTheme.shapes.medium,
-                    color = MaterialTheme.colorScheme.background,
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                        .align(Alignment.CenterHorizontally)
+                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                    modifier = Modifier.padding(top = 8.dp)
                 ) {
                     Text(
-                        text = alertTitle ?: "Kunne ikke hente informasjon om farevarselet",
+                        text = """
+                            ${closestAlert.properties.area ?: "Ukjent område"}
+                            ${closestAlert.properties.description ?: "Ingen beskrivelse tilgjengelig"}
+                            Konsekvenser: ${closestAlert.properties.consequences ?: "Ingen konsekvenser tilgjengelig"}
+                            Alvorlighetsgrad: ${closestAlert.properties.severity ?: "Ukjent alvorlighetsgrad"}
+                            Risiko: ${closestAlert.properties.certainty ?: "Ukjent risiko"}
+                        """.trimIndent(),
                         style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(8.dp)
+                        modifier = Modifier.padding(12.dp)
                     )
                 }
             }
@@ -117,82 +110,56 @@ fun AlertsDisplay(
     }
 }
 
+private fun getAlertsIconUrl(event: String?, riskMatrixColor: String?): String {
+    if (event.isNullOrEmpty() || riskMatrixColor.isNullOrEmpty()) {
+        Log.d("AlertsDisplay", "getAlertsIconUrl: event eller color")
+        return "null"
+    }
+    val eventCode = getEventCode(event)
+    return "https://raw.githubusercontent.com/nrkno/yr-warning-icons/master/design/svg/icon-warning-$eventCode-$riskMatrixColor.svg"
+}
+
 // Returns the event code based on the event name
-fun getEventCode(event: String?): String? {
+private fun getEventCode(event: String?): String? {
     return when (event) {
         "blowingsnow" -> "snow"
         "gale" -> "wind"
-        "icing" -> "generic"
-        "unknown" -> "generic"
+        "icing", "unknown" -> "generic"
         else -> event
     }
 }
 
-
-fun Geometry.getFirstCoordinate(): Pair<Double, Double>? {
-    //avhengig av om vi har et polygon eller multipolygon, returnerer vi første koordinat
-    return when (this) {
+// Returns the first coordinate of the alert feature
+private fun getFirstCoordinate(geometry: Geometry): Pair<Double, Double>? {
+    return when (geometry) {
         is Geometry.Polygon -> {
-            // sjekker om første koordinat finnes og returner den som et pair
-            this.coordinates.firstOrNull()?.firstOrNull()?.let {
+            geometry.coordinates.firstOrNull()?.firstOrNull()?.let {
                 Pair(it[0], it[1])
             }
         }
         is Geometry.MultiPolygon -> {
-            //henter første Polygon, deretter første liste, så koordinater
-            this.coordinates.firstOrNull()?.firstOrNull()?.firstOrNull()?.let {
+            geometry.coordinates.firstOrNull()?.firstOrNull()?.firstOrNull()?.let {
                 Pair(it[0], it[1])
             }
         }
-
     }
 }
 
-//beregner avstand mellom to koordinater med haversine formulen
-fun haversineDistance(coord1: Pair<Double, Double>, coord2: Point?): Double {
-    val R = 6371.0 // jordens radius i km
+// Calculate distance between coordinate from alert and pointer coordinates
+fun calculateDistance(featureCoordinates: Pair<Double, Double>, pointerCoordinates: Point?): Double {
+    val r = 6371.0 // Radius of the Earth in km
 
+    val featureLatitudeRadians = Math.toRadians(featureCoordinates.second)
+    val featureLongitudeRadians = Math.toRadians(featureCoordinates.first)
 
-    // Konverterer MetAlertkoordinatene til radianer
-    //trenger ikke å sjekke om coord1 er null fordi funksjonen hadde blitt brutt før den kom til
-    //haversineDistance
-    val lat1 = Math.toRadians(coord1.second) // latitude
-    val lon1 = Math.toRadians(coord1.first) // longitude
+    val pointerLatitudeRadians = Math.toRadians(pointerCoordinates?.latitude() ?: Double.NEGATIVE_INFINITY)
+    val pointerLongitudeRadians = Math.toRadians(pointerCoordinates?.longitude() ?: Double.NEGATIVE_INFINITY)
 
-    //konverterer Mapboxkoordinatene til radianer. må sjekke om coord2 er null siden det ikke blir
-    //sjekket noen andre steder
-    if (coord2 == null) {
-        return Double.MAX_VALUE
-    }
-    val lat2 = Math.toRadians(coord2.latitude())
-    val lon2 = Math.toRadians(coord2.longitude())
+    val latitudeDelta = pointerLatitudeRadians - featureLatitudeRadians
+    val longitudeDelta = pointerLongitudeRadians - featureLongitudeRadians
 
-    val dLat = lat2 - lat1
-    val dLon = lon2 - lon1
-
-    val a = sin(dLat / 2).pow(2) + cos(lat1) * cos(lat2) * sin(dLon / 2).pow(2)
+    val a = sin(latitudeDelta / 2).pow(2) + cos(featureLatitudeRadians) * cos(pointerLatitudeRadians) * sin(longitudeDelta / 2).pow(2)
     val c = 2 * atan2(sqrt(a), sqrt(1 - a))
 
-    return R * c // Avstand i km
+    return r * c // Distance in km
 }
-
-val eventIconMap = mapOf(
-    "avalanches" to "icon-warning-avalanches",
-    "blowingSnow" to "icon-warning-snow",
-    "drivingConditions" to "icon-warning-drivingconditions",
-    "flood" to "icon-warning-flood",
-    "forestFire" to "icon-warning-forestfire",
-    "gale" to "icon-warning-wind",
-    "ice" to "icon-warning-ice",
-    "icing" to "icon-warning-generic",
-    "landslide" to "icon-warning-landslide",
-    "polarLow" to "icon-warning-polarlow",
-    "rain" to "icon-warning-rain",
-    "rainFlood" to "icon-warning-rainflood",
-    "snow" to "icon-warning-snow",
-    "stormSurge" to "icon-warning-stormsurge",
-    "lightning" to "icon-warning-lightning",
-    "wind" to "icon-warning-wind",
-    "unknown" to "icon-warning-generic",
-    "extreme" to "icon-warning-extreme"
-)

@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mapbox.geojson.Point
@@ -55,18 +54,24 @@ class HomeScreenViewModel() : ViewModel() {
         featureType: String,
         minDistance: Int
     ) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _homeScreenUIState.update {
                 it.copy(isLoading = true)
             }
             try {
                 val hikesResponse = hikeAPIRepository.getHikes(lat, lng, limit, featureType, minDistance)
                 _homeScreenUIState.update {
-                    it.copy(hikes = hikesResponse, isError = false)
+                    it.copy(
+                        hikes = hikesResponse,
+                        isError = false
+                    )
                 }
             } catch (e: Exception) {
                 _homeScreenUIState.update {
-                    it.copy(isError = true, errorMessage = e.message ?: "Unknown error")
+                    it.copy(
+                        isError = true,
+                        errorMessage = e.message ?: "Error fetching hikes"
+                    )
                 }
             } finally {
                 _homeScreenUIState.update {
@@ -93,24 +98,23 @@ class HomeScreenViewModel() : ViewModel() {
     }
 
     fun fetchForecast(point: Point) {
-        val lat = point.latitude()
-        val lng = point.longitude()
-
         viewModelScope.launch(Dispatchers.IO) {
             _homeScreenUIState.update {
                 it.copy(isLoading = true)
             }
             try {
-                val result = locationForecastRepository.getForecast(lat, lng)
+                val forecast = locationForecastRepository.getForecast(point.latitude(), point.longitude())
                 _homeScreenUIState.update {
-                    it.copy(forecast = result, isError = false, isLoading = false)
+                    it.copy(
+                        forecast = forecast,
+                        isError = false
+                    )
                 }
             } catch (e: Exception) {
                 _homeScreenUIState.update {
                     it.copy(
                         isError = true,
-                        errorMessage = e.message ?: "Unknown error",
-                        isLoading = false
+                        errorMessage = e.message ?: "Error fetching forecast"
                     )
                 }
             } finally {
@@ -122,25 +126,23 @@ class HomeScreenViewModel() : ViewModel() {
     }
 
     fun fetchAlerts() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _homeScreenUIState.update {
                 it.copy(isLoading = true)
             }
             try {
-                val result = metAlertsRepository.getAlerts() //henter data fra repository
-                Log.d("FetchAlerts", "Alerts fetched: $result")
-
-                if (result != null) {
-                    _homeScreenUIState.update {
-                        it.copy(alerts = result)
-                    }
+                val alerts = metAlertsRepository.getAlerts()
+                _homeScreenUIState.update {
+                    it.copy(
+                        alerts = alerts,
+                        isError = false
+                    )
                 }
             } catch (e: Exception) {
                 _homeScreenUIState.update {
                     it.copy(
                         isError = true,
-                        errorMessage = e.message ?: "Unknown error",
-                        isLoading = false
+                        errorMessage = e.message ?: "Error fetching alerts"
                     )
                 }
             } finally {
