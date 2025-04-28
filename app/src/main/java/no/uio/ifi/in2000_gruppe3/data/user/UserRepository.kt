@@ -23,7 +23,10 @@ class UserRepository(private val userDao: UserDao) {
     }
 
     suspend fun getSelectedUser(): User {
-        return userDao.getSelectedUser()
+        val selectedUser = userDao.getSelectedUser()
+        return selectedUser ?: userDao.getDefaultUser()?.also {
+            userDao.selectUser(it.username)
+        } ?: throw IllegalStateException("Default user not found in the database.")
     }
 
     suspend fun getAllUsers(): List<User> {

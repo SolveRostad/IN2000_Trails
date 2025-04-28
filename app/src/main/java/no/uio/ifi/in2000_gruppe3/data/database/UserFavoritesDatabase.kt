@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000_gruppe3.data.database
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -8,6 +9,7 @@ import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 /** Database layout:
  * User
@@ -42,8 +44,10 @@ abstract class UserFavoritesDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: UserFavoritesDatabase? = null
 
-        private class DatabaseCallBack(private val scope: CoroutineScope) :
-            RoomDatabase.Callback() {
+        private class DatabaseCallBack(
+            private val database: UserFavoritesDatabase,
+            private val scope: CoroutineScope
+        ) : Callback() {
 
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
@@ -54,10 +58,12 @@ abstract class UserFavoritesDatabase : RoomDatabase() {
             }
 
             private suspend fun populateDatabase() {
-                val userDao = INSTANCE?.userDao() ?: return
+                val userDao = database.userDao()
 
                 val defaultUser = User("defaultUser", isSelected = 1)
+
                 userDao.insertUser(defaultUser)
+                Log.d("DatabaseCallBack", "Default user inserted: $defaultUser")
             }
         }
 
@@ -68,10 +74,21 @@ abstract class UserFavoritesDatabase : RoomDatabase() {
                     UserFavoritesDatabase::class.java,
                     "user_favorites_database"
                 )
-                    .addCallback(DatabaseCallBack(scope))
-                    .fallbackToDestructiveMigration(false)
                     .build()
+
                 INSTANCE = instance
+
+                // Now that instance is set, insert the default user synchronously
+                runBlocking {
+                    val userDao = instance.userDao()
+                    // Check if default user exists first to avoid duplicates
+                    if (userDao.getDefaultUser() == null) {
+                        val defaultUser = User("defaultUser", isSelected = 1)
+                        userDao.insertUser(defaultUser)
+                        Log.d("DatabaseCallBack", "Default user inserted: $defaultUser")
+                    }
+                }
+
                 instance
             }
         }

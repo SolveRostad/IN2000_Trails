@@ -41,7 +41,8 @@ class FavoritesScreenViewModel(
         viewModelScope.launch {
             try {
                 setUser()
-                getAllFavorites(userRepository.getSelectedUser().username)
+                val username = userRepository.getSelectedUser().username
+                getAllFavorites(username)
                 getAllConverteFavorites()
             } catch (e: Exception) {
                 Log.e("FavoritesViewModel", "Error initializing data: ${e.message}")

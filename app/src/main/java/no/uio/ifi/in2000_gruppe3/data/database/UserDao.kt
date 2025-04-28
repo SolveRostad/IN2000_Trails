@@ -21,8 +21,11 @@ interface UserDao {
     @Query("UPDATE user_table SET isSelected = 1 WHERE username LIKE :username")
     suspend fun selectUser(username: String)
 
-    @Query("SELECT * FROM user_table WHERE isSelected")
-    suspend fun getSelectedUser(): User
+    @Query("SELECT * FROM user_table WHERE isSelected = 1 LIMIT 1")
+    suspend fun getSelectedUser(): User?
+
+    @Query("SELECT * FROM user_table WHERE username = 'defaultUser' LIMIT 1")
+    suspend fun getDefaultUser(): User?
 
     @Query("UPDATE user_table SET isSelected = 0")
     suspend fun unselectUser()

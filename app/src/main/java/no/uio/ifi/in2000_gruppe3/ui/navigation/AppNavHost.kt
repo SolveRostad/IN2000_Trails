@@ -1,6 +1,8 @@
 package no.uio.ifi.in2000_gruppe3.ui.navigation
 
+import android.app.Application
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -16,6 +18,7 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastDet
 import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.ChatbotScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModelFactory
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.WelcomeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.UserScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.UserSettingsScreen
@@ -27,7 +30,12 @@ fun AppNavHost() {
     // ViewModels
     val homeScreenViewModel: HomeScreenViewModel = viewModel()
     val hikeScreenViewModel: HikeScreenViewModel = viewModel()
-    val favoritesViewModel: FavoritesScreenViewModel = viewModel()
+    val favoritesViewModel: FavoritesScreenViewModel = viewModel(
+        factory = FavoritesScreenViewModelFactory(
+            application = LocalContext.current.applicationContext as Application,
+            openAIViewModel = OpenAIViewModel()
+        )
+    )
     val mapboxViewModel: MapboxViewModel = viewModel()
     val openAIViewModel: OpenAIViewModel = viewModel()
 
