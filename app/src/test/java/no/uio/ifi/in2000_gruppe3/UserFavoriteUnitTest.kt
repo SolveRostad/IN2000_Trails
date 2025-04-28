@@ -11,7 +11,6 @@ import kotlinx.coroutines.test.setMain
 import no.uio.ifi.in2000_gruppe3.data.database.User
 import no.uio.ifi.in2000_gruppe3.data.database.UserFavoritesDatabase
 import no.uio.ifi.in2000_gruppe3.data.favorites.FavoriteRepository
-import no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository.HikeAPIRepository
 import no.uio.ifi.in2000_gruppe3.data.user.UserRepository
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
