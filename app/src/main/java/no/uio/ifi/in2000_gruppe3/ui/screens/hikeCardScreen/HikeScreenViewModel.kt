@@ -41,31 +41,17 @@ class HikeScreenViewModel : ViewModel() {
         _hikeScreenUIState.update {
             it.copy(
                 feature = feature,
-                descriptionLoaded = false
-            )
-        }
-    }
-
-    fun updateDate(day: String, date: String, formattedDate: String) {
-        _hikeScreenUIState.update {
-            it.copy(
-                day = day,
-                date = date,
-                formattedDate = formattedDate
+                descriptionAlreadyLoaded = false
             )
         }
     }
 
     fun getHikeDescription(
         homeScreenViewModel: HomeScreenViewModel,
-        openAIViewModel: OpenAIViewModel,
-        selectedDay: String,
-        selectedDate: String
+        openAIViewModel: OpenAIViewModel
     ) {
-        updateDate(selectedDay, selectedDate, selectedDate)
-
         viewModelScope.launch {
-            setDescriptionLoaded(true)
+            updateDescriptionAlreadyLoaded(true)
 
             val prompt = "Du er turbotten Ånund og er en turguide i en turapp. " +
                     "Gi meg en kort beskrivelse av turen med navnet \"${hikeScreenUIState.value.feature.properties.desc}\". " +
@@ -84,21 +70,17 @@ class HikeScreenViewModel : ViewModel() {
                     "Du skal IKKE svare som en chatbot, men kun gi meg informasjonen jeg har spurt om. " +
                     "Hvis du nevner dato skal det være formattert som for eksempel 23. mars. " +
                     "Avslutt med en hyggelig og motiverende melding og en emoji i fet skrift som for eksempel 'God tur!'. " +
-                    "Den valgte dag- og datoen er \"$selectedDay\", \"$selectedDate\". " +
+                    "Den valgte dag- og datoen er \"${_hikeScreenUIState.value.selectedDay}\", \"${_hikeScreenUIState.value.selectedDate}\". " +
                     "All informasjonen du trenger om været er dette: \"${homeScreenViewModel.homeScreenUIState.value.forecast?.properties?.timeseries}\". "
 
             openAIViewModel.getCompletionsStream(prompt)
         }
     }
 
-    fun setDescriptionLoaded(loaded: Boolean) {
+    fun updateDescriptionAlreadyLoaded(loaded: Boolean) {
         _hikeScreenUIState.update {
-            it.copy(descriptionLoaded = loaded)
+            it.copy(descriptionAlreadyLoaded = loaded)
         }
-    }
-
-    fun needsDescriptionLoading(newDay: String): Boolean {
-        return !hikeScreenUIState.value.descriptionLoaded || newDay != hikeScreenUIState.value.day
     }
 
     fun updateSelectedDay(selectedDay: String) {
@@ -118,10 +100,8 @@ data class HikeScreenUIState(
     val isLoading: Boolean = false,
     val isFavorite: Boolean = false,
     val feature: Feature,
-    val day: String = "",
-    val date: String = "",
-    val formattedDate: String = "",
-    val descriptionLoaded: Boolean = false,
     val selectedDay: String = getTodaysDay(),
-    val selectedDate: String = getTodaysDate()
+    val selectedDate: String = getTodaysDate(),
+    val formattedDate: String = "",
+    val descriptionAlreadyLoaded: Boolean = false
 )

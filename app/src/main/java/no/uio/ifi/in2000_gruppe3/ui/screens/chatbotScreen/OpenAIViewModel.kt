@@ -81,10 +81,10 @@ class OpenAIViewModel: ViewModel() {
 
                 // Collect the streaming responses
                 openAIRepository.getCompletionsStream(prompt).collectLatest { chunk ->
-                    _openAIUIState.update { currentState ->
+                    _openAIUIState.update {
                         // Append each new chunk to the existing response
-                        currentState.copy(
-                            response = currentState.response + chunk,
+                        it.copy(
+                            response = it.response + chunk,
                             isLoading = false,
                             isStreaming = true
                         )

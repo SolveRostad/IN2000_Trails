@@ -71,6 +71,7 @@ fun WeekdaySelector(
                     },
                     onClick = {
                         hikeScreenViewModel.updateSelectedDay(day.toString())
+                        hikeScreenViewModel.updateDescriptionAlreadyLoaded(false)
                         expanded = !expanded
                     }
                 )
