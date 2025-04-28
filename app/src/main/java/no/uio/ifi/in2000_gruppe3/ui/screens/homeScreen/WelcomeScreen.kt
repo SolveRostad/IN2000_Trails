@@ -84,7 +84,7 @@ fun WelcomeScreen(
                     .fillMaxWidth()
                     .height(48.dp),
                 shape = RoundedCornerShape(24.dp),
-                onClick = { /* TODO */ },
+                onClick = { navController.navigate(Screen.UserProfile.route) },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40))
             ) {
                 Text(

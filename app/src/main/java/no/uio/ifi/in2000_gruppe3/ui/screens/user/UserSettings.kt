@@ -24,6 +24,7 @@ import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapStyleDropdown
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
+import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,7 +65,7 @@ fun UserSettingsScreen(
             SettingButton(
                 text = "Brukerprofil",
                 icon = R.drawable.person,
-                onClick = { /* TODO: Navigate to user profile */ }
+                onClick = { navController.navigate(Screen.UserProfile.route) }
             )
 
             SettingButton(
