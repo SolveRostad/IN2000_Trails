@@ -53,7 +53,7 @@ import no.uio.ifi.in2000_gruppe3.ui.locationForecast.LocationForecastSmallCard
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 import java.time.LocalDate
@@ -62,7 +62,7 @@ import java.time.LocalDate
 fun HikeCard(
     homeScreenViewModel: HomeScreenViewModel,
     hikeScreenViewModel: HikeScreenViewModel,
-    favoritesViewModel: FavoritesViewModel,
+    favoritesViewModel: FavoritesScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     openAIViewModel: OpenAIViewModel,
     navController: NavHostController,
@@ -252,9 +252,9 @@ fun HikeCard(
                         .clickable {
                             checkedState.value = !checkedState.value
                             if (checkedState.value) {
-                                favoritesViewModel.addHike(hikeUIState.feature)
+                                favoritesViewModel.addFavorite(hikeUIState.feature)
                             } else {
-                                favoritesViewModel.deleteHike(hikeUIState.feature)
+                                favoritesViewModel.deleteFavorite(hikeUIState.feature)
                             }
                         },
                     horizontalArrangement = Arrangement.Center,

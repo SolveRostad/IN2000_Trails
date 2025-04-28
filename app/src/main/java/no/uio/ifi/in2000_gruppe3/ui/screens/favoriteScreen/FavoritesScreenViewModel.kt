@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.data.database.Favorite
 import no.uio.ifi.in2000_gruppe3.data.favorites.FavoriteRepository
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
+import no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository.HikeAPIRepository
 import no.uio.ifi.in2000_gruppe3.data.user.UserRepository
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 
