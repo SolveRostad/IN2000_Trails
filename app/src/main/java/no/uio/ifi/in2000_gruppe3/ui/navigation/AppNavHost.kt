@@ -106,6 +106,9 @@ fun AppNavHost() {
         composable(Screen.User.route) {
              UserScreen(
                  homeScreenViewModel = homeScreenViewModel,
+                 hikeScreenViewModel = hikeScreenViewModel,
+                 favoritesViewModel = favoritesViewModel,
+                 mapboxViewModel = mapboxViewModel,
                  navController = navController
              )
         }

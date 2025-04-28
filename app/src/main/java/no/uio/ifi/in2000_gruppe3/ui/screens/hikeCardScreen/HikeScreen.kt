@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
