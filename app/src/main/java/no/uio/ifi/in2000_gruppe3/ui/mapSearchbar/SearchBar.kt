@@ -52,6 +52,7 @@ fun SearchBarForMap(
             .border(1.dp, Color.Gray, RoundedCornerShape(30.dp))
             .onKeyEvent { keyEvent ->
                 if (keyEvent.type == KeyEventType.KeyUp && keyEvent.key == Key.Enter) {
+                    mapboxViewModel.getSelectedSearchResultPoint(mapboxUIState.searchResponse.first())
                     mapboxViewModel.updateSearchQuery("")
                     keyboardController?.hide()
                     focusManager.clearFocus()
