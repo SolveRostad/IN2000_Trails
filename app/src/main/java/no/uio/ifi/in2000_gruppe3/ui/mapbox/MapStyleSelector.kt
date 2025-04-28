@@ -18,8 +18,7 @@ fun MapStyleSelector(
 
     Card(
         modifier = Modifier
-            .size(48.dp)
-            .padding(4.dp),
+            .size(38.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(
