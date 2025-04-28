@@ -71,6 +71,7 @@ fun MapViewer(
                 mapboxViewModel.resetShouldFetchHikes()
             }
             homeScreenViewModel.fetchForecast(mapboxUIState.pointerCoordinates!!)
+            homeScreenViewModel.fetchAlerts()
         }
     }
 

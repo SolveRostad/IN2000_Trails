@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
+import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 class MapboxViewModel() : ViewModel() {
     private val placeAutocomplete = PlaceAutocomplete.create()
@@ -79,20 +80,18 @@ class MapboxViewModel() : ViewModel() {
         viewModelScope.launch {
             try {
                 val detailsResponse = placeAutocomplete.select(suggestion)
-                Log.d(
-                    "SearchBarViewModel",
-                    "Selected suggestion coordinates: ${detailsResponse.value?.coordinate}"
-                )
                 val coordinates = detailsResponse.value!!.coordinate.coordinates()
                 val point = Point.fromLngLat(coordinates[0], coordinates[1])
 
                 _mapboxUIState.update {
                     it.copy(
+                        shouldFetchHikes = true,
                         searchResponse = emptyList(),
                         searchQuery = "",
                         pointerCoordinates = point
                     )
                 }
+                updateSearchQuery("")
             } catch (e: Exception) {
                 Log.e("SearchBarViewModel", "Error selecting place", e)
             }

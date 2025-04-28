@@ -52,7 +52,6 @@ fun AanundFigure(
         // Clear hikes from map to get AI recommendations
         homeScreenViewModel.clearHikes()
         mapBoxViewModel.clearPolylineAnnotations()
-        mapBoxViewModel.updatePointerCoordinates(null)
 
         Dialog(
             onDismissRequest = { showDialog = false },
