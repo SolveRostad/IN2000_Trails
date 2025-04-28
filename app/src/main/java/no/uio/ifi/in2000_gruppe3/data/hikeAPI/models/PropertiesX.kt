@@ -12,5 +12,5 @@ data class PropertiesX(
     val name: String,
     val src: String,
     val type: String,
-    val gradering: String?,
+    var gradering: String?,
 )
