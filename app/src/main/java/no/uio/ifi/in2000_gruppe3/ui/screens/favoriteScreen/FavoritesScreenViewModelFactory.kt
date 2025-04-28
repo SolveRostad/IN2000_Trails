@@ -1,0 +1,32 @@
+package no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen
+
+import android.app.Application
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import no.uio.ifi.in2000_gruppe3.data.database.UserFavoritesDatabase
+import no.uio.ifi.in2000_gruppe3.data.favorites.FavoriteRepository
+import no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository.HikeAPIRepository
+import no.uio.ifi.in2000_gruppe3.data.user.UserRepository
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
+
+class FavoritesScreenViewModelFactory(
+    private val application: Application,
+    private val openAIViewModel: OpenAIViewModel
+): ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(FavoritesScreenViewModel::class.java)) {
+            val applicationScope = CoroutineScope(SupervisorJob())
+            val database = UserFavoritesDatabase.getDatabase(application, applicationScope)
+            val favoriteRepository = FavoriteRepository(database.favoriteDao())
+            val userRepository = UserRepository(database.userDao())
+            val hikeApiRepository = HikeAPIRepository(openAIViewModel)
+            val mapboxViewModel = MapboxViewModel()
+            @Suppress("UNCHECKED_CAST")
+            return FavoritesScreenViewModel(application, favoriteRepository, userRepository, hikeApiRepository, mapboxViewModel) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
