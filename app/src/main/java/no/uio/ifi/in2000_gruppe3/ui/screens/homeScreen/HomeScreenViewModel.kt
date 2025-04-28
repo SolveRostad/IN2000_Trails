@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
+import no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository.HikeAPIRepository
 import no.uio.ifi.in2000_gruppe3.data.locationForecastAPI.models.Locationforecast
 import no.uio.ifi.in2000_gruppe3.data.locationForecastAPI.models.TimeSeries
 import no.uio.ifi.in2000_gruppe3.data.locationForecastAPI.repository.LocationForecastRepository

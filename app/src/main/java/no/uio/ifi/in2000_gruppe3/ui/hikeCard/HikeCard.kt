@@ -252,9 +252,9 @@ fun HikeCard(
                         .clickable {
                             checkedState.value = !checkedState.value
                             if (checkedState.value) {
-                                favoritesViewModel.addFavorite(hikeUIState.feature)
+                                favoritesViewModel.addFavorite(hikeUIState.feature.properties.fid)
                             } else {
-                                favoritesViewModel.deleteFavorite(hikeUIState.feature)
+                                favoritesViewModel.deleteFavorite(hikeUIState.feature.properties.fid)
                             }
                         },
                     horizontalArrangement = Arrangement.Center,

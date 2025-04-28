@@ -26,14 +26,14 @@ import com.mapbox.maps.plugin.locationcomponent.createDefault2DPuck
 import com.mapbox.maps.plugin.locationcomponent.location
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.SheetDrawerDetent
-import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
 fun MapViewer(
     homeScreenViewModel: HomeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
-    favoritesViewModel: FavoritesViewModel
+    favoritesViewModel: FavoritesScreenViewModel
 ) {
     val homeScreenUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
