@@ -66,6 +66,9 @@ class OpenAIViewModel: ViewModel() {
 
     // Returns a streaming response from the OpenAI API
     fun getCompletionsStream(prompt: String) {
+        if (_openAIUIState.value.isStreaming) {
+            return
+        }
         viewModelScope.launch {
             _openAIUIState.update {
                 it.copy(isLoading = true, response = "")
