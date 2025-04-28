@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
-import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 class MapboxViewModel() : ViewModel() {
     private val placeAutocomplete = PlaceAutocomplete.create()
@@ -142,15 +141,15 @@ class MapboxViewModel() : ViewModel() {
     }
 
     fun clearPolylineAnnotations() {
-        _mapboxUIState.update { currentState ->
-            currentState.copy(polylineAnnotations = emptyList())
+        _mapboxUIState.update { it ->
+            it.copy(polylineAnnotations = emptyList())
         }
     }
 
     fun centerOnUserPosition() {
         viewModelScope.launch {
-            _mapboxUIState.update { currentState ->
-                currentState.copy(
+            _mapboxUIState.update { it ->
+                it.copy(
                     centerOnUserTrigger = System.currentTimeMillis()
                 )
             }
@@ -158,8 +157,8 @@ class MapboxViewModel() : ViewModel() {
     }
 
     fun updateLatestUserPosition(point: Point) {
-        _mapboxUIState.update { currentState ->
-            currentState.copy(latestUserPosition = point)
+        _mapboxUIState.update { it ->
+            it.copy(latestUserPosition = point)
         }
     }
 
