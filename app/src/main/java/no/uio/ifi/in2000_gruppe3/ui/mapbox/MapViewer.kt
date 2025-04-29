@@ -15,7 +15,6 @@ import com.mapbox.maps.dsl.cameraOptions
 import com.mapbox.maps.extension.compose.MapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
-import com.mapbox.maps.extension.compose.annotation.IconImage
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
 import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotationGroup
 import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotationGroupState
@@ -25,13 +24,16 @@ import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListen
 import com.mapbox.maps.plugin.locationcomponent.createDefault2DPuck
 import com.mapbox.maps.plugin.locationcomponent.location
 import no.uio.ifi.in2000_gruppe3.R
+import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
 import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.SheetDrawerDetent
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
 fun MapViewer(
     homeScreenViewModel: HomeScreenViewModel,
+    hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     favoritesViewModel: FavoritesViewModel
 ) {
@@ -69,8 +71,11 @@ fun MapViewer(
                     500
                 )
                 mapboxViewModel.resetShouldFetchHikes()
+
+                homeScreenViewModel.fetchForecast(mapboxUIState.pointerCoordinates!!)
+                homeScreenViewModel.fetchAlerts()
+                hikeScreenViewModel.updateSelectedDay(getTodaysDay())
             }
-            homeScreenViewModel.fetchForecast(mapboxUIState.pointerCoordinates!!)
         }
     }
 

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
 fun SearchBarForMap(
@@ -38,12 +40,15 @@ fun SearchBarForMap(
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
+    val readyToSend = mapboxUIState.searchQuery.isNotBlank() && mapboxUIState.searchResponse.isNotEmpty()
 
     TextField(
         value = mapboxUIState.searchQuery,
         onValueChange = { newQuery ->
             mapboxViewModel.updateSearchQuery(newQuery)
         },
+        singleLine = true,
+        placeholder = { Text("Hvor vil du gå tur?") },
         modifier = Modifier
             .padding(top = 25.dp)
             .padding(horizontal = 8.dp)
@@ -51,18 +56,29 @@ fun SearchBarForMap(
             .clip(RoundedCornerShape(30.dp))
             .border(1.dp, Color.Gray, RoundedCornerShape(30.dp))
             .onKeyEvent { keyEvent ->
-                if (keyEvent.type == KeyEventType.KeyUp && keyEvent.key == Key.Enter) {
-                    mapboxViewModel.updateSearchQuery("")
+                if (keyEvent.type == KeyEventType.KeyUp && keyEvent.key == Key.Enter && readyToSend) {
+                    mapboxViewModel.getSelectedSearchResultPoint(
+                        suggestion = mapboxUIState.searchResponse.first()
+                    )
                     keyboardController?.hide()
                     focusManager.clearFocus()
                 }
                 true
             },
-        singleLine = true,
-        placeholder = { Text("Hvor vil du gå tur?") },
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Done
+        ),
+        keyboardActions = KeyboardActions(
+            onDone = {
+                if (readyToSend) {
+                    mapboxViewModel.getSelectedSearchResultPoint(
+                        suggestion = mapboxUIState.searchResponse.first()
+                    )
+                    keyboardController?.hide()
+                    focusManager.clearFocus()
+                }
+            }
         ),
         leadingIcon = {
             Icon(

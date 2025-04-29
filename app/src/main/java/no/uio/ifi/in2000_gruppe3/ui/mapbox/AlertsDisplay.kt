@@ -83,7 +83,7 @@ fun AlertsDisplay(
                         .build()
                 ),
                 contentDescription = "Alert icon",
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(50.dp)
             )
 
             if (showAlertInfo.value) {

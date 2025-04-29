@@ -154,8 +154,8 @@ class HomeScreenViewModel() : ViewModel() {
     }
 
     fun clearHikes() {
-        _homeScreenUIState.update { currentState ->
-            currentState.copy(hikes = emptyList())
+        _homeScreenUIState.update {
+            it.copy(hikes = emptyList())
         }
     }
 
@@ -178,14 +178,14 @@ class HomeScreenViewModel() : ViewModel() {
         val temps = timeSeriesFromDate(date)
             ?.map { it.data.instant.details.air_temperature }
 
-        return temps?.average() ?: -1.0
+        return temps?.average() ?: Double.NEGATIVE_INFINITY
     }
 
     fun daysAverageWindSpeed(date: String): Double {
         val windSpeeds = timeSeriesFromDate(date)
             ?.map { it.data.instant.details.wind_speed }
 
-        return windSpeeds?.average() ?: -1.0
+        return windSpeeds?.average() ?: Double.NEGATIVE_INFINITY
     }
 }
 

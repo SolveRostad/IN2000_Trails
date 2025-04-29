@@ -59,8 +59,7 @@ fun ForecastDisplay(
                 Image(
                     painter = rememberAsyncImagePainter(iconURL),
                     contentDescription = "Vær-ikon",
-                    modifier = Modifier
-                        .size(60.dp)
+                    modifier = Modifier.size(60.dp)
                 )
                 if (showTemperature) {
                     Text(

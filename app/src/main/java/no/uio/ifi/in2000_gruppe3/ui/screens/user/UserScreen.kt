@@ -34,14 +34,20 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
+import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserScreen(
     homeScreenViewModel: HomeScreenViewModel,
+    hikeScreenViewModel: HikeScreenViewModel,
+    favoritesViewModel: FavoritesViewModel,
+    mapboxViewModel: MapboxViewModel,
     navController: NavHostController,
 ) {
     val homeUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
@@ -97,8 +103,7 @@ fun UserScreen(
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
-                                text = "Aktiviteter",
-                                color = Color.Black,
+                                text = "Turer gjennomført"
                             )
                             Box(
                                 modifier = Modifier
@@ -124,8 +129,7 @@ fun UserScreen(
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
-                                text = "Profil",
-                                color = Color.Black,
+                                text = "Statistikk"
                             )
                             Box(
                                 modifier = Modifier
@@ -139,13 +143,19 @@ fun UserScreen(
                         }
                     }
                 }
-
             }
 
             item {
                 when (currentView) {
-                    0 -> { Aktiviteter() }
-                    1 -> { Profil() }
+                    0 -> {
+                        HikesDone(
+                            hikeScreenViewModel = hikeScreenViewModel,
+                            favoritesViewModel = favoritesViewModel,
+                            mapboxViewModel = mapboxViewModel,
+                            navController = navController,
+                        )
+                    }
+                    1 -> { ActivityStats(10, 300) }
                 }
             }
         }

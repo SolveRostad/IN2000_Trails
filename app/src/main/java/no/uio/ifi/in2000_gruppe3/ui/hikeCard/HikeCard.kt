@@ -28,7 +28,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -68,32 +68,26 @@ fun HikeCard(
     navController: NavHostController,
     checkedState: MutableState<Boolean>
 ) {
-    val homeUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
     val openAIUIState by openAIViewModel.openAIUIState.collectAsState()
 
     val todaysDay = getTodaysDay()
 
-    // Shows current temperature and wind speed on launch, then shows average based on selected day
-    var displayTimeSeries = homeUIState.forecast?.properties?.timeseries?.firstOrNull()
-    var averageTemperature by remember { mutableStateOf(displayTimeSeries?.data?.instant?.details?.air_temperature) }
-    var averageWindSpeed by remember { mutableStateOf(displayTimeSeries?.data?.instant?.details?.wind_speed) }
+    // Shows average temperature and wind speed for the selected date
+    var averageTemperature by remember { mutableDoubleStateOf(homeScreenViewModel.daysAverageTemp(hikeUIState.selectedDate)) }
+    var averageWindSpeed by remember { mutableDoubleStateOf(homeScreenViewModel.daysAverageWindSpeed(hikeUIState.selectedDate)) }
 
     LaunchedEffect(hikeUIState.selectedDay) {
         val daysAhead = calculateDaysAhead(todaysDay, hikeUIState.selectedDay)
         hikeScreenViewModel.updateSelectedDate(LocalDate.now().plusDays(daysAhead.toLong()).toString())
 
-        displayTimeSeries = homeScreenViewModel.timeSeriesFromDate(hikeUIState.selectedDate)?.firstOrNull()
-
         averageTemperature = homeScreenViewModel.daysAverageTemp(hikeUIState.selectedDate)
         averageWindSpeed = homeScreenViewModel.daysAverageWindSpeed(hikeUIState.selectedDate)
 
-        if (hikeScreenViewModel.needsDescriptionLoading(hikeUIState.selectedDay)) {
+        if (!hikeUIState.descriptionAlreadyLoaded) {
             hikeScreenViewModel.getHikeDescription(
                 homeScreenViewModel = homeScreenViewModel,
-                openAIViewModel = openAIViewModel,
-                selectedDay = hikeUIState.selectedDay,
-                selectedDate = hikeUIState.selectedDate
+                openAIViewModel = openAIViewModel
             )
         }
     }
@@ -102,13 +96,14 @@ fun HikeCard(
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.5f)),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
     ) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
-                .weight(1f)
         ) {
             item {
                 Box {
@@ -125,6 +120,7 @@ fun HikeCard(
                         )
                     ) {
                         Column(
+                            modifier = Modifier.padding(2.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             ForecastDisplay(
@@ -133,11 +129,10 @@ fun HikeCard(
                                 date = hikeUIState.selectedDate
                             )
                             Text(
-                                text = averageTemperature?.let { "%.1f°C".format(it) } ?: "N/A",
+                                text = averageTemperature.let { "%.1f°C".format(it) },
                                 style = MaterialTheme.typography.titleMedium,
                                 color = Color.Black.copy(alpha = 0.9f),
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(bottom = 8.dp)
+                                fontWeight = FontWeight.Bold
                             )
                         }
                     }
@@ -192,7 +187,7 @@ fun HikeCard(
                     InfoItem(
                         icon = ImageVector.vectorResource(id = R.drawable.wind),
                         label = "Vindhastighet",
-                        value = averageWindSpeed?.let { "%.1f m/s".format(it) } ?: "N/A",
+                        value = averageWindSpeed.let { "%.1f m/s".format(it) },
                         iconTint = Color(0xFF2196F3)
                     )
                 }
