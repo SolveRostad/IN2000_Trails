@@ -44,8 +44,7 @@ fun ResetMapCenterButton(
             contentDescription = "Sentrer kart",
             modifier = Modifier
                 .fillMaxSize()
-                .padding(4.dp)
-                .offset(y = 2.dp)
+                .padding(5.dp)
         )
     }
 }

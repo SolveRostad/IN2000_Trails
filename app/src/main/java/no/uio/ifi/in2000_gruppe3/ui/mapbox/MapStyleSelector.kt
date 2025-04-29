@@ -35,6 +35,7 @@ fun MapStyleSelector(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(4.dp)
+                .offset(y = 2.dp)
         )
 
         MapStyleDropdown(
