@@ -72,8 +72,9 @@ fun LocationForecastSmallCard(
             containerColor = MaterialTheme.colorScheme.surface
         ),
         onClick = {
+            hikeScreenViewModel.updateSelectedDay(day)
+            hikeScreenViewModel.updateSelectedDate(date)
             if (hikeUIState.selectedDay != day) {
-                hikeScreenViewModel.updateSelectedDay(day)
                 hikeScreenViewModel.updateDescriptionAlreadyLoaded(false)
             }
             navController.navigate(Screen.LocationForecastDetailed.route)
