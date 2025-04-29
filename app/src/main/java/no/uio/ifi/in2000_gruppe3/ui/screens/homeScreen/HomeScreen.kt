@@ -4,6 +4,7 @@ import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -67,16 +68,9 @@ fun HomeScreen(
     ) {}
 
     val targetSheetState by homeScreenViewModel.sheetStateTarget.collectAsState()
+    val currentSheetOffset by homeScreenViewModel.currentSheetOffset.collectAsState()
     val isControlsVisible = targetSheetState == SheetDrawerDetent.HIDDEN ||
                             targetSheetState == SheetDrawerDetent.SEMIPEEK
-
-    // Calculate vertical offset based on sheet state for objects above bottom sheet
-    val sheetOffset = remember(targetSheetState) {
-        when (targetSheetState) {
-            SheetDrawerDetent.SEMIPEEK -> (-200).dp
-            else -> 0.dp
-        }
-    }
 
     LaunchedEffect(Unit) {
         locationPermissionRequest.launch(
@@ -91,7 +85,11 @@ fun HomeScreen(
         bottomBar = { BottomBar(navController = navController) },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { paddingValues ->
-        Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
             NetworkSnackbar(
                 snackbarHostState = snackbarHostState,
                 coroutineScope = coroutineScope,
@@ -160,8 +158,7 @@ fun HomeScreen(
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomStart)
-                        .padding(bottom = 10.dp)
-                        .offset(y = sheetOffset)
+                        .offset(y = currentSheetOffset.dp + 20.dp)
                 ) {
                     AanundFigure(
                         homeScreenViewModel = homeScreenViewModel,
@@ -173,8 +170,8 @@ fun HomeScreen(
                 Column(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
-                        .padding(bottom = 36.dp, end = 8.dp)
-                        .offset(y = sheetOffset)
+                        .padding(end = 8.dp)
+                        .offset(y = currentSheetOffset.dp - 10.dp)
                 ) {
                     ResetMapCenterButton(
                         homeScreenViewModel = homeScreenViewModel,
