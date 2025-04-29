@@ -49,7 +49,7 @@ fun BottomBar(navController: NavHostController) {
                     Icon(
                         imageVector = Icons.Default.Favorite,
                         contentDescription = "Favorites",
-                        tint = if (navController.currentDestination?.route == "favorites") MaterialTheme.colorScheme.primary
+                        tint = if (navController.currentDestination?.route == "favorites") Color(0xFF061C40)
                                else LocalContentColor.current
                     )
                 }
@@ -62,7 +62,7 @@ fun BottomBar(navController: NavHostController) {
                     },
                     modifier = Modifier
                         .weight(1.5f)
-                        .size(70.dp)
+                        .size(48.dp)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.logo),
@@ -85,7 +85,7 @@ fun BottomBar(navController: NavHostController) {
                     Icon(
                         imageVector = Icons.Default.Person,
                         contentDescription = "User",
-                        tint = if (navController.currentDestination?.route == "user") MaterialTheme.colorScheme.primary
+                        tint = if (navController.currentDestination?.route == "user") Color(0xFF061C40)
                                else LocalContentColor.current
                     )
                 }
