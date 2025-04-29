@@ -88,7 +88,7 @@ fun WelcomeScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40))
             ) {
                 Text(
-                    text = "Logg inn/register",
+                    text = "Logg inn",
                     fontSize = 16.sp
                 )
             }

@@ -110,7 +110,7 @@ fun UserScreen(
                                     .height(2.dp)
                                     .fillMaxWidth()
                                     .background(
-                                        if (currentView == 0) MaterialTheme.colorScheme.primary
+                                        if (currentView == 0) Color(0xFF061C40)
                                         else Color.Transparent
                                     )
                             )
@@ -136,7 +136,7 @@ fun UserScreen(
                                     .height(2.dp)
                                     .fillMaxWidth()
                                     .background(
-                                        if (currentView == 1) MaterialTheme.colorScheme.primary
+                                        if (currentView == 1) Color(0xFF061C40)
                                         else Color.Transparent
                                     )
                             )

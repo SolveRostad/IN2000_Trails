@@ -3,7 +3,6 @@ package no.uio.ifi.in2000_gruppe3.ui.hikeCard
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -48,7 +47,6 @@ import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.data.date.calculateDaysAhead
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
 import no.uio.ifi.in2000_gruppe3.ui.loaders.Loader
-import no.uio.ifi.in2000_gruppe3.ui.locationForecast.ForecastDisplay
 import no.uio.ifi.in2000_gruppe3.ui.locationForecast.LocationForecastSmallCard
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
@@ -71,17 +69,12 @@ fun HikeCard(
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
     val openAIUIState by openAIViewModel.openAIUIState.collectAsState()
 
-    val todaysDay = getTodaysDay()
-
-    // Shows average temperature and wind speed for the selected date
-    var averageTemperature by remember { mutableDoubleStateOf(homeScreenViewModel.daysAverageTemp(hikeUIState.selectedDate)) }
     var averageWindSpeed by remember { mutableDoubleStateOf(homeScreenViewModel.daysAverageWindSpeed(hikeUIState.selectedDate)) }
 
     LaunchedEffect(hikeUIState.selectedDay) {
-        val daysAhead = calculateDaysAhead(todaysDay, hikeUIState.selectedDay)
+        val daysAhead = calculateDaysAhead(getTodaysDay(), hikeUIState.selectedDay)
         hikeScreenViewModel.updateSelectedDate(LocalDate.now().plusDays(daysAhead.toLong()).toString())
 
-        averageTemperature = homeScreenViewModel.daysAverageTemp(hikeUIState.selectedDate)
         averageWindSpeed = homeScreenViewModel.daysAverageWindSpeed(hikeUIState.selectedDate)
 
         if (!hikeUIState.descriptionAlreadyLoaded) {
@@ -106,49 +99,18 @@ fun HikeCard(
                 .padding(8.dp)
         ) {
             item {
-                Box {
-                    HikeCardMapPreview(mapboxViewModel, hikeUIState.feature)
-
-                    Card(
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .align(Alignment.TopEnd),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.White.copy(alpha = 0.85f)
-                        )
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(2.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            ForecastDisplay(
-                                homeScreenViewModel = homeScreenViewModel,
-                                showTemperature = false,
-                                date = hikeUIState.selectedDate
-                            )
-                            Text(
-                                text = averageTemperature.let { "%.1f°C".format(it) },
-                                style = MaterialTheme.typography.titleMedium,
-                                color = Color.Black.copy(alpha = 0.9f),
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-                }
+                HikeCardMapPreview(mapboxViewModel, hikeUIState.feature)
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 8.dp),
+                        .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Rute detaljer",
+                        text = "Informasjon om turen",
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         overflow = TextOverflow.Ellipsis
@@ -169,7 +131,7 @@ fun HikeCard(
                     InfoItem(
                         icon = ImageVector.vectorResource(R.drawable.mountain),
                         label = "Type",
-                        value = "Gåtur", //hikeUIState.feature.properties.type
+                        value = "Gåtur",
                         iconTint = MaterialTheme.colorScheme.primary
                     )
                     InfoItem(
@@ -194,23 +156,21 @@ fun HikeCard(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Column {
-                    MarkdownText(
-                        markdown = openAIUIState.response,
-                        modifier = Modifier.padding(8.dp),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontSize = 16.sp,
-                            lineHeight = 22.sp,
-                            fontFamily = FontFamily.SansSerif,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
+                MarkdownText(
+                    markdown = openAIUIState.response,
+                    modifier = Modifier.padding(8.dp),
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontSize = 16.sp,
+                        lineHeight = 22.sp,
+                        fontFamily = FontFamily.SansSerif,
+                        color = MaterialTheme.colorScheme.onBackground
                     )
-                    if (openAIUIState.isLoading || openAIUIState.isStreaming) {
-                        Column(
-                            modifier = Modifier.padding(horizontal = 16.dp)
-                        ) {
-                            Loader()
-                        }
+                )
+                if (openAIUIState.isLoading || openAIUIState.isStreaming) {
+                    Column(
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    ) {
+                        Loader()
                     }
                 }
 
@@ -265,8 +225,6 @@ fun HikeCard(
 
                     Text(text = if (checkedState.value) "Fjern fra favoritter" else "Legg til i favoritter")
                 }
-
-                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
