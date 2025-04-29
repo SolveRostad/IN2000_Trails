@@ -59,7 +59,7 @@ fun BottomSheetDrawer(
     val alpha by animateFloatAsState(targetValue = sheetState.offset)
 
     LaunchedEffect(sheetState.offset) {
-        val offsetForControls = -sheetState.offset * 0.4f
+        val offsetForControls = -sheetState.offset * 0.385
         homeScreenViewModel.updateSheetOffset(offsetForControls.toFloat())
     }
 
