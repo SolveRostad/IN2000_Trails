@@ -70,7 +70,7 @@ fun MessageBubble(chatbotMessage: ChatbotMessage) {
                     modifier = Modifier
                         .size(36.dp)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary),
+                        .background(Color(0xFF061C40)),
                     contentScale = ContentScale.Crop
                 )
                 Text(
