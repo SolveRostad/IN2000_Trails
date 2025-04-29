@@ -14,13 +14,13 @@ import no.uio.ifi.in2000_gruppe3.data.database.Favorite
 import no.uio.ifi.in2000_gruppe3.data.favorites.FavoriteRepository
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository.HikeAPIRepository
-import no.uio.ifi.in2000_gruppe3.data.user.UserRepository
+import no.uio.ifi.in2000_gruppe3.data.user.ProfileRepository
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 
 class FavoritesScreenViewModel(
     application: Application,
     private val favoriteRepository: FavoriteRepository,
-    private val userRepository: UserRepository,
+    private val profileRepository: ProfileRepository,
     private val hikeAPIRepository: HikeAPIRepository,
     private val mapboxViewModel: MapboxViewModel,
     ) : AndroidViewModel(application) {
@@ -41,7 +41,7 @@ class FavoritesScreenViewModel(
         viewModelScope.launch {
             try {
                 setUser()
-                val username = userRepository.getSelectedUser().username
+                val username = profileRepository.getSelectedUser().username
                 getAllFavorites(username)
                 getAllConverteFavorites()
             } catch (e: Exception) {
@@ -50,13 +50,41 @@ class FavoritesScreenViewModel(
         }
     }
 
+    fun loadFavorites(){
+        viewModelScope.launch {
+            _favoriteScreenUIState.update {
+                it.copy(isLoading = true)
+            }
+            try {
+                val username = profileRepository.getSelectedUser().username
+                val updatedFavorites = getAllFavorites(username)
+
+                _favoriteScreenUIState.update {
+                    it.copy(favorites = updatedFavorites)
+                }
+
+                Log.d("FavoritesViewModel", "Fetched favorites for user: ${username}: ${_favoriteScreenUIState.value.favorites}")
+                getAllConverteFavorites()
+
+            } catch (e: Exception) {
+                _favoriteScreenUIState.update {
+                    it.copy(isError = true, errorMessage = e.message.toString())
+                }
+                Log.e("FavoritesViewModel", "Error loading favorites: ${e.message}")
+            } finally {
+                _favoriteScreenUIState.update {
+                    it.copy(isLoading = false)
+                }
+            }
+        }
+    }
+
     fun setUser() {
         viewModelScope.launch {
             _favoriteScreenUIState.update {
-                it.copy(username = userRepository.getSelectedUser().username)
+                it.copy(username = profileRepository.getSelectedUser().username)
             }
         }
-
     }
 
     fun updateUserLocation(point: Point) {
@@ -87,6 +115,7 @@ class FavoritesScreenViewModel(
                 _favoriteScreenUIState.update {
                     it.copy(convertedFavorites = favoriteFeatures)
                 }
+                Log.d("FavoritesViewModel", "Fetched converted favorites: $favoriteFeatures")
             } catch (e: Exception) {
                 _favoriteScreenUIState.update {
                     it.copy(isError = true, errorMessage = e.message.toString())
@@ -105,8 +134,9 @@ class FavoritesScreenViewModel(
                 it.copy(isLoading = true)
             }
             try {
-                val currentUser = userRepository.getSelectedUser()
+                val currentUser = profileRepository.getSelectedUser()
                 val newFavorite = Favorite(currentUser.username, id)
+                Log.d("FavoritesViewModel", "Adding favorite: $newFavorite")
                 favoriteRepository.addFavorite(newFavorite)
                 _favoriteScreenUIState.update {
                     it.copy(

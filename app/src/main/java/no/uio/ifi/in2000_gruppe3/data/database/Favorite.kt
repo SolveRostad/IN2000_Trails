@@ -10,7 +10,7 @@ import androidx.room.ForeignKey
     primaryKeys = ["username", "hike_id"],
     foreignKeys = [
         ForeignKey(
-            entity = User::class,
+            entity = Profile::class,
             parentColumns = arrayOf("username"),
             childColumns = arrayOf("username"),
             onUpdate = ForeignKey.CASCADE,

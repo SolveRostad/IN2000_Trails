@@ -7,25 +7,25 @@ import androidx.room.Query
 import androidx.room.Transaction
 
 @Dao
-interface UserDao {
+interface ProfileDao {
 
     @Insert
-    suspend fun insertUser(user: User)
+    suspend fun insertUser(profile: Profile)
 
     @Delete
-    suspend fun deleteUser(username: User)
+    suspend fun deleteUser(username: Profile)
 
     @Query("SELECT * FROM user_table")
-    suspend fun getAllUsers(): List<User>
+    suspend fun getAllUsers(): List<Profile>
 
     @Query("UPDATE user_table SET isSelected = 1 WHERE username LIKE :username")
     suspend fun selectUser(username: String)
 
     @Query("SELECT * FROM user_table WHERE isSelected = 1 LIMIT 1")
-    suspend fun getSelectedUser(): User?
+    suspend fun getSelectedUser(): Profile?
 
     @Query("SELECT * FROM user_table WHERE username = 'defaultUser' LIMIT 1")
-    suspend fun getDefaultUser(): User?
+    suspend fun getDefaultUser(): Profile?
 
     @Query("UPDATE user_table SET isSelected = 0")
     suspend fun unselectUser()

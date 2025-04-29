@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,6 +45,7 @@ class HikeScreenViewModel : ViewModel() {
                 descriptionLoaded = false
             )
         }
+        Log.d("HikeScreenViewModel", "Hike updated: ${feature.properties.fid}")
     }
 
     fun updateDate(day: String, date: String, formattedDate: String) {

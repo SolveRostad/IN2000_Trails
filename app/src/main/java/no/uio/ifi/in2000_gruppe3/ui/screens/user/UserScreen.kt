@@ -37,6 +37,7 @@ import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.activities.Aktiviteter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

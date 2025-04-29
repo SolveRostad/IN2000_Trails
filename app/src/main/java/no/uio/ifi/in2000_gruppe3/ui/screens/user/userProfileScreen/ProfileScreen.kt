@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -152,7 +151,7 @@ fun UserProfileScreen(
 
             // User list or empty state
             when {
-                userUIState.users.isEmpty() -> {
+                userUIState.profiles.isEmpty() -> {
                     Text(
                         text = "Ingen brukere her gitt 🤔",
                         style = MaterialTheme.typography.titleMedium,
@@ -165,7 +164,7 @@ fun UserProfileScreen(
                         contentPadding = PaddingValues(16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        items(userUIState.users) { user ->
+                        items(userUIState.profiles) { user ->
                             Box (
                                 modifier = Modifier
                                     .fillMaxWidth()

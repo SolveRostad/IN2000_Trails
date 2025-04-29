@@ -8,10 +8,10 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import no.uio.ifi.in2000_gruppe3.data.database.User
-import no.uio.ifi.in2000_gruppe3.data.database.UserFavoritesDatabase
+import no.uio.ifi.in2000_gruppe3.data.database.Profile
+import no.uio.ifi.in2000_gruppe3.data.database.ProfileFavoritesDatabase
 import no.uio.ifi.in2000_gruppe3.data.favorites.FavoriteRepository
-import no.uio.ifi.in2000_gruppe3.data.user.UserRepository
+import no.uio.ifi.in2000_gruppe3.data.user.ProfileRepository
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
 import org.junit.After
@@ -34,23 +34,23 @@ import kotlin.test.assertTrue
 
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE, sdk = [28])
-class UserFavoriteUnitTest {
+class ProfileFavoriteUnitTest {
     private val application = RuntimeEnvironment.getApplication()
     private val userDatabase = Room.inMemoryDatabaseBuilder(
         application,
-        UserFavoritesDatabase::class.java
+        ProfileFavoritesDatabase::class.java
     )
         .allowMainThreadQueries()
         .build()
 
     private val userDao = userDatabase.userDao()
     private val favoriteDao = userDatabase.favoriteDao()
-    private val userRepository = UserRepository(userDao)
+    private val profileRepository = ProfileRepository(userDao)
 
 
     //Dummy data til testene
-    val bruker1 = User(username = "Aanund")
-    val bruker2 = User(username = "Victor")
+    val bruker1 = Profile(username = "Aanund")
+    val bruker2 = Profile(username = "Victor")
 
     @After
     fun tearDown() {
@@ -62,9 +62,9 @@ class UserFavoriteUnitTest {
         println("Tester å legge til bruker: $bruker1")
 
         runBlocking {
-            userRepository.clearAllUsers()
-            userRepository.addUser(bruker1)
-            assertContains(userRepository.getAllUsers(), bruker1, "Bruker ble ikke lagt til")
+            profileRepository.clearAllUsers()
+            profileRepository.addUser(bruker1)
+            assertContains(profileRepository.getAllUsers(), bruker1, "Bruker ble ikke lagt til")
         }
 
         println("---testAddUser PASSERT---")
@@ -75,10 +75,10 @@ class UserFavoriteUnitTest {
         println("Tester å slette bruker: $bruker1")
 
         runBlocking {
-            userRepository.clearAllUsers()
-            userRepository.addUser(bruker1)
-            userRepository.deleteUser(bruker1)
-            assertFalse(userRepository.getAllUsers().contains(bruker1), "Bruker ble ikke slettet")
+            profileRepository.clearAllUsers()
+            profileRepository.addUser(bruker1)
+            profileRepository.deleteUser(bruker1)
+            assertFalse(profileRepository.getAllUsers().contains(bruker1), "Bruker ble ikke slettet")
         }
 
         println("---testDeleteUser PASSERT---")
@@ -87,17 +87,17 @@ class UserFavoriteUnitTest {
     @Test
     fun testGetAllUsers() {
         println("tester å hente alle brukere")
-        val allUsers: List<User>;
+        val allProfiles: List<Profile>;
 
         runBlocking {
-            userRepository.clearAllUsers()
-            userRepository.addUser(bruker1)
-            userRepository.addUser(bruker2)
+            profileRepository.clearAllUsers()
+            profileRepository.addUser(bruker1)
+            profileRepository.addUser(bruker2)
 
-            allUsers = userRepository.getAllUsers()
+            allProfiles = profileRepository.getAllUsers()
 
-            assertContains(allUsers, bruker1, "Bruker 1 ble ikke lagt til")
-            assertContains(allUsers, bruker2, "Bruker 2 ble ikke lagt til")
+            assertContains(allProfiles, bruker1, "Bruker 1 ble ikke lagt til")
+            assertContains(allProfiles, bruker2, "Bruker 2 ble ikke lagt til")
         }
 
         println("---testGetAllUsers PASSERT---")
@@ -106,15 +106,15 @@ class UserFavoriteUnitTest {
     @Test
     fun testSelectUser() {
         println("Tester å velge bruker: $bruker1")
-        val selectedUser: User?
+        val selectedProfile: Profile?
 
         runBlocking {
-            userRepository.clearAllUsers()
-            userRepository.addUser(bruker1)
-            userRepository.selectUser(bruker1.username)
-            selectedUser = userRepository.getSelectedUser()
+            profileRepository.clearAllUsers()
+            profileRepository.addUser(bruker1)
+            profileRepository.selectUser(bruker1.username)
+            selectedProfile = profileRepository.getSelectedUser()
 
-            assertEquals(selectedUser.username, bruker1.username, "Bruker ble ikke valgt")
+            assertEquals(selectedProfile.username, bruker1.username, "Bruker ble ikke valgt")
         }
 
         println("---testSelectUser PASSERT---")
@@ -128,14 +128,14 @@ class UserFavoriteUnitTest {
         Dispatchers.setMain(testDispatcher)
 
         try {
-            userRepository.clearAllUsers()
-            userRepository.addUser(bruker1)
-            userRepository.selectUser(bruker1.username)
+            profileRepository.clearAllUsers()
+            profileRepository.addUser(bruker1)
+            profileRepository.selectUser(bruker1.username)
 
             val favoritesScreenViewModel = FavoritesScreenViewModel(
                 application = application,
                 favoritesRepository = FavoriteRepository(favoriteDao),
-                userRepository = userRepository,
+                profileRepository = profileRepository,
                 hikeAPIRepository = HikeAPIRepository(OpenAIViewModel())
             )
 
@@ -162,14 +162,14 @@ class UserFavoriteUnitTest {
         Dispatchers.setMain(testDispatcher)
 
         try {
-            userRepository.clearAllUsers()
-            userRepository.addUser(bruker1)
-            userRepository.selectUser(bruker1.username)
+            profileRepository.clearAllUsers()
+            profileRepository.addUser(bruker1)
+            profileRepository.selectUser(bruker1.username)
 
             val favoritesScreenViewModel = FavoritesScreenViewModel(
                 application = application,
                 favoritesRepository = FavoriteRepository(favoriteDao),
-                userRepository = userRepository,
+                profileRepository = profileRepository,
                 hikeAPIRepository = HikeAPIRepository(OpenAIViewModel())
             )
             favoritesScreenViewModel.addFavorite(1)
@@ -197,14 +197,14 @@ class UserFavoriteUnitTest {
         Dispatchers.setMain(testDispatcher)
 
         try {
-            userRepository.clearAllUsers()
-            userRepository.addUser(bruker1)
-            userRepository.selectUser(bruker1.username)
+            profileRepository.clearAllUsers()
+            profileRepository.addUser(bruker1)
+            profileRepository.selectUser(bruker1.username)
 
             val favoritesScreenViewModel = FavoritesScreenViewModel(
                 application = application,
                 favoritesRepository = FavoriteRepository(favoriteDao),
-                userRepository = userRepository,
+                profileRepository = profileRepository,
                 hikeAPIRepository = HikeAPIRepository(OpenAIViewModel())
             )
 
