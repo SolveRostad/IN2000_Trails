@@ -15,36 +15,21 @@ interface ProfileDao {
     @Delete
     suspend fun deleteUser(username: Profile)
 
-    @Query("SELECT * FROM user_table")
+    @Query("SELECT * FROM profile_table")
     suspend fun getAllUsers(): List<Profile>
 
-    @Query("UPDATE user_table SET isSelected = 1 WHERE username LIKE :username")
+    @Query("UPDATE profile_table SET isSelected = 1 WHERE username LIKE :username")
     suspend fun selectUser(username: String)
 
-    @Query("SELECT * FROM user_table WHERE isSelected = 1 LIMIT 1")
+    @Query("SELECT * FROM profile_table WHERE isSelected = 1 LIMIT 1")
     suspend fun getSelectedUser(): Profile?
 
-    @Query("SELECT * FROM user_table WHERE username = 'defaultUser' LIMIT 1")
+    @Query("SELECT * FROM profile_table WHERE username = 'defaultUser' LIMIT 1")
     suspend fun getDefaultUser(): Profile?
 
-    @Query("UPDATE user_table SET isSelected = 0")
+    @Query("UPDATE profile_table SET isSelected = 0")
     suspend fun unselectUser()
 
-    @Query("DELETE from user_table")
+    @Query("DELETE from profile_table")
     suspend fun clearAllUsers()
-
-    @Query("UPDATE user_table SET distanceDone = distanceDone + :distance, hikesDone = hikesDone + 1 WHERE username LIKE :username")
-    fun addDataTo(username: String, distance: Double)
-
-    @Query("UPDATE user_table SET history_hikes_done = :historyList WHERE username = :username")
-    suspend fun updateUserHistory(username: String, historyList: List<String>)
-
-    @Transaction
-    suspend fun addHikeToHistory(hikeId: String) {
-        val user = getSelectedUser() ?: return
-        val updatedHistory = user.historyHikesDone + hikeId
-
-        updateUserHistory(user.username, updatedHistory)
-
-    }
 }

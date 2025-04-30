@@ -34,18 +34,19 @@ import kotlinx.coroutines.runBlocking
  *   hikesDone: Int
  */
 
-@Database(entities = [Favorite::class, Profile::class], version = 1)
+@Database(entities = [Favorite::class, Profile::class], version = 2)
 @TypeConverters(Converter::class)
-abstract class ProfileFavoritesDatabase : RoomDatabase() {
+abstract class ProfileDatabase : RoomDatabase() {
     abstract fun favoriteDao(): FavoriteDao
-    abstract fun userDao(): ProfileDao
+    abstract fun profileDao(): ProfileDao
+    abstract fun logDao(): LogDao
 
     companion object {
         @Volatile
-        private var INSTANCE: ProfileFavoritesDatabase? = null
+        private var INSTANCE: ProfileDatabase? = null
 
         private class DatabaseCallBack(
-            private val database: ProfileFavoritesDatabase,
+            private val database: ProfileDatabase,
             private val scope: CoroutineScope
         ) : Callback() {
 
@@ -58,7 +59,7 @@ abstract class ProfileFavoritesDatabase : RoomDatabase() {
             }
 
             private suspend fun populateDatabase() {
-                val userDao = database.userDao()
+                val userDao = database.profileDao()
 
                 val defaultProfile = Profile("defaultUser", isSelected = 1)
 
@@ -67,26 +68,26 @@ abstract class ProfileFavoritesDatabase : RoomDatabase() {
             }
         }
 
-        fun getDatabase(context: Context, scope: CoroutineScope): ProfileFavoritesDatabase {
+        fun getDatabase(context: Context, scope: CoroutineScope): ProfileDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    ProfileFavoritesDatabase::class.java,
+                    ProfileDatabase::class.java,
                     "user_favorites_database"
                 )
+                    .addMigrations(MIGRATION_1_2)
                     .build()
 
                 INSTANCE = instance
 
                 runBlocking {
-                    val userDao = instance.userDao()
+                    val userDao = instance.profileDao()
                     if (userDao.getDefaultUser() == null) {
                         val defaultProfile = Profile("defaultUser", isSelected = 1)
                         userDao.insertUser(defaultProfile)
                         Log.d("DatabaseCallBack", "Default user inserted: $defaultProfile")
                     }
                 }
-
                 instance
             }
         }

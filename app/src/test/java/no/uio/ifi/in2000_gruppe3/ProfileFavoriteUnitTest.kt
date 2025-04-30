@@ -9,9 +9,9 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import no.uio.ifi.in2000_gruppe3.data.database.Profile
-import no.uio.ifi.in2000_gruppe3.data.database.ProfileFavoritesDatabase
+import no.uio.ifi.in2000_gruppe3.data.database.ProfileDatabase
 import no.uio.ifi.in2000_gruppe3.data.favorites.FavoriteRepository
-import no.uio.ifi.in2000_gruppe3.data.user.ProfileRepository
+import no.uio.ifi.in2000_gruppe3.data.user.repository.ProfileRepository
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
 import org.junit.After
@@ -38,12 +38,12 @@ class ProfileFavoriteUnitTest {
     private val application = RuntimeEnvironment.getApplication()
     private val userDatabase = Room.inMemoryDatabaseBuilder(
         application,
-        ProfileFavoritesDatabase::class.java
+        ProfileDatabase::class.java
     )
         .allowMainThreadQueries()
         .build()
 
-    private val userDao = userDatabase.userDao()
+    private val userDao = userDatabase.profileDao()
     private val favoriteDao = userDatabase.favoriteDao()
     private val profileRepository = ProfileRepository(userDao)
 

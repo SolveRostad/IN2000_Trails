@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.data.database.Profile
-import no.uio.ifi.in2000_gruppe3.data.user.ProfileRepository
+import no.uio.ifi.in2000_gruppe3.data.user.repository.ProfileRepository
 
 
 class UserScreenViewModel(application: Application):AndroidViewModel(application) {

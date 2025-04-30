@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
-import no.uio.ifi.in2000_gruppe3.data.database.ProfileFavoritesDatabase
+import no.uio.ifi.in2000_gruppe3.data.database.ProfileDatabase
 import no.uio.ifi.in2000_gruppe3.data.favorites.FavoriteRepository
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository.HikeAPIRepository
-import no.uio.ifi.in2000_gruppe3.data.user.ProfileRepository
+import no.uio.ifi.in2000_gruppe3.data.user.repository.ProfileRepository
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 
@@ -19,7 +19,7 @@ class FavoritesScreenViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(FavoritesScreenViewModel::class.java)) {
             val applicationScope = CoroutineScope(SupervisorJob())
-            val database = ProfileFavoritesDatabase.getDatabase(application, applicationScope)
+            val database = ProfileDatabase.getDatabase(application, applicationScope)
             val favoriteRepository = FavoriteRepository(database.favoriteDao())
             val hikeAPIRepository = HikeAPIRepository(openAIViewModel)
             val mapboxViewModel = MapboxViewModel()

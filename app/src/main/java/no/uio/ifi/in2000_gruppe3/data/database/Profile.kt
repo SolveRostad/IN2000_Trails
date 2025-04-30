@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "user_table")
+@Entity(tableName = "profile_table")
 data class Profile(
     @PrimaryKey
     @ColumnInfo(name = "username")
@@ -12,13 +12,4 @@ data class Profile(
 
     @ColumnInfo(name = "isSelected")
     val isSelected: Int = 0,
-
-    @ColumnInfo("distanceDone")
-    val distanceDone: Double = 0.0,
-
-    @ColumnInfo("hikesDone")
-    val hikesDone: Int = 0,
-
-    @ColumnInfo("history_hikes_done")
-    val historyHikesDone: List<String> = emptyList()
 )

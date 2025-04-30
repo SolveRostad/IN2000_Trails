@@ -1,11 +1,11 @@
-package no.uio.ifi.in2000_gruppe3.data.user
+package no.uio.ifi.in2000_gruppe3.data.profile.repository
 
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import no.uio.ifi.in2000_gruppe3.data.database.Profile
 import no.uio.ifi.in2000_gruppe3.data.database.ProfileDao
-import no.uio.ifi.in2000_gruppe3.data.database.ProfileFavoritesDatabase
+import no.uio.ifi.in2000_gruppe3.data.database.ProfileDatabase
 
 class ProfileRepository private constructor(private val profileDao: ProfileDao) {
 
@@ -48,8 +48,8 @@ class ProfileRepository private constructor(private val profileDao: ProfileDao) 
 
         fun getInstance(context: Context, scope: CoroutineScope = CoroutineScope(SupervisorJob())): ProfileRepository {
             return INSTANCE ?: synchronized(this) {
-                val database = ProfileFavoritesDatabase.getDatabase(context, scope)
-                val instance = ProfileRepository(database.userDao())
+                val database = ProfileDatabase.getDatabase(context, scope)
+                val instance = ProfileRepository(database.profileDao())
                 INSTANCE = instance
                 instance
             }
