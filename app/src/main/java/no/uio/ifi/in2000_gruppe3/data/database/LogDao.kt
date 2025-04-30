@@ -13,11 +13,11 @@ interface LogDao {
     @Delete
     suspend fun deleteLog(log: Log)
 
-    @Query("SELECT * FROM log_table WHERE username LIKE :username")
-    suspend fun getAllLogs(username: String): List<Log>
+    @Query("SELECT hike_id FROM log_table WHERE username LIKE :username")
+    suspend fun getAllLogs(username: String): List<Int>
 
-    @Query("UPDATE log_table SET times_walked = times_walked + :timesWalked WHERE username LIKE :username AND hike_id = :hikeId")
-    suspend fun timesWalked (username: String, hikeId: Int, timesWalked: Double)
+    @Query("UPDATE log_table SET times_walked = times_walked + :adjustTimesWalked WHERE username LIKE :username AND hike_id = :hikeId")
+    suspend fun timesWalked (username: String, hikeId: Int, adjustTimesWalked: Int)
 
     @Query("UPDATE log_table SET notes = :notes WHERE username LIKE :username AND hike_id = :hikeId")
     suspend fun addNotesToLog(username: String, hikeId: Int, notes: String)

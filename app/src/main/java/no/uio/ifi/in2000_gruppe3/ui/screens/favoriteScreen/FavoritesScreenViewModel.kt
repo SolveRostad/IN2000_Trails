@@ -14,7 +14,7 @@ import no.uio.ifi.in2000_gruppe3.data.database.Favorite
 import no.uio.ifi.in2000_gruppe3.data.favorites.FavoriteRepository
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository.HikeAPIRepository
-import no.uio.ifi.in2000_gruppe3.data.user.repository.ProfileRepository
+import no.uio.ifi.in2000_gruppe3.data.profile.repository.ProfileRepository
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 
 class FavoritesScreenViewModel(
@@ -191,5 +191,5 @@ data class FavoriteScreenUIState(
     val favorites: List<Int> = emptyList(),
     val selectedFavorite: Favorite? = null,
     val username: String = "",
-    val userLocation: Point = Point.fromLngLat(10.0, 60.0)
+    val userLocation: Point = Point.fromLngLat(10.441649, 59.542819)
 )
