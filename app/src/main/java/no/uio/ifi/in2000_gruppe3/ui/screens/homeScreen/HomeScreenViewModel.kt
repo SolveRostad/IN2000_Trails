@@ -41,10 +41,17 @@ class HomeScreenViewModel() : ViewModel() {
     }
 
     private val _sheetStateTarget = MutableStateFlow(SheetDrawerDetent.SEMIPEEK)
-    val sheetStateTarget: StateFlow<SheetDrawerDetent> = _sheetStateTarget.asStateFlow()
+    val sheetStateTarget = _sheetStateTarget.asStateFlow()
+
+    private val _currentSheetOffset = MutableStateFlow(0f)
+    val currentSheetOffset = _currentSheetOffset.asStateFlow()
 
     fun setSheetState(target: SheetDrawerDetent) {
         _sheetStateTarget.value = target
+    }
+
+    fun updateSheetOffset(offset: Float) {
+        _currentSheetOffset.value = offset
     }
 
     fun fetchHikes(
