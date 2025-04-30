@@ -4,16 +4,37 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 val MIGRATION_1_2 = object : Migration(1, 2) {
     override fun migrate(database: SupportSQLiteDatabase) {
+
+        database.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS `new_profile_table` (
+                `username` TEXT NOT NULL,
+                `isSelected` INTEGER NOT NULL DEFAULT 0,
+                PRIMARY KEY(`username`)
+            )
+            """
+        )
+
+        database.execSQL(
+            """
+                INSERT INTO `new_profile_table`(`username`, `isSelected`)
+                SELECT `username`, `isSelected` FROM `profile_table`
+                """
+        )
+
+        database.execSQL("DROP TABLE `profile_table`")
+
+        database.execSQL("ALTER TABLE `new_profile_table` RENAME TO `profile_table`")
+
         database.execSQL(
             """
             CREATE TABLE IF NOT EXISTS `log_table` (
                 `username` TEXT NOT NULL,
-                `logHikeId` INTEGER NOT NULL DEFAULT 0,
+                `hike_id` INTEGER NOT NULL,
                 `times_walked` INTEGER NOT NULL DEFAULT 0,
-                'notes' TEXT NOT NULL DEFAULT '',
+                `notes` TEXT NOT NULL DEFAULT '',
                 PRIMARY KEY(`username`, `hike_id`),
-                FOREIGN KEY(`username`) REFERENCES `user_table`(`username`)
-                ON UPDATE CASCADE ON DELETE CASCADE
+                FOREIGN KEY(`username`) REFERENCES `profile_table`(`username`) ON UPDATE CASCADE ON DELETE CASCADE
             )
             """
         )

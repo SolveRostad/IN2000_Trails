@@ -12,6 +12,8 @@ composeBom = "2024.09.00"
 mapboxSearchVersion = "2.7.1"
 datastoreCoreAndroid = "1.1.3"
 volley = "1.2.1"
+coreKtxVersion = "1.6.1"
+junitKtx = "1.2.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -35,6 +37,8 @@ mapbox-search-android = { module = "com.mapbox.search:mapbox-search-android", ve
 mapbox-search-android-native = { module = "com.mapbox.search:mapbox-search-android-native" }
 androidx-datastore-core-android = { group = "androidx.datastore", name = "datastore-core-android", version.ref = "datastoreCoreAndroid" }
 volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
+core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "coreKtxVersion" }
+androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

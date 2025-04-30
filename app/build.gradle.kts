@@ -69,6 +69,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.core.ktx)
+    implementation(libs.androidx.junit.ktx)
     // For testing
     testImplementation("org.robolectric:robolectric:4.10.3")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")

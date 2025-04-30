@@ -20,12 +20,12 @@ data class Log (
     @ColumnInfo(name = "username")
     val username: String,
 
-    @ColumnInfo("hike_id")
-    val logHikeId: Int,
+    @ColumnInfo(name = "hike_id")
+    val hikeId: Int,
 
-    @ColumnInfo("times_walked")
+    @ColumnInfo(name = "times_walked")
     val timesWalked: Int = 0,
 
-    @ColumnInfo("notes")
+    @ColumnInfo(name = "notes")
     val notes: String = ""
 )

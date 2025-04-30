@@ -3,6 +3,7 @@ package no.uio.ifi.in2000_gruppe3.data.database
 import android.content.Context
 import android.util.Log
 import androidx.room.Database
+import no.uio.ifi.in2000_gruppe3.data.database.Log as LogEntity
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -10,9 +11,10 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.util.concurrent.Executors
 
 /** Database layout:
- * User
+ * Profile
  * PN: username: String
  *  username: String
  *  isSelected: Int
@@ -25,16 +27,16 @@ import kotlinx.coroutines.runBlocking
  *   isSelected: Int
  *   personalHikeComment: String
  *
- * Achievement
- * PN: [username, hikesDone]
- * FN: username -> User
- *   username: User
- *   amountHikes: Int
- *   distanceDone: Double
- *   hikesDone: Int
+ * Log
+ * PN: [username, hikeId]
+ * FN: username -> Profile
+ *   username: String
+ *   hikeId: Int
+ *   timesWalked: Int
+ *   notes: String
  */
 
-@Database(entities = [Favorite::class, Profile::class], version = 2)
+@Database(entities = [LogEntity::class, Favorite::class, Profile::class], version = 2)
 @TypeConverters(Converter::class)
 abstract class ProfileDatabase : RoomDatabase() {
     abstract fun favoriteDao(): FavoriteDao
@@ -59,12 +61,12 @@ abstract class ProfileDatabase : RoomDatabase() {
             }
 
             private suspend fun populateDatabase() {
-                val userDao = database.profileDao()
+                val profileDao = database.profileDao()
 
                 val defaultProfile = Profile("defaultUser", isSelected = 1)
 
-                userDao.insertUser(defaultProfile)
-                Log.d("DatabaseCallBack", "Default user inserted: $defaultProfile")
+                profileDao.insertUser(defaultProfile)
+                Log.d("DatabaseCallBack", "Default profile inserted: $defaultProfile")
             }
         }
 
@@ -73,18 +75,21 @@ abstract class ProfileDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     ProfileDatabase::class.java,
-                    "user_favorites_database"
+                    "Profile_database"
                 )
                     .addMigrations(MIGRATION_1_2)
+                    .setQueryCallback({ sqlQuery, bindArgs ->
+                        Log.d("RoomQuery", "SQL: $sqlQuery, Args: $bindArgs")
+                    }, Executors.newSingleThreadExecutor())
                     .build()
 
                 INSTANCE = instance
 
                 runBlocking {
-                    val userDao = instance.profileDao()
-                    if (userDao.getDefaultUser() == null) {
+                    val profileDao = instance.profileDao()
+                    if (profileDao.getDefaultUser() == null) {
                         val defaultProfile = Profile("defaultUser", isSelected = 1)
-                        userDao.insertUser(defaultProfile)
+                        profileDao.insertUser(defaultProfile)
                         Log.d("DatabaseCallBack", "Default user inserted: $defaultProfile")
                     }
                 }

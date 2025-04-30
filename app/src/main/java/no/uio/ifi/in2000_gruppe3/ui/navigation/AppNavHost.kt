@@ -22,8 +22,8 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewMo
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.WelcomeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.UserScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.UserSettingsScreen
-import no.uio.ifi.in2000_gruppe3.ui.screens.userProfileScreen.UserProfileScreen
-import no.uio.ifi.in2000_gruppe3.ui.screens.userProfileScreen.UserScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.userProfileScreen.ProfileScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.userProfileScreen.ProfileScreen
 
 @Composable
 fun AppNavHost() {
@@ -40,7 +40,7 @@ fun AppNavHost() {
     )
     val mapboxViewModel: MapboxViewModel = viewModel()
     val openAIViewModel: OpenAIViewModel = viewModel()
-    val userScreenViewModel: UserScreenViewModel = viewModel()
+    val profileScreenViewModel: ProfileScreenViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -137,8 +137,8 @@ fun AppNavHost() {
         }
 
         composable (Screen.UserProfile.route) {
-            UserProfileScreen(
-                userScreenViewModel = userScreenViewModel,
+            ProfileScreen(
+                profileScreenViewModel = profileScreenViewModel,
                 navController = navController
             )
         }

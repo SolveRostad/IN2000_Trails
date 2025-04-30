@@ -63,12 +63,12 @@ import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserProfileScreen(
-    userScreenViewModel: UserScreenViewModel,
+fun ProfileScreen(
+    profileScreenViewModel: ProfileScreenViewModel,
     navController: NavHostController
 ) {
-    val userUIState by userScreenViewModel.UserScreenUIState.collectAsState()
-    var user by remember { mutableStateOf("") }
+    val profileUIState by profileScreenViewModel.ProfileScreenUIState.collectAsState()
+    var profile by remember { mutableStateOf("") }
     var isBoxClicked by remember { mutableStateOf(false)}
 
     Scaffold(
@@ -76,7 +76,7 @@ fun UserProfileScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Users",
+                        text = "Profiles",
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold) }
             )},
@@ -101,8 +101,8 @@ fun UserProfileScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ){
                 OutlinedTextField(
-                    value = user,
-                    onValueChange = { user = it },
+                    value = profile,
+                    onValueChange = { profile = it },
                     placeholder = { Text("Skriv inn ønsket brukernavn") },
                     modifier = Modifier
                         .padding(horizontal = 8.dp)
@@ -111,10 +111,10 @@ fun UserProfileScreen(
                         .border(1.dp, Color.Gray, RoundedCornerShape(30.dp))
                         .onKeyEvent { keyEvent ->
                             if (keyEvent.type == KeyEventType.KeyUp && keyEvent.key == Key.Enter) {
-                                if (user.isNotBlank()) {
-                                    Log.d("UserScreen", "Adding user ${user}")
-                                    userScreenViewModel.addUser(user)
-                                    user = ""
+                                if (profile.isNotBlank()) {
+                                    Log.d("ProfileScreen", "Adding profile ${profile}")
+                                    profileScreenViewModel.addProfile(profile)
+                                    profile = ""
                                 }
                             }
                             true
@@ -137,10 +137,10 @@ fun UserProfileScreen(
                 Button(
                     modifier = Modifier.weight(0.4f),
                     onClick = {
-                        if (user.isNotBlank()) {
-                            Log.d("UserScreen", "Adding user ${user}")
-                            userScreenViewModel.addUser(user)
-                            user = ""
+                        if (profile.isNotBlank()) {
+                            Log.d("ProfileScreen", "Adding profile ${profile}")
+                            profileScreenViewModel.addProfile(profile)
+                            profile = ""
                         }
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40))
@@ -149,9 +149,9 @@ fun UserProfileScreen(
                 }
             }
 
-            // User list or empty state
+            // Profile list or empty state
             when {
-                userUIState.profiles.isEmpty() -> {
+                profileUIState.profiles.isEmpty() -> {
                     Text(
                         text = "Ingen brukere her gitt 🤔",
                         style = MaterialTheme.typography.titleMedium,
@@ -164,7 +164,7 @@ fun UserProfileScreen(
                         contentPadding = PaddingValues(16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        items(userUIState.profiles) { user ->
+                        items(profileUIState.profiles) { profile ->
                             Box (
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -173,7 +173,7 @@ fun UserProfileScreen(
                                     .clip(RoundedCornerShape(8.dp))
                                     .clickable {
                                         isBoxClicked = !isBoxClicked
-                                        Log.d("UserScreen", "Clicked on user: $user")
+                                        Log.d("ProfileScreen", "Clicked on profile: $profile")
                                     }
                             ) {
                                 Row(
@@ -186,7 +186,7 @@ fun UserProfileScreen(
                                             .padding(8.dp)
                                     )
 
-                                    Text(text = user.username)
+                                    Text(text = profile.username)
                                 }
                             }
                             AnimatedVisibility(
@@ -197,8 +197,8 @@ fun UserProfileScreen(
                                 Row {
                                     Button(
                                         onClick = {
-                                            Log.d("UserScreen", "Clicked on user: $user")
-                                            userScreenViewModel.selectUser(user.username)
+                                            Log.d("ProfileScreen", "Clicked on profile: $profile")
+                                            profileScreenViewModel.selectProfile(profile.username)
                                             isBoxClicked = false
                                         }
                                     ) {
@@ -207,7 +207,7 @@ fun UserProfileScreen(
 
                                     Button(
                                         onClick = {
-                                            userScreenViewModel.deleteUser(user.username)
+                                            profileScreenViewModel.deleteProfile(profile.username)
                                             isBoxClicked = false
                                         }
                                     ) {

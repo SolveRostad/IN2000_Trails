@@ -130,7 +130,7 @@ class ActivitiesScreenViewModel(
                 logRepository.addLog(newLog)
                 _activitiesScreenUIState.update {
                     it.copy(
-                        hikeLog = _activitiesScreenUIState.value.hikeLog + newLog.logHikeId
+                        hikeLog = _activitiesScreenUIState.value.hikeLog + newLog.hikeId
                     )
                 }
             } catch (e: Exception) {
@@ -159,7 +159,7 @@ class ActivitiesScreenViewModel(
 
                 _activitiesScreenUIState.update {
                     it.copy(
-                        hikeLog = _activitiesScreenUIState.value.hikeLog - newLog.logHikeId
+                        hikeLog = _activitiesScreenUIState.value.hikeLog - newLog.hikeId
                     )
                 }
             } catch (e: Exception) {
