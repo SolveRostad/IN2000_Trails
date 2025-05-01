@@ -111,8 +111,6 @@ fun AanundFigure(
                         .align(Alignment.TopStart)
                         .offset(x = (-60).dp, y = (-60).dp)
                 )
-
-
                 IconButton(
                     onClick = { showDialog = false },
                     modifier = Modifier
