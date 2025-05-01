@@ -58,6 +58,11 @@ fun BottomSheetDrawer(
 
     val alpha by animateFloatAsState(targetValue = sheetState.offset)
 
+    LaunchedEffect(sheetState.offset) {
+        val offsetForControls = -sheetState.offset * 0.385
+        homeScreenViewModel.updateSheetOffset(offsetForControls.toFloat())
+    }
+
     LaunchedEffect(mapboxUIState.searchResponse, mapboxUIState.searchQuery) {
         if (mapboxUIState.searchResponse.isNotEmpty() && mapboxUIState.searchQuery.isNotEmpty()) {
             sheetState.animateTo(SheetDrawerDetent.HIDDEN.value)

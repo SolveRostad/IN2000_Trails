@@ -39,9 +39,8 @@ fun LocationForecastDetailedScreen(
 ) {
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
 
-    // Date variables
     val todaysDay = getTodaysDay()
-    val selectedDay = hikeUIState.day
+    val selectedDay = hikeUIState.selectedDay
 
     Scaffold(
         topBar = {

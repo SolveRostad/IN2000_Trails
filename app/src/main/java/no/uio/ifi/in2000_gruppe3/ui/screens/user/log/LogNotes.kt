@@ -2,10 +2,7 @@ package no.uio.ifi.in2000_gruppe3.ui.screens.user.log
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
@@ -46,22 +43,15 @@ fun LogNotes(
 
     LaunchedEffect(feature.properties.fid) {
         val savedNote = logScreenViewModel.getNotesForHike(feature.properties.fid)
-        noteText = savedNote ?: ""
+        noteText = savedNote
     }
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(400.dp)
-            .padding(16.dp)
+            .padding(horizontal = 8.dp)
     ) {
-        Text(
-            text = "Tur notater",
-            style = MaterialTheme.typography.headlineSmall
-        )
-
-        Spacer(modifier = Modifier.height(4.dp))
-
         Box(modifier = Modifier.fillMaxWidth()) {
             OutlinedButton(
                 onClick = { isExpanded = !isExpanded },
@@ -93,11 +83,11 @@ fun LogNotes(
                 TextField(
                     value = noteText,
                     onValueChange = { noteText = it },
+                    placeholder = { Text("Hva syntes du om turen? ...") },
+                    textStyle = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier
                         .fillMaxWidth()
                         .heightIn(min = 150.dp),
-                    placeholder = { Text("Skriv notater her...") },
-                    textStyle = MaterialTheme.typography.bodyLarge,
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = MaterialTheme.colorScheme.surface,
                         unfocusedContainerColor = MaterialTheme.colorScheme.surface,

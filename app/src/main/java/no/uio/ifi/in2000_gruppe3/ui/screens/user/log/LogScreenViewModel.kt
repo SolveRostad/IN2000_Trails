@@ -25,9 +25,7 @@ class LogScreenViewModel(
     private val hikeAPIRepository: HikeAPIRepository,
     private val mapboxViewModel: MapboxViewModel,
 ): AndroidViewModel(application) {
-
-
-        private val _logScreenUIState = MutableStateFlow<ActivitiesScreenUIState>(
+    private val _logScreenUIState = MutableStateFlow<ActivitiesScreenUIState>(
         ActivitiesScreenUIState()
     )
 
@@ -146,13 +144,13 @@ class LogScreenViewModel(
         }
     }
 
-    fun revmoveFromLog(hikeId: Int) {
+    fun removeFromLog(hikeId: Int) {
         viewModelScope.launch {
             _logScreenUIState.update {
                 it.copy(isLoading = true)
             }
             try {
-                val newLog= no.uio.ifi.in2000_gruppe3.data.database.Log(
+                val newLog = no.uio.ifi.in2000_gruppe3.data.database.Log(
                     _logScreenUIState.value.username,
                     hikeId
                 )

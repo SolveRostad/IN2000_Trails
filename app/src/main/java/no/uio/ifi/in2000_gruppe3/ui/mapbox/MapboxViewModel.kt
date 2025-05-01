@@ -79,20 +79,18 @@ class MapboxViewModel() : ViewModel() {
         viewModelScope.launch {
             try {
                 val detailsResponse = placeAutocomplete.select(suggestion)
-                Log.d(
-                    "SearchBarViewModel",
-                    "Selected suggestion coordinates: ${detailsResponse.value?.coordinate}"
-                )
                 val coordinates = detailsResponse.value!!.coordinate.coordinates()
                 val point = Point.fromLngLat(coordinates[0], coordinates[1])
 
                 _mapboxUIState.update {
                     it.copy(
+                        shouldFetchHikes = true,
                         searchResponse = emptyList(),
                         searchQuery = "",
                         pointerCoordinates = point
                     )
                 }
+                updateSearchQuery("")
             } catch (e: Exception) {
                 Log.e("SearchBarViewModel", "Error selecting place", e)
             }
@@ -143,15 +141,15 @@ class MapboxViewModel() : ViewModel() {
     }
 
     fun clearPolylineAnnotations() {
-        _mapboxUIState.update { currentState ->
-            currentState.copy(polylineAnnotations = emptyList())
+        _mapboxUIState.update { it ->
+            it.copy(polylineAnnotations = emptyList())
         }
     }
 
     fun centerOnUserPosition() {
         viewModelScope.launch {
-            _mapboxUIState.update { currentState ->
-                currentState.copy(
+            _mapboxUIState.update { it ->
+                it.copy(
                     centerOnUserTrigger = System.currentTimeMillis()
                 )
             }
@@ -159,8 +157,8 @@ class MapboxViewModel() : ViewModel() {
     }
 
     fun updateLatestUserPosition(point: Point) {
-        _mapboxUIState.update { currentState ->
-            currentState.copy(latestUserPosition = point)
+        _mapboxUIState.update { it ->
+            it.copy(latestUserPosition = point)
         }
     }
 

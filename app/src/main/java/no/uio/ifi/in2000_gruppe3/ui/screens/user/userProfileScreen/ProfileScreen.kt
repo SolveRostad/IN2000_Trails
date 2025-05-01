@@ -1,24 +1,15 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.userProfileScreen
+package no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen
 
 import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -27,12 +18,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AccountCircle
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -69,9 +60,8 @@ fun ProfileScreen(
     profileScreenViewModel: ProfileScreenViewModel,
     navController: NavHostController
 ) {
-    val profileUIState by profileScreenViewModel.ProfileScreenUIState.collectAsState()
+    val profileUIState by profileScreenViewModel.profileScreenUIState.collectAsState()
     var profile by remember { mutableStateOf("") }
-    var expandedProfileId by remember { mutableStateOf<String?>(null) }
 
     Scaffold(
         topBar = {
@@ -80,8 +70,19 @@ fun ProfileScreen(
                     Text(
                         text = "Profiles",
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold) }
-            )},
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                }
+            )
+        },
         bottomBar = { BottomBar(navController = navController) }
     ) { paddingValues ->
         Column(
@@ -92,12 +93,13 @@ fun ProfileScreen(
         ) {
             // App logo
             Image(
-                painter = painterResource(id = R.drawable.logo_slogan),
+                painter = painterResource(id = R.drawable.logo_slogan_new),
                 contentDescription = "App Logo",
                 modifier = Modifier.fillMaxWidth()
-                    .size(150.dp)
+                    .size(375.dp)
                     .padding(top = 24.dp, bottom = 16.dp)
             )
+
             Row (
                 modifier = Modifier.padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -107,7 +109,6 @@ fun ProfileScreen(
                     onValueChange = { profile = it },
                     placeholder = { Text("Skriv inn ønsket brukernavn") },
                     modifier = Modifier
-                        .padding(horizontal = 8.dp)
                         .weight(1f)
                         .clip(RoundedCornerShape(30.dp))
                         .border(1.dp, Color.Gray, RoundedCornerShape(30.dp))
@@ -134,116 +135,41 @@ fun ProfileScreen(
                     ),
                 )
 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(4.dp))
 
                 Button(
                     modifier = Modifier.weight(0.4f),
                     onClick = {
                         if (profile.isNotBlank()) {
-                            Log.d("UserScreen", "Adding profile ${profile}")
+                            Log.d("UserScreen", "Adding profile $profile")
                             profileScreenViewModel.addProfile(profile)
                             profile = ""
                         }
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40))
                 ) {
-                    Text(text = "Legg til bruker")
+                    Text(text = "Registrer")
                 }
             }
 
             // Profile list or empty state
-            when {
-                profileUIState.profiles.isEmpty() -> {
-                    Text(
-                        text = "Ingen brukere her gitt 🤔",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-                else -> {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        items(profileUIState.profiles) { profile ->
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp)
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .background(color = Color.LightGray, shape = RoundedCornerShape(8.dp))
-                                        .clip(RoundedCornerShape(8.dp))
-                                        .clickable {
-                                            expandedProfileId = if (expandedProfileId == profile.username) null else profile.username
-                                            Log.d("UserScreen", "Clicked on profile: ${profile.username}")
-                                        }
-                                        .padding(16.dp)
-                                ) {
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Rounded.AccountCircle,
-                                            contentDescription = "User Icon",
-                                            modifier = Modifier.size(24.dp)
-                                        )
-
-                                        Spacer(modifier = Modifier.width(8.dp))
-
-                                        Text(
-                                            text = profile.username,
-                                            style = MaterialTheme.typography.bodyLarge
-                                        )
-                                    }
-                                }
-
-                                DropdownMenu(
-                                    expanded = expandedProfileId == profile.username,
-                                    onDismissRequest = { expandedProfileId = null },
-                                    modifier = Modifier
-                                        .fillMaxWidth(0.9f)
-                                        .align(Alignment.Center)
-                                ) {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(8.dp),
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
-                                        Button(
-                                            onClick = {
-                                                Log.d("UserScreen", "Selected profile: ${profile.username}")
-                                                profileScreenViewModel.selectProfile(profile.username)
-                                                expandedProfileId = null
-                                            },
-                                            modifier = Modifier.fillMaxWidth()
-                                        ) {
-                                            Text("Velg bruker")
-                                        }
-
-                                        Spacer(modifier = Modifier.height(8.dp))
-
-                                        if (profile.username != "defaultUser") {
-                                            Button(
-                                                onClick = {
-                                                    profileScreenViewModel.deleteProfile(profile.username)
-                                                    expandedProfileId = null
-                                                },
-                                                modifier = Modifier.fillMaxWidth(),
-                                                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
-                                            ) {
-                                                Text(text = "Slett bruker")
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+            if (profileUIState.profiles.isEmpty()) {
+                Text(
+                    text = "Ingen brukere her gitt 🤔",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(16.dp)
+                )
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(profileUIState.profiles) { profile ->
+                        Profile(
+                            profile = profile,
+                            profileScreenViewModel = profileScreenViewModel
+                        )
                     }
                 }
             }

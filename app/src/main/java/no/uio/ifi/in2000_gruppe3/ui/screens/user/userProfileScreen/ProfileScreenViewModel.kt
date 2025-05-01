@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.userProfileScreen
+package no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen
 
 import android.app.Application
 import android.util.Log
@@ -14,15 +14,13 @@ import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.data.database.Profile
 import no.uio.ifi.in2000_gruppe3.data.profile.repository.ProfileRepository
 
-
 class ProfileScreenViewModel(application: Application):AndroidViewModel(application) {
     private val profileRepository: ProfileRepository
+
     private val _profileScreenUIState = MutableStateFlow<ProfileScreenUIState>(
         ProfileScreenUIState()
     )
-
-    val ProfileScreenUIState: StateFlow<ProfileScreenUIState> = _profileScreenUIState.asStateFlow()
-
+    val profileScreenUIState: StateFlow<ProfileScreenUIState> = _profileScreenUIState.asStateFlow()
 
     init {
         val applicationScope = CoroutineScope(SupervisorJob())
@@ -176,8 +174,6 @@ data class ProfileScreenUIState(
     val username: String = "",
     val isLoading: Boolean = false,
     val errorMessage: String = "",
-    val isError: Boolean = false
+    val isError: Boolean = false,
+    val isLoggedIn: Boolean = false
 )
-
-
-

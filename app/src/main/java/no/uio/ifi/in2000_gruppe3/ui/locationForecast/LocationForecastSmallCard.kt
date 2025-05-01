@@ -18,6 +18,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,6 +42,8 @@ fun LocationForecastSmallCard(
     hikeScreenViewModel: HikeScreenViewModel,
     navController: NavHostController
 ) {
+    val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
+
     val todaysDay = getTodaysDay()
     val todaysDate = getTodaysDate()
     val dateFormatted = getDateFormatted(date)
@@ -68,7 +72,11 @@ fun LocationForecastSmallCard(
             containerColor = MaterialTheme.colorScheme.surface
         ),
         onClick = {
-            hikeScreenViewModel.updateDate(day, date, dateFormatted)
+            hikeScreenViewModel.updateSelectedDay(day)
+            hikeScreenViewModel.updateSelectedDate(date)
+            if (hikeUIState.selectedDay != day) {
+                hikeScreenViewModel.updateDescriptionAlreadyLoaded(false)
+            }
             navController.navigate(Screen.LocationForecastDetailed.route)
         }
     ) {

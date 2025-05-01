@@ -30,6 +30,9 @@ class HikeAPIRepository(private val openAIViewModel: OpenAIViewModel) {
         val features = hikeAPIDatasource.getHikes(lat, lng, limit, featureType, minDistance)
         features.forEach { feature ->
             feature.color = getColor()
+            if (feature.properties.gradering.isNullOrBlank()) {
+                generateDifficulty(feature)
+            }
             feature.difficultyInfo = getDifficultyInfo(feature.properties.gradering ?: "Ukjent")
 
             if (feature.properties.desc == null || feature.properties.desc!!.contains("_")) {
@@ -87,6 +90,17 @@ class HikeAPIRepository(private val openAIViewModel: OpenAIViewModel) {
             colorIndex++
         }
         return color
+    }
+
+    private fun generateDifficulty(feature: Feature) {
+        val distance = feature.properties.distance_meters
+        val difficulty = when {
+            distance < 3000 -> "G"
+            distance < 5000 -> "B"
+            distance < 10000 -> "R"
+            else -> "S"
+        }
+        feature.properties.gradering = difficulty
     }
 
     private fun getDifficultyInfo(gradering: String): DifficultyInfo {
