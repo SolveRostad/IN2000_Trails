@@ -21,4 +21,7 @@ interface LogDao {
 
     @Query("UPDATE log_table SET notes = :notes WHERE username LIKE :username AND hike_id = :hikeId")
     suspend fun addNotesToLog(username: String, hikeId: Int, notes: String)
+
+    @Query("SELECT notes FROM log_table WHERE username LIKE :username AND hike_id = :hikeId")
+    suspend fun getNotesForHike(username: String, hikeId: Int ): String
 }

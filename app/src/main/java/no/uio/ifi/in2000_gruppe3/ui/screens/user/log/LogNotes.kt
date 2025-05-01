@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,6 +44,11 @@ fun LogNotes(
     var noteText by remember { mutableStateOf("") }
     var isExpanded by remember { mutableStateOf(false) }
 
+    LaunchedEffect(feature.properties.fid) {
+        val savedNote = logScreenViewModel.getNotesForHike(feature.properties.fid)
+        noteText = savedNote ?: ""
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -50,11 +56,11 @@ fun LogNotes(
             .padding(16.dp)
     ) {
         Text(
-            text = "Your Notes",
-            style = MaterialTheme.typography.headlineMedium
+            text = "Tur notater",
+            style = MaterialTheme.typography.headlineSmall
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         Box(modifier = Modifier.fillMaxWidth()) {
             OutlinedButton(

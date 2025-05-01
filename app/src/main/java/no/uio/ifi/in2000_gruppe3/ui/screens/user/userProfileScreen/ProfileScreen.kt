@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -29,6 +30,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -69,7 +71,7 @@ fun ProfileScreen(
 ) {
     val profileUIState by profileScreenViewModel.ProfileScreenUIState.collectAsState()
     var profile by remember { mutableStateOf("") }
-    var isBoxClicked by remember { mutableStateOf(false)}
+    var expandedProfileId by remember { mutableStateOf<String?>(null) }
 
     Scaffold(
         topBar = {
@@ -165,53 +167,79 @@ fun ProfileScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(profileUIState.profiles) { profile ->
-                            Box (
+                            Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(8.dp)
-                                    .background(color = Color.LightGray, shape = RoundedCornerShape(8.dp))
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .clickable {
-                                        isBoxClicked = !isBoxClicked
-                                        Log.d("UserScreen", "Clicked on profile: $profile")
-                                    }
                             ) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth()
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(color = Color.LightGray, shape = RoundedCornerShape(8.dp))
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .clickable {
+                                            expandedProfileId = if (expandedProfileId == profile.username) null else profile.username
+                                            Log.d("UserScreen", "Clicked on profile: ${profile.username}")
+                                        }
+                                        .padding(16.dp)
                                 ) {
-                                    Icon(
-                                        imageVector = Icons.Rounded.AccountCircle,
-                                        contentDescription = "User Icon",
-                                        modifier = Modifier
-                                            .padding(8.dp)
-                                    )
-
-                                    Text(text = profile.username)
-                                }
-                            }
-                            AnimatedVisibility(
-                                visible = isBoxClicked,
-                                enter = fadeIn() + expandVertically (),
-                                exit = fadeOut() + shrinkVertically()
-                            ) {
-                                Row {
-                                    Button(
-                                        onClick = {
-                                            Log.d("UserScreen", "Clicked on profile: $profile")
-                                            profileScreenViewModel.selectProfile(profile.username)
-                                            isBoxClicked = false
-                                        }
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        Text("Velg bruker")
+                                        Icon(
+                                            imageVector = Icons.Rounded.AccountCircle,
+                                            contentDescription = "User Icon",
+                                            modifier = Modifier.size(24.dp)
+                                        )
+
+                                        Spacer(modifier = Modifier.width(8.dp))
+
+                                        Text(
+                                            text = profile.username,
+                                            style = MaterialTheme.typography.bodyLarge
+                                        )
                                     }
+                                }
 
-                                    Button(
-                                        onClick = {
-                                            profileScreenViewModel.deleteProfile(profile.username)
-                                            isBoxClicked = false
-                                        }
+                                DropdownMenu(
+                                    expanded = expandedProfileId == profile.username,
+                                    onDismissRequest = { expandedProfileId = null },
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.9f)
+                                        .align(Alignment.Center)
+                                ) {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(8.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
-                                        Text(text = "Slett bruker")
+                                        Button(
+                                            onClick = {
+                                                Log.d("UserScreen", "Selected profile: ${profile.username}")
+                                                profileScreenViewModel.selectProfile(profile.username)
+                                                expandedProfileId = null
+                                            },
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                            Text("Velg bruker")
+                                        }
+
+                                        Spacer(modifier = Modifier.height(8.dp))
+
+                                        if (profile.username != "defaultUser") {
+                                            Button(
+                                                onClick = {
+                                                    profileScreenViewModel.deleteProfile(profile.username)
+                                                    expandedProfileId = null
+                                                },
+                                                modifier = Modifier.fillMaxWidth(),
+                                                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                                            ) {
+                                                Text(text = "Slett bruker")
+                                            }
+                                        }
                                     }
                                 }
                             }

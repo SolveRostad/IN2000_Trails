@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.AlertDialogDefaults.containerColor
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -56,6 +57,7 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreenViewModel
 import java.time.LocalDate
 
 @Composable
@@ -65,12 +67,17 @@ fun HikeCard(
     favoritesViewModel: FavoritesScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     openAIViewModel: OpenAIViewModel,
+    logScreenViewModel: LogScreenViewModel,
     navController: NavHostController,
     checkedState: MutableState<Boolean>
 ) {
     val homeUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
     val openAIUIState by openAIViewModel.openAIUIState.collectAsState()
+    val logUIState by logScreenViewModel.logScreenUIState.collectAsState()
+
+    val isInLog = logUIState.hikeLog.contains(hikeUIState.feature.properties.fid)
+
 
     val todaysDay = getTodaysDay()
 
@@ -81,9 +88,12 @@ fun HikeCard(
 
     LaunchedEffect(hikeUIState.selectedDay) {
         val daysAhead = calculateDaysAhead(todaysDay, hikeUIState.selectedDay)
-        hikeScreenViewModel.updateSelectedDate(LocalDate.now().plusDays(daysAhead.toLong()).toString())
+        hikeScreenViewModel.updateSelectedDate(
+            LocalDate.now().plusDays(daysAhead.toLong()).toString()
+        )
 
-        displayTimeSeries = homeScreenViewModel.timeSeriesFromDate(hikeUIState.selectedDate)?.firstOrNull()
+        displayTimeSeries =
+            homeScreenViewModel.timeSeriesFromDate(hikeUIState.selectedDate)?.firstOrNull()
 
         averageTemperature = homeScreenViewModel.daysAverageTemp(hikeUIState.selectedDate)
         averageWindSpeed = homeScreenViewModel.daysAverageWindSpeed(hikeUIState.selectedDate)
@@ -186,7 +196,11 @@ fun HikeCard(
                     InfoItem(
                         icon = ImageVector.vectorResource(id = R.drawable.distance_icon),
                         label = "Lengde",
-                        value = (hikeUIState.feature.properties.distance_meters.toFloat() / 1000.0).let { "%.2f km".format(it) },
+                        value = (hikeUIState.feature.properties.distance_meters.toFloat() / 1000.0).let {
+                            "%.2f km".format(
+                                it
+                            )
+                        },
                         iconTint = Color(0xFF4CAF50)
                     )
                     InfoItem(
@@ -242,6 +256,55 @@ fun HikeCard(
                     Text(text = "Se været andre dager")
                 }
 
+                Spacer(modifier = Modifier.height(8.dp))
+
+                if(!isInLog){
+                    Button(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth()
+                            .weight(1f),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B9FF)),
+                        onClick = {
+                            logScreenViewModel.addToLog(hikeUIState.feature.properties.fid)
+                        }
+                    ) {
+                        Text(text = "Legg til i loggen")
+                    }
+                } else {
+                    Row {
+                        Button(
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .weight(1f)
+                                .align(Alignment.CenterVertically),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B9FF)),
+                            onClick = {
+                                logScreenViewModel.adjustTimesWalked(
+                                    hikeUIState.feature.properties.fid,
+                                    1
+                                )
+                            }
+                        ) {
+                            Text(text = "Øk ganger gått")
+                        }
+
+                        Button(
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .weight(1f)
+                                .align(Alignment.CenterVertically),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B9FF)),
+                            onClick = {
+                                logScreenViewModel.revmoveFromLog(
+                                    hikeUIState.feature.properties.fid
+                                )
+                            }
+                        ) {
+                            Text(text = "Fjern fra logg")
+                        }
+                    }
+                }
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Row(
@@ -269,6 +332,8 @@ fun HikeCard(
                     Spacer(modifier = Modifier.width(8.dp))
 
                     Text(text = if (checkedState.value) "Fjern fra favoritter" else "Legg til i favoritter")
+
+                    Spacer(modifier = Modifier.width(8.dp))
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

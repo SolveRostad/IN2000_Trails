@@ -23,4 +23,8 @@ class LogRepository (private val logDao: LogDao) {
     suspend fun addNotesToLog(username: String, hikeId: Int, notes: String) {
         logDao.addNotesToLog(username, hikeId, notes)
     }
+
+    suspend fun getNotesForHike(username: String, hikeId: Int): String {
+        return logDao.getNotesForHike(username, hikeId)
+    }
 }
