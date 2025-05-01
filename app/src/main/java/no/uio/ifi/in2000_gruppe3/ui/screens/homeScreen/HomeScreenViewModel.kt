@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mapbox.geojson.Point
@@ -25,6 +26,8 @@ class HomeScreenViewModel() : ViewModel() {
     private val locationForecastRepository = LocationForecastRepository()
     private val metAlertsRepository = MetAlertsRepository()
 
+    // For at teksten til Aanund bare skal vises én gang per app-start
+
     private val _homeScreenUIState = MutableStateFlow<HomeScreenUIState>(
         HomeScreenUIState(
             hikes = emptyList(),
@@ -34,11 +37,7 @@ class HomeScreenViewModel() : ViewModel() {
     )
     val homeScreenUIState: StateFlow<HomeScreenUIState> = _homeScreenUIState.asStateFlow()
 
-    fun updateNetworkStatus(isConnected: Boolean) {
-        _homeScreenUIState.update {
-            it.copy(hasNetworkConnection = isConnected)
-        }
-    }
+
 
     private val _sheetStateTarget = MutableStateFlow(SheetDrawerDetent.SEMIPEEK)
     val sheetStateTarget = _sheetStateTarget.asStateFlow()
@@ -46,10 +45,19 @@ class HomeScreenViewModel() : ViewModel() {
     private val _currentSheetOffset = MutableStateFlow(0f)
     val currentSheetOffset = _currentSheetOffset.asStateFlow()
 
+    fun markAanundDialogShown() {
+        _homeScreenUIState.update {
+            it.copy(hasShownAanundDialog = true)
+        }
+    }
     fun setSheetState(target: SheetDrawerDetent) {
         _sheetStateTarget.value = target
     }
-
+    fun updateNetworkStatus(isConnected: Boolean) {
+        _homeScreenUIState.update {
+            it.copy(hasNetworkConnection = isConnected)
+        }
+    }
     fun updateSheetOffset(offset: Float) {
         _currentSheetOffset.value = offset
     }
@@ -204,5 +212,6 @@ data class HomeScreenUIState(
     val alerts: MetAlerts?,
     val forecast: Locationforecast?,
     val isLoggedIn: Boolean = true, // skal settes til false når login skjerm er laget
-    val hasNetworkConnection: Boolean = true
+    val hasNetworkConnection: Boolean = true,
+    val hasShownAanundDialog: Boolean = false
 )

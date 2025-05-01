@@ -82,10 +82,12 @@ fun SearchBarForMap(
         ),
         leadingIcon = {
             Icon(
-                painter = painterResource(id = R.drawable.logo),
+                painter = painterResource(id = R.drawable.logo_without),
                 contentDescription = "Logo",
                 tint = Color.Unspecified,
-                modifier = Modifier.size(40.dp)
+                modifier = Modifier
+                    .padding(start = 10.dp)
+                    .size(40.dp)
             )
         },
         colors = TextFieldDefaults.colors(

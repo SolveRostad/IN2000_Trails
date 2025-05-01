@@ -3,6 +3,7 @@ package no.uio.ifi.in2000_gruppe3.ui.navigation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -44,11 +45,12 @@ fun BottomBar(navController: NavHostController) {
                     },
                     modifier = Modifier
                         .weight(1f)
-                        .fillMaxSize()
+                        .size(35.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Favorite,
                         contentDescription = "Favorites",
+                        modifier = Modifier.fillMaxSize(),
                         tint = if (navController.currentDestination?.route == "favorites") Color(0xFF061C40)
                                else LocalContentColor.current
                     )
@@ -61,11 +63,11 @@ fun BottomBar(navController: NavHostController) {
                             navController.navigate(Screen.Home.route)
                     },
                     modifier = Modifier
-                        .weight(1.5f)
-                        .size(48.dp)
+                        .weight(1f)
+                        .size(80.dp)
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.logo),
+                        painter = painterResource(id = R.drawable.logo_new),
                         contentDescription = "Home",
                         modifier = Modifier.fillMaxSize(),
                         tint = Color.Unspecified
@@ -80,11 +82,12 @@ fun BottomBar(navController: NavHostController) {
                     },
                     modifier = Modifier
                         .weight(1f)
-                        .fillMaxSize()
+                        .size(40.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Person,
                         contentDescription = "User",
+                        modifier = Modifier.fillMaxSize(),
                         tint = if (navController.currentDestination?.route == "user") Color(0xFF061C40)
                                else LocalContentColor.current
                     )
