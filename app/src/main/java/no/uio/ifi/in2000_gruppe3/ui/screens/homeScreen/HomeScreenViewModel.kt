@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mapbox.geojson.Point
@@ -24,6 +25,14 @@ class HomeScreenViewModel() : ViewModel() {
     private val hikeAPIRepository = HikeAPIRepository(openAIViewModel = OpenAIViewModel())
     private val locationForecastRepository = LocationForecastRepository()
     private val metAlertsRepository = MetAlertsRepository()
+
+    // For at teksten til Aanund bare skal vises én gang per app-start
+    var hasShownAanundDialog = mutableStateOf(false)
+        private set
+
+    fun markAanundDialogShown() {
+        hasShownAanundDialog.value = true
+    }
 
     private val _homeScreenUIState = MutableStateFlow<HomeScreenUIState>(
         HomeScreenUIState(
