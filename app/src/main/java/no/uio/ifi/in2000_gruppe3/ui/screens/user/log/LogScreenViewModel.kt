@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.user.activities
+package no.uio.ifi.in2000_gruppe3.ui.screens.user.log
 
 import android.app.Application
 import android.util.Log
@@ -10,14 +10,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import no.uio.ifi.in2000_gruppe3.data.database.Favorite
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository.HikeAPIRepository
 import no.uio.ifi.in2000_gruppe3.data.log.repository.LogRepository
 import no.uio.ifi.in2000_gruppe3.data.profile.repository.ProfileRepository
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 
-class ActivitiesScreenViewModel(
+class LogScreenViewModel(
     application: Application,
     private val logRepository: LogRepository,
     private val profileRepository: ProfileRepository,
@@ -26,11 +25,11 @@ class ActivitiesScreenViewModel(
 ): AndroidViewModel(application) {
 
 
-        private val _activitiesScreenUIState = MutableStateFlow<ActivitiesScreenUIState>(
+        private val _logScreenUIState = MutableStateFlow<ActivitiesScreenUIState>(
         ActivitiesScreenUIState()
     )
 
-    val activitiesScreenUIState: StateFlow<ActivitiesScreenUIState> = _activitiesScreenUIState.asStateFlow()
+    val logScreenUIState: StateFlow<ActivitiesScreenUIState> = _logScreenUIState.asStateFlow()
 
     val userPosition = mapboxViewModel.mapboxUIState.value.latestUserPosition
 
@@ -40,34 +39,34 @@ class ActivitiesScreenViewModel(
                 setUser()
                 getConvertedLog()
             } catch (e: Exception) {
-                Log.e("FavoritesViewModel", "Error initializing data: ${e.message}")
+                Log.e("LogScreenViewModel", "Error initializing data: ${e.message}")
             }
         }
     }
 
-    fun loadFavorites(){
+    fun loadLog(){
         viewModelScope.launch {
-            _activitiesScreenUIState.update {
+            _logScreenUIState.update {
                 it.copy(isLoading = true)
             }
             try {
                 val username = profileRepository.getSelectedUser().username
                 val updatedLog = logRepository.getAllLogs(username)
 
-                _activitiesScreenUIState.update {
+                _logScreenUIState.update {
                     it.copy(hikeLog = updatedLog)
                 }
 
-                Log.d("FavoritesViewModel", "Fetched favorites for user: ${username}: ${_activitiesScreenUIState.value.hikeLog}")
+                Log.d("LogScreenViewModel", "Fetched log for user: ${username}: ${_logScreenUIState.value.hikeLog}")
                 getConvertedLog()
 
             } catch (e: Exception) {
-                _activitiesScreenUIState.update {
+                _logScreenUIState.update {
                     it.copy(isError = true, errorMessage = e.message.toString())
                 }
-                Log.e("FavoritesViewModel", "Error loading favorites: ${e.message}")
+                Log.e("LogScreenViewModel", "Error loading log: ${e.message}")
             } finally {
-                _activitiesScreenUIState.update {
+                _logScreenUIState.update {
                     it.copy(isLoading = false)
                 }
             }
@@ -76,99 +75,99 @@ class ActivitiesScreenViewModel(
 
     fun setUser() {
         viewModelScope.launch {
-            _activitiesScreenUIState.update {
+            _logScreenUIState.update {
                 it.copy(username = profileRepository.getSelectedUser().username)
             }
         }
     }
 
     fun updateUserLocation(point: Point) {
-        _activitiesScreenUIState.update {
+        _logScreenUIState.update {
             it.copy(userLocation = point)
         }
     }
 
     fun isHikeInLog(feature: Feature): Boolean {
-        return _activitiesScreenUIState.value.hikeLog.contains(feature.properties.fid)
+        return _logScreenUIState.value.hikeLog.contains(feature.properties.fid)
     }
 
     fun getConvertedLog() {
         viewModelScope.launch {
-            _activitiesScreenUIState.update {
+            _logScreenUIState.update {
                 it.copy(isLoading = true)
             }
             try {
                 val logFeatures: List<Feature> = hikeAPIRepository.getHikesById(
-                    _activitiesScreenUIState.value.hikeLog,
-                    _activitiesScreenUIState.value.userLocation
+                    _logScreenUIState.value.hikeLog,
+                    _logScreenUIState.value.userLocation
                 )
-                _activitiesScreenUIState.update {
+                _logScreenUIState.update {
                     it.copy(convertedLog = logFeatures)
                 }
-                Log.d("FavoritesViewModel", "Fetched converted favorites: $logFeatures")
+                Log.d("LogScreenViewModel", "Fetched converted log: $logFeatures")
             } catch (e: Exception) {
-                _activitiesScreenUIState.update {
+                _logScreenUIState.update {
                     it.copy(isError = true, errorMessage = e.message.toString())
                 }
             } finally {
-                _activitiesScreenUIState.update {
+                _logScreenUIState.update {
                     it.copy(isLoading = false)
                 }
             }
         }
     }
 
-    fun addToLog(id: Int) {
+    fun addToLog(hikeId: Int) {
         viewModelScope.launch {
-            _activitiesScreenUIState.update {
+            _logScreenUIState.update {
                 it.copy(isLoading = true)
             }
             try {
                 val currentUser = profileRepository.getSelectedUser()
-                val newLog = no.uio.ifi.in2000_gruppe3.data.database.Log(currentUser.username, id)
-                Log.d("FavoritesViewModel", "Adding favorite: $newLog")
+                val newLog = no.uio.ifi.in2000_gruppe3.data.database.Log(currentUser.username, hikeId)
+                Log.d("LogScreenViewModel", "Adding log: $newLog")
                 logRepository.addLog(newLog)
-                _activitiesScreenUIState.update {
+                _logScreenUIState.update {
                     it.copy(
-                        hikeLog = _activitiesScreenUIState.value.hikeLog + newLog.hikeId
+                        hikeLog = _logScreenUIState.value.hikeLog + newLog.hikeId
                     )
                 }
             } catch (e: Exception) {
-                _activitiesScreenUIState.update {
+                _logScreenUIState.update {
                     it.copy(isError = true, errorMessage = e.message.toString())
                 }
             } finally {
-                _activitiesScreenUIState.update {
+                _logScreenUIState.update {
                     it.copy(isLoading = false)
                 }
             }
         }
     }
 
-    fun revmoveFromLog(id: Int) {
+    fun revmoveFromLog(hikeId: Int) {
         viewModelScope.launch {
-            _activitiesScreenUIState.update {
+            _logScreenUIState.update {
                 it.copy(isLoading = true)
             }
             try {
                 val newLog= no.uio.ifi.in2000_gruppe3.data.database.Log(
-                    _activitiesScreenUIState.value.username,
-                    id
+                    _logScreenUIState.value.username,
+                    hikeId
                 )
                 logRepository.deleteLog(newLog)
 
-                _activitiesScreenUIState.update {
+                _logScreenUIState.update {
                     it.copy(
-                        hikeLog = _activitiesScreenUIState.value.hikeLog - newLog.hikeId
+                        hikeLog = _logScreenUIState.value.hikeLog - newLog.hikeId
                     )
                 }
             } catch (e: Exception) {
-                Log.e("ActivitiesViewModel", "Error fetching Log: ${e.message}")
-                _activitiesScreenUIState.update {
+                Log.e("LogScreenViewModel", "Error fetching Log: ${e.message}")
+                _logScreenUIState.update {
                     it.copy(isError = true, errorMessage = e.message.toString())
                 }
             } finally {
-                _activitiesScreenUIState.update {
+                _logScreenUIState.update {
                     it.copy(isLoading = false)
                 }
             }
@@ -177,18 +176,18 @@ class ActivitiesScreenViewModel(
 
     fun addNotesToLog(hikeId: Int, notes: String) {
         viewModelScope.launch {
-            _activitiesScreenUIState.update {
+            _logScreenUIState.update {
                 it.copy(isLoading = true)
             }
             try {
-                logRepository.addNotesToLog(_activitiesScreenUIState.value.username, hikeId, notes)
+                logRepository.addNotesToLog(_logScreenUIState.value.username, hikeId, notes)
             } catch (e: Exception) {
-                Log.e("ActivitiesViewModel", "Error adding notes to log: ${e.message}")
-                _activitiesScreenUIState.update {
+                Log.e("LogScreenViewModel", "Error adding notes to log: ${e.message}")
+                _logScreenUIState.update {
                     it.copy(isError = true, errorMessage = e.message.toString())
                 }
             } finally {
-                _activitiesScreenUIState.update {
+                _logScreenUIState.update {
                     it.copy(isLoading = false)
                 }
             }
@@ -197,18 +196,18 @@ class ActivitiesScreenViewModel(
 
     fun adjustTimesWalked (hikeId: Int, adjustTimesWalked: Int) {
         viewModelScope.launch {
-            _activitiesScreenUIState.update {
+            _logScreenUIState.update {
                 it.copy(isLoading = true)
             }
             try {
-                logRepository.timesWalked(_activitiesScreenUIState.value.username, hikeId, adjustTimesWalked)
+                logRepository.timesWalked(_logScreenUIState.value.username, hikeId, adjustTimesWalked)
             } catch (e: Exception) {
-                Log.e("ActivitiesViewModel", "Error adjusting times walked: ${e.message}")
-                _activitiesScreenUIState.update {
+                Log.e("LogScreenViewModel", "Error adjusting times walked: ${e.message}")
+                _logScreenUIState.update {
                     it.copy(isError = true, errorMessage = e.message.toString())
                 }
             } finally {
-                _activitiesScreenUIState.update {
+                _logScreenUIState.update {
                     it.copy(isLoading = false)
                 }
             }

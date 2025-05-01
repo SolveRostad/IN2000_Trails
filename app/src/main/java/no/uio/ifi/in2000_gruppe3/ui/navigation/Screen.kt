@@ -2,6 +2,7 @@ package no.uio.ifi.in2000_gruppe3.ui.navigation
 
 // Class for navController to navigate between screens
 sealed class Screen(val route: String) {
+    object Log: Screen("log")
     object Home : Screen("home")
     object User : Screen("user")
     object Login : Screen("login")

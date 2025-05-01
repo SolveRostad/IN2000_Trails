@@ -112,7 +112,7 @@ fun ProfileScreen(
                         .onKeyEvent { keyEvent ->
                             if (keyEvent.type == KeyEventType.KeyUp && keyEvent.key == Key.Enter) {
                                 if (profile.isNotBlank()) {
-                                    Log.d("ProfileScreen", "Adding profile ${profile}")
+                                    Log.d("UserScreen", "Adding profile ${profile}")
                                     profileScreenViewModel.addProfile(profile)
                                     profile = ""
                                 }
@@ -138,7 +138,7 @@ fun ProfileScreen(
                     modifier = Modifier.weight(0.4f),
                     onClick = {
                         if (profile.isNotBlank()) {
-                            Log.d("ProfileScreen", "Adding profile ${profile}")
+                            Log.d("UserScreen", "Adding profile ${profile}")
                             profileScreenViewModel.addProfile(profile)
                             profile = ""
                         }
@@ -173,7 +173,7 @@ fun ProfileScreen(
                                     .clip(RoundedCornerShape(8.dp))
                                     .clickable {
                                         isBoxClicked = !isBoxClicked
-                                        Log.d("ProfileScreen", "Clicked on profile: $profile")
+                                        Log.d("UserScreen", "Clicked on profile: $profile")
                                     }
                             ) {
                                 Row(
@@ -197,7 +197,7 @@ fun ProfileScreen(
                                 Row {
                                     Button(
                                         onClick = {
-                                            Log.d("ProfileScreen", "Clicked on profile: $profile")
+                                            Log.d("UserScreen", "Clicked on profile: $profile")
                                             profileScreenViewModel.selectProfile(profile.username)
                                             isBoxClicked = false
                                         }

@@ -22,6 +22,9 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewMo
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.WelcomeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.UserScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.UserSettingsScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreenViewModelFactory
 import no.uio.ifi.in2000_gruppe3.ui.screens.userProfileScreen.ProfileScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.userProfileScreen.ProfileScreen
 
@@ -41,6 +44,12 @@ fun AppNavHost() {
     val mapboxViewModel: MapboxViewModel = viewModel()
     val openAIViewModel: OpenAIViewModel = viewModel()
     val profileScreenViewModel: ProfileScreenViewModel = viewModel()
+    val logScreenViewModel: LogScreenViewModel = viewModel(
+        factory = LogScreenViewModelFactory(
+            application = LocalContext.current.applicationContext as Application,
+            openAIViewModel = OpenAIViewModel()
+        )
+    )
 
     NavHost(
         navController = navController,
@@ -115,10 +124,13 @@ fun AppNavHost() {
 
         // User screen
         composable(Screen.User.route) {
-             UserScreen(
-                 homeScreenViewModel = homeScreenViewModel,
-                 navController = navController
-             )
+            UserScreen(
+                hikeScreenViewModel = hikeScreenViewModel,
+                mapboxViewModel = mapboxViewModel,
+                logScreenViewModel = logScreenViewModel,
+                homeScreenViewModel = homeScreenViewModel,
+                navController = navController
+            )
         }
 
         // Login screen
@@ -136,9 +148,18 @@ fun AppNavHost() {
              )
         }
 
-        composable (Screen.UserProfile.route) {
+        composable(Screen.UserProfile.route) {
             ProfileScreen(
                 profileScreenViewModel = profileScreenViewModel,
+                navController = navController
+            )
+        }
+
+        composable(Screen.Log.route){
+            LogScreen(
+                logScreenViewModel = logScreenViewModel,
+                hikeScreenViewModel = hikeScreenViewModel,
+                mapboxViewModel = mapboxViewModel,
                 navController = navController
             )
         }

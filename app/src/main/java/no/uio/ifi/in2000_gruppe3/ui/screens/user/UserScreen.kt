@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
@@ -34,14 +33,20 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
+import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.activities.Aktiviteter
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserScreen(
+    hikeScreenViewModel: HikeScreenViewModel,
+    mapboxViewModel: MapboxViewModel,
+    logScreenViewModel: LogScreenViewModel,
     homeScreenViewModel: HomeScreenViewModel,
     navController: NavHostController,
 ) {
@@ -76,77 +81,92 @@ fun UserScreen(
                 }
             )
         },
-        bottomBar = { BottomBar(navController) }
     ) { paddingValues ->
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            item {
-                Row {
-                    Button(
-                        modifier = Modifier.weight(1f),
-                        shape = RectangleShape,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent,
-                            contentColor = Color.Black,
-                            disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                            disabledContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        ),
-                        onClick = { currentView = 0 }
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
-                                text = "Aktiviteter",
-                                color = Color.Black,
-                            )
-                            Box(
-                                modifier = Modifier
-                                    .height(2.dp)
-                                    .fillMaxWidth()
-                                    .background(
-                                        if (currentView == 0) MaterialTheme.colorScheme.primary
-                                        else Color.Transparent
-                                    )
-                            )
-                        }
-                    }
-                    Button(
-                        modifier = Modifier.weight(1f),
-                        shape = RectangleShape,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent,
-                            contentColor = Color.Black,
-                            disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                            disabledContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        ),
-                        onClick = { currentView = 1 }
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
-                                text = "Profil",
-                                color = Color.Black,
-                            )
-                            Box(
-                                modifier = Modifier
-                                    .height(2.dp)
-                                    .fillMaxWidth()
-                                    .background(
-                                        if (currentView == 1) MaterialTheme.colorScheme.primary
-                                        else Color.Transparent
-                                    )
-                            )
-                        }
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Button(
+                    modifier = Modifier.weight(1f),
+                    shape = RectangleShape,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent,
+                        contentColor = Color.Black,
+                        disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        disabledContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    ),
+                    onClick = { currentView = 0 }
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "Aktiviteter",
+                            color = Color.Black,
+                        )
+                        Box(
+                            modifier = Modifier
+                                .height(2.dp)
+                                .fillMaxWidth()
+                                .background(
+                                    if (currentView == 0) MaterialTheme.colorScheme.primary
+                                    else Color.Transparent
+                                )
+                        )
                     }
                 }
-
+                Button(
+                    modifier = Modifier.weight(1f),
+                    shape = RectangleShape,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent,
+                        contentColor = Color.Black,
+                        disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        disabledContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    ),
+                    onClick = { currentView = 1 }
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "Profil",
+                            color = Color.Black,
+                        )
+                        Box(
+                            modifier = Modifier
+                                .height(2.dp)
+                                .fillMaxWidth()
+                                .background(
+                                    if (currentView == 1) MaterialTheme.colorScheme.primary
+                                    else Color.Transparent
+                                )
+                        )
+                    }
+                }
             }
 
-            item {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f)
+            ) {
                 when (currentView) {
-                    0 -> { Aktiviteter() }
-                    1 -> { Profil() }
+                    0 -> {
+                        if (currentView == 0) {
+                            LogScreen(
+                                hikeScreenViewModel = hikeScreenViewModel,
+                                mapboxViewModel = mapboxViewModel,
+                                logScreenViewModel = logScreenViewModel,
+                                navController = navController
+                            )
+                        }
+                    }
+                    1 -> {
+                        if (currentView == 1) {
+                            Profil()
+                        }
+                    }
                 }
             }
         }
