@@ -162,7 +162,7 @@ fun HomeScreen(
                 ) {
                     AanundFigure(
                         homeScreenViewModel = homeScreenViewModel,
-                        mapBoxViewModel = mapboxViewModel,
+                        mapboxViewModel = mapboxViewModel,
                         navController = navController
                     )
                 }

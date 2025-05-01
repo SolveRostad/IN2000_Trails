@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,9 +44,11 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 @Composable
 fun AanundFigure(
     homeScreenViewModel: HomeScreenViewModel,
-    mapBoxViewModel: MapboxViewModel,
+    mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
+    val homeScreenUiState by homeScreenViewModel.homeScreenUIState.collectAsState()
+    val mapboxUiState by mapboxViewModel.mapboxUIState.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
 
     // for dropdown
@@ -53,11 +56,12 @@ fun AanundFigure(
 
 
     // For å vise dialogen automatisk kun én gang per app-start
-    LaunchedEffect(Unit) {
-        if (!homeScreenViewModel.hasShownAanundDialog.value) {
-            delay(3000L)
-            showDialog = true
-            homeScreenViewModel.markAanundDialogShown()
+    LaunchedEffect(mapboxUiState.isLoading) {
+        if (!homeScreenUiState.hasShownAanundDialog) {
+            if (!mapboxUiState.isLoading) {
+                homeScreenViewModel.markAanundDialogShown()
+                showDialog = true
+            }
         }
     }
 
@@ -66,7 +70,7 @@ fun AanundFigure(
 
         // Clear hikes from map to get AI recommendations
         homeScreenViewModel.clearHikes()
-        mapBoxViewModel.clearPolylineAnnotations()
+        mapboxViewModel.clearPolylineAnnotations()
 
         Dialog(
             onDismissRequest = { showDialog = false },
@@ -90,7 +94,8 @@ fun AanundFigure(
                         text = "Hei, mitt navn er Ånund!\n" +
                                 "Jeg er her for å hjelpe deg med å planlegge turer i Oslo/Akershus.\n\n" +
                                 "Bruk søkefeltet for å finne turer i et bestemt område, eller trykk på kartet for å oppdage nye turmuligheter.\n\n" +
-                                "Hvis du trenger inspirasjon, kan du trykke på meg! Jeg vil gi deg mine beste anbefalinger for de fineste turene å gå akkurat i dag.",
+                                "Hvis du trenger inspirasjon, kan du trykke på meg! Jeg vil gi deg mine beste anbefalinger for de fineste turene å gå akkurat i dag.\n\n" +
+                                "Du kan også trykke på meg for å chatte og få personlig hjelp med å planlegge turen din!",
                         fontSize = 16.sp,
                         modifier = Modifier.padding(16.dp),
                         textAlign = TextAlign.Center,
@@ -164,7 +169,7 @@ fun AanundFigure(
                 AanundFigureDropdown(
                     expanded = aanundMenuExpanded,
                     homeScreenViewModel = homeScreenViewModel,
-                    mapBoxViewModel = mapBoxViewModel,
+                    mapBoxViewModel = mapboxViewModel,
                     navController = navController,
                     modifier = Modifier
                 )
