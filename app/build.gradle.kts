@@ -1,3 +1,6 @@
+import org.gradle.kotlin.dsl.api
+import org.gradle.kotlin.dsl.testImplementation
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -64,6 +67,10 @@ android {
                 "META-INF/DEPENDENCIES"
             )
         }
+    }
+
+    testOptions {
+        animationsDisabled = true
     }
 }
 
@@ -134,6 +141,13 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0") // 2
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
 
+    //Test
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4: 1.7.8")
+    testImplementation("junit:junit:1.7.8")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
+
+
+
     // Standard libs
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -150,4 +164,5 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(kotlin("test"))
 }
