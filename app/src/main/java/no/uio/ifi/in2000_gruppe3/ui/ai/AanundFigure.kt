@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000_gruppe3.ui.ai
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
-import kotlinx.coroutines.delay
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.SheetDrawerDetent
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
@@ -50,12 +50,9 @@ fun AanundFigure(
     val homeScreenUiState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val mapboxUiState by mapboxViewModel.mapboxUIState.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
-
-    // for dropdown
     val aanundMenuExpanded = remember { mutableStateOf(false) }
 
-
-    // For å vise dialogen automatisk kun én gang per app-start
+    // Show dialog if it has not been shown before
     LaunchedEffect(mapboxUiState.isLoading) {
         if (!homeScreenUiState.hasShownAanundDialog) {
             if (!mapboxUiState.isLoading) {
@@ -111,10 +108,10 @@ fun AanundFigure(
                         .align(Alignment.TopStart)
                         .offset(x = (-60).dp, y = (-60).dp)
                 )
+
                 IconButton(
                     onClick = { showDialog = false },
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
+                    modifier = Modifier.align(Alignment.TopEnd)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Close,
@@ -127,52 +124,36 @@ fun AanundFigure(
         }
     } else {
         Box(
-            modifier = Modifier
-                .fillMaxSize(),
-            contentAlignment = Alignment.BottomStart
+            modifier = Modifier.size(120.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .size(120.dp)
+            IconButton(
+                onClick = { aanundMenuExpanded.value = true },
+                modifier = Modifier.fillMaxSize()
             ) {
-                // Figuren
-                IconButton(
-                    onClick = { aanundMenuExpanded.value = true },
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.aanund_white),
-                        contentDescription = "AI icon white",
-                        tint = Color.Unspecified,
-                        modifier = Modifier.size(90.dp) // must be 30dp smaller than the surface
-                    )
-
-                    // Spørsmålstegnet
-                    IconButton(
-                        onClick = { showDialog = true },
-                        modifier = Modifier
-                            .size(30.dp)
-                            .align(Alignment.TopEnd)
-                            .offset(x = (-15).dp, y = 15.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Info,
-                            contentDescription = "Vis info",
-                            modifier = Modifier
-                                .size(16.dp),
-                            Color.DarkGray
-                        )
-                    }
-                }
-                AanundFigureDropdown(
-                    expanded = aanundMenuExpanded,
-                    homeScreenViewModel = homeScreenViewModel,
-                    mapBoxViewModel = mapboxViewModel,
-                    navController = navController,
-                    modifier = Modifier
+                Icon(
+                    painter = painterResource(id = R.drawable.aanund_white),
+                    contentDescription = "AI icon white",
+                    tint = Color.Unspecified,
+                    modifier = Modifier.size(90.dp) // must be 30dp smaller than the surface
                 )
 
+                Icon(
+                    imageVector = Icons.Default.Info,
+                    contentDescription = "Info icon",
+                    tint = Color.DarkGray,
+                    modifier = Modifier
+                        .size(16.dp)
+                        .clickable { showDialog = true }
+                        .offset(x = 30.dp, y = (-30).dp)
+                )
             }
+
+            AanundFigureDropdown(
+                expanded = aanundMenuExpanded,
+                homeScreenViewModel = homeScreenViewModel,
+                mapBoxViewModel = mapboxViewModel,
+                navController = navController
+            )
         }
     }
 }

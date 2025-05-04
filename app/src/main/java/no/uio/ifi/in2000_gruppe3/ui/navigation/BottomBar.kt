@@ -3,7 +3,6 @@ package no.uio.ifi.in2000_gruppe3.ui.navigation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -45,7 +44,7 @@ fun BottomBar(navController: NavHostController) {
                     },
                     modifier = Modifier
                         .weight(1f)
-                        .size(35.dp)
+                        .size(30.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Favorite,
@@ -82,7 +81,7 @@ fun BottomBar(navController: NavHostController) {
                     },
                     modifier = Modifier
                         .weight(1f)
-                        .size(40.dp)
+                        .size(30.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Person,

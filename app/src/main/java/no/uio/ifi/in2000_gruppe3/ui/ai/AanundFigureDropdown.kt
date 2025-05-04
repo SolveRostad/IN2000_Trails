@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,18 +24,16 @@ fun AanundFigureDropdown(
     expanded: MutableState<Boolean>,
     homeScreenViewModel: HomeScreenViewModel,
     mapBoxViewModel: MapboxViewModel,
-    navController: NavHostController,
-    modifier: Modifier
+    navController: NavHostController
 ) {
-
     DropdownMenu(
         expanded = expanded.value,
         onDismissRequest = { expanded.value = false },
-        modifier = modifier
+        modifier = Modifier
             .shadow(8.dp, RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(12.dp))
     ) {
-        androidx.compose.material3.DropdownMenuItem(
+        DropdownMenuItem(
             text = {
                 Text(
                     text = "✨Mine anbefalinger✨",
@@ -50,7 +49,7 @@ fun AanundFigureDropdown(
                 expanded.value = false
             }
         )
-        androidx.compose.material3.DropdownMenuItem(
+        DropdownMenuItem(
             text = {
                 Text(
                     text = "🤖 Chat med meg",

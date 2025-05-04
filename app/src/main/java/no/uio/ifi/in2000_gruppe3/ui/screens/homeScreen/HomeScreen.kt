@@ -3,8 +3,6 @@ package no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,7 +16,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -48,14 +45,14 @@ import no.uio.ifi.in2000_gruppe3.ui.mapbox.ResetMapCenterButton
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000_gruppe3.ui.networkSnackbar.NetworkSnackbar
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 
 @Composable
 fun HomeScreen(
     homeScreenViewModel: HomeScreenViewModel,
+    favoritesViewModel: FavoritesScreenViewModel,
     hikeScreenViewModel: HikeScreenViewModel,
-    favoritesViewModel: FavoritesViewModel,
     mapboxViewModel: MapboxViewModel,
     openAIViewModel: OpenAIViewModel,
     navController: NavHostController
@@ -70,7 +67,7 @@ fun HomeScreen(
     val targetSheetState by homeScreenViewModel.sheetStateTarget.collectAsState()
     val currentSheetOffset by homeScreenViewModel.currentSheetOffset.collectAsState()
     val isControlsVisible = targetSheetState == SheetDrawerDetent.HIDDEN ||
-                            targetSheetState == SheetDrawerDetent.SEMIPEEK
+            targetSheetState == SheetDrawerDetent.SEMIPEEK
 
     LaunchedEffect(Unit) {
         locationPermissionRequest.launch(
@@ -107,8 +104,8 @@ fun HomeScreen(
             MapViewer(
                 homeScreenViewModel = homeScreenViewModel,
                 hikeScreenViewModel = hikeScreenViewModel,
-                mapboxViewModel = mapboxViewModel,
                 favoritesViewModel = favoritesViewModel,
+                mapboxViewModel = mapboxViewModel,
             )
 
             MapLoader(

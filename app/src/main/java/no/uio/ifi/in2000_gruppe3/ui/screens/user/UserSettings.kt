@@ -24,11 +24,14 @@ import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapStyleDropdown
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
+import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen.ProfileScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserSettingsScreen(
     mapboxViewModel: MapboxViewModel,
+    profileScreenViewModel: ProfileScreenViewModel,
     navController: NavHostController
 ) {
     var showMapStyleSelector = remember { mutableStateOf(false) }
@@ -64,13 +67,7 @@ fun UserSettingsScreen(
             SettingButton(
                 text = "Brukerprofil",
                 icon = R.drawable.person,
-                onClick = { /* TODO: Navigate to user profile */ }
-            )
-
-            SettingButton(
-                text = "Preferanser",
-                icon = R.drawable.preferences,
-                onClick = { /* TODO: Navigate to preferences */ }
+                onClick = { navController.navigate(Screen.UserProfile.route) }
             )
 
             Column {
@@ -92,7 +89,10 @@ fun UserSettingsScreen(
             SettingButton(
                 text = "Logg ut",
                 icon = R.drawable.log_out,
-                onClick = { /* TODO: Implement logout */ }
+                onClick = {
+                    profileScreenViewModel.selectProfile("defaultUser")
+                    navController.navigate(Screen.Welcome.route)
+                }
             )
         }
     }

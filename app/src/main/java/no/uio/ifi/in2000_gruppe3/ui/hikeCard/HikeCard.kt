@@ -51,23 +51,29 @@ import no.uio.ifi.in2000_gruppe3.ui.locationForecast.LocationForecastSmallCard
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreenViewModel
 import java.time.LocalDate
 
 @Composable
 fun HikeCard(
     homeScreenViewModel: HomeScreenViewModel,
     hikeScreenViewModel: HikeScreenViewModel,
-    favoritesViewModel: FavoritesViewModel,
+    favoritesViewModel: FavoritesScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     openAIViewModel: OpenAIViewModel,
+    logScreenViewModel: LogScreenViewModel,
     navController: NavHostController,
     checkedState: MutableState<Boolean>
 ) {
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
     val openAIUIState by openAIViewModel.openAIUIState.collectAsState()
+    val logUIState by logScreenViewModel.logScreenUIState.collectAsState()
+
+    val isInLog = logUIState.hikeLog.contains(hikeUIState.feature.properties.fid)
+
 
     var averageWindSpeed by remember { mutableDoubleStateOf(homeScreenViewModel.daysAverageWindSpeed(hikeUIState.selectedDate)) }
 
@@ -104,8 +110,7 @@ fun HikeCard(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -197,6 +202,54 @@ fun HikeCard(
                     Text(text = "Se været andre dager")
                 }
 
+                Spacer(modifier = Modifier.height(8.dp))
+
+                if(!isInLog) {
+                    Button(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth()
+                            .weight(1f),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B9FF)),
+                        onClick = { logScreenViewModel.addToLog(hikeUIState.feature.properties.fid) }
+                    ) {
+                        Text(text = "Legg til i loggen")
+                    }
+                } else {
+                    Row {
+                        Button(
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .weight(1f)
+                                .align(Alignment.CenterVertically),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B9FF)),
+                            onClick = {
+                                logScreenViewModel.adjustTimesWalked(
+                                    hikeUIState.feature.properties.fid,
+                                    1
+                                )
+                            }
+                        ) {
+                            Text(text = "Øk ganger gått")
+                        }
+
+                        Button(
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .weight(1f)
+                                .align(Alignment.CenterVertically),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B9FF)),
+                            onClick = {
+                                logScreenViewModel.removeFromLog(
+                                    hikeUIState.feature.properties.fid
+                                )
+                            }
+                        ) {
+                            Text(text = "Fjern fra logg")
+                        }
+                    }
+                }
+
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Row(
@@ -207,9 +260,9 @@ fun HikeCard(
                         .clickable {
                             checkedState.value = !checkedState.value
                             if (checkedState.value) {
-                                favoritesViewModel.addHike(hikeUIState.feature)
+                                favoritesViewModel.addFavorite(hikeUIState.feature.properties.fid)
                             } else {
-                                favoritesViewModel.deleteHike(hikeUIState.feature)
+                                favoritesViewModel.deleteFavorite(hikeUIState.feature.properties.fid)
                             }
                         },
                     horizontalArrangement = Arrangement.Center,

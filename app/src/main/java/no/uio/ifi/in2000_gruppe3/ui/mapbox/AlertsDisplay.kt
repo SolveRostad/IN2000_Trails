@@ -50,17 +50,14 @@ fun AlertsDisplay(
     val closestAlert = closestAlertWithDistance?.first
     val distance = closestAlertWithDistance?.second
 
-    if (closestAlert == null || distance == null) {
-        return
-    }
+    if (closestAlert == null || distance == null) return
 
     val alertEvent = closestAlert.properties.event?.lowercase()
     val alertColor = closestAlert.properties.riskMatrixColor?.lowercase()
 
     val radius = when (closestAlert.properties.severity?.lowercase()) {
-        "moderate" -> 30.0
-        "severe" -> 50.0
         "extreme" -> 70.0
+        "severe" -> 50.0
         else -> 30.0
     }
 
