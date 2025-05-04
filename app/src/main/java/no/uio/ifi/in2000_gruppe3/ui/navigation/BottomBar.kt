@@ -44,7 +44,7 @@ fun BottomBar(navController: NavHostController) {
                     },
                     modifier = Modifier
                         .weight(1f)
-                        .size(35.dp)
+                        .size(30.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Favorite,
@@ -81,7 +81,7 @@ fun BottomBar(navController: NavHostController) {
                     },
                     modifier = Modifier
                         .weight(1f)
-                        .size(40.dp)
+                        .size(30.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Person,
