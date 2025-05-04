@@ -46,7 +46,7 @@ fun LogScreen(
         LazyColumn(
             modifier = Modifier.padding(8.dp),
             contentPadding = PaddingValues(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(logUIState.convertedLog) { feature ->
                 SmallHikeCard(

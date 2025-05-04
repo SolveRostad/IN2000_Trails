@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000_gruppe3.data.database.Profile
 
 @Composable
-fun Profile(
+fun ProfileCard(
     profile: Profile,
     profileScreenViewModel: ProfileScreenViewModel
 ) {
@@ -45,7 +45,7 @@ fun Profile(
     var expandedProfileId by remember { mutableStateOf<String?>(null) }
     val isSelected = profileUIState.selectedUser == profile.username
 
-    Card (
+    Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
@@ -102,48 +102,47 @@ fun Profile(
                 )
             }
         }
-    }
 
-    DropdownMenu(
-        expanded = expandedProfileId == profile.username,
-        onDismissRequest = { expandedProfileId = null },
-        modifier = Modifier
-            .fillMaxWidth(0.9f)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        DropdownMenu(
+            expanded = expandedProfileId == profile.username,
+            onDismissRequest = { expandedProfileId = null },
+            modifier = Modifier.fillMaxWidth(0.9f)
         ) {
-            Button(
-                onClick = {
-                    Log.d("UserScreen", "Selected profile: ${profile.username}")
-                    profileScreenViewModel.selectProfile(profile.username)
-                    expandedProfileId = null
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF57B9FF)
-                )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Velg bruker")
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            if (profile.username != "defaultUser") {
                 Button(
                     onClick = {
-                        profileScreenViewModel.deleteProfile(profile.username)
+                        Log.d("UserScreen", "Selected profile: ${profile.username}")
+                        profileScreenViewModel.selectProfile(profile.username)
                         expandedProfileId = null
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Red
+                        containerColor = Color(0xFF57B9FF)
                     )
                 ) {
-                    Text(text = "Slett bruker")
+                    Text("Velg bruker")
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                if (profile.username != "defaultUser") {
+                    Button(
+                        onClick = {
+                            profileScreenViewModel.deleteProfile(profile.username)
+                            expandedProfileId = null
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Red
+                        )
+                    ) {
+                        Text(text = "Slett profil")
+                    }
                 }
             }
         }

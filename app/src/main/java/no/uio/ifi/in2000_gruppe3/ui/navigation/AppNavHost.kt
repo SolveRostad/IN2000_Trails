@@ -129,7 +129,7 @@ fun AppNavHost() {
                 hikeScreenViewModel = hikeScreenViewModel,
                 mapboxViewModel = mapboxViewModel,
                 logScreenViewModel = logScreenViewModel,
-                homeScreenViewModel = homeScreenViewModel,
+                profileScreenViewModel = profileScreenViewModel,
                 navController = navController
             )
         }
@@ -138,6 +138,7 @@ fun AppNavHost() {
         composable(Screen.UserSettings.route) {
              UserSettingsScreen(
                  mapboxViewModel = mapboxViewModel,
+                 profileScreenViewModel = profileScreenViewModel,
                  navController = navController
              )
         }

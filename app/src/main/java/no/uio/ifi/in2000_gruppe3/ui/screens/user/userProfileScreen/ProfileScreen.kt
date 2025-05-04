@@ -96,14 +96,14 @@ fun ProfileScreen(
                 painter = painterResource(id = R.drawable.logo_slogan_new),
                 contentDescription = "App Logo",
                 modifier = Modifier.fillMaxWidth()
-                    .size(375.dp)
-                    .padding(top = 24.dp, bottom = 16.dp)
+                    .size(200.dp)
+                    .padding(bottom = 16.dp)
             )
 
             Row (
                 modifier = Modifier.padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
-            ){
+            ) {
                 OutlinedTextField(
                     value = profile,
                     onValueChange = { profile = it },
@@ -115,7 +115,7 @@ fun ProfileScreen(
                         .onKeyEvent { keyEvent ->
                             if (keyEvent.type == KeyEventType.KeyUp && keyEvent.key == Key.Enter) {
                                 if (profile.isNotBlank()) {
-                                    Log.d("UserScreen", "Adding profile ${profile}")
+                                    Log.d("UserScreen", "Adding profile $profile")
                                     profileScreenViewModel.addProfile(profile)
                                     profile = ""
                                 }
@@ -148,7 +148,7 @@ fun ProfileScreen(
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40))
                 ) {
-                    Text(text = "Registrer")
+                    Text(text = "Legg til")
                 }
             }
 
@@ -166,7 +166,7 @@ fun ProfileScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(profileUIState.profiles) { profile ->
-                        Profile(
+                        ProfileCard(
                             profile = profile,
                             profileScreenViewModel = profileScreenViewModel
                         )

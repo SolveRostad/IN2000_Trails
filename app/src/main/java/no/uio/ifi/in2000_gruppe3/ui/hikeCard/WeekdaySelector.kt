@@ -13,6 +13,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -45,6 +47,13 @@ fun WeekdaySelector(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.clickable { expanded = !expanded }
         ) {
+            Icon(
+                imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                contentDescription = null
+            )
+
+            Spacer(modifier = Modifier.width(4.dp))
+
             Text(text = if (hikeUIState.selectedDay == todaysDay) "I dag" else hikeUIState.selectedDay)
 
             Spacer(modifier = Modifier.width(8.dp))

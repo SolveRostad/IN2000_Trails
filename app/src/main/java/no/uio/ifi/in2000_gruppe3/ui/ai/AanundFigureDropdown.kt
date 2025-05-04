@@ -24,20 +24,19 @@ fun AanundFigureDropdown(
     expanded: MutableState<Boolean>,
     homeScreenViewModel: HomeScreenViewModel,
     mapBoxViewModel: MapboxViewModel,
-    navController: NavHostController,
-    modifier: Modifier
+    navController: NavHostController
 ) {
     DropdownMenu(
         expanded = expanded.value,
         onDismissRequest = { expanded.value = false },
-        modifier = modifier
+        modifier = Modifier
             .shadow(8.dp, RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(12.dp))
     ) {
         DropdownMenuItem(
             text = {
                 Text(
-                    text = " Mine anbefalinger✨",
+                    text = "✨Mine anbefalinger✨",
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurface

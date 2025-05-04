@@ -95,7 +95,11 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
             try {
                 profileRepository.selectUser(username)
                 _profileScreenUIState.update {
-                    it.copy (username = username, selectedUser = username)
+                    it.copy (
+                        username = username,
+                        selectedUser = username,
+                        isLoggedIn = username != "defaultUser"
+                    )
                 }
                 Log.d("UserScreenViewModel", "Selected user: ${_profileScreenUIState.value.selectedUser}")
             } catch (e: Exception) {
@@ -130,7 +134,8 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
                 }
             } finally {
                 _profileScreenUIState.update {
-                    it.copy (isLoading = false)                }
+                    it.copy (isLoading = false)
+                }
             }
         }
     }

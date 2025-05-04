@@ -37,25 +37,25 @@ import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen.ProfileScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserScreen(
-    homeScreenViewModel: HomeScreenViewModel,
     hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
+    profileScreenViewModel: ProfileScreenViewModel,
     logScreenViewModel: LogScreenViewModel,
     navController: NavHostController,
 ) {
-    val homeUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
+    val profileUIState by profileScreenViewModel.profileScreenUIState.collectAsState()
     var currentView by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(Unit) {
-        if (!homeUIState.isLoggedIn) {
-            navController.navigate(Screen.Login.route)
+        if (!profileUIState.isLoggedIn) {
+            navController.navigate(Screen.UserProfile.route)
         }
     }
 
