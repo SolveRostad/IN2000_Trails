@@ -47,13 +47,6 @@ fun WeekdaySelector(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.clickable { expanded = !expanded }
         ) {
-            Icon(
-                imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                contentDescription = null
-            )
-
-            Spacer(modifier = Modifier.width(4.dp))
-
             Text(text = if (hikeUIState.selectedDay == todaysDay) "I dag" else hikeUIState.selectedDay)
 
             Spacer(modifier = Modifier.width(8.dp))
@@ -62,6 +55,13 @@ fun WeekdaySelector(
                 imageVector = Icons.Default.DateRange,
                 contentDescription = "Velg dag",
                 modifier = Modifier.size(24.dp)
+            )
+
+            Spacer(modifier = Modifier.width(4.dp))
+
+            Icon(
+                imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                contentDescription = null
             )
         }
 
