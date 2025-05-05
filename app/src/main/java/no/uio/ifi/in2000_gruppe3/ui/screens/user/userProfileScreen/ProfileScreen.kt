@@ -78,7 +78,7 @@ fun ProfileScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Profiles",
+                        text = "Profiler",
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold) }
             )},
@@ -167,6 +167,8 @@ fun ProfileScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(profileUIState.profiles) { profile ->
+                            val isSelected = profile.username == profileUIState.selectedUser
+
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -175,11 +177,14 @@ fun ProfileScreen(
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .background(color = Color.LightGray, shape = RoundedCornerShape(8.dp))
+                                        .background(
+                                            color = if (isSelected) Color(0xFF061C40) else Color.LightGray,
+                                            shape = RoundedCornerShape(8.dp)
+                                        )
                                         .clip(RoundedCornerShape(8.dp))
                                         .clickable {
                                             expandedProfileId = if (expandedProfileId == profile.username) null else profile.username
-                                            Log.d("UserScreen", "Clicked on profile: ${profile.username}")
+                                            Log.d("ProfileScreen", "Clicked on profile: ${profile.username}")
                                         }
                                         .padding(16.dp)
                                 ) {
@@ -190,14 +195,16 @@ fun ProfileScreen(
                                         Icon(
                                             imageVector = Icons.Rounded.AccountCircle,
                                             contentDescription = "User Icon",
-                                            modifier = Modifier.size(24.dp)
+                                            modifier = Modifier.size(24.dp),
+                                            tint = if (isSelected) Color.White else Color.Black
                                         )
 
                                         Spacer(modifier = Modifier.width(8.dp))
 
                                         Text(
                                             text = profile.username,
-                                            style = MaterialTheme.typography.bodyLarge
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = if (isSelected) Color.White else Color.Black
                                         )
                                     }
                                 }
@@ -221,7 +228,8 @@ fun ProfileScreen(
                                                 profileScreenViewModel.selectProfile(profile.username)
                                                 expandedProfileId = null
                                             },
-                                            modifier = Modifier.fillMaxWidth()
+                                            modifier = Modifier.fillMaxWidth(),
+                                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40))
                                         ) {
                                             Text("Velg bruker")
                                         }
