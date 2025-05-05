@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mapbox.geojson.Point
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -87,10 +88,6 @@ class LogScreenViewModel(
         _logScreenUIState.update {
             it.copy(userLocation = point)
         }
-    }
-
-    fun isHikeInLog(feature: Feature): Boolean {
-        return _logScreenUIState.value.hikeLog.contains(feature.properties.fid)
     }
 
     fun getConvertedLog() {
@@ -223,6 +220,29 @@ class LogScreenViewModel(
             } catch (e: Exception) {
                 Log.e("LogScreenViewModel", "Error fetching notes for hike: ${e.message}")
                 ""
+            }
+        }
+    }
+
+    fun getTimesWalked(hikeId: Int) {
+        viewModelScope.launch {
+            _logScreenUIState.update {
+                it.copy (isLoading = true)
+            }
+            try{
+                val timesWalked = logRepository.getTimesWalked(_logScreenUIState.value.username, hikeId)
+                _logScreenUIState.update {
+                    it.copy (hikeLog = _logScreenUIState.value.hikeLog + timesWalked)
+                }
+            } catch (e: Exception) {
+                Log.e("LogScreenViewModel", "Error fetching times walked: ${e.message}")
+                _logScreenUIState.update {
+                    it.copy(isError = true, errorMessage = e.message.toString())
+                }
+            } finally {
+                _logScreenUIState.update {
+                    it.copy(isLoading = false)
+                }
             }
         }
     }
