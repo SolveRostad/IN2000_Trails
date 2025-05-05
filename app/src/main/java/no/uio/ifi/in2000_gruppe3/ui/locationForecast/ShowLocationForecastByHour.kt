@@ -21,7 +21,7 @@ fun ShowForecastByHour(
     val formattedHMS = String.format(Locale("nb", "NO"), "%02d:00:00", hour)
 
     val forecast = homeUIState.value.forecast?.properties?.timeseries?.find {
-        it.time == "${hikeUIState.value.date}T${formattedHMS}Z"
+        it.time == "${hikeUIState.value.selectedDate}T${formattedHMS}Z"
     }
 
     val symbolCode1Hour = forecast?.data?.next_1_hours?.summary?.symbol_code ?: "--"

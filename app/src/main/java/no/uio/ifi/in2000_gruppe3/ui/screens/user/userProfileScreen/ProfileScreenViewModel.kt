@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.userProfileScreen
+package no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen
 
 import android.app.Application
 import android.util.Log
@@ -14,15 +14,13 @@ import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.data.database.Profile
 import no.uio.ifi.in2000_gruppe3.data.profile.repository.ProfileRepository
 
-
 class ProfileScreenViewModel(application: Application):AndroidViewModel(application) {
     private val profileRepository: ProfileRepository
+
     private val _profileScreenUIState = MutableStateFlow<ProfileScreenUIState>(
         ProfileScreenUIState()
     )
-
-    val ProfileScreenUIState: StateFlow<ProfileScreenUIState> = _profileScreenUIState.asStateFlow()
-
+    val profileScreenUIState: StateFlow<ProfileScreenUIState> = _profileScreenUIState.asStateFlow()
 
     init {
         val applicationScope = CoroutineScope(SupervisorJob())
@@ -98,7 +96,11 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
             try {
                 profileRepository.selectUser(username)
                 _profileScreenUIState.update {
-                    it.copy (username = username, selectedUser = username)
+                    it.copy (
+                        username = username,
+                        selectedUser = username,
+                        isLoggedIn = username != "defaultUser"
+                    )
                 }
                 Log.d("UserScreenViewModel", "Selected user: ${_profileScreenUIState.value.selectedUser}")
             } catch (e: Exception) {
@@ -129,6 +131,13 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
                 }
             } catch (e: Exception) {
                 Log.e("ProfileScreenViewModel", "Error getting selected Profile: ${e.message}")
+                _profileScreenUIState.update {
+                    it.copy (isLoading = false, errorMessage = "Error unslecting user: ${e.message}", isError = true)
+                }
+            } finally {
+                _profileScreenUIState.update {
+                    it.copy (isLoading = false)
+                }
             }
         }
     }
@@ -162,8 +171,6 @@ data class ProfileScreenUIState(
     val username: String = "",
     val isLoading: Boolean = false,
     val errorMessage: String = "",
-    val isError: Boolean = false
+    val isError: Boolean = false,
+    val isLoggedIn: Boolean = false
 )
-
-
-

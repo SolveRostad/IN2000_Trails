@@ -37,25 +37,25 @@ import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen.ProfileScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserScreen(
     hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
+    profileScreenViewModel: ProfileScreenViewModel,
     logScreenViewModel: LogScreenViewModel,
-    homeScreenViewModel: HomeScreenViewModel,
     navController: NavHostController,
 ) {
-    val homeUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
+    val profileUIState by profileScreenViewModel.profileScreenUIState.collectAsState()
     var currentView by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(Unit) {
-        if (!homeUIState.isLoggedIn) {
-            navController.navigate(Screen.Login.route)
+        if (!profileUIState.isLoggedIn) {
+            navController.navigate(Screen.UserProfile.route)
         }
     }
 
@@ -81,15 +81,14 @@ fun UserScreen(
                 }
             )
         },
+        bottomBar = { BottomBar(navController) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth()
-            ) {
+            Row {
                 Button(
                     modifier = Modifier.weight(1f),
                     shape = RectangleShape,
@@ -103,15 +102,14 @@ fun UserScreen(
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            text = "Aktiviteter",
-                            color = Color.Black,
+                            text = "Turer gjennomført"
                         )
                         Box(
                             modifier = Modifier
                                 .height(2.dp)
                                 .fillMaxWidth()
                                 .background(
-                                    if (currentView == 0) MaterialTheme.colorScheme.primary
+                                    if (currentView == 0) Color(0xFF061C40)
                                     else Color.Transparent
                                 )
                         )
@@ -130,15 +128,14 @@ fun UserScreen(
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            text = "Profil",
-                            color = Color.Black,
+                            text = "Statistikk"
                         )
                         Box(
                             modifier = Modifier
                                 .height(2.dp)
                                 .fillMaxWidth()
                                 .background(
-                                    if (currentView == 1) MaterialTheme.colorScheme.primary
+                                    if (currentView == 1) Color(0xFF061C40)
                                     else Color.Transparent
                                 )
                         )
@@ -153,19 +150,18 @@ fun UserScreen(
             ) {
                 when (currentView) {
                     0 -> {
-                        if (currentView == 0) {
-                            LogScreen(
-                                hikeScreenViewModel = hikeScreenViewModel,
-                                mapboxViewModel = mapboxViewModel,
-                                logScreenViewModel = logScreenViewModel,
-                                navController = navController
-                            )
-                        }
+                        LogScreen(
+                            hikeScreenViewModel = hikeScreenViewModel,
+                            mapboxViewModel = mapboxViewModel,
+                            logScreenViewModel = logScreenViewModel,
+                            navController = navController
+                        )
                     }
                     1 -> {
-                        if (currentView == 1) {
-                            Profil()
-                        }
+                        ActivityStats(
+                            numTrips = 5,
+                            distanceKm = 300
+                        )
                     }
                 }
             }

@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000_gruppe3.ui.ai
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,13 +12,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
-import com.composables.core.Icon
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.SheetDrawerDetent
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
@@ -41,18 +44,30 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 @Composable
 fun AanundFigure(
     homeScreenViewModel: HomeScreenViewModel,
-    mapBoxViewModel: MapboxViewModel,
+    mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
+    val homeScreenUiState by homeScreenViewModel.homeScreenUIState.collectAsState()
+    val mapboxUiState by mapboxViewModel.mapboxUIState.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
+    val aanundMenuExpanded = remember { mutableStateOf(false) }
+
+    // Show dialog if it has not been shown before
+    LaunchedEffect(mapboxUiState.isLoading) {
+        if (!homeScreenUiState.hasShownAanundDialog) {
+            if (!mapboxUiState.isLoading) {
+                homeScreenViewModel.markAanundDialogShown()
+                showDialog = true
+            }
+        }
+    }
 
     if (showDialog) {
         homeScreenViewModel.setSheetState(SheetDrawerDetent.SEMIPEEK)
 
         // Clear hikes from map to get AI recommendations
         homeScreenViewModel.clearHikes()
-        mapBoxViewModel.clearPolylineAnnotations()
-        mapBoxViewModel.updatePointerCoordinates(null)
+        mapboxViewModel.clearPolylineAnnotations()
 
         Dialog(
             onDismissRequest = { showDialog = false },
@@ -76,7 +91,8 @@ fun AanundFigure(
                         text = "Hei, mitt navn er Ånund!\n" +
                                 "Jeg er her for å hjelpe deg med å planlegge turer i Oslo/Akershus.\n\n" +
                                 "Bruk søkefeltet for å finne turer i et bestemt område, eller trykk på kartet for å oppdage nye turmuligheter.\n\n" +
-                                "Hvis du trenger inspirasjon, kan du trykke på meg! Jeg vil gi deg mine beste anbefalinger for de fineste turene å gå akkurat i dag.",
+                                "Hvis du trenger inspirasjon, kan du trykke på meg! Jeg vil gi deg mine beste anbefalinger for de fineste turene å gå akkurat i dag.\n\n" +
+                                "Du kan også trykke på meg for å chatte og få personlig hjelp med å planlegge turen din!",
                         fontSize = 16.sp,
                         modifier = Modifier.padding(16.dp),
                         textAlign = TextAlign.Center,
@@ -95,8 +111,7 @@ fun AanundFigure(
 
                 IconButton(
                     onClick = { showDialog = false },
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
+                    modifier = Modifier.align(Alignment.TopEnd)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Close,
@@ -108,23 +123,37 @@ fun AanundFigure(
             }
         }
     } else {
-        Surface(
-            modifier = Modifier
-                .size(150.dp)
-                .offset(x = (-15).dp),
-            color = Color.Transparent
+        Box(
+            modifier = Modifier.size(120.dp)
         ) {
             IconButton(
-                onClick = { showDialog = true },
+                onClick = { aanundMenuExpanded.value = true },
                 modifier = Modifier.fillMaxSize()
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.aanund_white),
                     contentDescription = "AI icon white",
                     tint = Color.Unspecified,
-                    modifier = Modifier.size(120.dp) // must be 30dp smaller than the surface
+                    modifier = Modifier.size(90.dp) // must be 30dp smaller than the surface
+                )
+
+                Icon(
+                    imageVector = Icons.Default.Info,
+                    contentDescription = "Info icon",
+                    tint = Color.DarkGray,
+                    modifier = Modifier
+                        .size(16.dp)
+                        .clickable { showDialog = true }
+                        .offset(x = 30.dp, y = (-30).dp)
                 )
             }
+
+            AanundFigureDropdown(
+                expanded = aanundMenuExpanded,
+                homeScreenViewModel = homeScreenViewModel,
+                mapBoxViewModel = mapboxViewModel,
+                navController = navController
+            )
         }
     }
 }

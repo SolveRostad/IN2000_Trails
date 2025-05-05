@@ -44,15 +44,13 @@ fun WelcomeScreen(
             Spacer(modifier = Modifier.height(60.dp))
 
             Icon(
-                painter = painterResource(id = R.drawable.logo_slogan),
+                painter = painterResource(id = R.drawable.logo_slogan_new),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(220.dp),
+                    .height(375.dp),
                 tint = Color.Unspecified
             )
-
-            Spacer(modifier = Modifier.height(32.dp))
 
             Text(
                 text = "Planlegg perfekte turer i Oslo og Akershus \n med sanntidsvær og AI",
@@ -88,7 +86,7 @@ fun WelcomeScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40))
             ) {
                 Text(
-                    text = "Logg inn/register",
+                    text = "Logg inn",
                     fontSize = 16.sp
                 )
             }

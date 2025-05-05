@@ -1,16 +1,20 @@
 package no.uio.ifi.in2000_gruppe3.ui.hikeCard
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -40,16 +44,25 @@ fun WeekdaySelector(
 
     Column {
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.clickable { expanded = !expanded }
         ) {
             Text(text = if (hikeUIState.selectedDay == todaysDay) "I dag" else hikeUIState.selectedDay)
 
-            IconButton(onClick = { expanded = !expanded }) {
-                Icon(
-                    imageVector = Icons.Default.DateRange,
-                    contentDescription = "Velg dag"
-                )
-            }
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Icon(
+                imageVector = Icons.Default.DateRange,
+                contentDescription = "Velg dag",
+                modifier = Modifier.size(24.dp)
+            )
+
+            Spacer(modifier = Modifier.width(4.dp))
+
+            Icon(
+                imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                contentDescription = null
+            )
         }
 
         DropdownMenu(
@@ -57,6 +70,7 @@ fun WeekdaySelector(
             onDismissRequest = { expanded = !expanded },
             modifier = Modifier
                 .width(80.dp)
+                .align(Alignment.End)
                 .background(MaterialTheme.colorScheme.surface)
         ) {
             orderedWeekdays.forEach { day ->
@@ -71,6 +85,7 @@ fun WeekdaySelector(
                     },
                     onClick = {
                         hikeScreenViewModel.updateSelectedDay(day.toString())
+                        hikeScreenViewModel.updateDescriptionAlreadyLoaded(false)
                         expanded = !expanded
                     }
                 )

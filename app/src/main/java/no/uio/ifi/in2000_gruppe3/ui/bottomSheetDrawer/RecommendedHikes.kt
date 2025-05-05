@@ -3,11 +3,10 @@ package no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -89,22 +88,7 @@ fun RecommendedHikes(
             )
         }
 
-        Text(
-            text = "eller"
-        )
-
-        Button(
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth(0.7f)
-                .align(Alignment.CenterHorizontally),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B9FF)),
-            onClick = { navController.navigate(Screen.Chatbot.route) }
-        ) {
-            Text(
-                text = "Chat med meg"
-            )
-        }
+        Spacer(modifier = Modifier.height(16.dp))
 
         recommendedHikes.forEach { hikeFeature ->
             SmallHikeCard(

@@ -80,25 +80,12 @@ fun ChatbotScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Background pattern
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            AsyncImage(
-                model = R.drawable.chat_pattern_1,
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds,
-                alpha = 0.2f,
-                modifier = Modifier.fillMaxSize()
-            )
-        }
-
         Scaffold(
             topBar = {
                 Surface(
                     tonalElevation = 4.dp,
                     shadowElevation = 8.dp,
-                    color = MaterialTheme.colorScheme.primary
+                    color = Color(0xFF061C40)
                 ) {
                     Column {
                         TopAppBar(

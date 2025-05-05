@@ -25,8 +25,8 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.user.UserSettingsScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreenViewModelFactory
-import no.uio.ifi.in2000_gruppe3.ui.screens.userProfileScreen.ProfileScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.userProfileScreen.ProfileScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen.ProfileScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen.ProfileScreenViewModel
 
 @Composable
 fun AppNavHost() {
@@ -66,7 +66,7 @@ fun AppNavHost() {
         composable(Screen.Home.route) {
             HomeScreen(
                 homeScreenViewModel = homeScreenViewModel,
-                hikeViewModel = hikeScreenViewModel,
+                hikeScreenViewModel = hikeScreenViewModel,
                 favoritesViewModel = favoritesViewModel,
                 mapboxViewModel = mapboxViewModel,
                 openAIViewModel = openAIViewModel,
@@ -129,26 +129,21 @@ fun AppNavHost() {
                 hikeScreenViewModel = hikeScreenViewModel,
                 mapboxViewModel = mapboxViewModel,
                 logScreenViewModel = logScreenViewModel,
-                homeScreenViewModel = homeScreenViewModel,
+                profileScreenViewModel = profileScreenViewModel,
                 navController = navController
             )
-        }
-
-        // Login screen
-        composable(Screen.Login.route) {
-            // LoginScreen(
-            //     navController = navController
-            // )
         }
 
         // User settings screen
         composable(Screen.UserSettings.route) {
              UserSettingsScreen(
                  mapboxViewModel = mapboxViewModel,
+                 profileScreenViewModel = profileScreenViewModel,
                  navController = navController
              )
         }
 
+        // User profile screen
         composable(Screen.UserProfile.route) {
             ProfileScreen(
                 profileScreenViewModel = profileScreenViewModel,
@@ -156,7 +151,8 @@ fun AppNavHost() {
             )
         }
 
-        composable(Screen.Log.route){
+        // Logged hikes screen
+        composable(Screen.Log.route) {
             LogScreen(
                 logScreenViewModel = logScreenViewModel,
                 hikeScreenViewModel = hikeScreenViewModel,

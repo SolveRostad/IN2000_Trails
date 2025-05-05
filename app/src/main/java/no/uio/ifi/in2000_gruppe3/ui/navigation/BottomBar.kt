@@ -44,12 +44,13 @@ fun BottomBar(navController: NavHostController) {
                     },
                     modifier = Modifier
                         .weight(1f)
-                        .fillMaxSize()
+                        .size(30.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Favorite,
                         contentDescription = "Favorites",
-                        tint = if (navController.currentDestination?.route == "favorites") MaterialTheme.colorScheme.primary
+                        modifier = Modifier.fillMaxSize(),
+                        tint = if (navController.currentDestination?.route == "favorites") Color(0xFF061C40)
                                else LocalContentColor.current
                     )
                 }
@@ -61,11 +62,11 @@ fun BottomBar(navController: NavHostController) {
                             navController.navigate(Screen.Home.route)
                     },
                     modifier = Modifier
-                        .weight(1.5f)
-                        .size(70.dp)
+                        .weight(1f)
+                        .size(80.dp)
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.logo),
+                        painter = painterResource(id = R.drawable.logo_new),
                         contentDescription = "Home",
                         modifier = Modifier.fillMaxSize(),
                         tint = Color.Unspecified
@@ -80,12 +81,13 @@ fun BottomBar(navController: NavHostController) {
                     },
                     modifier = Modifier
                         .weight(1f)
-                        .fillMaxSize()
+                        .size(30.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Person,
                         contentDescription = "User",
-                        tint = if (navController.currentDestination?.route == "user") MaterialTheme.colorScheme.primary
+                        modifier = Modifier.fillMaxSize(),
+                        tint = if (navController.currentDestination?.route == "user") Color(0xFF061C40)
                                else LocalContentColor.current
                     )
                 }
