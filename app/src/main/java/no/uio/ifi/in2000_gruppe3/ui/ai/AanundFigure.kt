@@ -42,9 +42,9 @@ fun AanundFigure(
     mapBoxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
-    var showDialog by remember { mutableStateOf(false) }
+    var isDialogVisible by remember { mutableStateOf(false) }
 
-    if (showDialog) {
+    if (isDialogVisible) {
         homeScreenViewModel.setSheetState(SheetDrawerDetent.SEMIPEEK)
 
         // Clear hikes from map to get AI recommendations
@@ -53,13 +53,13 @@ fun AanundFigure(
         mapBoxViewModel.updatePointerCoordinates(null)
 
         Dialog(
-            onDismissRequest = { showDialog = false },
+            onDismissRequest = { isDialogVisible = false },
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        showDialog = false
+                        isDialogVisible = false
                         navController.navigate(Screen.Chatbot.route)
                     }
             ) {
@@ -100,7 +100,7 @@ fun AanundFigure(
             color = Color.Transparent
         ) {
             IconButton(
-                onClick = { showDialog = true },
+                onClick = { isDialogVisible = true },
                 modifier = Modifier.fillMaxSize()
             ) {
                 Icon(
