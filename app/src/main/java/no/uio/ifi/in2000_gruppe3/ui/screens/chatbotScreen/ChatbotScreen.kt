@@ -157,10 +157,11 @@ fun ChatbotScreen(
                     chatbotMessage = message,
                     hikeScreenViewModel = hikeScreenViewModel,
                     mapboxViewModel = mapboxViewModel,
-                    navController = navController
+                    navController = navController,
+                    homeScreenViewModel = homeScreenViewModel
                 )
             }
-
+            
             // Extra space at bottom for better scrolling
             item {
                 Spacer(modifier = Modifier.height(100.dp))

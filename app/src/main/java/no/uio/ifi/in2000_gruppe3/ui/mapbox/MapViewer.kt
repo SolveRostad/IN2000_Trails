@@ -79,19 +79,6 @@ fun MapViewer(
         }
     }
 
-    LaunchedEffect(mapboxUIState.zoom) {
-        mapViewportState.easeTo(
-            cameraOptions {
-                zoom(mapboxUIState.zoom)
-                center(mapboxUIState.pointerCoordinates?.let { point ->
-                    Point.fromLngLat(point.longitude(), point.latitude() - 0.012)
-                })
-                pitch(0.0)
-                bearing(0.0)
-            }
-        )
-    }
-
     LaunchedEffect(mapboxUIState.centerOnUserTrigger) {
         if (mapboxUIState.centerOnUserTrigger > 0 && mapboxUIState.latestUserPosition != null) {
             mapViewportState.easeTo(
@@ -152,7 +139,9 @@ fun MapViewer(
                         mapView.location.removeOnIndicatorPositionChangedListener(this)
                     }
                 }
-                addOnIndicatorPositionChangedListener(oneTimePositionListener)
+                if (mapboxUIState.pointerCoordinates == null) {
+                    addOnIndicatorPositionChangedListener(oneTimePositionListener)
+                }
             }
             mapView.location.updateSettings {
                 locationPuck = createDefault2DPuck(withBearing = true)
