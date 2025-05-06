@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -216,37 +217,96 @@ fun HikeCard(
                         Text(text = "Legg til i loggen")
                     }
                 } else {
-                    Row {
-                        Button(
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .weight(1f)
-                                .align(Alignment.CenterVertically),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40)),
-                            onClick = {
-                                logScreenViewModel.adjustTimesWalked(
-                                    hikeUIState.feature.properties.fid,
-                                    1
-                                )
-                            }
+                    Card(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .weight(1f),
+                        border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.5f)),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surface
+                        )
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(text = "Øk ganger gått")
-                        }
+                            Text(
+                                text = "Ganger gått",
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = FontWeight.Bold
+                            )
 
-                        Button(
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .weight(1f)
-                                .align(Alignment.CenterVertically),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40)),
-                            onClick = {
-                                logScreenViewModel.removeFromLog(
-                                    hikeUIState.feature.properties.fid
-                                )
+                            Spacer(modifier = Modifier.height(4.dp))
+
+                            LaunchedEffect(hikeUIState.feature.properties.fid) {
+                                logScreenViewModel.getTimesWalkedForHike(hikeUIState.feature.properties.fid)
                             }
-                        ) {
-                            Text(text = "Fjern fra logg")
+
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceEvenly,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Button(
+                                    onClick = {
+                                        logScreenViewModel.adjustTimesWalked(
+                                            hikeUIState.feature.properties.fid,
+                                            -1
+                                        )
+                                    },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(
+                                            0xFF061C40
+                                        )
+                                    ),
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Text(text = "-")
+                                }
+
+                                Text(
+                                    text = "${logUIState.hikeTimesWalked[hikeUIState.feature.properties.fid] ?: 0}",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    modifier = Modifier
+                                        .padding(horizontal = 8.dp)
+                                        .weight(1f),
+                                    textAlign = TextAlign.Center
+                                )
+
+                                Button(
+                                    onClick = {
+                                        logScreenViewModel.adjustTimesWalked(
+                                            hikeUIState.feature.properties.fid,
+                                            1
+                                        )
+                                    },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(
+                                            0xFF061C40
+                                        )
+                                    ),
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Text(text = "+")
+                                }
+                            }
                         }
+                    }
+
+                    Button(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .weight(1f)
+                            .fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40)),
+                        onClick = {
+                            logScreenViewModel.removeFromLog(
+                                hikeUIState.feature.properties.fid
+                            )
+                        }
+                    ) {
+                        Text(text = "Fjern fra logg")
                     }
                 }
 

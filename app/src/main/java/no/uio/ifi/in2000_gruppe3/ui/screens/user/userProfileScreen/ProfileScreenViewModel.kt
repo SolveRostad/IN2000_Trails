@@ -98,11 +98,10 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
                 _profileScreenUIState.update {
                     it.copy (
                         username = username,
-                        selectedUser = username,
                         isLoggedIn = username != "defaultUser"
                     )
                 }
-                Log.d("UserScreenViewModel", "Selected user: ${_profileScreenUIState.value.selectedUser}")
+                Log.d("UserScreenViewModel", "Selected user: ${_profileScreenUIState.value.username}")
             } catch (e: Exception) {
                 _profileScreenUIState.update {
                     it.copy (
@@ -126,7 +125,6 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
                 _profileScreenUIState.update {
                     it.copy(
                         username = selected.username,
-                        selectedUser = selected.username
                     )
                 }
             } catch (e: Exception) {
@@ -167,7 +165,6 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
 
 data class ProfileScreenUIState(
     val profiles: List<Profile> = emptyList(),
-    val selectedUser: String = "",
     val username: String = "",
     val isLoading: Boolean = false,
     val errorMessage: String = "",

@@ -199,7 +199,12 @@ class LogScreenViewModel(
                 it.copy(isLoading = true)
             }
             try {
-                logRepository.timesWalked(_logScreenUIState.value.username, hikeId, adjustTimesWalked)
+                logRepository.adjustTimesWalked(_logScreenUIState.value.username, hikeId, adjustTimesWalked)
+
+                val updatedTimesWalked = logRepository.getTimesWalkedForHike(_logScreenUIState.value.username, hikeId)
+                _logScreenUIState.update {
+                    it.copy(hikeTimesWalked = it.hikeTimesWalked + (hikeId to updatedTimesWalked))
+                }
             } catch (e: Exception) {
                 Log.e("LogScreenViewModel", "Error adjusting times walked: ${e.message}")
                 _logScreenUIState.update {
@@ -257,6 +262,29 @@ class LogScreenViewModel(
             }
         }
     }
+
+    fun getTimesWalkedForHike(hikeId: Int) {
+        viewModelScope.launch {
+            _logScreenUIState.update {
+                it.copy(isLoading = true)
+            }
+            try {
+                val timesWalked = logRepository.getTimesWalkedForHike(_logScreenUIState.value.username, hikeId)
+
+                _logScreenUIState.update {
+                    it.copy(hikeTimesWalked = it.hikeTimesWalked + (hikeId to timesWalked))
+                }
+            } catch(e: Exception) {
+                _logScreenUIState.update {
+                    it.copy(isError = true, errorMessage = e.message.toString())
+                }
+            } finally {
+                _logScreenUIState.update {
+                    it.copy(isLoading = false)
+                }
+            }
+        }
+    }
 }
 
 data class LogScreenUIState(
@@ -268,5 +296,6 @@ data class LogScreenUIState(
     val errorMessage: String = "",
     val isError: Boolean = false,
     val hikeLog: List<Int> = emptyList(),
-    val hikesDone: Int = 0
+    val hikesDone: Int = 0,
+    val hikeTimesWalked: Map<Int, Int> = emptyMap()
 )

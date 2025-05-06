@@ -46,7 +46,7 @@ fun ProfileCard(
 ) {
     val profileUIState by profileScreenViewModel.profileScreenUIState.collectAsState()
     var expandedProfileId by remember { mutableStateOf<String?>(null) }
-    val isSelected = profileUIState.selectedUser == profile.username
+    val isSelected = profileUIState.username == profile.username
 
     Card(
         modifier = Modifier

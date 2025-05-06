@@ -29,7 +29,6 @@ class FavoritesScreenViewModel(
         FavoriteScreenUIState(
             favorites = emptyList(),
             userLocation = Point.fromLngLat(10.441649, 59.542819),
-
         )
     )
     val favoriteScreenUIState: StateFlow<FavoriteScreenUIState> =
@@ -189,7 +188,6 @@ data class FavoriteScreenUIState(
     val isError: Boolean = false,
     val errorMessage: String = "",
     val favorites: List<Int> = emptyList(),
-    val selectedFavorite: Favorite? = null,
     val username: String = "",
     val userLocation: Point = Point.fromLngLat(10.441649, 59.542819)
 )

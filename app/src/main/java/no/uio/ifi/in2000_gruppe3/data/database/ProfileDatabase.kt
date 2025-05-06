@@ -32,7 +32,7 @@ import java.util.concurrent.Executors
  * FN: username -> Profile
  *   username: String
  *   hikeId: Int
- *   timesWalked: Int
+ *   adjustTimesWalked: Int
  *   notes: String
  */
 

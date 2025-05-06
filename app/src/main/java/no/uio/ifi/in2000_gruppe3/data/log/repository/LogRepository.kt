@@ -16,8 +16,8 @@ class LogRepository (private val logDao: LogDao) {
         return logDao.getAllLogs(username)
     }
 
-    suspend fun timesWalked(username: String, hikeId: Int, adjustTimesWalked: Int) {
-        logDao.timesWalked(username, hikeId, adjustTimesWalked)
+    suspend fun adjustTimesWalked(username: String, hikeId: Int, adjustTimesWalked: Int) {
+        logDao.adjustTimesWalked(username, hikeId, adjustTimesWalked)
     }
 
     suspend fun getTotalTimesWalked(username: String): Int {
@@ -30,5 +30,9 @@ class LogRepository (private val logDao: LogDao) {
 
     suspend fun getNotesForHike(username: String, hikeId: Int): String {
         return logDao.getNotesForHike(username, hikeId)
+    }
+
+    suspend fun getTimesWalkedForHike(username: String, hikeId: Int): Int {
+        return logDao.getTimesWalkedForHike(username, hikeId)
     }
 }

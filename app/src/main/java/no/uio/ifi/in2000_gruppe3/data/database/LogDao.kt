@@ -17,7 +17,7 @@ interface LogDao {
     suspend fun getAllLogs(username: String): List<Int>
 
     @Query("UPDATE log_table SET times_walked = times_walked + :adjustTimesWalked WHERE username LIKE :username AND hike_id = :hikeId")
-    suspend fun timesWalked (username: String, hikeId: Int, adjustTimesWalked: Int)
+    suspend fun adjustTimesWalked (username: String, hikeId: Int, adjustTimesWalked: Int)
 
     @Query("UPDATE log_table SET notes = :notes WHERE username LIKE :username AND hike_id = :hikeId")
     suspend fun addNotesToLog(username: String, hikeId: Int, notes: String)
@@ -27,4 +27,7 @@ interface LogDao {
 
     @Query("SELECT SUM(times_walked) FROM log_table WHERE username LIKE :username")
     suspend fun getTotalTimesWalked(username: String): Int
+
+    @Query("SELECT times_walked FROM log_table WHERE username LIKE :username AND hike_id = :hikeId")
+    suspend fun getTimesWalkedForHike(username: String, hikeId: Int): Int
 }
