@@ -153,6 +153,7 @@ class OpenAIViewModel: ViewModel() {
                 "Svar på en hyggelig måte. " +
                 "Her er chat historikken som hva vi har snakket om tidligere: $conversationHistory. " +
                 "Her er meldingen fra bruker: $input. " +
+                "Du har kun tilgang tl turer i Oslo og Akershus. " +
                 "Hvis du i denne meldingen skriver om en spesifikk tur så avslutt meldingen med å bruke tegnet \"€\" og legg til nøyaktige koordinater til turen etter tegnet. " +
                 "Send koordinatene som lat, lng uten noe annet tekst eller symboler. "
 
