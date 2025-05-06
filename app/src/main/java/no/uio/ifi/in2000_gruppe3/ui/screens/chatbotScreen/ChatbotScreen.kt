@@ -199,7 +199,8 @@ fun ChatbotScreen(
                         chatbotMessage = message,
                         hikeScreenViewModel = hikeScreenViewModel,
                         mapboxViewModel = mapboxViewModel,
-                        navController = navController
+                        navController = navController,
+                        homeScreenViewModel = homeScreenViewModel
                     )
                 }
 
