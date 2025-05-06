@@ -47,6 +47,7 @@ import no.uio.ifi.in2000_gruppe3.ui.networkSnackbar.NetworkSnackbar
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreenViewModel
 
 @Composable
 fun HomeScreen(
@@ -55,6 +56,7 @@ fun HomeScreen(
     hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     openAIViewModel: OpenAIViewModel,
+    logScreenViewModel : LogScreenViewModel,
     navController: NavHostController
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -106,6 +108,7 @@ fun HomeScreen(
                 hikeScreenViewModel = hikeScreenViewModel,
                 favoritesViewModel = favoritesViewModel,
                 mapboxViewModel = mapboxViewModel,
+                logScreenViewModel = logScreenViewModel
             )
 
             MapLoader(

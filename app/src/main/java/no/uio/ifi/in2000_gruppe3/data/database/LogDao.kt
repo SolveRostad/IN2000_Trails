@@ -30,4 +30,6 @@ interface LogDao {
 
     @Query("SELECT times_walked FROM log_table WHERE username LIKE :username AND hike_id = :hikeId")
     suspend fun getTimesWalkedForHike(username: String, hikeId: Int): Int
+
+
 }

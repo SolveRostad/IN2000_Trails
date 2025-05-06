@@ -86,6 +86,13 @@ class FavoritesScreenViewModel(
         }
     }
 
+    fun updateUserLocationFromMapbox() {
+        val latestPosition = mapboxViewModel.mapboxUIState.value.latestUserPosition
+        if(latestPosition != null) {
+            updateUserLocation(latestPosition)
+        }
+    }
+
     fun updateUserLocation(point: Point) {
         _favoriteScreenUIState.update {
             it.copy(userLocation = point)

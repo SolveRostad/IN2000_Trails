@@ -164,10 +164,6 @@ fun UserScreen(
                     }
 
                     1 -> {
-                        val totalDistance = remember(logScreenUIState.value.hikeLog) {
-                            hikes.sumOf { it.properties.distance_meters / 1000.0 }
-                        }
-
                         LaunchedEffect(currentView) {
                             if (currentView == 1) {
                                 logScreenViewModel.getTotalTimesWalked()
@@ -176,10 +172,11 @@ fun UserScreen(
                         }
 
                         val totalTrips = logScreenUIState.value.hikesDone
+                        val distanceDone = logScreenUIState.value.totalDistance.let { "%.2f".format(it).toDouble() }
 
                         ActivityStats(
                             numTrips = totalTrips,
-                            distanceKm = totalDistance
+                            distanceKm = distanceDone
                         )
                     }
                 }

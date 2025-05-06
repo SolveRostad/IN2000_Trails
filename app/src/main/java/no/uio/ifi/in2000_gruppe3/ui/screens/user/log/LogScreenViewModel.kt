@@ -81,6 +81,13 @@ class LogScreenViewModel(
         }
     }
 
+    fun updateUserLocationFromMapbox() {
+        val latestPosition = mapboxViewModel.mapboxUIState.value.latestUserPosition
+        if(latestPosition != null) {
+            updateUserLocation(latestPosition)
+        }
+    }
+
     fun updateUserLocation(point: Point) {
         _logScreenUIState.update {
             it.copy(userLocation = point)
@@ -100,6 +107,7 @@ class LogScreenViewModel(
                 _logScreenUIState.update {
                     it.copy(convertedLog = logFeatures)
                 }
+                calculateTotalDistance()
                 Log.d("LogScreenViewModel", "Fetched converted log: $logFeatures")
             } catch (e: Exception) {
                 _logScreenUIState.update {
@@ -285,6 +293,32 @@ class LogScreenViewModel(
             }
         }
     }
+
+    fun calculateTotalDistance() {
+        viewModelScope.launch {
+            _logScreenUIState.update {
+                it.copy(isLoading = true)
+            }
+            try {
+                val totalDistance = _logScreenUIState.value.convertedLog.sumOf { feature ->
+                    val hikeId = feature.properties.fid
+                    val timesWalked = _logScreenUIState.value.hikeTimesWalked[hikeId] ?: 1
+                    (feature.properties.distance_meters / 1000.0) * timesWalked
+                }
+                _logScreenUIState.update {
+                    it.copy(totalDistance = totalDistance)
+                }
+            } catch (e: Exception) {
+                _logScreenUIState.update {
+                    it.copy(isError = true, errorMessage = e.message.toString())
+                }
+            } finally {
+                _logScreenUIState.update {
+                    it.copy(isLoading = false)
+                }
+            }
+        }
+    }
 }
 
 data class LogScreenUIState(
@@ -297,5 +331,6 @@ data class LogScreenUIState(
     val isError: Boolean = false,
     val hikeLog: List<Int> = emptyList(),
     val hikesDone: Int = 0,
-    val hikeTimesWalked: Map<Int, Int> = emptyMap()
+    val hikeTimesWalked: Map<Int, Int> = emptyMap(),
+    val totalDistance: Double = 0.0
 )
