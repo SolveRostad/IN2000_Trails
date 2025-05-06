@@ -58,7 +58,6 @@ fun UserScreen(
     LaunchedEffect(profileUIState.isLoggedIn) {
         if (!profileUIState.isLoggedIn) {
             navController.navigate(Screen.UserProfile.route) {
-                // Pop up to User screen so we don't build up a stack of profile screens
                 popUpTo(Screen.User.route) { inclusive = true }
             }
         }
