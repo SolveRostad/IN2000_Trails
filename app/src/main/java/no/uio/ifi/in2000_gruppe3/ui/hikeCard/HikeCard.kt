@@ -252,14 +252,23 @@ fun HikeCard(
                                             -1
                                         )
                                     },
+                                    enabled = (logUIState.hikeTimesWalked[hikeUIState.feature.properties.fid] ?: 0) > 1,
                                     colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(
-                                            0xFF061C40
-                                        )
+                                        containerColor = Color(0xFF061C40),
+                                        disabledContainerColor = Color.Gray.copy(alpha = 0.5f)
+
                                     ),
                                     modifier = Modifier.weight(1f)
                                 ) {
-                                    Text(text = "-")
+                                    Text(
+                                        text = "-",
+                                        color = if ((logUIState.hikeTimesWalked[hikeUIState.feature.properties.fid] ?: 0) > 1) {
+                                            Color.White
+                                        } else {
+                                            Color.White.copy(alpha = 0.5f)
+                                        }
+
+                                    )
                                 }
 
                                 Text(
