@@ -1,7 +1,6 @@
 package no.uio.ifi.in2000_gruppe3.ui.ai
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +12,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -39,30 +40,32 @@ import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.SheetDrawerDetent
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
+import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
 fun AanundFigure(
     homeScreenViewModel: HomeScreenViewModel,
+    hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
     val homeScreenUiState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val mapboxUiState by mapboxViewModel.mapboxUIState.collectAsState()
-    var showDialog by remember { mutableStateOf(false) }
     val aanundMenuExpanded = remember { mutableStateOf(false) }
+    var isDialogVisible by remember { mutableStateOf(false) }
 
     // Show dialog if it has not been shown before
     LaunchedEffect(mapboxUiState.isLoading) {
         if (!homeScreenUiState.hasShownAanundDialog) {
             if (!mapboxUiState.isLoading) {
                 homeScreenViewModel.markAanundDialogShown()
-                showDialog = true
+                isDialogVisible = true
             }
         }
     }
 
-    if (showDialog) {
+    if (isDialogVisible) {
         homeScreenViewModel.setSheetState(SheetDrawerDetent.SEMIPEEK)
 
         // Clear hikes from map to get AI recommendations
@@ -70,13 +73,13 @@ fun AanundFigure(
         mapboxViewModel.clearPolylineAnnotations()
 
         Dialog(
-            onDismissRequest = { showDialog = false },
+            onDismissRequest = { isDialogVisible = false },
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        showDialog = false
+                        isDialogVisible = false
                         navController.navigate(Screen.Chatbot.route)
                     }
             ) {
@@ -97,6 +100,18 @@ fun AanundFigure(
                         modifier = Modifier.padding(16.dp),
                         textAlign = TextAlign.Center,
                     )
+
+                    Button(
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(bottom = 8.dp),
+                        onClick = { navController.navigate(Screen.Chatbot.route) },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40))
+                    ) {
+                        Text(
+                            text = "🤖 Chat med meg"
+                        )
+                    }
                 }
 
                 Icon(
@@ -110,7 +125,7 @@ fun AanundFigure(
                 )
 
                 IconButton(
-                    onClick = { showDialog = false },
+                    onClick = { isDialogVisible = false },
                     modifier = Modifier.align(Alignment.TopEnd)
                 ) {
                     Icon(
@@ -127,7 +142,7 @@ fun AanundFigure(
             modifier = Modifier.size(120.dp)
         ) {
             IconButton(
-                onClick = { aanundMenuExpanded.value = true },
+                onClick = { isDialogVisible = true },
                 modifier = Modifier.fillMaxSize()
             ) {
                 Icon(
@@ -143,7 +158,10 @@ fun AanundFigure(
                     tint = Color.DarkGray,
                     modifier = Modifier
                         .size(16.dp)
-                        .clickable { showDialog = true }
+                        .clickable {
+                            aanundMenuExpanded.value = true
+                            hikeScreenViewModel.updateRecommendedHikesLoaded(false)
+                        }
                         .offset(x = 30.dp, y = (-30).dp)
                 )
             }

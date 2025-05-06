@@ -72,10 +72,7 @@ fun HikeCard(
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
     val openAIUIState by openAIViewModel.openAIUIState.collectAsState()
     val logUIState by logScreenViewModel.logScreenUIState.collectAsState()
-
     val isInLog = logUIState.hikeLog.contains(hikeUIState.feature.properties.fid)
-
-
     var averageWindSpeed by remember { mutableDoubleStateOf(homeScreenViewModel.daysAverageWindSpeed(hikeUIState.selectedDate)) }
 
     LaunchedEffect(hikeUIState.selectedDay) {

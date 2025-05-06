@@ -17,7 +17,6 @@ import no.uio.ifi.in2000_gruppe3.data.locationForecastAPI.repository.LocationFor
 import no.uio.ifi.in2000_gruppe3.data.metAlertsAPI.models.MetAlerts
 import no.uio.ifi.in2000_gruppe3.data.metAlertsAPI.repository.MetAlertsRepository
 import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.SheetDrawerDetent
-import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 
 class HomeScreenViewModel() : ViewModel() {
@@ -94,21 +93,6 @@ class HomeScreenViewModel() : ViewModel() {
                 _sheetStateTarget.value = SheetDrawerDetent.SEMIPEEK
             }
         }
-    }
-
-    suspend fun getRecommendedHikes(
-        homeScreenViewModel: HomeScreenViewModel,
-        mapBoxViewModel: MapboxViewModel,
-        openAIViewModel: OpenAIViewModel
-    ): List<Feature> {
-        val hikes = hikeAPIRepository.getHikes(
-            mapBoxViewModel.mapboxUIState.value.latestUserPosition?.latitude() ?: 59.856885,
-            mapBoxViewModel.mapboxUIState.value.latestUserPosition?.longitude() ?: 10.660978,
-            100,
-            "Fotrute",
-            500
-        )
-        return hikes.shuffled().take(3)
     }
 
     fun fetchForecast(point: Point) {

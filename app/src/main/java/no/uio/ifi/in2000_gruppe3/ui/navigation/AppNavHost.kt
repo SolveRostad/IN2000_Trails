@@ -119,6 +119,8 @@ fun AppNavHost() {
         composable(Screen.Chatbot.route) {
             ChatbotScreen(
                 homeScreenViewModel = homeScreenViewModel,
+                hikeScreenViewModel = hikeScreenViewModel,
+                mapboxViewModel = mapboxViewModel,
                 navController = navController
             )
         }

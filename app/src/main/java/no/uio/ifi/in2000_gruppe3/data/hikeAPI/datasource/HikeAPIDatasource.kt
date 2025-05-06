@@ -1,8 +1,5 @@
 package no.uio.ifi.in2000_gruppe3.data.hikeAPI.datasource
 
-import android.annotation.SuppressLint
-import android.renderscript.RenderScript
-import com.mapbox.android.core.permissions.PermissionsManager.Companion.areLocationPermissionsGranted
 import com.mapbox.geojson.Point
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -42,8 +39,10 @@ class HikeAPIDatasource {
         }
     }
 
-    suspend fun getHikesById(hikeIds: List<String>, position: Point): List<Feature>{
-        val urlString = "http://turdb.info.gf:3000/api/routes/withids?lat=${position.latitude()}.0&lng=${position.longitude()}.0&id=$hikeIds"
+    suspend fun getHikesById(hikeIds: List<String>, position: Point): List<Feature> {
+        val listString = hikeIds.joinToString(",")
+        val urlString =
+            "http://turdb.info.gf:3000/api/routes/withids?lat=${position.latitude()}.0&lng=${position.longitude()}.0&id=$listString"
         return try {
             val hikes = ktorHttpClient.get(urlString).body<Hikes>()
             return hikes.features

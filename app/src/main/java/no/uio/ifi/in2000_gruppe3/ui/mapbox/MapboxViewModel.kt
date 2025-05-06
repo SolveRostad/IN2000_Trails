@@ -161,22 +161,6 @@ class MapboxViewModel() : ViewModel() {
             it.copy(latestUserPosition = point)
         }
     }
-
-    fun zoomIn() {
-        _mapboxUIState.update {
-            it.copy(
-                zoom = if (it.zoom < 22) it.zoom + 1 else 22.0
-            )
-        }
-    }
-
-    fun zoomOut() {
-        _mapboxUIState.update {
-            it.copy(
-                zoom = if (it.zoom > 0) it.zoom - 1 else 0.0
-            )
-        }
-    }
 }
 
 data class MapboxUIState(

@@ -24,12 +24,25 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.mapbox.geojson.Point
 import dev.jeziellago.compose.markdowntext.MarkdownText
 import no.uio.ifi.in2000_gruppe3.R
+import no.uio.ifi.in2000_gruppe3.ui.hikeCard.SmallHikeCard
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
+import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
+import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
-fun MessageBubble(chatbotMessage: ChatbotMessage) {
+fun MessageBubble(
+    chatbotMessage: ChatbotMessage,
+    hikeScreenViewModel: HikeScreenViewModel,
+    mapboxViewModel: MapboxViewModel,
+    homeScreenViewModel: HomeScreenViewModel,
+    navController: NavHostController
+) {
     val alignment = if (chatbotMessage.isFromUser) Alignment.End else Alignment.Start
 
     val userGradient = Brush.linearGradient(
@@ -121,6 +134,21 @@ fun MessageBubble(chatbotMessage: ChatbotMessage) {
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier.padding(top = 2.dp, end = 4.dp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+            )
+        }
+        if (chatbotMessage.feature != null) {
+            SmallHikeCard(
+                mapboxViewModel = mapboxViewModel,
+                feature = chatbotMessage.feature,
+                onClick = {
+                    homeScreenViewModel.fetchForecast(
+                        Point.fromLngLat(
+                        chatbotMessage.feature.geometry.coordinates[0][0],
+                        chatbotMessage.feature.geometry.coordinates[0][1]
+                    ))
+                    hikeScreenViewModel.updateHike(chatbotMessage.feature)
+                    navController.navigate(Screen.HikeScreen.route)
+                }
             )
         }
     }
