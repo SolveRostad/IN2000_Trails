@@ -4,13 +4,16 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository.HikeAPIRepository
 import no.uio.ifi.in2000_gruppe3.data.openAIAPI.repository.OpenAIRepository
+import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 class OpenAIViewModel: ViewModel() {
@@ -59,6 +62,7 @@ class OpenAIViewModel: ViewModel() {
                 }
 
                 onResult(error)
+                Log.d("OpenAIViewModel", "getCompletionsSamples: ${e.message}")
             } finally {
                 _openAIUIState.update {
                     it.copy(isLoading = false)
@@ -105,6 +109,7 @@ class OpenAIViewModel: ViewModel() {
                         isStreaming = false
                     )
                 }
+                Log.d("OpenAIViewModel", "getCompletionsStream: ${e.message}")
             } finally {
                 if (openAIUIState.value.response.contains("€")) {
                     addFeature()
@@ -115,8 +120,8 @@ class OpenAIViewModel: ViewModel() {
             }
         }
     }
+
     fun addFeature() {
-        Log.d("OpenAIViewModel", "Response contains coordinates")
         val responseData = openAIUIState.value.response.split("€")
         val textResponse = responseData.first()
         val coordinates = responseData.last().trim()
@@ -126,7 +131,6 @@ class OpenAIViewModel: ViewModel() {
 
         viewModelScope.launch {
             val features = hikeAPIRepository.getHikes(lat, lng, 1, "Fotrute", 500)
-            Log.d("OpenAIViewModel", "Features: $features")
             val chatBotMessage = ChatbotMessage(
                 content = textResponse,
                 isFromUser = false,
@@ -150,13 +154,73 @@ class OpenAIViewModel: ViewModel() {
                 "Her er chat historikken som hva vi har snakket om tidligere: $conversationHistory. " +
                 "Her er meldingen fra bruker: $input. " +
                 "Hvis du i denne meldingen skriver om en spesifikk tur så avslutt meldingen med å bruke tegnet \"€\" og legg til nøyaktige koordinater til turen etter tegnet. " +
-                "Send koordinatene som lat, lng uten noe annet. "
+                "Send koordinatene som lat, lng uten noe annet tekst eller symboler. "
 
-        if (input.contains("vær") || input.contains("været") || input.contains("værmelding")) {
+        if (input.contains("vær") || input.contains("temperatur")) {
             prompt += "Her er informasjonene du trenger om været: ${homeScreenViewModel.homeScreenUIState.value.forecast?.properties?.timeseries}"
         }
 
         getCompletionsStream(prompt)
+    }
+
+    // Used to get recommended hikes from AI, shown in bottom sheet
+    suspend fun getRecommendedHikes(
+        homeScreenViewModel: HomeScreenViewModel,
+        hikeScreenViewModel: HikeScreenViewModel
+    ) {
+        // Clear previous hikes to show loader if needed
+        hikeScreenViewModel.updateRecommendedHikes(emptyList())
+
+        val prompt = "Basert på værforholdet jeg sender til slutt, " +
+                "gi meg tre forslag til turer hvor det er bra vær i oslo og akershus. " +
+                "Ikke gi meg turer som er rett ved siden av hverandre. " +
+                "Du skal kun sende koordinatene til de tre turene, ikke noe annet. " +
+                "Ikke bruk noen andre tegn. " +
+                "Send koordinatene som: lat lng,lat lng,lat lng" +
+                "Hvis værdata ikke er tilgjengelig så sender du bare tilfeldige koordianter i oslo og akershus. " +
+                "All informasjon du trenger om værforholdet finner du her: ${homeScreenViewModel.homeScreenUIState.value.forecast}"
+
+        getCompletionsStream(prompt)
+
+        // Wait to response is updated
+        while (_openAIUIState.value.isStreaming || _openAIUIState.value.isLoading) {
+            delay(100)
+        }
+
+        val hikes = mutableListOf<Feature>()
+        val response = _openAIUIState.value.response
+
+        if (response.isNotEmpty()) {
+            val hikesCoords = response.split(",")
+            hikesCoords.forEach { coords ->
+                try {
+                    val latLng = coords.split(" ")
+                    if (latLng.size == 2) {
+                        val lat = latLng.first().toDouble()
+                        val lng = latLng.last().toDouble()
+
+                        val hike = hikeAPIRepository.getHikes(
+                            lat,
+                            lng,
+                            1,
+                            "Fotrute",
+                            500
+                        )
+
+                        if (hike.isNotEmpty()) {
+                            hikes.add(hike.first())
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e("OpenAIViewModel", "getRecommendedHikes: Error parsing coordinates", e)
+                }
+            }
+        } else {
+            Log.e("OpenAIViewModel", "getRecommendedHikes: No response received")
+        }
+
+        hikeScreenViewModel.updateRecommendedHikes(hikes)
+        hikeScreenViewModel.updateRecommendedHikesLoaded(true)
     }
 }
 

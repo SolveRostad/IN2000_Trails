@@ -40,11 +40,13 @@ import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.SheetDrawerDetent
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
+import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
 fun AanundFigure(
     homeScreenViewModel: HomeScreenViewModel,
+    hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
@@ -156,7 +158,10 @@ fun AanundFigure(
                     tint = Color.DarkGray,
                     modifier = Modifier
                         .size(16.dp)
-                        .clickable { aanundMenuExpanded.value = true }
+                        .clickable {
+                            aanundMenuExpanded.value = true
+                            hikeScreenViewModel.updateRecommendedHikesLoaded(false)
+                        }
                         .offset(x = 30.dp, y = (-30).dp)
                 )
             }
