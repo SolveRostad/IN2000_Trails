@@ -1,9 +1,7 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.user.log
+package no.uio.ifi.in2000_gruppe3.ui.screens.user.activities
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -24,16 +22,16 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LogScreen(
-    logScreenViewModel: LogScreenViewModel,
+fun ActivityScreen(
+    activityScreenViewModel: ActivityScreenViewModel,
     hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
-    val logUIState by logScreenViewModel.logScreenUIState.collectAsState()
+    val logUIState by activityScreenViewModel.logScreenUIState.collectAsState()
 
     LaunchedEffect(key1 = true) {
-        logScreenViewModel.loadLog()
+        activityScreenViewModel.loadLog()
     }
 
     if (logUIState.hikeLog.isEmpty()) {
@@ -58,7 +56,7 @@ fun LogScreen(
                     }
                 )
 
-                LogNotes(logScreenViewModel, feature)
+                ActivityNotes(activityScreenViewModel, feature)
             }
         }
     }

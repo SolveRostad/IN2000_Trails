@@ -29,7 +29,7 @@ import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.SheetDrawerDetent
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.activities.ActivityScreenViewModel
 
 @Composable
 fun MapViewer(
@@ -37,7 +37,7 @@ fun MapViewer(
     hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     favoritesViewModel: FavoritesScreenViewModel,
-    logScreenViewModel: LogScreenViewModel
+    activityScreenViewModel: ActivityScreenViewModel
 ) {
     val homeScreenUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
@@ -151,7 +151,7 @@ fun MapViewer(
             }
             mapView.location.addOnIndicatorPositionChangedListener { point ->
                 favoritesViewModel.updateUserLocationFromMapbox()
-                logScreenViewModel.updateUserLocationFromMapbox()
+                activityScreenViewModel.updateUserLocationFromMapbox()
                 mapboxViewModel.updateLatestUserPosition(point)
             }
             mapView.mapboxMap.subscribeCameraChanged {

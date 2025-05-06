@@ -1,24 +1,22 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.user.log
+package no.uio.ifi.in2000_gruppe3.ui.screens.user.activities
 
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.mapbox.geojson.Point
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository.HikeAPIRepository
 import no.uio.ifi.in2000_gruppe3.data.log.repository.LogRepository
 import no.uio.ifi.in2000_gruppe3.data.profile.repository.ProfileRepository
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 
-class LogScreenViewModel(
+class ActivityScreenViewModel(
     application: Application,
     private val logRepository: LogRepository,
     private val profileRepository: ProfileRepository,
