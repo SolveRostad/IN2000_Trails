@@ -50,17 +50,17 @@ fun AanundFigure(
     mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
-    var isDialogVisible by remember { mutableStateOf(false) }
     val homeScreenUiState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val mapboxUiState by mapboxViewModel.mapboxUIState.collectAsState()
     val aanundMenuExpanded = remember { mutableStateOf(false) }
+    var isDialogVisible by remember { mutableStateOf(false) }
 
     // Show dialog if it has not been shown before
     LaunchedEffect(mapboxUiState.isLoading) {
         if (!homeScreenUiState.hasShownAanundDialog) {
             if (!mapboxUiState.isLoading) {
                 homeScreenViewModel.markAanundDialogShown()
-                showDialog = true
+                isDialogVisible = true
             }
         }
     }
@@ -125,7 +125,7 @@ fun AanundFigure(
                 )
 
                 IconButton(
-                    onClick = { showDialog = false },
+                    onClick = { isDialogVisible = false },
                     modifier = Modifier.align(Alignment.TopEnd)
                 ) {
                     Icon(
