@@ -46,6 +46,9 @@ fun LogNotes(
 
     var noteText by remember { mutableStateOf(logScreenUIState.hikeNotes[feature.properties.fid] ?: "") }
     var isExpanded by remember { mutableStateOf(false) }
+    var showLimitMessage by remember { mutableStateOf(false) }
+
+    val maxCharLimit = 500
 
     LaunchedEffect(feature.properties.fid, logScreenUIState.hikeNotes[feature.properties.fid]) {
         if (logScreenUIState.hikeNotes[feature.properties.fid] == null) {
@@ -54,7 +57,7 @@ fun LogNotes(
             noteText = logScreenUIState.hikeNotes[feature.properties.fid] ?: ""
         }
     }
-
+                                               
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -78,7 +81,14 @@ fun LogNotes(
 
             OutlinedTextField(
                 value = noteText,
-                onValueChange = { noteText = it },
+                onValueChange = { newText ->
+                    if(newText.length <= maxCharLimit) {
+                        noteText = newText
+                        showLimitMessage = false
+                    } else {
+                        showLimitMessage = true
+                    }
+                },
                 placeholder = { Text("Hva syntes du om turen...?") },
                 textStyle = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier
@@ -101,7 +111,28 @@ fun LogNotes(
                             logScreenViewModel.addNotesToLog(feature.properties.fid, noteText)
                         }
                     }
-                )
+                ),
+                supportingText = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        if (showLimitMessage) {
+                            Text(
+                                text = "Maks grense symboler nådd!",
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                        Text(
+                            "${noteText.length}/$maxCharLimit",
+                            color = when {
+                                noteText.length > maxCharLimit * 0.9 -> MaterialTheme.colorScheme.error
+                                noteText.length > maxCharLimit * 0.8 -> Color(0xFFFFA000)
+                                else -> MaterialTheme.colorScheme.onSurfaceVariant
+                            }
+                        )
+                    }
+                }
             )
 
             Spacer(modifier = Modifier.height(8.dp))
