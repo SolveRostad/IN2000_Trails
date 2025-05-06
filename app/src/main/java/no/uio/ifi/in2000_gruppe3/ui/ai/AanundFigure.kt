@@ -50,9 +50,9 @@ fun AanundFigure(
     mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
+    var isDialogVisible by remember { mutableStateOf(false) }
     val homeScreenUiState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val mapboxUiState by mapboxViewModel.mapboxUIState.collectAsState()
-    var showDialog by remember { mutableStateOf(false) }
     val aanundMenuExpanded = remember { mutableStateOf(false) }
 
     // Show dialog if it has not been shown before
@@ -65,7 +65,7 @@ fun AanundFigure(
         }
     }
 
-    if (showDialog) {
+    if (isDialogVisible) {
         homeScreenViewModel.setSheetState(SheetDrawerDetent.SEMIPEEK)
 
         // Clear hikes from map to get AI recommendations
@@ -73,13 +73,13 @@ fun AanundFigure(
         mapboxViewModel.clearPolylineAnnotations()
 
         Dialog(
-            onDismissRequest = { showDialog = false },
+            onDismissRequest = { isDialogVisible = false },
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        showDialog = false
+                        isDialogVisible = false
                         navController.navigate(Screen.Chatbot.route)
                     }
             ) {
@@ -142,7 +142,7 @@ fun AanundFigure(
             modifier = Modifier.size(120.dp)
         ) {
             IconButton(
-                onClick = { showDialog = true  },
+                onClick = { isDialogVisible = true },
                 modifier = Modifier.fillMaxSize()
             ) {
                 Icon(
