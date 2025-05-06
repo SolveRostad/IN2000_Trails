@@ -74,15 +74,14 @@ fun HikeCard(
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
     val openAIUIState by openAIViewModel.openAIUIState.collectAsState()
 
-    val todaysDay = getTodaysDay()
-
     // Shows current temperature and wind speed on launch, then shows average based on selected day
     var displayTimeSeries = homeUIState.forecast?.properties?.timeseries?.firstOrNull()
     var averageTemperature by remember { mutableStateOf(displayTimeSeries?.data?.instant?.details?.air_temperature) }
     var averageWindSpeed by remember { mutableStateOf(displayTimeSeries?.data?.instant?.details?.wind_speed) }
 
     LaunchedEffect(hikeUIState.selectedDay) {
-        val daysAhead = calculateDaysAhead(todaysDay, hikeUIState.selectedDay)
+        val today = getTodaysDay()
+        val daysAhead = calculateDaysAhead(today, hikeUIState.selectedDay)
         hikeScreenViewModel.updateSelectedDate(LocalDate.now().plusDays(daysAhead.toLong()).toString())
 
         displayTimeSeries = homeScreenViewModel.timeSeriesFromDate(hikeUIState.selectedDate)?.firstOrNull()
