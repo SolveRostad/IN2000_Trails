@@ -13,6 +13,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -97,6 +99,18 @@ fun AanundFigure(
                         modifier = Modifier.padding(16.dp),
                         textAlign = TextAlign.Center,
                     )
+
+                    Button(
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(bottom = 8.dp),
+                        onClick = { navController.navigate(Screen.Chatbot.route) },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40))
+                    ) {
+                        Text(
+                            text = "🤖 Chat med meg"
+                        )
+                    }
                 }
 
                 Icon(
@@ -127,7 +141,7 @@ fun AanundFigure(
             modifier = Modifier.size(120.dp)
         ) {
             IconButton(
-                onClick = { aanundMenuExpanded.value = true },
+                onClick = { showDialog = true  },
                 modifier = Modifier.fillMaxSize()
             ) {
                 Icon(
@@ -143,7 +157,7 @@ fun AanundFigure(
                     tint = Color.DarkGray,
                     modifier = Modifier
                         .size(16.dp)
-                        .clickable { showDialog = true }
+                        .clickable { aanundMenuExpanded.value = true }
                         .offset(x = 30.dp, y = (-30).dp)
                 )
             }

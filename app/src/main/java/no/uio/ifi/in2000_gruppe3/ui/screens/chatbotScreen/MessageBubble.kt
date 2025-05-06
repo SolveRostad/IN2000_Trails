@@ -14,6 +14,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,12 +26,23 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import dev.jeziellago.compose.markdowntext.MarkdownText
 import no.uio.ifi.in2000_gruppe3.R
+import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
+import no.uio.ifi.in2000_gruppe3.ui.hikeCard.SmallHikeCard
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
+import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
+import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 
 @Composable
-fun MessageBubble(chatbotMessage: ChatbotMessage) {
+fun MessageBubble(
+    chatbotMessage: ChatbotMessage,
+    hikeScreenViewModel: HikeScreenViewModel,
+    mapboxViewModel: MapboxViewModel,
+    navController: NavHostController
+) {
     val alignment = if (chatbotMessage.isFromUser) Alignment.End else Alignment.Start
 
     val userGradient = Brush.linearGradient(
@@ -122,6 +135,17 @@ fun MessageBubble(chatbotMessage: ChatbotMessage) {
                 modifier = Modifier.padding(top = 2.dp, end = 4.dp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
             )
+        }
+        if (chatbotMessage.feature != null) {
+            SmallHikeCard(
+                mapboxViewModel = mapboxViewModel,
+                feature = chatbotMessage.feature,
+                onClick = {
+                    hikeScreenViewModel.updateHike(chatbotMessage.feature)
+                    navController.navigate(Screen.HikeScreen.route)
+                }
+            )
+            //openAIViewModel.resetFeature()
         }
     }
 }

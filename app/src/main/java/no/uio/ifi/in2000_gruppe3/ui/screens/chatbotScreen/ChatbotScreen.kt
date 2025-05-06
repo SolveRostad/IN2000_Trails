@@ -51,13 +51,19 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.R
+import no.uio.ifi.in2000_gruppe3.ui.hikeCard.SmallHikeCard
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
+import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
+import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatbotScreen(
     homeScreenViewModel: HomeScreenViewModel,
+    hikeScreenViewModel: HikeScreenViewModel,
+    mapboxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
     val openAIViewModel: OpenAIViewModel = viewModel()
@@ -145,7 +151,7 @@ fun ChatbotScreen(
                                         .background(if (homeScreenUIState.hasNetworkConnection) Color.Green else Color.Red)
                                 )
                                 Text(
-                                    text = if (homeScreenUIState.hasNetworkConnection) "Online" else "Offline",
+                                    text = if (homeScreenUIState.hasNetworkConnection) "Tilkoblet" else "Frakoblet",
                                     style = MaterialTheme.typography.labelMedium,
                                     modifier = Modifier.padding(start = 8.dp),
                                     color = MaterialTheme.colorScheme.onPrimaryContainer
@@ -165,7 +171,7 @@ fun ChatbotScreen(
                             keyboardController?.hide()
                             openAIViewModel.addUserMessage(input)
                             coroutineScope.launch {
-                                openAIViewModel.addLimitationToInputMessage(
+                                openAIViewModel.getChatbotResponse(
                                     input = input,
                                     homeScreenViewModel = homeScreenViewModel
                                 )
@@ -192,7 +198,12 @@ fun ChatbotScreen(
                         items = conversationHistory,
                         key = { message -> "${message.isFromUser}_${message.content.hashCode()}" }
                     ) { message ->
-                        MessageBubble(message)
+                        MessageBubble(
+                            chatbotMessage = message,
+                            hikeScreenViewModel = hikeScreenViewModel,
+                            mapboxViewModel = mapboxViewModel,
+                            navController = navController
+                        )
                     }
 
                     // Extra space at bottom for better scrolling

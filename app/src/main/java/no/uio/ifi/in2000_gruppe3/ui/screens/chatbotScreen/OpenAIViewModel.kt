@@ -1,18 +1,23 @@
 package no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
+import no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository.HikeAPIRepository
 import no.uio.ifi.in2000_gruppe3.data.openAIAPI.repository.OpenAIRepository
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 class OpenAIViewModel: ViewModel() {
     private val openAIRepository = OpenAIRepository()
+    private val hikeAPIRepository = HikeAPIRepository(this)
 
     private val _openAIUIState = MutableStateFlow(OpenAIUIState())
     val openAIUIState: StateFlow<OpenAIUIState> = _openAIUIState
@@ -103,14 +108,37 @@ class OpenAIViewModel: ViewModel() {
                     )
                 }
             } finally {
+                if (openAIUIState.value.response.contains("€")) {
+                    addFeature()
+                }
                 _openAIUIState.update {
                     it.copy(isLoading = false, isStreaming = false)
                 }
             }
         }
     }
+    fun addFeature() {
+        Log.d("OpenAIViewModel", "Response contains coordinates")
+        val responseData = openAIUIState.value.response.split("€")
+        val textResponse = responseData.first()
+        val coordinates = responseData.last().trim()
+        val latLng = coordinates.split(",")
+        val lat = latLng[0].toDouble()
+        val lng = latLng[1].toDouble()
 
-    fun addLimitationToInputMessage(
+        viewModelScope.launch {
+            val features = hikeAPIRepository.getHikes(lat, lng, 1, "Fotrute", 500)
+            Log.d("OpenAIViewModel", "Features: $features")
+            val chatBotMessage = ChatbotMessage(
+                content = textResponse,
+                isFromUser = false,
+                feature = features.first()
+            )
+            _conversationHistory[_conversationHistory.size - 1] = chatBotMessage
+        }
+    }
+
+    fun getChatbotResponse(
         input: String,
         homeScreenViewModel: HomeScreenViewModel
     ) {
@@ -121,7 +149,10 @@ class OpenAIViewModel: ViewModel() {
                 "Du skal kun svare på spørsmål som er relatert til turer, friluftsliv og været. " +
                 "Hvis spørsmålet ikke er relatert til det så skal du gi en melding hvor du forteller hvem du er som sier at du kun svarer på spørsmål som er relevante. " +
                 "Svar på en hyggelig måte. " +
-                "Her er medlingen fra bruker: $input"
+                "Her er chat historikken som hva vi har snakket om tidligere: $conversationHistory. " +
+                "Her er meldingen fra bruker: $input. " +
+                "Hvis du i denne meldingen skriver om en spesifikk tur så avslutt meldingen med å bruke tegnet \"€\" og legg til nøyaktige koordinater til turen etter tegnet. " +
+                "Send koordinatene som lat, lng uten noe annet. "
 
         if (input.contains("vær") || input.contains("været") || input.contains("værmelding")) {
             prompt += "Her er informasjonene du trenger om været: ${homeScreenViewModel.homeScreenUIState.value.forecast?.properties?.timeseries}"
