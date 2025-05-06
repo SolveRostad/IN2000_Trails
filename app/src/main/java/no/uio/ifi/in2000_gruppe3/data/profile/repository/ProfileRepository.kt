@@ -7,7 +7,7 @@ import no.uio.ifi.in2000_gruppe3.data.database.Profile
 import no.uio.ifi.in2000_gruppe3.data.database.ProfileDao
 import no.uio.ifi.in2000_gruppe3.data.database.ProfileDatabase
 
-class ProfileRepository private constructor(private val profileDao: ProfileDao) {
+class ProfileRepository constructor(private val profileDao: ProfileDao) {
 
     suspend fun addUser(profile: Profile) {
         profileDao.insertUser(profile)
@@ -46,7 +46,10 @@ class ProfileRepository private constructor(private val profileDao: ProfileDao) 
         @Volatile
         private var INSTANCE: ProfileRepository? = null
 
-        fun getInstance(context: Context, scope: CoroutineScope = CoroutineScope(SupervisorJob())): ProfileRepository {
+        fun getInstance(
+            context: Context,
+            scope: CoroutineScope = CoroutineScope(SupervisorJob())
+        ): ProfileRepository {
             return INSTANCE ?: synchronized(this) {
                 val database = ProfileDatabase.getDatabase(context, scope)
                 val instance = ProfileRepository(database.profileDao())

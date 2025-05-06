@@ -13,6 +13,7 @@ import no.uio.ifi.in2000_gruppe3.data.database.ProfileDatabase
 import no.uio.ifi.in2000_gruppe3.data.favorites.FavoriteRepository
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository.HikeAPIRepository
 import no.uio.ifi.in2000_gruppe3.data.profile.repository.ProfileRepository
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
 import org.junit.After
@@ -79,7 +80,10 @@ class ProfileFavoriteUnitTest {
             profileRepository.clearAllUsers()
             profileRepository.addUser(bruker1)
             profileRepository.deleteUser(bruker1)
-            assertFalse(profileRepository.getAllUsers().contains(bruker1), "Bruker ble ikke slettet")
+            assertFalse(
+                profileRepository.getAllUsers().contains(bruker1),
+                "Bruker ble ikke slettet"
+            )
         }
 
         println("---testDeleteUser PASSERT---")
@@ -135,16 +139,17 @@ class ProfileFavoriteUnitTest {
 
             val favoritesScreenViewModel = FavoritesScreenViewModel(
                 application = application,
-                favoritesRepository = FavoriteRepository(favoriteDao),
+                favoriteRepository = FavoriteRepository(favoriteDao),
                 profileRepository = profileRepository,
-                hikeAPIRepository = HikeAPIRepository(OpenAIViewModel())
+                hikeAPIRepository = HikeAPIRepository(OpenAIViewModel()),
+                mapboxViewModel = MapboxViewModel()
             )
 
             favoritesScreenViewModel.addFavorite(1)
 
             var favorites = favoritesScreenViewModel.getAllFavorites(bruker1.username)
             // Dette var den eneste måten jeg klarte å vente på at viewmodelscope
-            // coroutine launchen ble ferdig på før hovedtråen fortsetter...
+            // coroutine launchen ble ferdig før hovedtråen fortsetter...
             while (favorites.isEmpty()) {
                 favorites = favoritesScreenViewModel.getAllFavorites(bruker1.username)
             }
@@ -169,9 +174,10 @@ class ProfileFavoriteUnitTest {
 
             val favoritesScreenViewModel = FavoritesScreenViewModel(
                 application = application,
-                favoritesRepository = FavoriteRepository(favoriteDao),
+                favoriteRepository = FavoriteRepository(favoriteDao),
                 profileRepository = profileRepository,
-                hikeAPIRepository = HikeAPIRepository(OpenAIViewModel())
+                hikeAPIRepository = HikeAPIRepository(OpenAIViewModel()),
+                mapboxViewModel = MapboxViewModel()
             )
             favoritesScreenViewModel.addFavorite(1)
             var favorites = favoritesScreenViewModel.getAllFavorites(bruker1.username)
@@ -204,9 +210,10 @@ class ProfileFavoriteUnitTest {
 
             val favoritesScreenViewModel = FavoritesScreenViewModel(
                 application = application,
-                favoritesRepository = FavoriteRepository(favoriteDao),
+                favoriteRepository = FavoriteRepository(favoriteDao),
                 profileRepository = profileRepository,
-                hikeAPIRepository = HikeAPIRepository(OpenAIViewModel())
+                hikeAPIRepository = HikeAPIRepository(OpenAIViewModel()),
+                mapboxViewModel = MapboxViewModel()
             )
 
             favoritesScreenViewModel.addFavorite(1)
