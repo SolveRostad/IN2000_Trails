@@ -85,77 +85,44 @@ fun ChatbotScreen(
 
     Scaffold(
         topBar = {
-            Surface(
-                tonalElevation = 4.dp,
-                shadowElevation = 8.dp,
-                color = Color(0xFF061C40)
-            ) {
-                Column {
-                    TopAppBar(
-                        title = {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                AsyncImage(
-                                    model = R.drawable.aanund,
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .size(36.dp)
-                                        .clip(CircleShape)
-                                        .background(MaterialTheme.colorScheme.onPrimary),
-                                    contentScale = ContentScale.Crop
-                                )
-                                Text(
-                                    "Turbotten Ånund",
-                                    modifier = Modifier.padding(start = 12.dp),
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = Color.Transparent,
-                            titleContentColor = MaterialTheme.colorScheme.onPrimary
-                        ),
-                        navigationIcon = {
-                            IconButton(onClick = { navController.popBackStack() }) {
-                                Icon(
-                                    imageVector = Icons.Default.ArrowBack,
-                                    contentDescription = "Back",
-                                    tint = MaterialTheme.colorScheme.onPrimary
-                                )
-                            }
-                        }
-                    )
-
-                    // Status bar showing bot is online
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(0.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.9f)
-                        )
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(
+            Column {
+                TopAppBar(
+                    title = {
+                        Row {
+                            AsyncImage(
+                                model = R.drawable.aanund,
+                                contentDescription = null,
                                 modifier = Modifier
-                                    .size(8.dp)
+                                    .size(36.dp)
                                     .clip(CircleShape)
-                                    .background(if (homeScreenUIState.hasNetworkConnection) Color.Green else Color.Red)
+                                    .background(MaterialTheme.colorScheme.onPrimary),
+                                contentScale = ContentScale.Crop
                             )
                             Text(
-                                text = if (homeScreenUIState.hasNetworkConnection) "Tilkoblet" else "Frakoblet",
-                                style = MaterialTheme.typography.labelMedium,
-                                modifier = Modifier.padding(start = 8.dp),
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                                "Turbotten Ånund",
+                                modifier = Modifier.padding(start = 12.dp),
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color(0xFF061C40),
+                        titleContentColor = MaterialTheme.colorScheme.onPrimary
+                    ),
+                    navigationIcon = {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Back",
+                                tint = MaterialTheme.colorScheme.onPrimary
                             )
                         }
                     }
-                }
+                )
+
+                // Status bar showing bot is online
+                ChatbotConnectionStatus(homeScreenUIState)
             }
         },
         bottomBar = {
@@ -177,36 +144,26 @@ fun ChatbotScreen(
                 )
                 BottomBar(navController = navController)
             }
-        },
-        containerColor = Color.Transparent
+        }
     ) { contentPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(contentPadding)
+        LazyColumn(
+            state = listState,
+            modifier = Modifier.fillMaxSize().padding(contentPadding),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            LazyColumn(
-                state = listState,
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(
-                    items = conversationHistory,
-                    key = { message -> "${message.isFromUser}_${message.content.hashCode()}" }
-                ) { message ->
-                    MessageBubble(
-                        chatbotMessage = message,
-                        hikeScreenViewModel = hikeScreenViewModel,
-                        mapboxViewModel = mapboxViewModel,
-                        navController = navController
-                    )
-                }
+            items(conversationHistory) { message ->
+                MessageBubble(
+                    chatbotMessage = message,
+                    hikeScreenViewModel = hikeScreenViewModel,
+                    mapboxViewModel = mapboxViewModel,
+                    navController = navController
+                )
+            }
 
-                // Extra space at bottom for better scrolling
-                item {
-                    Spacer(modifier = Modifier.height(72.dp))
-                }
+            // Extra space at bottom for better scrolling
+            item {
+                Spacer(modifier = Modifier.height(100.dp))
             }
         }
     }
