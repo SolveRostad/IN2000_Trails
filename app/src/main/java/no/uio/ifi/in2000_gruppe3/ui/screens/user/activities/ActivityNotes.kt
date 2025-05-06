@@ -42,7 +42,7 @@ fun ActivityNotes(
     activityScreenViewModel: ActivityScreenViewModel,
     feature: Feature
 ) {
-    val logScreenUIState by activityScreenViewModel.logScreenUIState.collectAsState()
+    val logScreenUIState by activityScreenViewModel.activityScreenUIState.collectAsState()
 
     var noteText by remember { mutableStateOf(logScreenUIState.hikeNotes[feature.properties.fid] ?: "") }
     var isExpanded by remember { mutableStateOf(false) }
@@ -108,7 +108,7 @@ fun ActivityNotes(
                     onDone = {
                         isExpanded = false
                         if (noteText.isNotBlank()) {
-                            activityScreenViewModel.addNotesToLog(feature.properties.fid, noteText)
+                            activityScreenViewModel.addNotesToActivityLog(feature.properties.fid, noteText)
                         }
                     }
                 ),
@@ -153,7 +153,7 @@ fun ActivityNotes(
                 Button(
                     onClick = {
                         isExpanded = false
-                        activityScreenViewModel.addNotesToLog(feature.properties.fid, noteText)
+                        activityScreenViewModel.addNotesToActivityLog(feature.properties.fid, noteText)
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40))
                 ) {

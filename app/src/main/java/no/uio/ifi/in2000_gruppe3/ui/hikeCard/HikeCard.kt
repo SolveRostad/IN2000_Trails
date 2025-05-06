@@ -71,7 +71,7 @@ fun HikeCard(
 ) {
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
     val openAIUIState by openAIViewModel.openAIUIState.collectAsState()
-    val logUIState by activityScreenViewModel.logScreenUIState.collectAsState()
+    val logUIState by activityScreenViewModel.activityScreenUIState.collectAsState()
     val isInLog = logUIState.hikeLog.contains(hikeUIState.feature.properties.fid)
     var averageWindSpeed by remember { mutableDoubleStateOf(homeScreenViewModel.daysAverageWindSpeed(hikeUIState.selectedDate)) }
 
@@ -209,7 +209,7 @@ fun HikeCard(
                             .fillMaxWidth()
                             .weight(1f),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40)),
-                        onClick = { activityScreenViewModel.addToLog(hikeUIState.feature.properties.fid) }
+                        onClick = { activityScreenViewModel.addToActivityLog(hikeUIState.feature.properties.fid) }
                     ) {
                         Text(text = "Legg til i loggen")
                     }
@@ -298,7 +298,7 @@ fun HikeCard(
                             .fillMaxWidth(),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40)),
                         onClick = {
-                            activityScreenViewModel.removeFromLog(
+                            activityScreenViewModel.removeFromActivityLog(
                                 hikeUIState.feature.properties.fid
                             )
                         }

@@ -25,7 +25,7 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewMo
 import no.uio.ifi.in2000_gruppe3.ui.screens.welcome.WelcomeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.UserScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.UserSettingsScreen
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.activities.ActivityScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.activities.Activities
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.activities.ActivityScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.activities.ActivityScreenViewModelFactory
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen.ProfileScreenViewModel
@@ -159,7 +159,7 @@ fun AppNavHost() {
         }
 
         // User profile screen
-        composable(Screen.UserProfile.route) {
+        composable(Screen.Profile.route) {
             ProfileScreen(
                 profileScreenViewModel = profileScreenViewModel,
                 navController = navController
@@ -167,8 +167,8 @@ fun AppNavHost() {
         }
 
         // Logged hikes screen
-        composable(Screen.Log.route) {
-            ActivityScreen(
+        composable(Screen.Activity.route) {
+            Activities(
                 activityScreenViewModel = activityScreenViewModel,
                 hikeScreenViewModel = hikeScreenViewModel,
                 mapboxViewModel = mapboxViewModel,
