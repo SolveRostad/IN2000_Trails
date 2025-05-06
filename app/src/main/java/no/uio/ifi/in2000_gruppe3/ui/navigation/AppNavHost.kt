@@ -2,6 +2,9 @@ package no.uio.ifi.in2000_gruppe3.ui.navigation
 
 import android.app.Application
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -51,12 +54,21 @@ fun AppNavHost() {
         )
     )
 
+    val profileUIState by profileScreenViewModel.profileScreenUIState.collectAsState()
+
     NavHost(
         navController = navController,
         startDestination = Screen.Welcome.route
     ) {
         // Welcome screen
         composable(Screen.Welcome.route) {
+            LaunchedEffect(profileUIState.isLoggedIn) {
+                if (profileUIState.isLoggedIn) {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Welcome.route) { inclusive = true }
+                    }
+                }
+            }
             WelcomeScreen(
                 navController = navController
             )

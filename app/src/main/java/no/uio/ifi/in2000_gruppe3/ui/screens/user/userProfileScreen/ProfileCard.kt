@@ -48,6 +48,9 @@ fun ProfileCard(
     var expandedProfileId by remember { mutableStateOf<String?>(null) }
     val isSelected = profileUIState.username == profile.username
 
+    // Dont show the default user in the list
+    if (profile.username == "defaultUser") return
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -134,19 +137,17 @@ fun ProfileCard(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                if (profile.username != "defaultUser") {
-                    Button(
-                        onClick = {
-                            profileScreenViewModel.deleteProfile(profile.username)
-                            expandedProfileId = null
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Red
-                        )
-                    ) {
-                        Text(text = "Slett profil")
-                    }
+                Button(
+                    onClick = {
+                        profileScreenViewModel.deleteProfile(profile.username)
+                        expandedProfileId = null
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Red
+                    )
+                ) {
+                    Text(text = "Slett profil")
                 }
             }
         }

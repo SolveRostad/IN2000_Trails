@@ -24,7 +24,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -56,11 +55,12 @@ fun UserScreen(
 
     val logScreenUIState = logScreenViewModel.logScreenUIState.collectAsState()
 
-    val hikes = logScreenUIState.value.convertedLog
-
-    LaunchedEffect(Unit) {
+    LaunchedEffect(profileUIState.isLoggedIn) {
         if (!profileUIState.isLoggedIn) {
-            navController.navigate(Screen.UserProfile.route)
+            navController.navigate(Screen.UserProfile.route) {
+                // Pop up to User screen so we don't build up a stack of profile screens
+                popUpTo(Screen.User.route) { inclusive = true }
+            }
         }
     }
 
@@ -164,19 +164,12 @@ fun UserScreen(
                     }
 
                     1 -> {
-                        LaunchedEffect(currentView) {
-                            if (currentView == 1) {
-                                logScreenViewModel.getTotalTimesWalked()
-                                logScreenViewModel.loadLog()
-                            }
-                        }
-
-                        val totalTrips = logScreenUIState.value.hikesDone
-                        val distanceDone = logScreenUIState.value.totalDistance.let { "%.2f".format(it).toDouble() }
+                        logScreenViewModel.getTotalTimesWalked()
+                        logScreenViewModel.loadLog()
 
                         ActivityStats(
-                            numTrips = totalTrips,
-                            distanceKm = distanceDone
+                            numTrips = logScreenUIState.value.hikesDone,
+                            distanceKm = logScreenUIState.value.totalDistance.let { "%.2f".format(it).toDouble() }
                         )
                     }
                 }
