@@ -53,6 +53,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen.ProfileCard
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen.ProfileScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -168,7 +170,8 @@ fun ProfileScreen(
                     items(profileUIState.profiles) { profile ->
                         ProfileCard(
                             profile = profile,
-                            profileScreenViewModel = profileScreenViewModel
+                            profileScreenViewModel = profileScreenViewModel,
+                            navController = navController
                         )
                     }
                 }

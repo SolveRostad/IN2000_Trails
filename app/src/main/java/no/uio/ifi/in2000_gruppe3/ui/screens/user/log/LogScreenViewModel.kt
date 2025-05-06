@@ -4,7 +4,6 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mapbox.geojson.Point
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,11 +25,11 @@ class LogScreenViewModel(
     private val hikeAPIRepository: HikeAPIRepository,
     private val mapboxViewModel: MapboxViewModel,
 ): AndroidViewModel(application) {
-    private val _logScreenUIState = MutableStateFlow<ActivitiesScreenUIState>(
-        ActivitiesScreenUIState()
+    private val _logScreenUIState = MutableStateFlow<LogScreenUIState>(
+        LogScreenUIState()
     )
 
-    val logScreenUIState: StateFlow<ActivitiesScreenUIState> = _logScreenUIState.asStateFlow()
+    val logScreenUIState: StateFlow<LogScreenUIState> = _logScreenUIState.asStateFlow()
 
     val userPosition = mapboxViewModel.mapboxUIState.value.latestUserPosition
 
@@ -178,6 +177,9 @@ class LogScreenViewModel(
             }
             try {
                 logRepository.addNotesToLog(_logScreenUIState.value.username, hikeId, notes)
+                _logScreenUIState.update { state ->
+                    state.copy(hikeNotes = state.hikeNotes + (hikeId to notes))
+                }
             } catch (e: Exception) {
                 Log.e("LogScreenViewModel", "Error adding notes to log: ${e.message}")
                 _logScreenUIState.update {
@@ -211,27 +213,38 @@ class LogScreenViewModel(
         }
     }
 
-    suspend fun getNotesForHike(hikeId: Int): String {
-        return withContext(Dispatchers.IO) {
+    fun getNotesForHike(hikeId: Int) {
+        viewModelScope.launch {
+            _logScreenUIState.update {
+                it.copy(isLoading = true)
+            }
             try {
-                logRepository.getNotesForHike(_logScreenUIState.value.username, hikeId)
+                val notes = logRepository.getNotesForHike(_logScreenUIState.value.username, hikeId)
+                _logScreenUIState.update { state ->
+                    state.copy(hikeNotes = state.hikeNotes + (hikeId to notes))
+                }
             } catch (e: Exception) {
                 Log.e("LogScreenViewModel", "Error fetching notes for hike: ${e.message}")
-                ""
+                _logScreenUIState.update {
+                    it.copy(isError = true, errorMessage = e.message.toString())
+                }
+            } finally {
+                _logScreenUIState.update {
+                    it.copy(isLoading = false)
+                }
             }
         }
     }
 
-    fun getTimesWalked(hikeId: Int) {
+    fun getTotalTimesWalked() {
         viewModelScope.launch {
             _logScreenUIState.update {
                 it.copy (isLoading = true)
             }
             try{
-                val timesWalked = logRepository.getTimesWalked(_logScreenUIState.value.username, hikeId)
-                _logScreenUIState.update {
-                    it.copy (hikeLog = _logScreenUIState.value.hikeLog + timesWalked)
-                }
+                val username = _logScreenUIState.value.username
+                val total = logRepository.getTotalTimesWalked(username)
+                _logScreenUIState.update { it.copy(hikesDone = total) }
             } catch (e: Exception) {
                 Log.e("LogScreenViewModel", "Error fetching times walked: ${e.message}")
                 _logScreenUIState.update {
@@ -246,12 +259,14 @@ class LogScreenViewModel(
     }
 }
 
-data class ActivitiesScreenUIState(
+data class LogScreenUIState(
+    val hikeNotes: Map<Int, String> = emptyMap(),
     val convertedLog: List<Feature> = emptyList(),
     val username: String = "",
     val userLocation: Point = Point.fromLngLat(10.441649, 59.542819),
     val isLoading: Boolean = false,
     val errorMessage: String = "",
     val isError: Boolean = false,
-    val hikeLog: List<Int> = emptyList()
+    val hikeLog: List<Int> = emptyList(),
+    val hikesDone: Int = 0
 )

@@ -196,7 +196,7 @@ fun HikeCard(
                         .padding(8.dp)
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B9FF)),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40)),
                     onClick = { navController.navigate(Screen.LocationForecast.route) }
                 ) {
                     Text(text = "Se været andre dager")
@@ -210,7 +210,7 @@ fun HikeCard(
                             .padding(8.dp)
                             .fillMaxWidth()
                             .weight(1f),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B9FF)),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40)),
                         onClick = { logScreenViewModel.addToLog(hikeUIState.feature.properties.fid) }
                     ) {
                         Text(text = "Legg til i loggen")
@@ -222,7 +222,7 @@ fun HikeCard(
                                 .padding(8.dp)
                                 .weight(1f)
                                 .align(Alignment.CenterVertically),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B9FF)),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40)),
                             onClick = {
                                 logScreenViewModel.adjustTimesWalked(
                                     hikeUIState.feature.properties.fid,
@@ -238,7 +238,7 @@ fun HikeCard(
                                 .padding(8.dp)
                                 .weight(1f)
                                 .align(Alignment.CenterVertically),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B9FF)),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40)),
                             onClick = {
                                 logScreenViewModel.removeFromLog(
                                     hikeUIState.feature.properties.fid

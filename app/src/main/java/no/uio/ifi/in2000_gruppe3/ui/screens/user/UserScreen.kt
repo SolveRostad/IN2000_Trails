@@ -24,6 +24,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -52,6 +53,10 @@ fun UserScreen(
 ) {
     val profileUIState by profileScreenViewModel.profileScreenUIState.collectAsState()
     var currentView by remember { mutableIntStateOf(0) }
+
+    val logScreenUIState = logScreenViewModel.logScreenUIState.collectAsState()
+
+    val hikes = logScreenUIState.value.convertedLog
 
     LaunchedEffect(Unit) {
         if (!profileUIState.isLoggedIn) {
@@ -157,10 +162,24 @@ fun UserScreen(
                             navController = navController
                         )
                     }
+
                     1 -> {
+                        val totalDistance = remember(logScreenUIState.value.hikeLog) {
+                            hikes.sumOf { it.properties.distance_meters / 1000.0 }
+                        }
+
+                        LaunchedEffect(currentView) {
+                            if (currentView == 1) {
+                                logScreenViewModel.getTotalTimesWalked()
+                                logScreenViewModel.loadLog()
+                            }
+                        }
+
+                        val totalTrips = logScreenUIState.value.hikesDone
+
                         ActivityStats(
-                            numTrips = 5,
-                            distanceKm = 300
+                            numTrips = totalTrips,
+                            distanceKm = totalDistance
                         )
                     }
                 }

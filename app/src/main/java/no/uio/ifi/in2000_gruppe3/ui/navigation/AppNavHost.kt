@@ -25,8 +25,8 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.user.UserSettingsScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreenViewModelFactory
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen.ProfileScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen.ProfileScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.userProfileScreen.ProfileScreen
 
 @Composable
 fun AppNavHost() {

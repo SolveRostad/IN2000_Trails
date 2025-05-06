@@ -25,6 +25,6 @@ interface LogDao {
     @Query("SELECT notes FROM log_table WHERE username LIKE :username AND hike_id = :hikeId")
     suspend fun getNotesForHike(username: String, hikeId: Int ): String
 
-    @Query("SELECT times_walked FROM log_table WHERE username LIKE :username AND hike_id = :hikeId")
-    suspend fun getTimesWalked(username: String, hikeId: Int): Int
+    @Query("SELECT SUM(times_walked) FROM log_table WHERE username LIKE :username")
+    suspend fun getTotalTimesWalked(username: String): Int
 }

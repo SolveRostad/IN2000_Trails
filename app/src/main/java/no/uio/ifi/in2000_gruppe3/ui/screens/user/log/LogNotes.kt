@@ -24,6 +24,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,11 +42,17 @@ fun LogNotes(
     logScreenViewModel: LogScreenViewModel,
     feature: Feature
 ) {
-    var noteText by remember { mutableStateOf("") }
+    val logScreenUIState by logScreenViewModel.logScreenUIState.collectAsState()
+
+    var noteText by remember { mutableStateOf(logScreenUIState.hikeNotes[feature.properties.fid] ?: "") }
     var isExpanded by remember { mutableStateOf(false) }
 
-    LaunchedEffect(feature.properties.fid) {
-        noteText = logScreenViewModel.getNotesForHike(feature.properties.fid)
+    LaunchedEffect(feature.properties.fid, logScreenUIState.hikeNotes[feature.properties.fid]) {
+        if (logScreenUIState.hikeNotes[feature.properties.fid] == null) {
+            logScreenViewModel.getNotesForHike(feature.properties.fid)
+        } else {
+            noteText = logScreenUIState.hikeNotes[feature.properties.fid] ?: ""
+        }
     }
 
     Column(
@@ -106,7 +113,7 @@ fun LogNotes(
                 TextButton(onClick = { isExpanded = false }) {
                     Text(
                         text = "Avbryt",
-                        color = Color(0xFF57B9FF)
+                        color = Color(0xFF061C40)
                     )
                 }
 
@@ -117,7 +124,7 @@ fun LogNotes(
                         isExpanded = false
                         logScreenViewModel.addNotesToLog(feature.properties.fid, noteText)
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B9FF))
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40))
                 ) {
                     Text("Lagre")
                 }

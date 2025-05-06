@@ -34,12 +34,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import no.uio.ifi.in2000_gruppe3.data.database.Profile
+import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 
 @Composable
 fun ProfileCard(
     profile: Profile,
-    profileScreenViewModel: ProfileScreenViewModel
+    profileScreenViewModel: ProfileScreenViewModel,
+    navController: NavController
 ) {
     val profileUIState by profileScreenViewModel.profileScreenUIState.collectAsState()
     var expandedProfileId by remember { mutableStateOf<String?>(null) }
@@ -119,10 +122,11 @@ fun ProfileCard(
                         Log.d("UserScreen", "Selected profile: ${profile.username}")
                         profileScreenViewModel.selectProfile(profile.username)
                         expandedProfileId = null
+                        navController.navigate(Screen.User.route)
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF57B9FF)
+                        containerColor = Color(0xFF061C40)
                     )
                 ) {
                     Text("Velg bruker")
