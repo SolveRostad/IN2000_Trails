@@ -55,6 +55,10 @@ fun UserScreen(
 
     val logScreenUIState = logScreenViewModel.logScreenUIState.collectAsState()
 
+    LaunchedEffect(profileUIState.username) {
+        logScreenViewModel.setUser()
+    }
+
     LaunchedEffect(profileUIState.isLoggedIn) {
         if (!profileUIState.isLoggedIn) {
             navController.navigate(Screen.UserProfile.route) {

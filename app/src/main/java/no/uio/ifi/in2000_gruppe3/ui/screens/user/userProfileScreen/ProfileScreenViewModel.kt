@@ -90,7 +90,7 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
         }
     }
 
-    fun selectProfile(username: String) {
+    fun selectProfile(username: String, onUserSelected: () -> Unit = {}) {
         viewModelScope.launch {
             _profileScreenUIState.update {
                 it.copy (isLoading = true)
@@ -104,6 +104,7 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
                     )
                 }
                 Log.d("UserScreenViewModel", "Selected user: ${_profileScreenUIState.value.username}")
+                onUserSelected()
             } catch (e: Exception) {
                 _profileScreenUIState.update {
                     it.copy (

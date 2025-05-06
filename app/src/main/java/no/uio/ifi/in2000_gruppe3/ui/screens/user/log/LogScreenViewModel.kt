@@ -31,8 +31,6 @@ class LogScreenViewModel(
 
     val logScreenUIState: StateFlow<LogScreenUIState> = _logScreenUIState.asStateFlow()
 
-    val userPosition = mapboxViewModel.mapboxUIState.value.latestUserPosition
-
     init {
         viewModelScope.launch {
             try {
@@ -76,7 +74,50 @@ class LogScreenViewModel(
     fun setUser() {
         viewModelScope.launch {
             _logScreenUIState.update {
-                it.copy(username = profileRepository.getSelectedUser().username)
+                it.copy(isLoading = true)
+            }
+            try {
+                val selectedUser = profileRepository.getSelectedUser()
+                _logScreenUIState.update {
+                    it.copy(
+                        username = selectedUser.username,
+                        hikeLog = emptyList(),
+                        hikeTimesWalked = emptyMap(),
+                        hikeNotes = emptyMap(),
+                        convertedLog = emptyList(),
+                        hikesDone = 0,
+                        totalDistance = 0.0,
+                        isLoading = true
+                    )
+                }
+
+                val userLogs = logRepository.getAllLogs(selectedUser.username)
+
+                _logScreenUIState.update {
+                    it.copy(
+                        hikeLog = userLogs,
+                        isLoading = false
+                    )
+                }
+
+                getConvertedLog()
+                getTotalTimesWalked()
+
+                userLogs.forEach { hikeId ->
+                    getTimesWalkedForHike(hikeId)
+                    getNotesForHike(hikeId)
+                }
+
+                calculateTotalDistance()
+            } catch (e: Exception) {
+                Log.e("LogScreenViewModel", "Error setting user: ${e.message}")
+                _logScreenUIState.update {
+                    it.copy(isLoading = false, isError = true, errorMessage = e.message ?: "Unknown error")
+                }
+            } finally {
+                _logScreenUIState.update {
+                    it.copy(isLoading = false)
+                }
             }
         }
     }
@@ -302,13 +343,13 @@ class LogScreenViewModel(
             try {
                 val totalDistance = _logScreenUIState.value.convertedLog.sumOf { feature ->
                     val hikeId = feature.properties.fid
-                    val timesWalked = _logScreenUIState.value.hikeTimesWalked[hikeId] ?: 1
+                    val timesWalked = _logScreenUIState.value.hikeTimesWalked[hikeId] ?: 0
                     (feature.properties.distance_meters / 1000.0) * timesWalked
                 }
                 _logScreenUIState.update {
                     it.copy(totalDistance = totalDistance)
                 }
-            } catch (e: Exception) {
+            } catch(e: Exception) {
                 _logScreenUIState.update {
                     it.copy(isError = true, errorMessage = e.message.toString())
                 }

@@ -34,7 +34,6 @@ class FavoritesScreenViewModel(
     val favoriteScreenUIState: StateFlow<FavoriteScreenUIState> =
         _favoriteScreenUIState.asStateFlow()
 
-    val userPosition = mapboxViewModel.mapboxUIState.value.latestUserPosition
 
     init {
         viewModelScope.launch {
