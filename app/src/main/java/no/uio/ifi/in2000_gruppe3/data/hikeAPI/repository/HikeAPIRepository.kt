@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository
 
 import androidx.compose.ui.graphics.Color
+import com.mapbox.geojson.Point
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,6 +30,9 @@ class HikeAPIRepository(private val openAIViewModel: OpenAIViewModel) {
         val features = hikeAPIDatasource.getHikes(lat, lng, limit, featureType, minDistance)
         features.forEach { feature ->
             feature.color = getColor()
+            if (feature.properties.gradering.isNullOrBlank()) {
+                generateDifficulty(feature)
+            }
             feature.difficultyInfo = getDifficultyInfo(feature.properties.gradering ?: "Ukjent")
 
             if (feature.properties.desc == null || feature.properties.desc!!.contains("_")) {
@@ -88,6 +92,17 @@ class HikeAPIRepository(private val openAIViewModel: OpenAIViewModel) {
         return color
     }
 
+    private fun generateDifficulty(feature: Feature) {
+        val distance = feature.properties.distance_meters
+        val difficulty = when {
+            distance < 3000 -> "G"
+            distance < 5000 -> "B"
+            distance < 10000 -> "R"
+            else -> "S"
+        }
+        feature.properties.gradering = difficulty
+    }
+
     private fun getDifficultyInfo(gradering: String): DifficultyInfo {
         return when (gradering) {
             "G" -> DifficultyInfo("ENKEL", Color(0xFF4CAF50)) // Green
@@ -96,5 +111,15 @@ class HikeAPIRepository(private val openAIViewModel: OpenAIViewModel) {
             "S" -> DifficultyInfo("EKSPERT", Color(0xFFF44336)) // Red
             else -> DifficultyInfo("UKJENT", Color(0xFF757575)) // Medium Gray
         }
+    }
+
+    suspend fun getHikesById(hikeIds: List<Int>, position: Point): List<Feature> {
+        val hikeIdStringList = hikeIds.map { it.toString() }
+        val features = hikeAPIDatasource.getHikesById(hikeIdStringList, position)
+        features.forEach { feature ->
+            feature.color = getColor()
+            feature.difficultyInfo = getDifficultyInfo(feature.properties.gradering ?: "Ukjent")
+        }
+        return features
     }
 }

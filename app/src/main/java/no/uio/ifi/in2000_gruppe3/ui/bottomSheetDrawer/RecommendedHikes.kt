@@ -3,19 +3,16 @@ package no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,8 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.R
-import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.ui.hikeCard.SmallHikeCard
+import no.uio.ifi.in2000_gruppe3.ui.loaders.Loader
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
@@ -42,15 +39,15 @@ fun RecommendedHikes(
     openAIViewModel: OpenAIViewModel,
     navController: NavHostController
 ) {
-    var recommendedHikes by remember { mutableStateOf<List<Feature>>(emptyList()) }
+    val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
 
     LaunchedEffect(Unit) {
-        val hikes = homeScreenViewModel.getRecommendedHikes(
-            homeScreenViewModel = homeScreenViewModel,
-            mapBoxViewModel = mapBoxViewModel,
-            openAIViewModel = openAIViewModel
-        )
-        recommendedHikes = hikes
+        if (!hikeUIState.recommendedHikesLoaded) {
+            openAIViewModel.getRecommendedHikes(
+                homeScreenViewModel,
+                hikeScreenViewModel
+            )
+        }
     }
 
     Column(
@@ -89,24 +86,16 @@ fun RecommendedHikes(
             )
         }
 
-        Text(
-            text = "eller"
-        )
+        Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth(0.7f)
-                .align(Alignment.CenterHorizontally),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B9FF)),
-            onClick = { navController.navigate(Screen.Chatbot.route) }
-        ) {
+        if (hikeUIState.recommendedHikes.isEmpty()) {
             Text(
-                text = "Chat med meg"
+                text = "Vent mens jeg finner de beste turene for deg!",
             )
+            Loader()
         }
 
-        recommendedHikes.forEach { hikeFeature ->
+        hikeUIState.recommendedHikes.forEach { hikeFeature ->
             SmallHikeCard(
                 mapboxViewModel = mapBoxViewModel,
                 feature = hikeFeature,

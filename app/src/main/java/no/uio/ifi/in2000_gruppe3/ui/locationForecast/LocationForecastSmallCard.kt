@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000_gruppe3.ui.locationForecast
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,6 +43,8 @@ fun LocationForecastSmallCard(
     hikeScreenViewModel: HikeScreenViewModel,
     navController: NavHostController
 ) {
+    val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
+
     val todaysDay = getTodaysDay()
     val todaysDate = getTodaysDate()
     val dateFormatted = getDateFormatted(date)
@@ -68,7 +73,11 @@ fun LocationForecastSmallCard(
             containerColor = MaterialTheme.colorScheme.surface
         ),
         onClick = {
-            hikeScreenViewModel.updateDate(day, date, dateFormatted)
+            hikeScreenViewModel.updateSelectedDay(day)
+            hikeScreenViewModel.updateSelectedDate(date)
+            if (hikeUIState.selectedDay != day) {
+                hikeScreenViewModel.updateDescriptionAlreadyLoaded(false)
+            }
             navController.navigate(Screen.LocationForecastDetailed.route)
         }
     ) {
@@ -92,12 +101,28 @@ fun LocationForecastSmallCard(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 item {
-                    Text(
-                        text = "$daysHighestTemp°\n${daysLowestTemp}°",
-                        style = MaterialTheme.typography.bodyLarge,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(3.dp).width(45.dp)
-                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 8.dp)
+                    ) {
+                        Text(
+                            text = "$daysHighestTemp°",
+                            style = MaterialTheme.typography.bodyLarge,
+                            textAlign = TextAlign.Center,
+                            color = Color.Red
+                        )
+
+                        Spacer(modifier = Modifier.height(5.dp))
+
+                        Text(
+                            text = "${daysLowestTemp}°",
+                            style = MaterialTheme.typography.bodyLarge,
+                            textAlign = TextAlign.Center,
+                            color = Color.Blue
+                        )
+                    }
 
                     VerticalDivider(
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),

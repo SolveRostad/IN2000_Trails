@@ -31,13 +31,16 @@ import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 
 @Composable
-fun SuggestionColumn(mapboxViewModel: MapboxViewModel) {
+fun SuggestionColumn(
+    mapboxViewModel: MapboxViewModel
+) {
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
+    val hasSuggestions = mapboxUIState.searchQuery.isNotBlank() && mapboxUIState.searchResponse.isNotEmpty()
 
-    if (mapboxUIState.searchResponse.isNotEmpty() && mapboxUIState.searchQuery != "") {
+    if (hasSuggestions) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
@@ -51,14 +54,16 @@ fun SuggestionColumn(mapboxViewModel: MapboxViewModel) {
                         .fillMaxWidth()
                         .padding(8.dp)
                         .clickable {
-                            mapboxViewModel.getSelectedSearchResultPoint(suggestion)
+                            mapboxViewModel.getSelectedSearchResultPoint(
+                                suggestion = suggestion
+                            )
                             keyboardController?.hide()
                             focusManager.clearFocus()
                         },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(
-                        modifier = Modifier.weight(0.2f),
+                        modifier = Modifier.weight(0.25f),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         val icon = getIconFromString(suggestion.makiIcon.toString(), context)

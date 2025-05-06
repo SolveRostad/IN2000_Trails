@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mapbox.geojson.Point
@@ -18,7 +17,6 @@ import no.uio.ifi.in2000_gruppe3.data.locationForecastAPI.repository.LocationFor
 import no.uio.ifi.in2000_gruppe3.data.metAlertsAPI.models.MetAlerts
 import no.uio.ifi.in2000_gruppe3.data.metAlertsAPI.repository.MetAlertsRepository
 import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.SheetDrawerDetent
-import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 
 class HomeScreenViewModel() : ViewModel() {
@@ -36,10 +34,30 @@ class HomeScreenViewModel() : ViewModel() {
     val homeScreenUIState: StateFlow<HomeScreenUIState> = _homeScreenUIState.asStateFlow()
 
     private val _sheetStateTarget = MutableStateFlow(SheetDrawerDetent.SEMIPEEK)
-    val sheetStateTarget: StateFlow<SheetDrawerDetent> = _sheetStateTarget.asStateFlow()
+    val sheetStateTarget = _sheetStateTarget.asStateFlow()
+
+    private val _currentSheetOffset = MutableStateFlow(0f)
+    val currentSheetOffset = _currentSheetOffset.asStateFlow()
+
+    // To only show the aanund dialog once
+    fun markAanundDialogShown() {
+        _homeScreenUIState.update {
+            it.copy(hasShownAanundDialog = true)
+        }
+    }
 
     fun setSheetState(target: SheetDrawerDetent) {
         _sheetStateTarget.value = target
+    }
+
+    fun updateNetworkStatus(isConnected: Boolean) {
+        _homeScreenUIState.update {
+            it.copy(hasNetworkConnection = isConnected)
+        }
+    }
+
+    fun updateSheetOffset(offset: Float) {
+        _currentSheetOffset.value = offset
     }
 
     fun fetchHikes(
@@ -49,18 +67,24 @@ class HomeScreenViewModel() : ViewModel() {
         featureType: String,
         minDistance: Int
     ) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _homeScreenUIState.update {
                 it.copy(isLoading = true)
             }
             try {
                 val hikesResponse = hikeAPIRepository.getHikes(lat, lng, limit, featureType, minDistance)
                 _homeScreenUIState.update {
-                    it.copy(hikes = hikesResponse, isError = false)
+                    it.copy(
+                        hikes = hikesResponse,
+                        isError = false
+                    )
                 }
             } catch (e: Exception) {
                 _homeScreenUIState.update {
-                    it.copy(isError = true, errorMessage = e.message ?: "Unknown error")
+                    it.copy(
+                        isError = true,
+                        errorMessage = e.message ?: "Error fetching hikes"
+                    )
                 }
             } finally {
                 _homeScreenUIState.update {
@@ -71,40 +95,24 @@ class HomeScreenViewModel() : ViewModel() {
         }
     }
 
-    suspend fun getRecommendedHikes(
-        homeScreenViewModel: HomeScreenViewModel,
-        mapBoxViewModel: MapboxViewModel,
-        openAIViewModel: OpenAIViewModel
-    ): List<Feature> {
-        val hikes = hikeAPIRepository.getHikes(
-            mapBoxViewModel.mapboxUIState.value.latestUserPosition?.latitude() ?: 59.856885,
-            mapBoxViewModel.mapboxUIState.value.latestUserPosition?.longitude() ?: 10.660978,
-            100,
-            "Fotrute",
-            500
-        )
-        return hikes.shuffled().take(3)
-    }
-
     fun fetchForecast(point: Point) {
-        val lat = point.latitude()
-        val lng = point.longitude()
-
         viewModelScope.launch(Dispatchers.IO) {
             _homeScreenUIState.update {
                 it.copy(isLoading = true)
             }
             try {
-                val result = locationForecastRepository.getForecast(lat, lng)
+                val forecast = locationForecastRepository.getForecast(point.latitude(), point.longitude())
                 _homeScreenUIState.update {
-                    it.copy(forecast = result, isError = false, isLoading = false)
+                    it.copy(
+                        forecast = forecast,
+                        isError = false
+                    )
                 }
             } catch (e: Exception) {
                 _homeScreenUIState.update {
                     it.copy(
                         isError = true,
-                        errorMessage = e.message ?: "Unknown error",
-                        isLoading = false
+                        errorMessage = e.message ?: "Error fetching forecast"
                     )
                 }
             } finally {
@@ -116,25 +124,23 @@ class HomeScreenViewModel() : ViewModel() {
     }
 
     fun fetchAlerts() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _homeScreenUIState.update {
                 it.copy(isLoading = true)
             }
             try {
-                val result = metAlertsRepository.getAlerts() //henter data fra repository
-                Log.d("FetchAlerts", "Alerts fetched: $result")
-
-                if (result != null) {
-                    _homeScreenUIState.update {
-                        it.copy(alerts = result)
-                    }
+                val alerts = metAlertsRepository.getAlerts()
+                _homeScreenUIState.update {
+                    it.copy(
+                        alerts = alerts,
+                        isError = false
+                    )
                 }
             } catch (e: Exception) {
                 _homeScreenUIState.update {
                     it.copy(
                         isError = true,
-                        errorMessage = e.message ?: "Unknown error",
-                        isLoading = false
+                        errorMessage = e.message ?: "Error fetching alerts"
                     )
                 }
             } finally {
@@ -146,8 +152,8 @@ class HomeScreenViewModel() : ViewModel() {
     }
 
     fun clearHikes() {
-        _homeScreenUIState.update { currentState ->
-            currentState.copy(hikes = emptyList())
+        _homeScreenUIState.update {
+            it.copy(hikes = emptyList())
         }
     }
 
@@ -170,14 +176,14 @@ class HomeScreenViewModel() : ViewModel() {
         val temps = timeSeriesFromDate(date)
             ?.map { it.data.instant.details.air_temperature }
 
-        return temps?.average() ?: -1.0
+        return temps?.average() ?: Double.NEGATIVE_INFINITY
     }
 
     fun daysAverageWindSpeed(date: String): Double {
         val windSpeeds = timeSeriesFromDate(date)
             ?.map { it.data.instant.details.wind_speed }
 
-        return windSpeeds?.average() ?: -1.0
+        return windSpeeds?.average() ?: Double.NEGATIVE_INFINITY
     }
 }
 
@@ -187,5 +193,7 @@ data class HomeScreenUIState(
     val errorMessage: String = "",
     val hikes: List<Feature>,
     val alerts: MetAlerts?,
-    val forecast: Locationforecast?
+    val forecast: Locationforecast?,
+    val hasNetworkConnection: Boolean = true,
+    val hasShownAanundDialog: Boolean = false
 )

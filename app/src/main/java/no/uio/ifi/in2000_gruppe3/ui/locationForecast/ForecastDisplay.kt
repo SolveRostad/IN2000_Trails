@@ -18,17 +18,6 @@ import no.uio.ifi.in2000_gruppe3.data.date.getCurrentTime
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDate
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
-fun getWeatherIconUrl(symbolCode: String): String {
-    val iconUrl: String
-    if (symbolCode.isEmpty()) {
-        Log.d("WeatherIcon", "symbolCode is null or empty!")
-        iconUrl = "https://example.com/default-icon.png"  // Fallback URL
-    } else {
-        iconUrl = "https://raw.githubusercontent.com/metno/weathericons/refs/heads/main/weather/png/$symbolCode.png"
-    }
-    return iconUrl
-}
-
 @Composable
 fun ForecastDisplay(
     homeScreenViewModel: HomeScreenViewModel,
@@ -62,16 +51,15 @@ fun ForecastDisplay(
         }
         val iconURL = getWeatherIconUrl(symbolCode.toString())
 
-        Column(
-            modifier = modifier,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            if (temperature != null) {
+        if (temperature != null) {
+            Column(
+                modifier = modifier,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Image(
                     painter = rememberAsyncImagePainter(iconURL),
                     contentDescription = "Vær-ikon",
-                    modifier = Modifier
-                        .size(60.dp)
+                    modifier = Modifier.size(60.dp)
                 )
                 if (showTemperature) {
                     Text(
@@ -84,4 +72,12 @@ fun ForecastDisplay(
             }
         }
     }
+}
+
+fun getWeatherIconUrl(symbolCode: String): String {
+    if (symbolCode.isEmpty()) {
+        Log.d("ForecastDisplay", "Symbol code error")
+        return "null"
+    }
+    return "https://raw.githubusercontent.com/metno/weathericons/refs/heads/main/weather/png/$symbolCode.png"
 }

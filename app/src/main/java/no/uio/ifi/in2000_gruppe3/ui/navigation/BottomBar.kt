@@ -44,15 +44,14 @@ fun BottomBar(navController: NavHostController) {
                     },
                     modifier = Modifier
                         .weight(1f)
-                        .fillMaxSize()
+                        .size(30.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Favorite,
                         contentDescription = "Favorites",
-                        tint = if (navController.currentDestination?.route == "favorites")
-                            MaterialTheme.colorScheme.primary
-                        else
-                            LocalContentColor.current
+                        modifier = Modifier.fillMaxSize(),
+                        tint = if (navController.currentDestination?.route == "favorites") Color(0xFF061C40)
+                               else LocalContentColor.current
                     )
                 }
 
@@ -63,34 +62,33 @@ fun BottomBar(navController: NavHostController) {
                             navController.navigate(Screen.Home.route)
                     },
                     modifier = Modifier
-                        .weight(1.5f)
-                        .size(70.dp)
+                        .weight(1f)
+                        .size(80.dp)
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.logo),
+                        painter = painterResource(id = R.drawable.logo_new),
                         contentDescription = "Home",
                         modifier = Modifier.fillMaxSize(),
                         tint = Color.Unspecified
                     )
                 }
 
-                // Chatbot
+                // User
                 IconButton(
                     onClick = {
-                        if (navController.currentDestination?.route != "chatbot")
-                            navController.navigate(Screen.Chatbot.route)
+                        if (navController.currentDestination?.route != "user")
+                            navController.navigate(Screen.User.route)
                     },
                     modifier = Modifier
                         .weight(1f)
-                        .fillMaxSize()
+                        .size(30.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Person,
-                        contentDescription = "Chatbot",
-                        tint = if (navController.currentDestination?.route == "chatbot")
-                            MaterialTheme.colorScheme.primary
-                        else
-                            LocalContentColor.current
+                        contentDescription = "User",
+                        modifier = Modifier.fillMaxSize(),
+                        tint = if (navController.currentDestination?.route == "user") Color(0xFF061C40)
+                               else LocalContentColor.current
                     )
                 }
             }
