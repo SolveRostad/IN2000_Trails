@@ -118,6 +118,9 @@ class HikeAPIRepository(private val openAIViewModel: OpenAIViewModel) {
         val features = hikeAPIDatasource.getHikesById(hikeIdStringList, position)
         features.forEach { feature ->
             feature.color = getColor()
+            if (feature.properties.gradering.isNullOrBlank()) {
+                generateDifficulty(feature)
+            }
             feature.difficultyInfo = getDifficultyInfo(feature.properties.gradering ?: "Ukjent")
         }
         return features

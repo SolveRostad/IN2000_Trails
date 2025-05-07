@@ -20,14 +20,14 @@ import no.uio.ifi.in2000_gruppe3.R
 fun ActivityStatsPreview() {
     ActivityStats(
         numTrips = 5,
-        distanceKm = 10
+        distanceKm = 10.0
     )
 }
 
 @Composable
 fun ActivityStats(
     numTrips: Int,
-    distanceKm: Int
+    distanceKm: Double
 ) {
     Column(
         modifier = Modifier

@@ -151,9 +151,9 @@ class OpenAIViewModel: ViewModel() {
                 "Du skal kun svare på spørsmål som er relatert til turer, friluftsliv og været. " +
                 "Hvis spørsmålet ikke er relatert til det så skal du gi en melding hvor du forteller hvem du er som sier at du kun svarer på spørsmål som er relevante. " +
                 "Svar på en hyggelig måte. " +
+                "Du har kun tilgang tl turer i Oslo og Akershus. " +
                 "Her er chat historikken som hva vi har snakket om tidligere: $conversationHistory. " +
                 "Her er meldingen fra bruker: $input. " +
-                "Du har kun tilgang tl turer i Oslo og Akershus. " +
                 "Hvis du i denne meldingen skriver om en spesifikk tur så avslutt meldingen med å bruke tegnet \"€\" og legg til nøyaktige koordinater til turen etter tegnet. " +
                 "Send koordinatene som lat, lng uten noe annet tekst eller symboler. "
 

@@ -2,6 +2,9 @@ package no.uio.ifi.in2000_gruppe3.ui.navigation
 
 import android.app.Application
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -21,13 +24,17 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.WelcomeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastDetailedScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.ChatbotScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModelFactory
+import no.uio.ifi.in2000_gruppe3.ui.screens.welcome.WelcomeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.UserScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.UserSettingsScreen
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreen
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreenViewModelFactory
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen.ProfileScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.activities.Activities
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.activities.ActivityScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.activities.ActivityScreenViewModelFactory
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen.ProfileScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen.ProfileScreen
 
 @Composable
 fun AppNavHost() {
@@ -45,12 +52,14 @@ fun AppNavHost() {
     val mapboxViewModel: MapboxViewModel = viewModel()
     val openAIViewModel: OpenAIViewModel = viewModel()
     val profileScreenViewModel: ProfileScreenViewModel = viewModel()
-    val logScreenViewModel: LogScreenViewModel = viewModel(
-        factory = LogScreenViewModelFactory(
+    val activityScreenViewModel: ActivityScreenViewModel = viewModel(
+        factory = ActivityScreenViewModelFactory(
             application = LocalContext.current.applicationContext as Application,
             openAIViewModel = OpenAIViewModel()
         )
     )
+
+    val profileUIState by profileScreenViewModel.profileScreenUIState.collectAsState()
 
     NavHost(
         navController = navController,
@@ -58,6 +67,13 @@ fun AppNavHost() {
     ) {
         // Welcome screen
         composable(Screen.Welcome.route) {
+            LaunchedEffect(profileUIState.isLoggedIn) {
+                if (profileUIState.isLoggedIn) {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Welcome.route) { inclusive = true }
+                    }
+                }
+            }
             WelcomeScreen(
                 navController = navController
             )
@@ -71,6 +87,7 @@ fun AppNavHost() {
                 favoritesViewModel = favoritesViewModel,
                 mapboxViewModel = mapboxViewModel,
                 openAIViewModel = openAIViewModel,
+                activityScreenViewModel = activityScreenViewModel,
                 navController = navController
             )
         }
@@ -93,7 +110,7 @@ fun AppNavHost() {
                 favoritesViewModel = favoritesViewModel,
                 mapboxViewModel = mapboxViewModel,
                 openAIViewModel = openAIViewModel,
-                logScreenViewModel = logScreenViewModel,
+                activityScreenViewModel = activityScreenViewModel,
                 navController = navController
             )
         }
@@ -131,7 +148,7 @@ fun AppNavHost() {
             UserScreen(
                 hikeScreenViewModel = hikeScreenViewModel,
                 mapboxViewModel = mapboxViewModel,
-                logScreenViewModel = logScreenViewModel,
+                activityScreenViewModel = activityScreenViewModel,
                 profileScreenViewModel = profileScreenViewModel,
                 navController = navController
             )
@@ -147,7 +164,7 @@ fun AppNavHost() {
         }
 
         // User profile screen
-        composable(Screen.UserProfile.route) {
+        composable(Screen.Profile.route) {
             ProfileScreen(
                 profileScreenViewModel = profileScreenViewModel,
                 navController = navController
@@ -155,9 +172,9 @@ fun AppNavHost() {
         }
 
         // Logged hikes screen
-        composable(Screen.Log.route) {
-            LogScreen(
-                logScreenViewModel = logScreenViewModel,
+        composable(Screen.Activity.route) {
+            Activities(
+                activityScreenViewModel = activityScreenViewModel,
                 hikeScreenViewModel = hikeScreenViewModel,
                 mapboxViewModel = mapboxViewModel,
                 navController = navController
