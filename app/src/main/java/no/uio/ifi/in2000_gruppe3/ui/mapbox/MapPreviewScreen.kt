@@ -109,7 +109,7 @@ fun MapPreviewScreen(
                 iconImage = marker
             }
 
-            MapEffect() { mapView ->
+            MapEffect { mapView ->
                 mapView.location.updateSettings {
                     locationPuck = createDefault2DPuck(withBearing = true)
                     enabled = true

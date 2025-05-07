@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.profile.userProfileScreen
+package no.uio.ifi.in2000_gruppe3.ui.screens.profile.profileSelectScreen
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke

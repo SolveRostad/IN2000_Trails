@@ -140,7 +140,7 @@ fun BottomBar(navController: NavHostController) {
                         .background(
                             if (
                                 currentDestination == Screen.Profile.route ||
-                                currentDestination == Screen.ProfileSettings.route ||
+                                currentDestination == Screen.Settings.route ||
                                 currentDestination == Screen.ProfileSelect.route
                                 ) Color(0xFFADC3D2)
                             else Color.Transparent,
@@ -153,7 +153,7 @@ fun BottomBar(navController: NavHostController) {
                         modifier = Modifier.fillMaxSize(),
                         tint = if (
                             currentDestination == Screen.Profile.route ||
-                            currentDestination == Screen.ProfileSettings.route ||
+                            currentDestination == Screen.Settings.route ||
                             currentDestination == Screen.ProfileSelect.route
                             ) LogoPrimary
                             else LocalContentColor.current

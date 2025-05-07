@@ -39,12 +39,12 @@ import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities.Activities
 import no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities.ActivityScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.profile.userProfileScreen.ProfileScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.profile.profileSelectScreen.ProfileScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.theme.LogoPrimary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserScreen(
+fun ProfileScreen(
     hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     profileScreenViewModel: ProfileScreenViewModel,
@@ -85,7 +85,7 @@ fun UserScreen(
                 },
                 actions = {
                     IconButton(
-                        onClick = { navController.navigate(Screen.ProfileSettings.route) }
+                        onClick = { navController.navigate(Screen.Settings.route) }
                     ) {
                         Icon(
                             imageVector = Icons.Default.Settings,

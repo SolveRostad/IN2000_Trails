@@ -57,6 +57,7 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities.ActivityScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.theme.LogoPrimary
+import no.uio.ifi.in2000_gruppe3.ui.theme.LogoSecondary
 import java.time.LocalDate
 
 @Composable
@@ -170,7 +171,7 @@ fun HikeCard(
                         icon = ImageVector.vectorResource(id = R.drawable.wind),
                         label = "Vindhastighet",
                         value = averageWindSpeed.let { "%.1f m/s".format(it) },
-                        iconTint = Color(0xFF2196F3)
+                        iconTint = LogoSecondary
                     )
                 }
 

@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
+import no.uio.ifi.in2000_gruppe3.ui.theme.LogoSecondary
 
 @Composable
 fun SmallHikeCard(
@@ -97,7 +98,7 @@ fun SmallHikeCard(
                         icon = Icons.Rounded.LocationOn,
                         label = "Avstand til start",
                         value = (feature.properties.distance_to_point.toFloat() / 1000.0).let { "%.2f km".format(it) },
-                        iconTint = MaterialTheme.colorScheme.primary
+                        iconTint = LogoSecondary
                     )
                     InfoItem(
                         icon = ImageVector.vectorResource(id = R.drawable.distance_icon),

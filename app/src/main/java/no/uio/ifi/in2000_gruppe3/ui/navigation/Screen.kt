@@ -6,12 +6,11 @@ sealed class Screen(val route: String) {
     object Home : Screen("home")
     object Favorites : Screen("favorites")
     object HikeScreen : Screen("hikeScreen")
+    object Chatbot : Screen("chatbot")
 
     object Profile : Screen("profile")
     object ProfileSelect: Screen("profileSelect")
-    object ProfileSettings : Screen("profileSettings")
-
-    object Chatbot : Screen("chatbot")
+    object Settings : Screen("settings")
 
     object MapPreview : Screen("mapPreview")
 

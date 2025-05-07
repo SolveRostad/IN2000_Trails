@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.profile.userProfileScreen
+package no.uio.ifi.in2000_gruppe3.ui.screens.profile.profileSelectScreen
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -57,7 +57,7 @@ import no.uio.ifi.in2000_gruppe3.ui.theme.LogoPrimary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(
+fun ProfileSelectScreen(
     profileScreenViewModel: ProfileScreenViewModel,
     navController: NavHostController
 ) {

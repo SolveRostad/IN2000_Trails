@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.profile
+package no.uio.ifi.in2000_gruppe3.ui.screens.settings
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Row
@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import no.uio.ifi.in2000_gruppe3.ui.theme.LogoPrimary
 
 @Composable
 fun SettingButton(
@@ -46,7 +47,7 @@ fun SettingButton(
             Icon(
                 painterResource(id = icon),
                 contentDescription = "$text icon",
-                tint = Color.Unspecified,
+                tint = LogoPrimary,
                 modifier = Modifier.size(32.dp)
             )
 

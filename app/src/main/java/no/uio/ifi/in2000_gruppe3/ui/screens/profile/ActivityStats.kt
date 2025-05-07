@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000_gruppe3.R
+import no.uio.ifi.in2000_gruppe3.ui.theme.LogoSecondary
 
 @Preview
 @Composable
@@ -52,7 +53,8 @@ fun ActivityStats(
                 Icon(
                     painterResource(id = R.drawable.total_trips),
                     contentDescription = "Num trips",
-                    modifier = Modifier.size(32.dp)
+                    modifier = Modifier.size(32.dp),
+                    tint = LogoSecondary
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))
@@ -83,7 +85,8 @@ fun ActivityStats(
                 Icon(
                     painterResource(id = R.drawable.path),
                     contentDescription = "Distance traveled",
-                    modifier = Modifier.size(38.dp)
+                    modifier = Modifier.size(38.dp),
+                    tint = Color(0xFF4CAF50)
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))
