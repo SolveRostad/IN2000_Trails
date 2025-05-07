@@ -29,13 +29,11 @@ class FavoritesScreenViewModel(
         FavoriteScreenUIState(
             favorites = emptyList(),
             userLocation = Point.fromLngLat(10.441649, 59.542819),
-
         )
     )
     val favoriteScreenUIState: StateFlow<FavoriteScreenUIState> =
         _favoriteScreenUIState.asStateFlow()
 
-    val userPosition = mapboxViewModel.mapboxUIState.value.latestUserPosition
 
     init {
         viewModelScope.launch {
@@ -84,6 +82,13 @@ class FavoritesScreenViewModel(
             _favoriteScreenUIState.update {
                 it.copy(username = profileRepository.getSelectedUser().username)
             }
+        }
+    }
+
+    fun updateUserLocationFromMapbox() {
+        val latestPosition = mapboxViewModel.mapboxUIState.value.latestUserPosition
+        if(latestPosition != null) {
+            updateUserLocation(latestPosition)
         }
     }
 
@@ -189,7 +194,6 @@ data class FavoriteScreenUIState(
     val isError: Boolean = false,
     val errorMessage: String = "",
     val favorites: List<Int> = emptyList(),
-    val selectedFavorite: Favorite? = null,
     val username: String = "",
     val userLocation: Point = Point.fromLngLat(10.441649, 59.542819)
 )

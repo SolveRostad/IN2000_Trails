@@ -13,11 +13,11 @@ class ProfileRepository constructor(private val profileDao: ProfileDao) {
         profileDao.insertUser(profile)
     }
 
-    suspend fun deleteUser(profile: Profile) {
+    suspend fun deleteProfile(profile: Profile) {
         profileDao.deleteUser(profile)
     }
 
-    suspend fun selectUser(username: String) {
+    suspend fun selectProfile(username: String) {
         unselectUser()
         profileDao.selectUser(username)
     }

@@ -79,7 +79,7 @@ class ProfileFavoriteUnitTest {
         runBlocking {
             profileRepository.clearAllUsers()
             profileRepository.addUser(bruker1)
-            profileRepository.deleteUser(bruker1)
+            profileRepository.deleteProfile(bruker1)
             assertFalse(
                 profileRepository.getAllUsers().contains(bruker1),
                 "Bruker ble ikke slettet"
@@ -116,7 +116,7 @@ class ProfileFavoriteUnitTest {
         runBlocking {
             profileRepository.clearAllUsers()
             profileRepository.addUser(bruker1)
-            profileRepository.selectUser(bruker1.username)
+            profileRepository.selectProfile(bruker1.username)
             selectedProfile = profileRepository.getSelectedUser()
 
             assertEquals(selectedProfile.username, bruker1.username, "Bruker ble ikke valgt")
@@ -135,7 +135,7 @@ class ProfileFavoriteUnitTest {
         try {
             profileRepository.clearAllUsers()
             profileRepository.addUser(bruker1)
-            profileRepository.selectUser(bruker1.username)
+            profileRepository.selectProfile(bruker1.username)
 
             val favoritesScreenViewModel = FavoritesScreenViewModel(
                 application = application,
@@ -170,7 +170,7 @@ class ProfileFavoriteUnitTest {
         try {
             profileRepository.clearAllUsers()
             profileRepository.addUser(bruker1)
-            profileRepository.selectUser(bruker1.username)
+            profileRepository.selectProfile(bruker1.username)
 
             val favoritesScreenViewModel = FavoritesScreenViewModel(
                 application = application,
@@ -206,7 +206,7 @@ class ProfileFavoriteUnitTest {
         try {
             profileRepository.clearAllUsers()
             profileRepository.addUser(bruker1)
-            profileRepository.selectUser(bruker1.username)
+            profileRepository.selectProfile(bruker1.username)
 
             val favoritesScreenViewModel = FavoritesScreenViewModel(
                 application = application,
