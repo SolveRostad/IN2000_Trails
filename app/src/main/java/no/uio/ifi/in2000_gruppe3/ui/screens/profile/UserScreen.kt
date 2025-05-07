@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.user
+package no.uio.ifi.in2000_gruppe3.ui.screens.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -37,9 +37,9 @@ import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.activities.Activities
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.activities.ActivityScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen.ProfileScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities.Activities
+import no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities.ActivityScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.profile.userProfileScreen.ProfileScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,8 +66,8 @@ fun UserScreen(
 
     LaunchedEffect(profileUIState.isLoggedIn) {
         if (!profileUIState.isLoggedIn) {
-            navController.navigate(Screen.Profile.route) {
-                popUpTo(Screen.User.route) { inclusive = true }
+            navController.navigate(Screen.ProfileSelect.route) {
+                popUpTo(Screen.Profile.route) { inclusive = true }
             }
         }
     }
@@ -84,7 +84,7 @@ fun UserScreen(
                 },
                 actions = {
                     IconButton(
-                        onClick = { navController.navigate(Screen.UserSettings.route) }
+                        onClick = { navController.navigate(Screen.ProfileSettings.route) }
                     ) {
                         Icon(
                             imageVector = Icons.Default.Settings,

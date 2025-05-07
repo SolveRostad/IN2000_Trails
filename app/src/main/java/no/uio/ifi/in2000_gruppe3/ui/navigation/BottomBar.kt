@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000_gruppe3.ui.navigation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -25,6 +25,8 @@ import no.uio.ifi.in2000_gruppe3.R
 
 @Composable
 fun BottomBar(navController: NavHostController) {
+    val currentDestination = navController.currentDestination?.route
+
     BottomAppBar(
         containerColor = Color.White,
         modifier = Modifier.height(100.dp)
@@ -39,18 +41,47 @@ fun BottomBar(navController: NavHostController) {
                 // Favorites
                 IconButton(
                     onClick = {
-                        if (navController.currentDestination?.route != "favorites")
+                        if (currentDestination != Screen.Favorites.route)
                             navController.navigate(Screen.Favorites.route)
                     },
                     modifier = Modifier
                         .weight(1f)
                         .size(30.dp)
+                        .background(
+                            if (currentDestination == Screen.Favorites.route) Color(0xFFADC3D2)
+                            else Color.Transparent,
+                            shape = MaterialTheme.shapes.small
+                        )
                 ) {
                     Icon(
                         imageVector = Icons.Default.Favorite,
                         contentDescription = "Favorites",
                         modifier = Modifier.fillMaxSize(),
-                        tint = if (navController.currentDestination?.route == "favorites") Color(0xFF061C40)
+                        tint = if (currentDestination == Screen.Favorites.route) Color(0xFF061C40)
+                               else LocalContentColor.current
+                    )
+                }
+
+                // Location forecast for user location
+                IconButton(
+                    onClick = {
+                        if (currentDestination != Screen.LocationForecast.route)
+                            navController.navigate(Screen.LocationForecast.route)
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .size(40.dp)
+                        .background(
+                            if (currentDestination == Screen.LocationForecast.route) Color(0xFFADC3D2)
+                            else Color.Transparent,
+                            shape = MaterialTheme.shapes.small
+                        )
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.weather),
+                        contentDescription = "Location forecast",
+                        modifier = Modifier.fillMaxSize(),
+                        tint = if (currentDestination == Screen.LocationForecast.route) Color(0xFF061C40)
                                else LocalContentColor.current
                     )
                 }
@@ -58,7 +89,7 @@ fun BottomBar(navController: NavHostController) {
                 // Home (logo)
                 IconButton(
                     onClick = {
-                        if (navController.currentDestination?.route != "home")
+                        if (currentDestination != Screen.Home.route)
                             navController.navigate(Screen.Home.route)
                     },
                     modifier = Modifier
@@ -66,29 +97,65 @@ fun BottomBar(navController: NavHostController) {
                         .size(80.dp)
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.logo_new),
+                        painter = painterResource(id = R.drawable.logo),
                         contentDescription = "Home",
                         modifier = Modifier.fillMaxSize(),
                         tint = Color.Unspecified
                     )
                 }
 
-                // User
+                // Ånund chatbot
                 IconButton(
                     onClick = {
-                        if (navController.currentDestination?.route != "user")
-                            navController.navigate(Screen.User.route)
+                        if (currentDestination != Screen.Chatbot.route)
+                            navController.navigate(Screen.Chatbot.route)
                     },
                     modifier = Modifier
                         .weight(1f)
-                        .size(30.dp)
+                        .size(40.dp)
+                        .background(
+                            if (currentDestination == Screen.Chatbot.route) Color(0xFFADC3D2)
+                            else Color.Transparent,
+                            shape = MaterialTheme.shapes.small
+                        )
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = "User",
+                        painter = painterResource(R.drawable.aanund),
+                        contentDescription = "Chatbot",
                         modifier = Modifier.fillMaxSize(),
-                        tint = if (navController.currentDestination?.route == "user") Color(0xFF061C40)
-                               else LocalContentColor.current
+                        tint = Color.Unspecified
+                    )
+                }
+
+                // Profile
+                IconButton(
+                    onClick = {
+                        if (currentDestination != Screen.Profile.route)
+                            navController.navigate(Screen.Profile.route)
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .size(40.dp)
+                        .background(
+                            if (
+                                currentDestination == Screen.Profile.route ||
+                                currentDestination == Screen.ProfileSettings.route ||
+                                currentDestination == Screen.ProfileSelect.route
+                                ) Color(0xFFADC3D2)
+                            else Color.Transparent,
+                            shape = MaterialTheme.shapes.small
+                        )
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.trophy),
+                        contentDescription = "Profile",
+                        modifier = Modifier.fillMaxSize(),
+                        tint = if (
+                            currentDestination == Screen.Profile.route ||
+                            currentDestination == Screen.ProfileSettings.route ||
+                            currentDestination == Screen.ProfileSelect.route
+                            ) Color(0xFF061C40)
+                            else LocalContentColor.current
                     )
                 }
             }

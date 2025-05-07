@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen
+package no.uio.ifi.in2000_gruppe3.ui.screens.profile.userProfileScreen
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
@@ -125,7 +125,7 @@ fun ProfileCard(
                         Log.d("UserScreen", "Selected profile: ${profile.username}")
                         profileScreenViewModel.selectProfile(profile.username)
                         expandedProfileId = null
-                        navController.navigate(Screen.User.route)
+                        navController.navigate(Screen.Profile.route)
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(

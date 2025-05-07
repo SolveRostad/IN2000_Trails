@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen
+package no.uio.ifi.in2000_gruppe3.ui.screens.profile.userProfileScreen
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -93,7 +93,7 @@ fun ProfileScreen(
         ) {
             // App logo
             Image(
-                painter = painterResource(id = R.drawable.logo_slogan_new),
+                painter = painterResource(id = R.drawable.logo_slogan),
                 contentDescription = "App Logo",
                 modifier = Modifier.fillMaxWidth()
                     .size(200.dp)
@@ -117,6 +117,7 @@ fun ProfileScreen(
                                 if (profile.isNotBlank()) {
                                     Log.d("UserScreen", "Adding profile $profile")
                                     profileScreenViewModel.addProfile(profile)
+                                    profileScreenViewModel.selectProfile(profile)
                                     profile = ""
                                 }
                             }
@@ -143,6 +144,7 @@ fun ProfileScreen(
                         if (profile.isNotBlank()) {
                             Log.d("UserScreen", "Adding profile $profile")
                             profileScreenViewModel.addProfile(profile)
+                            profileScreenViewModel.selectProfile(profile)
                             profile = ""
                         }
                     },

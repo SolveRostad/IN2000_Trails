@@ -44,7 +44,7 @@ fun WelcomeScreen(
             Spacer(modifier = Modifier.height(60.dp))
 
             Icon(
-                painter = painterResource(id = R.drawable.logo_slogan_new),
+                painter = painterResource(id = R.drawable.logo_slogan),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .fillMaxWidth()
@@ -82,7 +82,7 @@ fun WelcomeScreen(
                     .fillMaxWidth()
                     .height(48.dp),
                 shape = RoundedCornerShape(24.dp),
-                onClick = { navController.navigate(Screen.Profile.route) },
+                onClick = { navController.navigate(Screen.ProfileSelect.route) },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40))
             ) {
                 Text(
