@@ -21,13 +21,9 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.WelcomeScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.welcome.WelcomeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastDetailedScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastScreen
-import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.ChatbotScreen
-import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModelFactory
-import no.uio.ifi.in2000_gruppe3.ui.screens.welcome.WelcomeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.UserScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.UserSettingsScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.activities.Activities
