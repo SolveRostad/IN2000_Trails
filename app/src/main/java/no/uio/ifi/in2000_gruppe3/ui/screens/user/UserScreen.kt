@@ -61,7 +61,7 @@ fun UserScreen(
     }
 
     LaunchedEffect(profileUIState.username) {
-        logScreenViewModel.setUser()
+        activityScreenViewModel.setUser()
     }
 
     LaunchedEffect(profileUIState.isLoggedIn) {
