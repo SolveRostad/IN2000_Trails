@@ -10,13 +10,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapPreviewScreen
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.ChatbotScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoriteScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModelFactory
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.WelcomeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastDetailedScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.ChatbotScreen
@@ -151,11 +156,11 @@ fun AppNavHost() {
 
         // User settings screen
         composable(Screen.UserSettings.route) {
-             UserSettingsScreen(
-                 mapboxViewModel = mapboxViewModel,
-                 profileScreenViewModel = profileScreenViewModel,
-                 navController = navController
-             )
+            UserSettingsScreen(
+                mapboxViewModel = mapboxViewModel,
+                profileScreenViewModel = profileScreenViewModel,
+                navController = navController
+            )
         }
 
         // User profile screen
@@ -172,6 +177,15 @@ fun AppNavHost() {
                 activityScreenViewModel = activityScreenViewModel,
                 hikeScreenViewModel = hikeScreenViewModel,
                 mapboxViewModel = mapboxViewModel,
+                navController = navController
+            )
+        }
+
+        // Map preview screen
+        composable(Screen.MapPreview.route) {
+            MapPreviewScreen(
+                mapboxViewModel = mapboxViewModel,
+                hikeScreenViewModel = hikeScreenViewModel,
                 navController = navController
             )
         }
