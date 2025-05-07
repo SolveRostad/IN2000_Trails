@@ -151,11 +151,14 @@ class OpenAIViewModel: ViewModel() {
                 "Du skal kun svare på spørsmål som er relatert til turer, friluftsliv og været. " +
                 "Hvis spørsmålet ikke er relatert til det så skal du gi en melding hvor du forteller hvem du er som sier at du kun svarer på spørsmål som er relevante. " +
                 "Svar på en hyggelig måte. " +
-                "Du har kun tilgang tl turer i Oslo og Akershus. " +
                 "Her er chat historikken som hva vi har snakket om tidligere: $conversationHistory. " +
                 "Her er meldingen fra bruker: $input. " +
+                "Du har kun tilgang tl turer i Oslo og Akershus. " +
+                "Du vet ingenting om lengden på turen, hvor lang tid det tar å gå turen eller hvor vanskelig turen er. " +
+                "Du vet heller ikke nøyaktig posisjon til turen, bare omtrent hvor den er." +
                 "Hvis du i denne meldingen skriver om en spesifikk tur så avslutt meldingen med å bruke tegnet \"€\" og legg til nøyaktige koordinater til turen etter tegnet. " +
-                "Send koordinatene som lat, lng uten noe annet tekst eller symboler. "
+                "Send koordinatene som lat, lng uten noe annet tekst eller symboler. " +
+                "Du skal ikke nevne koordinatene før du avslutter meldingen med \"€\". "
 
         if (input.contains("vær") || input.contains("temperatur")) {
             prompt += "Her er informasjonene du trenger om været: ${homeScreenViewModel.homeScreenUIState.value.forecast?.properties?.timeseries}"

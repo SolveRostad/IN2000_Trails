@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.composables.core.BottomSheet
@@ -130,7 +131,10 @@ fun BottomSheetDrawer(
                             text = "Turruter i nærheten",
                             style = MaterialTheme.typography.titleLarge,
                             fontStyle = MaterialTheme.typography.titleLarge.fontStyle,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
                         )
+                        Spacer(modifier = Modifier.height(16.dp))
 
                         homeScreenUIState.hikes.forEach { feature ->
                             SmallHikeCard(
