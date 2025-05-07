@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.userProfileScreen
+package no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -53,8 +53,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen.ProfileCard
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen.ProfileScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
