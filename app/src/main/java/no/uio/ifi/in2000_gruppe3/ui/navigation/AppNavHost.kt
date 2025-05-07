@@ -169,7 +169,7 @@ fun AppNavHost() {
             MapPreviewScreen(
                 mapboxViewModel = mapboxViewModel,
                 hikeScreenViewModel = hikeScreenViewModel,
-                navController = navController
+                navController = navController,
             )
         }
     }

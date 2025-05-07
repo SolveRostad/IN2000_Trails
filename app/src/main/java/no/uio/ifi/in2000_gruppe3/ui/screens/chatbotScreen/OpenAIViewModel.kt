@@ -16,7 +16,7 @@ import no.uio.ifi.in2000_gruppe3.data.openAIAPI.repository.OpenAIRepository
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
-class OpenAIViewModel: ViewModel() {
+class OpenAIViewModel : ViewModel() {
     private val openAIRepository = OpenAIRepository()
     private val hikeAPIRepository = HikeAPIRepository(this)
 
@@ -121,7 +121,7 @@ class OpenAIViewModel: ViewModel() {
         }
     }
 
-    fun addFeature() {
+    private fun addFeature() {
         val responseData = openAIUIState.value.response.split("€")
         val textResponse = responseData.first()
         val coordinates = responseData.last().trim()
@@ -154,8 +154,11 @@ class OpenAIViewModel: ViewModel() {
                 "Her er chat historikken som hva vi har snakket om tidligere: $conversationHistory. " +
                 "Her er meldingen fra bruker: $input. " +
                 "Du har kun tilgang tl turer i Oslo og Akershus. " +
+                "Du vet ingenting om lengden på turen, hvor lang tid det tar å gå turen eller hvor vanskelig turen er. " +
+                "Du vet heller ikke nøyaktig posisjon til turen, bare omtrent hvor den er." +
                 "Hvis du i denne meldingen skriver om en spesifikk tur så avslutt meldingen med å bruke tegnet \"€\" og legg til nøyaktige koordinater til turen etter tegnet. " +
-                "Send koordinatene som lat, lng uten noe annet tekst eller symboler. "
+                "Send koordinatene som lat, lng uten noe annet tekst eller symboler. " +
+                "Du skal ikke nevne koordinatene før du avslutter meldingen med \"€\". "
 
         if (input.contains("vær") || input.contains("temperatur")) {
             prompt += "Her er informasjonene du trenger om været: ${homeScreenViewModel.homeScreenUIState.value.forecast?.properties?.timeseries}"
