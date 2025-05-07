@@ -47,7 +47,7 @@ import no.uio.ifi.in2000_gruppe3.ui.networkSnackbar.NetworkSnackbar
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.activities.ActivityScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities.ActivityScreenViewModel
 
 @Composable
 fun HomeScreen(

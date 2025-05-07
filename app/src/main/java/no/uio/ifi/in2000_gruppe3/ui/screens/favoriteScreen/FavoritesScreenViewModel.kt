@@ -166,12 +166,13 @@ class FavoritesScreenViewModel(
                 it.copy(isLoading = true)
             }
             try {
-                val newFavorite = Favorite(_favoriteScreenUIState.value.username, id)
-                favoriteRepository.deleteFavorite(newFavorite)
+                val currentUser = profileRepository.getSelectedUser()
+                val favoriteToRemove = Favorite(currentUser.username, id)
+                favoriteRepository.deleteFavorite(favoriteToRemove)
 
                 _favoriteScreenUIState.update {
                     it.copy(
-                        favorites = _favoriteScreenUIState.value.favorites - newFavorite.hikeId
+                        favorites = _favoriteScreenUIState.value.favorites - favoriteToRemove.hikeId
                     )
                 }
             } catch (e: Exception) {

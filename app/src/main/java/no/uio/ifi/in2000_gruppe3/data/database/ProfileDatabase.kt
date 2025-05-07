@@ -3,7 +3,7 @@ package no.uio.ifi.in2000_gruppe3.data.database
 import android.content.Context
 import android.util.Log
 import androidx.room.Database
-import no.uio.ifi.in2000_gruppe3.data.database.Log as LogEntity
+import no.uio.ifi.in2000_gruppe3.data.database.Activity as LogEntity
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -27,7 +27,7 @@ import java.util.concurrent.Executors
  *   isSelected: Int
  *   personalHikeComment: String
  *
- * Log
+ * Activity
  * PN: [username, hikeId]
  * FN: username -> Profile
  *   username: String
@@ -36,12 +36,12 @@ import java.util.concurrent.Executors
  *   notes: String
  */
 
-@Database(entities = [LogEntity::class, Favorite::class, Profile::class], version = 2)
+@Database(entities = [LogEntity::class, Favorite::class, Profile::class], version = 3)
 @TypeConverters(Converter::class)
 abstract class ProfileDatabase : RoomDatabase() {
     abstract fun favoriteDao(): FavoriteDao
     abstract fun profileDao(): ProfileDao
-    abstract fun logDao(): LogDao
+    abstract fun logDao(): ActivityDao
 
     companion object {
         @Volatile
@@ -77,7 +77,7 @@ abstract class ProfileDatabase : RoomDatabase() {
                     ProfileDatabase::class.java,
                     "Profile_database"
                 )
-                    .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                     .setQueryCallback({ sqlQuery, bindArgs ->
                         Log.d("RoomQuery", "SQL: $sqlQuery, Args: $bindArgs")
                     }, Executors.newSingleThreadExecutor())

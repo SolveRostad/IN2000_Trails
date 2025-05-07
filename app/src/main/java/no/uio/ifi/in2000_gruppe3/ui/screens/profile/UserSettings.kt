@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.user
+package no.uio.ifi.in2000_gruppe3.ui.screens.profile
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,7 +25,7 @@ import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapStyleDropdown
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen.ProfileScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.profile.userProfileScreen.ProfileScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

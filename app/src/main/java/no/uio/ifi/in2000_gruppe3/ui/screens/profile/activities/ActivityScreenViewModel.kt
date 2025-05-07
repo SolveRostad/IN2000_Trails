@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.user.activities
+package no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities
 
 import android.app.Application
 import android.util.Log
@@ -12,13 +12,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository.HikeAPIRepository
-import no.uio.ifi.in2000_gruppe3.data.log.repository.LogRepository
+import no.uio.ifi.in2000_gruppe3.data.log.repository.ActivityRepository
 import no.uio.ifi.in2000_gruppe3.data.profile.repository.ProfileRepository
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 
 class ActivityScreenViewModel(
     application: Application,
-    private val logRepository: LogRepository,
+    private val activityRepository: ActivityRepository,
     private val profileRepository: ProfileRepository,
     private val hikeAPIRepository: HikeAPIRepository,
     private val mapboxViewModel: MapboxViewModel,
@@ -47,7 +47,7 @@ class ActivityScreenViewModel(
             }
             try {
                 val username = profileRepository.getSelectedUser().username
-                val updatedLog = logRepository.getAllLogs(username)
+                val updatedLog = activityRepository.getAllLogs(username)
 
                 _activityScreenUIState.update {
                     it.copy(hikeLog = updatedLog)
@@ -89,7 +89,7 @@ class ActivityScreenViewModel(
                     )
                 }
 
-                val userLogs = logRepository.getAllLogs(selectedUser.username)
+                val userLogs = activityRepository.getAllLogs(selectedUser.username)
 
                 _activityScreenUIState.update {
                     it.copy(
@@ -167,12 +167,12 @@ class ActivityScreenViewModel(
             }
             try {
                 val currentUser = profileRepository.getSelectedUser()
-                val newLog = no.uio.ifi.in2000_gruppe3.data.database.Log(currentUser.username, hikeId)
-                Log.d("LogScreenViewModel", "Adding log: $newLog")
-                logRepository.addLog(newLog)
+                val newActivity = no.uio.ifi.in2000_gruppe3.data.database.Activity(currentUser.username, hikeId)
+                Log.d("LogScreenViewModel", "Adding log: $newActivity")
+                activityRepository.addLog(newActivity)
                 _activityScreenUIState.update {
                     it.copy(
-                        hikeLog = _activityScreenUIState.value.hikeLog + newLog.hikeId
+                        hikeLog = _activityScreenUIState.value.hikeLog + newActivity.hikeId
                     )
                 }
             } catch (e: Exception) {
@@ -193,19 +193,19 @@ class ActivityScreenViewModel(
                 it.copy(isLoading = true)
             }
             try {
-                val newLog = no.uio.ifi.in2000_gruppe3.data.database.Log(
+                val newActivity = no.uio.ifi.in2000_gruppe3.data.database.Activity(
                     _activityScreenUIState.value.username,
                     hikeId
                 )
-                logRepository.deleteLog(newLog)
+                activityRepository.deleteLog(newActivity)
 
                 _activityScreenUIState.update {
                     it.copy(
-                        hikeLog = _activityScreenUIState.value.hikeLog - newLog.hikeId
+                        hikeLog = _activityScreenUIState.value.hikeLog - newActivity.hikeId
                     )
                 }
             } catch (e: Exception) {
-                Log.e("LogScreenViewModel", "Error fetching Log: ${e.message}")
+                Log.e("LogScreenViewModel", "Error fetching Activity: ${e.message}")
                 _activityScreenUIState.update {
                     it.copy(isError = true, errorMessage = e.message.toString())
                 }
@@ -223,7 +223,7 @@ class ActivityScreenViewModel(
                 it.copy(isLoading = true)
             }
             try {
-                logRepository.addNotesToLog(_activityScreenUIState.value.username, hikeId, notes)
+                activityRepository.addNotesToLog(_activityScreenUIState.value.username, hikeId, notes)
                 _activityScreenUIState.update { state ->
                     state.copy(hikeNotes = state.hikeNotes + (hikeId to notes))
                 }
@@ -246,9 +246,9 @@ class ActivityScreenViewModel(
                 it.copy(isLoading = true)
             }
             try {
-                logRepository.adjustTimesWalked(_activityScreenUIState.value.username, hikeId, adjustTimesWalked)
+                activityRepository.adjustTimesWalked(_activityScreenUIState.value.username, hikeId, adjustTimesWalked)
 
-                val updatedTimesWalked = logRepository.getTimesWalkedForHike(_activityScreenUIState.value.username, hikeId)
+                val updatedTimesWalked = activityRepository.getTimesWalkedForHike(_activityScreenUIState.value.username, hikeId)
                 _activityScreenUIState.update {
                     it.copy(hikeTimesWalked = it.hikeTimesWalked + (hikeId to updatedTimesWalked))
                 }
@@ -271,7 +271,7 @@ class ActivityScreenViewModel(
                 it.copy(isLoading = true)
             }
             try {
-                val notes = logRepository.getNotesForHike(_activityScreenUIState.value.username, hikeId)
+                val notes = activityRepository.getNotesForHike(_activityScreenUIState.value.username, hikeId)
                 _activityScreenUIState.update { state ->
                     state.copy(hikeNotes = state.hikeNotes + (hikeId to notes))
                 }
@@ -295,7 +295,7 @@ class ActivityScreenViewModel(
             }
             try{
                 val username = _activityScreenUIState.value.username
-                val total = logRepository.getTotalTimesWalked(username)
+                val total = activityRepository.getTotalTimesWalked(username)
                 _activityScreenUIState.update { it.copy(hikesDone = total) }
             } catch (e: Exception) {
                 Log.e("LogScreenViewModel", "Error fetching times walked: ${e.message}")
@@ -316,7 +316,7 @@ class ActivityScreenViewModel(
                 it.copy(isLoading = true)
             }
             try {
-                val timesWalked = logRepository.getTimesWalkedForHike(_activityScreenUIState.value.username, hikeId)
+                val timesWalked = activityRepository.getTimesWalkedForHike(_activityScreenUIState.value.username, hikeId)
 
                 _activityScreenUIState.update {
                     it.copy(hikeTimesWalked = it.hikeTimesWalked + (hikeId to timesWalked))
