@@ -72,11 +72,19 @@ fun HikeCard(
     val openAIUIState by openAIViewModel.openAIUIState.collectAsState()
     val logUIState by logScreenViewModel.logScreenUIState.collectAsState()
     val isInLog = logUIState.hikeLog.contains(hikeUIState.feature.properties.fid)
-    var averageWindSpeed by remember { mutableDoubleStateOf(homeScreenViewModel.daysAverageWindSpeed(hikeUIState.selectedDate)) }
+    var averageWindSpeed by remember {
+        mutableDoubleStateOf(
+            homeScreenViewModel.daysAverageWindSpeed(
+                hikeUIState.selectedDate
+            )
+        )
+    }
 
     LaunchedEffect(hikeUIState.selectedDay) {
         val daysAhead = calculateDaysAhead(getTodaysDay(), hikeUIState.selectedDay)
-        hikeScreenViewModel.updateSelectedDate(LocalDate.now().plusDays(daysAhead.toLong()).toString())
+        hikeScreenViewModel.updateSelectedDate(
+            LocalDate.now().plusDays(daysAhead.toLong()).toString()
+        )
 
         averageWindSpeed = homeScreenViewModel.daysAverageWindSpeed(hikeUIState.selectedDate)
 
@@ -102,7 +110,11 @@ fun HikeCard(
                 .padding(8.dp)
         ) {
             item {
-                HikeCardMapPreview(mapboxViewModel, hikeUIState.feature)
+                HikeCardMapPreview(
+                    mapboxViewModel,
+                    hikeUIState.feature,
+                    navController = navController
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -145,7 +157,11 @@ fun HikeCard(
                     InfoItem(
                         icon = ImageVector.vectorResource(id = R.drawable.distance_icon),
                         label = "Lengde",
-                        value = (hikeUIState.feature.properties.distance_meters.toFloat() / 1000.0).let { "%.2f km".format(it) },
+                        value = (hikeUIState.feature.properties.distance_meters.toFloat() / 1000.0).let {
+                            "%.2f km".format(
+                                it
+                            )
+                        },
                         iconTint = Color(0xFF4CAF50)
                     )
                     InfoItem(
@@ -201,7 +217,7 @@ fun HikeCard(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                if(!isInLog) {
+                if (!isInLog) {
                     Button(
                         modifier = Modifier
                             .padding(8.dp)
