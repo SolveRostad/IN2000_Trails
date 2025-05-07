@@ -16,7 +16,7 @@ import androidx.room.ForeignKey
         )]
 )
 
-data class Log (
+data class Activity (
     @ColumnInfo(name = "username")
     val username: String,
 

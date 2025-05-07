@@ -1,4 +1,5 @@
 package no.uio.ifi.in2000_gruppe3.data.database
+
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
@@ -45,10 +46,10 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL(
             """
-                CREATE TBALE IF NOT EXISTS `activity_table` (
+                CREATE TABLE IF NOT EXISTS `activity_table` (
                     `username` TEXT NOT NULL,
                     `hike_id` INTEGER NOT NULL,
-                    `times_walked` INTEGER NOT NULL DEFAULT 0,
+                    `times_walked` INTEGER NOT NULL DEFAULT 1,
                     `notes` TEXT NOT NULL DEFAULT '',
                     PRIMARY KEY(`username`, `hike_id`),
                     FOREIGN KEY(`username`) REFERENCES `profile_table`(`username`) ON UPDATE CASCADE ON DELETE CASCADE

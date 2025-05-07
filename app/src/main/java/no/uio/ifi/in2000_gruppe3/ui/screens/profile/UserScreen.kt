@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.user
+package no.uio.ifi.in2000_gruppe3.ui.screens.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -37,9 +37,9 @@ import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.activities.Activities
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.activities.ActivityScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen.ProfileScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities.Activities
+import no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities.ActivityScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.profile.userProfileScreen.ProfileScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

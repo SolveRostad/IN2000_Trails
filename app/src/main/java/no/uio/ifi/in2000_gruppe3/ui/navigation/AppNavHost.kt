@@ -24,13 +24,13 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.welcome.WelcomeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastDetailedScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastScreen
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.UserScreen
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.UserSettingsScreen
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.activities.Activities
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.activities.ActivityScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.activities.ActivityScreenViewModelFactory
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen.ProfileScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen.ProfileScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.profile.UserScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.profile.UserSettingsScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities.Activities
+import no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities.ActivityScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities.ActivityScreenViewModelFactory
+import no.uio.ifi.in2000_gruppe3.ui.screens.profile.userProfileScreen.ProfileScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.profile.userProfileScreen.ProfileScreen
 
 @Composable
 fun AppNavHost() {

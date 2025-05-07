@@ -6,12 +6,12 @@ import androidx.room.Insert
 import androidx.room.Query
 
 @Dao
-interface LogDao {
+interface ActivityDao {
     @Insert
-    suspend fun saveLog(log: Log)
+    suspend fun saveLog(activity: Activity)
 
     @Delete
-    suspend fun deleteLog(log: Log)
+    suspend fun deleteLog(activity: Activity)
 
     @Query("SELECT hike_id FROM activity_table WHERE username LIKE :username")
     suspend fun getAllLogs(username: String): List<Int>
@@ -30,6 +30,4 @@ interface LogDao {
 
     @Query("SELECT times_walked FROM activity_table WHERE username LIKE :username AND hike_id = :hikeId")
     suspend fun getTimesWalkedForHike(username: String, hikeId: Int): Int
-
-
 }
