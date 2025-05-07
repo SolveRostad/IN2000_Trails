@@ -106,12 +106,6 @@ dependencies {
     // Custom BottomSheet
     implementation("com.composables:core:1.20.1")
 
-    // DataStore
-    implementation(libs.androidx.datastore.preferences)
-    implementation(libs.androidx.datastore.preferences.rxjava2)
-    implementation(libs.androidx.datastore.preferences.rxjava3)
-    implementation(libs.volley)
-
     // Ktor
     implementation("io.ktor:ktor-client-android:2.3.5")
     implementation("io.ktor:ktor-client-core:2.3.5")
@@ -122,9 +116,6 @@ dependencies {
     // Ktx
     implementation(libs.core.ktx)
     implementation(libs.androidx.junit.ktx)
-
-    // Location
-    implementation("com.google.android.gms:play-services-location:21.3.0")
 
     // Mapbox
     implementation("com.mapbox.maps:android:11.10.2")
@@ -159,15 +150,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
 
     // ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0") // 2
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
-
-    //Test
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4: 1.7.8")
-    testImplementation("junit:junit:1.7.8")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
-
-
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
 
     // Standard libs
     implementation(libs.androidx.core.ktx)
@@ -180,8 +164,11 @@ dependencies {
     implementation(libs.androidx.material3)
 
     // For testing
-    testImplementation("org.robolectric:robolectric:4.10.3")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
+    testImplementation("org.robolectric:robolectric:4.10.3")
+    testImplementation("junit:junit:1.7.8")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4: 1.7.8")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

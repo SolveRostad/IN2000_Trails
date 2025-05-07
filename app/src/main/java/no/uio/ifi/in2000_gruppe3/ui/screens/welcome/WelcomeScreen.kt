@@ -40,7 +40,7 @@ fun WelcomeScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(60.dp))
+            Spacer(modifier = Modifier.height(50.dp))
 
             Icon(
                 painter = painterResource(id = R.drawable.logo_slogan),
@@ -55,10 +55,10 @@ fun WelcomeScreen(
                 text = "Planlegg perfekte turer i Oslo og Akershus \n med sanntidsvær og AI",
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyLarge,
-                color = Color(0xFF0F172A)
+                color = LogoPrimary
             )
 
-            Spacer(modifier = Modifier.height(250.dp))
+            Spacer(modifier = Modifier.height(220.dp))
 
             Button(
                 modifier = Modifier
@@ -74,7 +74,7 @@ fun WelcomeScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 modifier = Modifier
@@ -89,6 +89,8 @@ fun WelcomeScreen(
                     fontSize = 16.sp
                 )
             }
+
+            Spacer(modifier = Modifier.height(50.dp))
         }
     }
 }
