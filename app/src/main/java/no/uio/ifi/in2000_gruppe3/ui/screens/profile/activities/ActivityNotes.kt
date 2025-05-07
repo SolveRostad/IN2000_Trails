@@ -1,7 +1,6 @@
 package no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,7 +39,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.ui.theme.LogoPrimary
-import no.uio.ifi.in2000_gruppe3.ui.theme.LogoSecondary
 
 @Composable
 fun ActivityNotes(
@@ -72,9 +70,7 @@ fun ActivityNotes(
             onClick = { isExpanded = !isExpanded },
             modifier = Modifier.fillMaxWidth(),
             border = BorderStroke(1.dp, LogoPrimary),
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = LogoPrimary
-            )
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = LogoPrimary)
         ) {
             Text(
                 text = if (noteText.isBlank()) "Legg til notater..." else "Endre notat",

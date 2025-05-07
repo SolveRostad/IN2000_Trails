@@ -21,15 +21,15 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.welcome.WelcomeScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastDetailedScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.locationForecast.LocationForecastScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.profile.ProfileScreen
-import no.uio.ifi.in2000_gruppe3.ui.screens.settings.ProfileSettingsScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities.ActivityScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities.ActivityScreenViewModelFactory
 import no.uio.ifi.in2000_gruppe3.ui.screens.profile.profileSelectScreen.ProfileScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.profile.profileSelectScreen.ProfileSelectScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.settings.ProfileSettingsScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.welcome.WelcomeScreen
 
 @Composable
 fun AppNavHost() {

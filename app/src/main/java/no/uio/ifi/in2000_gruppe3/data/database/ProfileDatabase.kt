@@ -3,7 +3,6 @@ package no.uio.ifi.in2000_gruppe3.data.database
 import android.content.Context
 import android.util.Log
 import androidx.room.Database
-import no.uio.ifi.in2000_gruppe3.data.database.Log as LogEntity
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -12,6 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.Executors
+import no.uio.ifi.in2000_gruppe3.data.database.Log as LogEntity
 
 /** Database layout:
  * Profile

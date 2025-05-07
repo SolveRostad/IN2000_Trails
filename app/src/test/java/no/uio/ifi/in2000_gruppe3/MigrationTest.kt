@@ -1,11 +1,11 @@
 package no.uio.ifi.in2000_gruppe3
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.room.testing.MigrationTestHelper
 import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import no.uio.ifi.in2000_gruppe3.data.database.ProfileDatabase
 import no.uio.ifi.in2000_gruppe3.data.database.MIGRATION_1_2
+import no.uio.ifi.in2000_gruppe3.data.database.ProfileDatabase
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
