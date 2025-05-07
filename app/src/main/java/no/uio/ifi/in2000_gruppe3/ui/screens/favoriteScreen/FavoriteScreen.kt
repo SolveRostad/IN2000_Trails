@@ -80,7 +80,6 @@ fun FavoriteScreen(
                                 navController.navigate(Screen.HikeScreen.route)
                             }
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
             }

@@ -160,11 +160,7 @@ fun HikeCard(
                     InfoItem(
                         icon = ImageVector.vectorResource(id = R.drawable.distance_icon),
                         label = "Lengde",
-                        value = (hikeUIState.feature.properties.distance_meters.toFloat() / 1000.0).let {
-                            "%.2f km".format(
-                                it
-                            )
-                        },
+                        value = (hikeUIState.feature.properties.distance_meters.toFloat() / 1000.0).let { "%.2f km".format(it) },
                         iconTint = Color(0xFF4CAF50)
                     )
                     InfoItem(
@@ -342,6 +338,7 @@ fun HikeCard(
                         .padding(horizontal = 80.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .clickable {
+                            favoritesViewModel.setUser()
                             checkedState.value = !checkedState.value
                             if (checkedState.value) {
                                 favoritesViewModel.addFavorite(hikeUIState.feature.properties.fid)

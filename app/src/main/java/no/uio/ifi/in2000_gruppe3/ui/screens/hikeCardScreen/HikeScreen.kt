@@ -44,7 +44,9 @@ fun HikeScreen(
 ) {
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
 
-    val checkedState = remember {
+    val favoriteUIState by favoritesViewModel.favoriteScreenUIState.collectAsState()
+
+    val checkedState = remember (hikeUIState.feature.properties.fid, favoriteUIState.username) {
         mutableStateOf(favoritesViewModel.isHikeFavorite(hikeUIState.feature))
     }
 
