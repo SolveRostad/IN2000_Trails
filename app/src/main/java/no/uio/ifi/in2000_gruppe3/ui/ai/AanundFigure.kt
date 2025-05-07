@@ -158,10 +158,7 @@ fun AanundFigure(
                     tint = Color.DarkGray,
                     modifier = Modifier
                         .size(16.dp)
-                        .clickable {
-                            aanundMenuExpanded.value = true
-                            hikeScreenViewModel.updateRecommendedHikesLoaded(false)
-                        }
+                        .clickable { aanundMenuExpanded.value = true }
                         .offset(x = 30.dp, y = (-30).dp)
                 )
             }
@@ -169,6 +166,7 @@ fun AanundFigure(
             AanundFigureDropdown(
                 expanded = aanundMenuExpanded,
                 homeScreenViewModel = homeScreenViewModel,
+                hikeScreenViewModel = hikeScreenViewModel,
                 mapBoxViewModel = mapboxViewModel,
                 navController = navController
             )

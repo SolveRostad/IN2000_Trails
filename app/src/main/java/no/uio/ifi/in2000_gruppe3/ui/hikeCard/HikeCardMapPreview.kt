@@ -48,10 +48,8 @@ fun HikeCardMapPreview(
         (bbox.north() + bbox.south()) / 2
     )
 
-    // Calculate zoom level based on the bounding box and hike length
     val zoom = calculateIdealZoom(bbox)
 
-    // Create a static map URL
     val staticMapUrl = createStaticMapUrl(
         center = center,
         zoom = zoom,

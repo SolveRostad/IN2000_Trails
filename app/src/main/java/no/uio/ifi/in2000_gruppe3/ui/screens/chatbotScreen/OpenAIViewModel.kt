@@ -16,7 +16,7 @@ import no.uio.ifi.in2000_gruppe3.data.openAIAPI.repository.OpenAIRepository
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
-class OpenAIViewModel : ViewModel() {
+class OpenAIViewModel: ViewModel() {
     private val openAIRepository = OpenAIRepository()
     private val hikeAPIRepository = HikeAPIRepository(this)
 
@@ -121,7 +121,7 @@ class OpenAIViewModel : ViewModel() {
         }
     }
 
-    private fun addFeature() {
+    fun addFeature() {
         val responseData = openAIUIState.value.response.split("€")
         val textResponse = responseData.first()
         val coordinates = responseData.last().trim()

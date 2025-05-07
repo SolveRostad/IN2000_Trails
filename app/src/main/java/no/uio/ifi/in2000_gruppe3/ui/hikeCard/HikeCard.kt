@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,7 +55,7 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.activities.ActivityScreenViewModel
 import java.time.LocalDate
 
 @Composable
@@ -64,13 +65,13 @@ fun HikeCard(
     favoritesViewModel: FavoritesScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     openAIViewModel: OpenAIViewModel,
-    logScreenViewModel: LogScreenViewModel,
+    activityScreenViewModel: ActivityScreenViewModel,
     navController: NavHostController,
     checkedState: MutableState<Boolean>
 ) {
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
     val openAIUIState by openAIViewModel.openAIUIState.collectAsState()
-    val logUIState by logScreenViewModel.logScreenUIState.collectAsState()
+    val logUIState by activityScreenViewModel.activityScreenUIState.collectAsState()
     val isInLog = logUIState.hikeLog.contains(hikeUIState.feature.properties.fid)
     var averageWindSpeed by remember {
         mutableDoubleStateOf(
@@ -209,7 +210,7 @@ fun HikeCard(
                         .padding(8.dp)
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B9FF)),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40)),
                     onClick = { navController.navigate(Screen.LocationForecast.route) }
                 ) {
                     Text(text = "Se været andre dager")
@@ -223,43 +224,111 @@ fun HikeCard(
                             .padding(8.dp)
                             .fillMaxWidth()
                             .weight(1f),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B9FF)),
-                        onClick = { logScreenViewModel.addToLog(hikeUIState.feature.properties.fid) }
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40)),
+                        onClick = { activityScreenViewModel.addToActivityLog(hikeUIState.feature.properties.fid) }
                     ) {
                         Text(text = "Legg til i loggen")
                     }
                 } else {
-                    Row {
-                        Button(
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .weight(1f)
-                                .align(Alignment.CenterVertically),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B9FF)),
-                            onClick = {
-                                logScreenViewModel.adjustTimesWalked(
-                                    hikeUIState.feature.properties.fid,
-                                    1
-                                )
-                            }
+                    Card(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .weight(1f),
+                        border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.5f)),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surface
+                        )
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(text = "Øk ganger gått")
-                        }
+                            Text(
+                                text = "Ganger gått",
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = FontWeight.Bold
+                            )
 
-                        Button(
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .weight(1f)
-                                .align(Alignment.CenterVertically),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B9FF)),
-                            onClick = {
-                                logScreenViewModel.removeFromLog(
-                                    hikeUIState.feature.properties.fid
-                                )
+                            Spacer(modifier = Modifier.height(4.dp))
+
+                            LaunchedEffect(hikeUIState.feature.properties.fid) {
+                                activityScreenViewModel.getTimesWalkedForHike(hikeUIState.feature.properties.fid)
                             }
-                        ) {
-                            Text(text = "Fjern fra logg")
+
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceEvenly,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Button(
+                                    onClick = {
+                                        activityScreenViewModel.adjustTimesWalked(
+                                            hikeUIState.feature.properties.fid,
+                                            -1
+                                        )
+                                    },
+                                    enabled = (logUIState.hikeTimesWalked[hikeUIState.feature.properties.fid] ?: 0) > 1,
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(0xFF061C40),
+                                        disabledContainerColor = Color.Gray.copy(alpha = 0.5f)
+
+                                    ),
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Text(
+                                        text = "-",
+                                        color = if ((logUIState.hikeTimesWalked[hikeUIState.feature.properties.fid] ?: 0) > 1) {
+                                            Color.White
+                                        } else {
+                                            Color.White.copy(alpha = 0.5f)
+                                        }
+
+                                    )
+                                }
+
+                                Text(
+                                    text = "${logUIState.hikeTimesWalked[hikeUIState.feature.properties.fid] ?: 0}",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    modifier = Modifier
+                                        .padding(horizontal = 8.dp)
+                                        .weight(1f),
+                                    textAlign = TextAlign.Center
+                                )
+
+                                Button(
+                                    onClick = {
+                                        activityScreenViewModel.adjustTimesWalked(
+                                            hikeUIState.feature.properties.fid,
+                                            1
+                                        )
+                                    },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(
+                                            0xFF061C40
+                                        )
+                                    ),
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Text(text = "+")
+                                }
+                            }
                         }
+                    }
+
+                    Button(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .weight(1f)
+                            .fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40)),
+                        onClick = {
+                            activityScreenViewModel.removeFromActivityLog(
+                                hikeUIState.feature.properties.fid
+                            )
+                        }
+                    ) {
+                        Text(text = "Fjern fra logg")
                     }
                 }
 

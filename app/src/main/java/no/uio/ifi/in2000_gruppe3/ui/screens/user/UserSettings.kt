@@ -67,7 +67,7 @@ fun UserSettingsScreen(
             SettingButton(
                 text = "Brukerprofil",
                 icon = R.drawable.person,
-                onClick = { navController.navigate(Screen.UserProfile.route) }
+                onClick = { navController.navigate(Screen.Profile.route) }
             )
 
             Column {

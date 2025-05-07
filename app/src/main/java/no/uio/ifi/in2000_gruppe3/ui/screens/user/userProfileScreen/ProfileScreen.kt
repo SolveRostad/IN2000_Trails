@@ -68,7 +68,7 @@ fun ProfileScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Profiles",
+                        text = "Profiler",
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -168,7 +168,8 @@ fun ProfileScreen(
                     items(profileUIState.profiles) { profile ->
                         ProfileCard(
                             profile = profile,
-                            profileScreenViewModel = profileScreenViewModel
+                            profileScreenViewModel = profileScreenViewModel,
+                            navController = navController
                         )
                     }
                 }

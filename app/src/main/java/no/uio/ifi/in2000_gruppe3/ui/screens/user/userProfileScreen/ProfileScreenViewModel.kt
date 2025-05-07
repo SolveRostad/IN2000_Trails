@@ -25,7 +25,10 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
     init {
         val applicationScope = CoroutineScope(SupervisorJob())
         profileRepository = ProfileRepository.getInstance(application, applicationScope)
-        getAllProfiles()
+        viewModelScope.launch {
+            setProfile()
+            getAllProfiles()
+        }
     }
 
     fun addProfile(username: String) {
@@ -34,7 +37,7 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
                 it.copy (isLoading = true)
             }
             try {
-                val newProfile = Profile (username = username)
+                val newProfile = Profile(username = username)
                 profileRepository.addUser(newProfile)
                 Log.e("CurrentUsers", "Current users: ${_profileScreenUIState.value.profiles}")
                 Log.d("UserScreenViewModel", "Legger til bruker ${newProfile.username}")
@@ -64,11 +67,11 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
                 it.copy (isLoading = true)
             }
             try {
-                val userToDelete = _profileScreenUIState.value.profiles.find { it.username == username }
-                if (userToDelete != null) {
-                    profileRepository.deleteUser(userToDelete)
+                val profileToDelete = _profileScreenUIState.value.profiles.find { it.username == username }
+                if (profileToDelete != null) {
+                    profileRepository.deleteProfile(profileToDelete)
                     _profileScreenUIState.update {
-                        it.copy (profiles = _profileScreenUIState.value.profiles - userToDelete)
+                        it.copy (profiles = _profileScreenUIState.value.profiles - profileToDelete)
                     }
                 }
             } catch (e: Exception) {
@@ -87,21 +90,21 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
         }
     }
 
-    fun selectProfile(username: String) {
+    fun selectProfile(username: String, onUserSelected: () -> Unit = {}) {
         viewModelScope.launch {
             _profileScreenUIState.update {
                 it.copy (isLoading = true)
             }
             try {
-                profileRepository.selectUser(username)
+                profileRepository.selectProfile(username)
                 _profileScreenUIState.update {
                     it.copy (
                         username = username,
-                        selectedUser = username,
                         isLoggedIn = username != "defaultUser"
                     )
                 }
-                Log.d("UserScreenViewModel", "Selected user: ${_profileScreenUIState.value.selectedUser}")
+                Log.d("UserScreenViewModel", "Selected user: ${_profileScreenUIState.value.username}")
+                onUserSelected()
             } catch (e: Exception) {
                 _profileScreenUIState.update {
                     it.copy (
@@ -118,19 +121,20 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
         }
     }
 
-    fun unselectProfile() {
+    fun setProfile() {
         viewModelScope.launch {
-            _profileScreenUIState.update {
-                it.copy (isLoading = true)
-            }
             try {
-                profileRepository.unselectUser()
+                val selected = profileRepository.getSelectedUser()
                 _profileScreenUIState.update {
-                    it.copy (username = "", selectedUser = "")
+                    it.copy(
+                        username = selected.username,
+                        isLoggedIn = selected.username != "defaultUser"
+                    )
                 }
             } catch (e: Exception) {
+                Log.e("ProfileScreenViewModel", "Error getting selected Profile: ${e.message}")
                 _profileScreenUIState.update {
-                    it.copy (isLoading = false, errorMessage = "Error unslecting user: ${e.message}", isError = true)
+                    it.copy (isLoading = false, errorMessage = "Error unselecting user: ${e.message}", isError = true)
                 }
             } finally {
                 _profileScreenUIState.update {
@@ -139,16 +143,6 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
             }
         }
     }
-
-//    fun getSelectedUser() {
-//        viewModelScope.launch {
-//            _userScreenUIState.update {
-//                it.copy(
-//                    selectedUser = userRepository.getSelectedUser()?.username ?: ""
-//                )
-//            }
-//        }
-//    }
 
     fun getAllProfiles() {
         viewModelScope.launch {
@@ -168,14 +162,12 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
                     it.copy (isLoading = false)
                 }
             }
-
         }
     }
 }
 
 data class ProfileScreenUIState(
     val profiles: List<Profile> = emptyList(),
-    val selectedUser: String = "",
     val username: String = "",
     val isLoading: Boolean = false,
     val errorMessage: String = "",

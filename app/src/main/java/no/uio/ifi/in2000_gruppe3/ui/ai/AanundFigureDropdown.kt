@@ -17,12 +17,14 @@ import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.SheetDrawerDetent
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
+import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
 fun AanundFigureDropdown(
     expanded: MutableState<Boolean>,
     homeScreenViewModel: HomeScreenViewModel,
+    hikeScreenViewModel: HikeScreenViewModel,
     mapBoxViewModel: MapboxViewModel,
     navController: NavHostController
 ) {
@@ -46,6 +48,7 @@ fun AanundFigureDropdown(
                 homeScreenViewModel.setSheetState(SheetDrawerDetent.SEMIPEEK)
                 homeScreenViewModel.clearHikes()
                 mapBoxViewModel.clearPolylineAnnotations()
+                hikeScreenViewModel.updateRecommendedHikesLoaded(false)
                 expanded.value = false
             }
         )

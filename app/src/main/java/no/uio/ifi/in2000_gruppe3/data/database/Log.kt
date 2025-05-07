@@ -24,7 +24,7 @@ data class Log (
     val hikeId: Int,
 
     @ColumnInfo(name = "times_walked")
-    val timesWalked: Int = 0,
+    val timesWalked: Int = 1,
 
     @ColumnInfo(name = "notes")
     val notes: String = ""

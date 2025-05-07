@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen
+package no.uio.ifi.in2000_gruppe3.ui.screens.welcome
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -82,7 +82,7 @@ fun WelcomeScreen(
                     .fillMaxWidth()
                     .height(48.dp),
                 shape = RoundedCornerShape(24.dp),
-                onClick = { navController.navigate(Screen.UserProfile.route) },
+                onClick = { navController.navigate(Screen.Profile.route) },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40))
             ) {
                 Text(

@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.user.log
+package no.uio.ifi.in2000_gruppe3.ui.screens.user.activities
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
@@ -12,12 +12,12 @@ import no.uio.ifi.in2000_gruppe3.data.profile.repository.ProfileRepository
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 
-class LogScreenViewModelFactory (
+class ActivityScreenViewModelFactory (
     private val application: Application,
     private val openAIViewModel: OpenAIViewModel
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(LogScreenViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(ActivityScreenViewModel::class.java)) {
             val applicationScope = CoroutineScope(SupervisorJob())
             val database = ProfileDatabase.getDatabase(application, applicationScope)
             val logRepository = LogRepository(database.logDao())
@@ -28,7 +28,7 @@ class LogScreenViewModelFactory (
             val profileRepository = ProfileRepository.getInstance(application, applicationScope)
 
             @Suppress("UNCHECKED_CAST")
-            return LogScreenViewModel(
+            return ActivityScreenViewModel(
                 application,
                 logRepository,
                 profileRepository,
