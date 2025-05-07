@@ -36,7 +36,7 @@ import java.util.concurrent.Executors
  *   notes: String
  */
 
-@Database(entities = [LogEntity::class, Favorite::class, Profile::class], version = 2)
+@Database(entities = [LogEntity::class, Favorite::class, Profile::class], version = 3)
 @TypeConverters(Converter::class)
 abstract class ProfileDatabase : RoomDatabase() {
     abstract fun favoriteDao(): FavoriteDao
@@ -77,7 +77,7 @@ abstract class ProfileDatabase : RoomDatabase() {
                     ProfileDatabase::class.java,
                     "Profile_database"
                 )
-                    .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                     .setQueryCallback({ sqlQuery, bindArgs ->
                         Log.d("RoomQuery", "SQL: $sqlQuery, Args: $bindArgs")
                     }, Executors.newSingleThreadExecutor())

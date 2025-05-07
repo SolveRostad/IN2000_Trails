@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 
-@Entity(tableName = "log_table",
+@Entity(tableName = "activity_table",
     primaryKeys = ["username", "hike_id"],
     foreignKeys = [
         ForeignKey(
