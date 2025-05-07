@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.user.log
+package no.uio.ifi.in2000_gruppe3.ui.screens.user.activities
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,11 +38,11 @@ import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 
 @Composable
-fun LogNotes(
-    logScreenViewModel: LogScreenViewModel,
+fun ActivityNotes(
+    activityScreenViewModel: ActivityScreenViewModel,
     feature: Feature
 ) {
-    val logScreenUIState by logScreenViewModel.logScreenUIState.collectAsState()
+    val logScreenUIState by activityScreenViewModel.activityScreenUIState.collectAsState()
 
     var noteText by remember { mutableStateOf(logScreenUIState.hikeNotes[feature.properties.fid] ?: "") }
     var isExpanded by remember { mutableStateOf(false) }
@@ -52,7 +52,7 @@ fun LogNotes(
 
     LaunchedEffect(feature.properties.fid, logScreenUIState.hikeNotes[feature.properties.fid]) {
         if (logScreenUIState.hikeNotes[feature.properties.fid] == null) {
-            logScreenViewModel.getNotesForHike(feature.properties.fid)
+            activityScreenViewModel.getNotesForHike(feature.properties.fid)
         } else {
             noteText = logScreenUIState.hikeNotes[feature.properties.fid] ?: ""
         }
@@ -108,7 +108,7 @@ fun LogNotes(
                     onDone = {
                         isExpanded = false
                         if (noteText.isNotBlank()) {
-                            logScreenViewModel.addNotesToLog(feature.properties.fid, noteText)
+                            activityScreenViewModel.addNotesToActivityLog(feature.properties.fid, noteText)
                         }
                     }
                 ),
@@ -153,7 +153,7 @@ fun LogNotes(
                 Button(
                     onClick = {
                         isExpanded = false
-                        logScreenViewModel.addNotesToLog(feature.properties.fid, noteText)
+                        activityScreenViewModel.addNotesToActivityLog(feature.properties.fid, noteText)
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40))
                 ) {

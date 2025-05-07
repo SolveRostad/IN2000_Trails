@@ -55,7 +55,7 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.activities.ActivityScreenViewModel
 import java.time.LocalDate
 
 @Composable
@@ -65,13 +65,13 @@ fun HikeCard(
     favoritesViewModel: FavoritesScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     openAIViewModel: OpenAIViewModel,
-    logScreenViewModel: LogScreenViewModel,
+    activityScreenViewModel: ActivityScreenViewModel,
     navController: NavHostController,
     checkedState: MutableState<Boolean>
 ) {
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
     val openAIUIState by openAIViewModel.openAIUIState.collectAsState()
-    val logUIState by logScreenViewModel.logScreenUIState.collectAsState()
+    val logUIState by activityScreenViewModel.activityScreenUIState.collectAsState()
     val isInLog = logUIState.hikeLog.contains(hikeUIState.feature.properties.fid)
     var averageWindSpeed by remember { mutableDoubleStateOf(homeScreenViewModel.daysAverageWindSpeed(hikeUIState.selectedDate)) }
 
@@ -209,7 +209,7 @@ fun HikeCard(
                             .fillMaxWidth()
                             .weight(1f),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40)),
-                        onClick = { logScreenViewModel.addToLog(hikeUIState.feature.properties.fid) }
+                        onClick = { activityScreenViewModel.addToActivityLog(hikeUIState.feature.properties.fid) }
                     ) {
                         Text(text = "Legg til i loggen")
                     }
@@ -237,7 +237,7 @@ fun HikeCard(
                             Spacer(modifier = Modifier.height(4.dp))
 
                             LaunchedEffect(hikeUIState.feature.properties.fid) {
-                                logScreenViewModel.getTimesWalkedForHike(hikeUIState.feature.properties.fid)
+                                activityScreenViewModel.getTimesWalkedForHike(hikeUIState.feature.properties.fid)
                             }
 
                             Row(
@@ -247,7 +247,7 @@ fun HikeCard(
                             ) {
                                 Button(
                                     onClick = {
-                                        logScreenViewModel.adjustTimesWalked(
+                                        activityScreenViewModel.adjustTimesWalked(
                                             hikeUIState.feature.properties.fid,
                                             -1
                                         )
@@ -282,7 +282,7 @@ fun HikeCard(
 
                                 Button(
                                     onClick = {
-                                        logScreenViewModel.adjustTimesWalked(
+                                        activityScreenViewModel.adjustTimesWalked(
                                             hikeUIState.feature.properties.fid,
                                             1
                                         )
@@ -307,7 +307,7 @@ fun HikeCard(
                             .fillMaxWidth(),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40)),
                         onClick = {
-                            logScreenViewModel.removeFromLog(
+                            activityScreenViewModel.removeFromActivityLog(
                                 hikeUIState.feature.properties.fid
                             )
                         }

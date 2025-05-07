@@ -29,7 +29,7 @@ import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.activities.ActivityScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,7 +39,7 @@ fun HikeScreen(
     hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     openAIViewModel: OpenAIViewModel,
-    logScreenViewModel: LogScreenViewModel,
+    activityScreenViewModel: ActivityScreenViewModel,
     navController: NavHostController
 ) {
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
@@ -93,7 +93,7 @@ fun HikeScreen(
                 favoritesViewModel = favoritesViewModel,
                 mapboxViewModel = mapboxViewModel,
                 openAIViewModel = openAIViewModel,
-                logScreenViewModel = logScreenViewModel,
+                activityScreenViewModel = activityScreenViewModel,
                 navController = navController,
                 checkedState = checkedState
             )

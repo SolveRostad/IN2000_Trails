@@ -37,8 +37,8 @@ import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreen
-import no.uio.ifi.in2000_gruppe3.ui.screens.user.log.LogScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.activities.Activities
+import no.uio.ifi.in2000_gruppe3.ui.screens.user.activities.ActivityScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.user.userProfileScreen.ProfileScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,13 +47,18 @@ fun UserScreen(
     hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     profileScreenViewModel: ProfileScreenViewModel,
-    logScreenViewModel: LogScreenViewModel,
+    activityScreenViewModel: ActivityScreenViewModel,
     navController: NavHostController,
 ) {
     val profileUIState by profileScreenViewModel.profileScreenUIState.collectAsState()
     var currentView by remember { mutableIntStateOf(0) }
 
-    val logScreenUIState = logScreenViewModel.logScreenUIState.collectAsState()
+    val logScreenUIState = activityScreenViewModel.activityScreenUIState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        activityScreenViewModel.loadActivities()
+        activityScreenViewModel.getTotalTimesWalked()
+    }
 
     LaunchedEffect(profileUIState.username) {
         logScreenViewModel.setUser()
@@ -61,8 +66,7 @@ fun UserScreen(
 
     LaunchedEffect(profileUIState.isLoggedIn) {
         if (!profileUIState.isLoggedIn) {
-            navController.navigate(Screen.UserProfile.route) {
-                // Pop up to User screen so we don't build up a stack of profile screens
+            navController.navigate(Screen.Profile.route) {
                 popUpTo(Screen.User.route) { inclusive = true }
             }
         }
@@ -159,18 +163,14 @@ fun UserScreen(
             ) {
                 when (currentView) {
                     0 -> {
-                        LogScreen(
+                        Activities(
                             hikeScreenViewModel = hikeScreenViewModel,
                             mapboxViewModel = mapboxViewModel,
-                            logScreenViewModel = logScreenViewModel,
+                            activityScreenViewModel = activityScreenViewModel,
                             navController = navController
                         )
                     }
-
                     1 -> {
-                        logScreenViewModel.getTotalTimesWalked()
-                        logScreenViewModel.loadLog()
-
                         ActivityStats(
                             numTrips = logScreenUIState.value.hikesDone,
                             distanceKm = logScreenUIState.value.totalDistance.let { "%.2f".format(it).toDouble() }
