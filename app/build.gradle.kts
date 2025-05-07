@@ -1,12 +1,9 @@
-import org.gradle.kotlin.dsl.api
-import org.gradle.kotlin.dsl.testImplementation
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     kotlin("plugin.serialization") version "2.1.10"
-    id("com.google.devtools.ksp")
+    id("com.google.devtools.ksp") version "2.1.0-1.0.29"
 }
 
 android {
@@ -20,8 +17,16 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        buildConfigField("String", "MAPBOX_ACCESS_TOKEN", "\"${properties["MAPBOX_ACCESS_TOKEN"]}\"")
-        buildConfigField("String", "MAPBOX_SECRET_TOKEN", "\"${properties["MAPBOX_SECRET_TOKEN"]}\"")
+        buildConfigField(
+            "String",
+            "MAPBOX_ACCESS_TOKEN",
+            "\"${properties["MAPBOX_ACCESS_TOKEN"]}\""
+        )
+        buildConfigField(
+            "String",
+            "MAPBOX_SECRET_TOKEN",
+            "\"${properties["MAPBOX_SECRET_TOKEN"]}\""
+        )
 
         buildConfigField("String", "OPENAI_API_KEY_1", "\"${properties["OPENAI_API_KEY_1"]}\"")
         buildConfigField("String", "OPENAI_API_KEY_2", "\"${properties["OPENAI_API_KEY_2"]}\"")
@@ -165,13 +170,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0") // 2
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
 
-    //Test
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4: 1.7.8")
-    testImplementation("junit:junit:1.7.8")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
-
-
-
     // Standard libs
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -183,9 +181,12 @@ dependencies {
     implementation(libs.androidx.material3)
 
     // For testing
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4: 1.7.8")
+    testImplementation("junit:junit:1.7.8")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
+    testImplementation("org.slf4j:slf4j-nop:1.7.36")
     testImplementation("org.robolectric:robolectric:4.10.3")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
-
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
