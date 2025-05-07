@@ -40,6 +40,7 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities.Activities
 import no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities.ActivityScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.profile.userProfileScreen.ProfileScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.theme.LogoPrimary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -122,7 +123,7 @@ fun UserScreen(
                                 .height(2.dp)
                                 .fillMaxWidth()
                                 .background(
-                                    if (currentView == 0) Color(0xFF061C40)
+                                    if (currentView == 0) LogoPrimary
                                     else Color.Transparent
                                 )
                         )
@@ -148,7 +149,7 @@ fun UserScreen(
                                 .height(2.dp)
                                 .fillMaxWidth()
                                 .background(
-                                    if (currentView == 1) Color(0xFF061C40)
+                                    if (currentView == 1) LogoPrimary
                                     else Color.Transparent
                                 )
                         )

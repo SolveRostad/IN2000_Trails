@@ -53,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
+import no.uio.ifi.in2000_gruppe3.ui.theme.LogoPrimary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -148,7 +149,7 @@ fun ProfileScreen(
                             profile = ""
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40))
+                    colors = ButtonDefaults.buttonColors(containerColor = LogoPrimary)
                 ) {
                     Text(text = "Legg til")
                 }

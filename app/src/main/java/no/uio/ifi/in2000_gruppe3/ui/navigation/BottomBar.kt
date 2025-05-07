@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.R
+import no.uio.ifi.in2000_gruppe3.ui.theme.LogoPrimary
 
 @Composable
 fun BottomBar(navController: NavHostController) {
@@ -57,7 +58,7 @@ fun BottomBar(navController: NavHostController) {
                         imageVector = Icons.Default.Favorite,
                         contentDescription = "Favorites",
                         modifier = Modifier.fillMaxSize(),
-                        tint = if (currentDestination == Screen.Favorites.route) Color(0xFF061C40)
+                        tint = if (currentDestination == Screen.Favorites.route) LogoPrimary
                                else LocalContentColor.current
                     )
                 }
@@ -81,7 +82,7 @@ fun BottomBar(navController: NavHostController) {
                         painter = painterResource(R.drawable.weather),
                         contentDescription = "Location forecast",
                         modifier = Modifier.fillMaxSize(),
-                        tint = if (currentDestination == Screen.LocationForecast.route) Color(0xFF061C40)
+                        tint = if (currentDestination == Screen.LocationForecast.route) LogoPrimary
                                else LocalContentColor.current
                     )
                 }
@@ -154,7 +155,7 @@ fun BottomBar(navController: NavHostController) {
                             currentDestination == Screen.Profile.route ||
                             currentDestination == Screen.ProfileSettings.route ||
                             currentDestination == Screen.ProfileSelect.route
-                            ) Color(0xFF061C40)
+                            ) LogoPrimary
                             else LocalContentColor.current
                     )
                 }

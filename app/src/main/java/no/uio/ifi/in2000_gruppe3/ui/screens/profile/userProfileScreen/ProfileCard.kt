@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import no.uio.ifi.in2000_gruppe3.data.database.Profile
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
+import no.uio.ifi.in2000_gruppe3.ui.theme.LogoPrimary
 
 @Composable
 fun ProfileCard(
@@ -128,9 +129,7 @@ fun ProfileCard(
                         navController.navigate(Screen.Profile.route)
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF061C40)
-                    )
+                    colors = ButtonDefaults.buttonColors(containerColor = LogoPrimary)
                 ) {
                     Text("Velg bruker")
                 }

@@ -36,6 +36,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
+import no.uio.ifi.in2000_gruppe3.ui.theme.LogoPrimary
 
 @Composable
 fun ActivityNotes(
@@ -144,7 +145,7 @@ fun ActivityNotes(
                 TextButton(onClick = { isExpanded = false }) {
                     Text(
                         text = "Avbryt",
-                        color = Color(0xFF061C40)
+                        color = LogoPrimary
                     )
                 }
 
@@ -155,7 +156,7 @@ fun ActivityNotes(
                         isExpanded = false
                         activityScreenViewModel.addNotesToActivityLog(feature.properties.fid, noteText)
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40))
+                    colors = ButtonDefaults.buttonColors(containerColor = LogoPrimary)
                 ) {
                     Text("Lagre")
                 }

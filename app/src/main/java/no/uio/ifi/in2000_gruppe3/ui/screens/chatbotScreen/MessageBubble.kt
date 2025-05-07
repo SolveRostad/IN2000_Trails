@@ -34,6 +34,7 @@ import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.theme.LogoPrimary
 
 @Composable
 fun MessageBubble(
@@ -83,7 +84,7 @@ fun MessageBubble(
                     modifier = Modifier
                         .size(36.dp)
                         .clip(CircleShape)
-                        .background(Color(0xFF061C40)),
+                        .background(LogoPrimary),
                     contentScale = ContentScale.Crop
                 )
                 Text(

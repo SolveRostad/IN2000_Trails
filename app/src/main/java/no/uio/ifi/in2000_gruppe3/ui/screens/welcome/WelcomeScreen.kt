@@ -25,14 +25,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
+import no.uio.ifi.in2000_gruppe3.ui.theme.LogoPrimary
 
 @Composable
 fun WelcomeScreen(
     navController: NavController
 ) {
-    Scaffold(
-        containerColor = Color(0xFFF9F9F9)
-    ) { padding ->
+    Scaffold { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -67,7 +66,7 @@ fun WelcomeScreen(
                     .height(56.dp),
                 shape = RoundedCornerShape(16.dp),
                 onClick = { navController.navigate(Screen.Home.route) },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40))
+                colors = ButtonDefaults.buttonColors(containerColor = LogoPrimary)
             ) {
                 Text(
                     text = "Kom i gang",
@@ -83,7 +82,7 @@ fun WelcomeScreen(
                     .height(48.dp),
                 shape = RoundedCornerShape(24.dp),
                 onClick = { navController.navigate(Screen.ProfileSelect.route) },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40))
+                colors = ButtonDefaults.buttonColors(containerColor = LogoPrimary)
             ) {
                 Text(
                     text = "Logg inn",
