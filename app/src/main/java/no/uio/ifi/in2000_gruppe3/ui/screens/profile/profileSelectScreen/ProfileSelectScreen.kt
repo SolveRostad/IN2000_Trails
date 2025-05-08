@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.profile.userProfileScreen
+package no.uio.ifi.in2000_gruppe3.ui.screens.profile.profileSelectScreen
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -53,10 +53,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
+import no.uio.ifi.in2000_gruppe3.ui.theme.LogoPrimary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(
+fun ProfileSelectScreen(
     profileScreenViewModel: ProfileScreenViewModel,
     navController: NavHostController
 ) {
@@ -93,7 +94,7 @@ fun ProfileScreen(
         ) {
             // App logo
             Image(
-                painter = painterResource(id = R.drawable.logo_slogan_new),
+                painter = painterResource(id = R.drawable.logo_slogan),
                 contentDescription = "App Logo",
                 modifier = Modifier.fillMaxWidth()
                     .size(200.dp)
@@ -117,6 +118,7 @@ fun ProfileScreen(
                                 if (profile.isNotBlank()) {
                                     Log.d("UserScreen", "Adding profile $profile")
                                     profileScreenViewModel.addProfile(profile)
+                                    profileScreenViewModel.selectProfile(profile)
                                     profile = ""
                                 }
                             }
@@ -143,10 +145,11 @@ fun ProfileScreen(
                         if (profile.isNotBlank()) {
                             Log.d("UserScreen", "Adding profile $profile")
                             profileScreenViewModel.addProfile(profile)
+                            profileScreenViewModel.selectProfile(profile)
                             profile = ""
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40))
+                    colors = ButtonDefaults.buttonColors(containerColor = LogoPrimary)
                 ) {
                     Text(text = "Legg til")
                 }

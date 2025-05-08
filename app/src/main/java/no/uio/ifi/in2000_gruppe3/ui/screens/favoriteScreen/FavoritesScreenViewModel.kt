@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.data.database.Favorite
-import no.uio.ifi.in2000_gruppe3.data.favorites.FavoriteRepository
+import no.uio.ifi.in2000_gruppe3.data.favorites.repository.FavoriteRepository
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository.HikeAPIRepository
 import no.uio.ifi.in2000_gruppe3.data.profile.repository.ProfileRepository

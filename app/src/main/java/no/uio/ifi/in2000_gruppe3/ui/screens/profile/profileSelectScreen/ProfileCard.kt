@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.ui.screens.profile.userProfileScreen
+package no.uio.ifi.in2000_gruppe3.ui.screens.profile.profileSelectScreen
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import no.uio.ifi.in2000_gruppe3.data.database.Profile
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
+import no.uio.ifi.in2000_gruppe3.ui.theme.LogoPrimary
 
 @Composable
 fun ProfileCard(
@@ -125,12 +126,10 @@ fun ProfileCard(
                         Log.d("UserScreen", "Selected profile: ${profile.username}")
                         profileScreenViewModel.selectProfile(profile.username)
                         expandedProfileId = null
-                        navController.navigate(Screen.User.route)
+                        navController.navigate(Screen.Profile.route)
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF061C40)
-                    )
+                    colors = ButtonDefaults.buttonColors(containerColor = LogoPrimary)
                 ) {
                     Text("Velg bruker")
                 }

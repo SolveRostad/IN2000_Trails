@@ -172,13 +172,6 @@ class HomeScreenViewModel() : ViewModel() {
             ?.minOfOrNull { it.data.instant.details.air_temperature } ?: Double.POSITIVE_INFINITY
     }
 
-    fun daysAverageTemp(date: String): Double {
-        val temps = timeSeriesFromDate(date)
-            ?.map { it.data.instant.details.air_temperature }
-
-        return temps?.average() ?: Double.NEGATIVE_INFINITY
-    }
-
     fun daysAverageWindSpeed(date: String): Double {
         val windSpeeds = timeSeriesFromDate(date)
             ?.map { it.data.instant.details.wind_speed }

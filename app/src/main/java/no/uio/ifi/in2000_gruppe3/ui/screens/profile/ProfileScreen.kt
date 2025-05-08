@@ -39,11 +39,12 @@ import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities.Activities
 import no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities.ActivityScreenViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.profile.userProfileScreen.ProfileScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.profile.profileSelectScreen.ProfileScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.theme.LogoPrimary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserScreen(
+fun ProfileScreen(
     hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     profileScreenViewModel: ProfileScreenViewModel,
@@ -66,8 +67,8 @@ fun UserScreen(
 
     LaunchedEffect(profileUIState.isLoggedIn) {
         if (!profileUIState.isLoggedIn) {
-            navController.navigate(Screen.Profile.route) {
-                popUpTo(Screen.User.route) { inclusive = true }
+            navController.navigate(Screen.ProfileSelect.route) {
+                popUpTo(Screen.Profile.route) { inclusive = true }
             }
         }
     }
@@ -84,7 +85,7 @@ fun UserScreen(
                 },
                 actions = {
                     IconButton(
-                        onClick = { navController.navigate(Screen.UserSettings.route) }
+                        onClick = { navController.navigate(Screen.Settings.route) }
                     ) {
                         Icon(
                             imageVector = Icons.Default.Settings,
@@ -122,7 +123,7 @@ fun UserScreen(
                                 .height(2.dp)
                                 .fillMaxWidth()
                                 .background(
-                                    if (currentView == 0) Color(0xFF061C40)
+                                    if (currentView == 0) LogoPrimary
                                     else Color.Transparent
                                 )
                         )
@@ -148,7 +149,7 @@ fun UserScreen(
                                 .height(2.dp)
                                 .fillMaxWidth()
                                 .background(
-                                    if (currentView == 1) Color(0xFF061C40)
+                                    if (currentView == 1) LogoPrimary
                                     else Color.Transparent
                                 )
                         )

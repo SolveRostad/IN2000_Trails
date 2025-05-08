@@ -2,18 +2,18 @@ package no.uio.ifi.in2000_gruppe3.ui.navigation
 
 // Class for navController to navigate between screens
 sealed class Screen(val route: String) {
-
-    object Home : Screen("home")
-    object User : Screen("user")
-    object Chatbot : Screen("chatbot")
     object Welcome : Screen("welcome")
-    object Activity: Screen("activity")
-    object Profile: Screen("userProfile")
+    object Home : Screen("home")
     object Favorites : Screen("favorites")
-    object MapPreview : Screen("mapPreview")
     object HikeScreen : Screen("hikeScreen")
-    object UserProfile : Screen("userProfile")
-    object UserSettings : Screen("userSettings")
+    object Chatbot : Screen("chatbot")
+
+    object Profile : Screen("profile")
+    object ProfileSelect: Screen("profileSelect")
+    object Settings : Screen("settings")
+
+    object MapPreview : Screen("mapPreview")
+
     object LocationForecast : Screen("locationForecast")
     object LocationForecastDetailed : Screen("locationForecastDetailed")
 }

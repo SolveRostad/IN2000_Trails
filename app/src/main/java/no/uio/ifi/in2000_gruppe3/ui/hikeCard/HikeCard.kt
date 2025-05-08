@@ -56,6 +56,8 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewMo
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities.ActivityScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.theme.LogoPrimary
+import no.uio.ifi.in2000_gruppe3.ui.theme.LogoSecondary
 import java.time.LocalDate
 
 @Composable
@@ -158,18 +160,14 @@ fun HikeCard(
                     InfoItem(
                         icon = ImageVector.vectorResource(id = R.drawable.distance_icon),
                         label = "Lengde",
-                        value = (hikeUIState.feature.properties.distance_meters.toFloat() / 1000.0).let {
-                            "%.2f km".format(
-                                it
-                            )
-                        },
+                        value = (hikeUIState.feature.properties.distance_meters.toFloat() / 1000.0).let { "%.2f km".format(it) },
                         iconTint = Color(0xFF4CAF50)
                     )
                     InfoItem(
                         icon = ImageVector.vectorResource(id = R.drawable.wind),
                         label = "Vindhastighet",
                         value = averageWindSpeed.let { "%.1f m/s".format(it) },
-                        iconTint = Color(0xFF2196F3)
+                        iconTint = LogoSecondary
                     )
                 }
 
@@ -210,7 +208,7 @@ fun HikeCard(
                         .padding(8.dp)
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40)),
+                    colors = ButtonDefaults.buttonColors(containerColor = LogoPrimary),
                     onClick = { navController.navigate(Screen.LocationForecast.route) }
                 ) {
                     Text(text = "Se været andre dager")
@@ -224,7 +222,7 @@ fun HikeCard(
                             .padding(8.dp)
                             .fillMaxWidth()
                             .weight(1f),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40)),
+                        colors = ButtonDefaults.buttonColors(containerColor = LogoPrimary),
                         onClick = { activityScreenViewModel.addToActivityLog(hikeUIState.feature.properties.fid) }
                     ) {
                         Text(text = "Legg til i loggen")
@@ -270,7 +268,7 @@ fun HikeCard(
                                     },
                                     enabled = (logUIState.hikeTimesWalked[hikeUIState.feature.properties.fid] ?: 0) > 1,
                                     colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(0xFF061C40),
+                                        containerColor = LogoPrimary,
                                         disabledContainerColor = Color.Gray.copy(alpha = 0.5f)
 
                                     ),
@@ -321,7 +319,7 @@ fun HikeCard(
                             .padding(8.dp)
                             .weight(1f)
                             .fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40)),
+                        colors = ButtonDefaults.buttonColors(containerColor = LogoPrimary),
                         onClick = {
                             activityScreenViewModel.removeFromActivityLog(
                                 hikeUIState.feature.properties.fid
@@ -341,7 +339,6 @@ fun HikeCard(
                         .clip(RoundedCornerShape(8.dp))
                         .clickable {
                             favoritesViewModel.setUser()
-
                             checkedState.value = !checkedState.value
                             if (checkedState.value) {
                                 favoritesViewModel.addFavorite(hikeUIState.feature.properties.fid)

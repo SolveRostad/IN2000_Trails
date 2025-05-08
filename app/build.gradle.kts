@@ -79,31 +79,7 @@ android {
 }
 
 dependencies {
-
-    // Room database
-    val room_version = "2.7.0-rc02"
-    implementation("androidx.room:room-runtime:$room_version")
-
-    // If this project uses any Kotlin source, use Kotlin Symbol Processing (KSP)
-    // See Add the KSP plugin to your project
-    ksp("androidx.room:room-compiler:$room_version")
-
-    // If this project only uses Java source, use the Java annotationProcessor
-    // No additional plugins are necessary
-    annotationProcessor("androidx.room:room-compiler:$room_version")
-    // optional - Kotlin Extensions and Coroutines support for Room
-    implementation("androidx.room:room-ktx:$room_version")
-    // optional - RxJava2 support for Room
-    implementation("androidx.room:room-rxjava2:$room_version")
-    // optional - RxJava3 support for Room
-    implementation("androidx.room:room-rxjava3:$room_version")
-    // optional - Guava support for Room, including Optional and ListenableFuture
-    implementation("androidx.room:room-guava:$room_version")
-    // optional - Test helpers
-    testImplementation("androidx.room:room-testing:$room_version")
-    // optional - Paging 3 Integration
-    implementation("androidx.room:room-paging:$room_version")
-
+    
     // Coil
     implementation("io.coil-kt:coil-compose:2.7.0")
     implementation("io.coil-kt:coil-svg:2.4.0")
@@ -113,12 +89,6 @@ dependencies {
 
     // Custom BottomSheet
     implementation("com.composables:core:1.20.1")
-
-    // DataStore
-    implementation(libs.androidx.datastore.preferences)
-    implementation(libs.androidx.datastore.preferences.rxjava2)
-    implementation(libs.androidx.datastore.preferences.rxjava3)
-    implementation(libs.volley)
 
     // Ktor
     implementation("io.ktor:ktor-client-android:2.3.5")
@@ -130,9 +100,6 @@ dependencies {
     // Ktx
     implementation(libs.core.ktx)
     implementation(libs.androidx.junit.ktx)
-
-    // Location
-    implementation("com.google.android.gms:play-services-location:21.3.0")
 
     // Mapbox
     implementation("com.mapbox.maps:android:11.10.2")
@@ -163,12 +130,17 @@ dependencies {
     implementation("org.slf4j:slf4j-api:2.0.9")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
+    // Room database
+    val roomVersion = "2.7.0-rc02"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
+
     // Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
 
     // ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0") // 2
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
 
     // Standard libs
     implementation(libs.androidx.core.ktx)
@@ -181,12 +153,13 @@ dependencies {
     implementation(libs.androidx.material3)
 
     // For testing
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4: 1.7.8")
-    testImplementation("junit:junit:1.7.8")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
-    testImplementation("org.slf4j:slf4j-nop:1.7.36")
-    testImplementation("org.robolectric:robolectric:4.10.3")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
+    testImplementation("org.robolectric:robolectric:4.10.3")
+    testImplementation("org.slf4j:slf4j-nop:1.7.36")
+    testImplementation("junit:junit:1.7.8")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4: 1.7.8")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

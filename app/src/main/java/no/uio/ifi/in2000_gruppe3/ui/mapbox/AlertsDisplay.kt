@@ -25,7 +25,11 @@ import coil.request.ImageRequest
 import com.mapbox.geojson.Point
 import no.uio.ifi.in2000_gruppe3.data.metAlertsAPI.models.Geometry
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
-import kotlin.math.*
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.pow
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 @Composable
 fun AlertsDisplay(

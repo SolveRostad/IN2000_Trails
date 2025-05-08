@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,11 +32,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
+import no.uio.ifi.in2000_gruppe3.ui.theme.LogoPrimary
 
 @Composable
 fun ActivityNotes(
@@ -43,6 +46,7 @@ fun ActivityNotes(
     feature: Feature
 ) {
     val logScreenUIState by activityScreenViewModel.activityScreenUIState.collectAsState()
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     var noteText by remember { mutableStateOf(logScreenUIState.hikeNotes[feature.properties.fid] ?: "") }
     var isExpanded by remember { mutableStateOf(false) }
@@ -64,7 +68,9 @@ fun ActivityNotes(
     ) {
         OutlinedButton(
             onClick = { isExpanded = !isExpanded },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            border = BorderStroke(1.dp, LogoPrimary),
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = LogoPrimary)
         ) {
             Text(
                 text = if (noteText.isBlank()) "Legg til notater..." else "Endre notat",
@@ -72,7 +78,7 @@ fun ActivityNotes(
             )
             Icon(
                 imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                contentDescription = null
+                contentDescription = "Open/Close notes",
             )
         }
 
@@ -94,6 +100,7 @@ fun ActivityNotes(
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = 150.dp),
+                shape = MaterialTheme.shapes.large,
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -106,9 +113,9 @@ fun ActivityNotes(
                 ),
                 keyboardActions = KeyboardActions(
                     onDone = {
-                        isExpanded = false
                         if (noteText.isNotBlank()) {
                             activityScreenViewModel.addNotesToActivityLog(feature.properties.fid, noteText)
+                            keyboardController?.hide()
                         }
                     }
                 ),
@@ -141,10 +148,15 @@ fun ActivityNotes(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
             ) {
-                TextButton(onClick = { isExpanded = false }) {
+                TextButton(
+                    onClick = {
+                        isExpanded = false
+                        keyboardController?.hide()
+                    }
+                ) {
                     Text(
                         text = "Avbryt",
-                        color = Color(0xFF061C40)
+                        color = LogoPrimary
                     )
                 }
 
@@ -152,10 +164,10 @@ fun ActivityNotes(
 
                 Button(
                     onClick = {
-                        isExpanded = false
                         activityScreenViewModel.addNotesToActivityLog(feature.properties.fid, noteText)
+                        keyboardController?.hide()
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40))
+                    colors = ButtonDefaults.buttonColors(containerColor = LogoPrimary)
                 ) {
                     Text("Lagre")
                 }

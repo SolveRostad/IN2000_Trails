@@ -25,14 +25,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
+import no.uio.ifi.in2000_gruppe3.ui.theme.LogoPrimary
 
 @Composable
 fun WelcomeScreen(
     navController: NavController
 ) {
-    Scaffold(
-        containerColor = Color(0xFFF9F9F9)
-    ) { padding ->
+    Scaffold { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -41,10 +40,10 @@ fun WelcomeScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(60.dp))
+            Spacer(modifier = Modifier.height(50.dp))
 
             Icon(
-                painter = painterResource(id = R.drawable.logo_slogan_new),
+                painter = painterResource(id = R.drawable.logo_slogan),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .fillMaxWidth()
@@ -56,10 +55,10 @@ fun WelcomeScreen(
                 text = "Planlegg perfekte turer i Oslo og Akershus \n med sanntidsvær og AI",
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyLarge,
-                color = Color(0xFF0F172A)
+                color = LogoPrimary
             )
 
-            Spacer(modifier = Modifier.height(250.dp))
+            Spacer(modifier = Modifier.height(220.dp))
 
             Button(
                 modifier = Modifier
@@ -67,7 +66,7 @@ fun WelcomeScreen(
                     .height(56.dp),
                 shape = RoundedCornerShape(16.dp),
                 onClick = { navController.navigate(Screen.Home.route) },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40))
+                colors = ButtonDefaults.buttonColors(containerColor = LogoPrimary)
             ) {
                 Text(
                     text = "Kom i gang",
@@ -75,21 +74,23 @@ fun WelcomeScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
                 shape = RoundedCornerShape(24.dp),
-                onClick = { navController.navigate(Screen.Profile.route) },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF061C40))
+                onClick = { navController.navigate(Screen.ProfileSelect.route) },
+                colors = ButtonDefaults.buttonColors(containerColor = LogoPrimary)
             ) {
                 Text(
                     text = "Logg inn",
                     fontSize = 16.sp
                 )
             }
+
+            Spacer(modifier = Modifier.height(50.dp))
         }
     }
 }

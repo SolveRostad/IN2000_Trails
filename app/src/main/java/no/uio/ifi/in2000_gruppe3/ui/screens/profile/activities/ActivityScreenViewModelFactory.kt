@@ -19,7 +19,7 @@ class ActivityScreenViewModelFactory (
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ActivityScreenViewModel::class.java)) {
             val applicationScope = CoroutineScope(SupervisorJob())
-            val database = ProfileDatabase.getDatabase(application, applicationScope)
+            val database = ProfileDatabase.getDatabase(application)
             val activityRepository = ActivityRepository(database.logDao())
             val hikeAPIRepository = HikeAPIRepository(openAIViewModel)
             val mapboxViewModel = MapboxViewModel()

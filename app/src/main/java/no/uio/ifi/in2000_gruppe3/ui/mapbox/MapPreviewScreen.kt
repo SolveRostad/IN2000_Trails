@@ -41,6 +41,9 @@ fun MapPreviewScreen(
     val mapViewportState = rememberMapViewportState()
     val feature = hikeScreenUIState.feature
 
+    val redMarker = rememberIconImage(R.drawable.red_marker)
+    val blueMarker = rememberIconImage(R.drawable.blue_marker)
+
     mapViewportState.setCameraOptions {
         center(
             Point.fromLngLat(
@@ -90,7 +93,6 @@ fun MapPreviewScreen(
                 lineBorderColor = Color.White
                 lineBorderWidth = 2.0
             }
-            val marker = rememberIconImage(R.drawable.red_marker)
 
             PointAnnotation(
                 point = Point.fromLngLat(
@@ -98,7 +100,7 @@ fun MapPreviewScreen(
                     feature.geometry.coordinates[0][1]
                 )
             ) {
-                iconImage = marker
+                iconImage = blueMarker
             }
             PointAnnotation(
                 point = Point.fromLngLat(
@@ -106,10 +108,10 @@ fun MapPreviewScreen(
                     feature.geometry.coordinates.last()[1]
                 ),
             ) {
-                iconImage = marker
+                iconImage = redMarker
             }
 
-            MapEffect() { mapView ->
+            MapEffect { mapView ->
                 mapView.location.updateSettings {
                     locationPuck = createDefault2DPuck(withBearing = true)
                     enabled = true

@@ -103,6 +103,7 @@ fun RecommendedHikes(
                     navController.navigate(Screen.HikeScreen.route)
                 }
             )
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
