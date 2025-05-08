@@ -8,4 +8,4 @@
 - Instansvariabler og deres typer
 - Metoder (funksjoner) som er definert i hver klasse, inkludert arvede metoder
 
-![](Diagrams/UMLClassDiagram.svg)
+![](Diagrams/UMLClassDiagram.png)
