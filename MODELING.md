@@ -7,5 +7,5 @@
 - Arv mellom klasser (hvem arver fra hvem)
 - Instansvariabler og deres typer
 - Metoder (funksjoner) som er definert i hver klasse, inkludert arvede metoder
-
-![](Diagrams/UMLClassDiagram.svg)
+- OPS! svg filen er veldig stor, last den gjerne ned for å se hele bildet.
+  ![](Diagrams/UMLClassDiagram.svg)
