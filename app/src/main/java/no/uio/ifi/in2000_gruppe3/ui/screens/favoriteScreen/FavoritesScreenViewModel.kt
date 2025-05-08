@@ -22,8 +22,8 @@ class FavoritesScreenViewModel(
     private val favoriteRepository: FavoriteRepository,
     private val profileRepository: ProfileRepository,
     private val hikeAPIRepository: HikeAPIRepository,
-    private val mapboxViewModel: MapboxViewModel,
-    ) : AndroidViewModel(application) {
+    private val mapboxViewModel: MapboxViewModel?, // must be nullable for testing
+) : AndroidViewModel(application) {
 
     private val _favoriteScreenUIState = MutableStateFlow<FavoriteScreenUIState>(
         FavoriteScreenUIState(
@@ -48,7 +48,7 @@ class FavoritesScreenViewModel(
         }
     }
 
-    fun loadFavorites(){
+    fun loadFavorites() {
         viewModelScope.launch {
             _favoriteScreenUIState.update {
                 it.copy(isLoading = true)
@@ -61,7 +61,10 @@ class FavoritesScreenViewModel(
                     it.copy(favorites = updatedFavorites)
                 }
 
-                Log.d("FavoritesViewModel", "Fetched favorites for user: ${username}: ${_favoriteScreenUIState.value.favorites}")
+                Log.d(
+                    "FavoritesViewModel",
+                    "Fetched favorites for user: ${username}: ${_favoriteScreenUIState.value.favorites}"
+                )
                 getAllConverteFavorites()
 
             } catch (e: Exception) {
@@ -86,8 +89,8 @@ class FavoritesScreenViewModel(
     }
 
     fun updateUserLocationFromMapbox() {
-        val latestPosition = mapboxViewModel.mapboxUIState.value.latestUserPosition
-        if(latestPosition != null) {
+        val latestPosition = mapboxViewModel!!.mapboxUIState.value.latestUserPosition
+        if (latestPosition != null) {
             updateUserLocation(latestPosition)
         }
     }
