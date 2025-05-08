@@ -37,7 +37,7 @@ class ProfileRepository constructor(private val profileDao: ProfileDao) {
         return profileDao.getAllUsers()
     }
 
-    // Dene funksjonen er kun til testing.
+    // Denne funksjonen er kun til testing.
     suspend fun clearAllUsers() {
         profileDao.clearAllUsers()
     }

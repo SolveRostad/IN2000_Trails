@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.data.favorites
+package no.uio.ifi.in2000_gruppe3.data.favorites.repository
 
 import no.uio.ifi.in2000_gruppe3.data.database.Favorite
 import no.uio.ifi.in2000_gruppe3.data.database.FavoriteDao
