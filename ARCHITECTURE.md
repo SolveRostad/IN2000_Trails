@@ -66,6 +66,12 @@ kombinert med prinsipper fra UDF (Unidirectional Data Flow).
 - Arv: Brukes med forsiktighet for å unngå tett kobling, og sammensetning foretrekkes fremfor arv.
 - Polymorfisme: Grensesnitt og abstrakte klasser brukes for å tillate fleksibilitet og utvidbarhet.
 
+# API-nivå
+
+Vi bruker API nivå 35, vi har valgt å bruke dette API nivået fordi det er den nyeste versjonen som
+ikke er i beta.
+Vi har da tilgang til de nyeste funksjonene, bedre ytelse i tilegg til forbedret sikkerhet.
+
 # Vedlikehold og videreutvikling
 
 - Følg de eksisterende MVVM- og UDF-mønstrene for å sikre konsistens.
