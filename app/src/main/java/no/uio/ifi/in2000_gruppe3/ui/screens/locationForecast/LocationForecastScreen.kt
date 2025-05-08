@@ -39,13 +39,10 @@ fun LocationForecastScreen(
     val todaysDateStr = getTodaysDate()
     val todaysDate = LocalDate.parse(todaysDateStr)
 
-    val hikeName = if (hikeUIState.feature.properties.desc == "error") "Været i dag"
-                   else hikeUIState.feature.properties.desc
-
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(hikeName!!) },
+                title = { Text(hikeUIState.feature.properties.desc ?: "Ukjent rutenavn") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
