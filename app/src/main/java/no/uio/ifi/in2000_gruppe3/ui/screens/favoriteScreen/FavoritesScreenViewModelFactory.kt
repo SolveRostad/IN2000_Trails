@@ -19,7 +19,7 @@ class FavoritesScreenViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(FavoritesScreenViewModel::class.java)) {
             val applicationScope = CoroutineScope(SupervisorJob())
-            val database = ProfileDatabase.getDatabase(application, applicationScope)
+            val database = ProfileDatabase.getDatabase(application)
             val favoriteRepository = FavoriteRepository(database.favoriteDao())
             val hikeAPIRepository = HikeAPIRepository(openAIViewModel)
             val mapboxViewModel = MapboxViewModel()

@@ -4,5 +4,4 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.compose) apply false
     id("com.google.devtools.ksp") version "2.1.0-1.0.29" apply false
-    id("com.autonomousapps.dependency-analysis") version "1.20.0"
 }
