@@ -8,10 +8,4 @@
 - Instansvariabler og deres typer
 - Metoder (funksjoner) som er definert i hver klasse, inkludert arvede metoder
 
-### Syntaksnøkkel:
-
-- '+' for offentlige (public) medlemmer"
-- '-' for private medlemmer
-- '#' for beskyttede (protected) medlemmer (hvis aktuelt)
-
 ![](Diagrams/UMLClassDiagram.svg)
