@@ -45,6 +45,8 @@ import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -63,6 +65,8 @@ fun ProfileSelectScreen(
 ) {
     val profileUIState by profileScreenViewModel.profileScreenUIState.collectAsState()
     var profile by remember { mutableStateOf("") }
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Scaffold(
         topBar = {
@@ -120,9 +124,12 @@ fun ProfileSelectScreen(
                                     profileScreenViewModel.addProfile(profile)
                                     profileScreenViewModel.selectProfile(profile)
                                     profile = ""
+
+                                    keyboardController?.hide()
+                                    focusManager.clearFocus()
                                 }
                             }
-                            true
+                            false
                         },
                     colors = TextFieldDefaults.colors(
                         focusedIndicatorColor = Color.Transparent,
@@ -147,6 +154,9 @@ fun ProfileSelectScreen(
                             profileScreenViewModel.addProfile(profile)
                             profileScreenViewModel.selectProfile(profile)
                             profile = ""
+
+                            keyboardController?.hide()
+                            focusManager.clearFocus()
                         }
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = LogoPrimary)

@@ -65,11 +65,11 @@ fun WelcomeScreen(
                     .fillMaxWidth()
                     .height(56.dp),
                 shape = RoundedCornerShape(16.dp),
-                onClick = { navController.navigate(Screen.Home.route) },
+                onClick = { navController.navigate(Screen.ProfileSelect.route) },
                 colors = ButtonDefaults.buttonColors(containerColor = LogoPrimary)
             ) {
                 Text(
-                    text = "Kom i gang",
+                    text = "Logg inn",
                     fontSize = 18.sp
                 )
             }
@@ -81,11 +81,11 @@ fun WelcomeScreen(
                     .fillMaxWidth()
                     .height(48.dp),
                 shape = RoundedCornerShape(24.dp),
-                onClick = { navController.navigate(Screen.ProfileSelect.route) },
+                onClick = { navController.navigate(Screen.Home.route) },
                 colors = ButtonDefaults.buttonColors(containerColor = LogoPrimary)
             ) {
                 Text(
-                    text = "Logg inn",
+                    text = "Fortsett som standard bruker",
                     fontSize = 16.sp
                 )
             }
