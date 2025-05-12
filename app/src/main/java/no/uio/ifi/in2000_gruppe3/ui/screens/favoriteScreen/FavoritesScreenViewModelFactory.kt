@@ -19,12 +19,11 @@ class FavoritesScreenViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(FavoritesScreenViewModel::class.java)) {
             val applicationScope = CoroutineScope(SupervisorJob())
-            val database = ProfileDatabase.getDatabase(application)
+            val database = ProfileDatabase.getDatabase(application, applicationScope)
             val favoriteRepository = FavoriteRepository(database.favoriteDao())
             val hikeAPIRepository = HikeAPIRepository(openAIViewModel)
             val mapboxViewModel = MapboxViewModel()
 
-            // Use the singleton instance of UserRepository
             val profileRepository = ProfileRepository.getInstance(application, applicationScope)
 
             @Suppress("UNCHECKED_CAST")

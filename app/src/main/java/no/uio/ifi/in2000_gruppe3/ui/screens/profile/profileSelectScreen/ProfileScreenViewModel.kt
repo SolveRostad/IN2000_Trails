@@ -17,7 +17,7 @@ import no.uio.ifi.in2000_gruppe3.data.profile.repository.ProfileRepository
 class ProfileScreenViewModel(application: Application):AndroidViewModel(application) {
     private val profileRepository: ProfileRepository
 
-    private val _profileScreenUIState = MutableStateFlow<ProfileScreenUIState>(
+    private val _profileScreenUIState = MutableStateFlow(
         ProfileScreenUIState()
     )
     val profileScreenUIState: StateFlow<ProfileScreenUIState> = _profileScreenUIState.asStateFlow()
