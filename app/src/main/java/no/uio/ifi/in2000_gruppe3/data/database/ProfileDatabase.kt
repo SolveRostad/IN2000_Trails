@@ -34,7 +34,15 @@ import no.uio.ifi.in2000_gruppe3.data.database.Activity as LogEntity
  *   notes: String
  */
 
-@Database(entities = [LogEntity::class, Favorite::class, Profile::class], version = 3)
+@Database(
+    entities = [
+        LogEntity::class,
+        Favorite::class,
+        Profile::class
+               ],
+    version = 3,
+    exportSchema = true
+)
 abstract class ProfileDatabase : RoomDatabase() {
     abstract fun favoriteDao(): FavoriteDao
     abstract fun profileDao(): ProfileDao
