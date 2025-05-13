@@ -22,7 +22,7 @@ class ProfileRepository(private val profileDao: ProfileDao) {
         profileDao.selectUser(username)
     }
 
-    suspend fun unselectUser() {
+    private suspend fun unselectUser() {
         profileDao.unselectUser()
     }
 

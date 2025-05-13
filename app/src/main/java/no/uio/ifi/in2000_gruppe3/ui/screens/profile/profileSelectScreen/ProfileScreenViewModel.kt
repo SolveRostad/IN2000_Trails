@@ -121,7 +121,7 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
         }
     }
 
-    fun setProfile() {
+    private fun setProfile() {
         viewModelScope.launch {
             try {
                 val selected = profileRepository.getSelectedUser()
@@ -144,7 +144,7 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
         }
     }
 
-    fun getAllProfiles() {
+    private fun getAllProfiles() {
         viewModelScope.launch {
             _profileScreenUIState.update{
                 it.copy (isLoading = true)

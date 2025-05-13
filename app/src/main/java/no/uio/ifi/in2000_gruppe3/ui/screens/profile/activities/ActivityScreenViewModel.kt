@@ -23,7 +23,7 @@ class ActivityScreenViewModel(
     private val hikeAPIRepository: HikeAPIRepository,
     private val mapboxViewModel: MapboxViewModel,
 ): AndroidViewModel(application) {
-    private val _activityScreenUIState = MutableStateFlow<ActivityScreenUIState>(
+    private val _activityScreenUIState = MutableStateFlow(
         ActivityScreenUIState()
     )
 
@@ -127,13 +127,13 @@ class ActivityScreenViewModel(
         }
     }
 
-    fun updateUserLocation(point: Point) {
+    private fun updateUserLocation(point: Point) {
         _activityScreenUIState.update {
             it.copy(userLocation = point)
         }
     }
 
-    fun getConvertedActivities() {
+    private fun getConvertedActivities() {
         viewModelScope.launch {
             _activityScreenUIState.update {
                 it.copy(isLoading = true)
@@ -333,7 +333,7 @@ class ActivityScreenViewModel(
         }
     }
 
-    fun calculateTotalDistance() {
+    private fun calculateTotalDistance() {
         viewModelScope.launch {
             _activityScreenUIState.update {
                 it.copy(isLoading = true)
