@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import no.uio.ifi.in2000_gruppe3.data.database.ProfileDatabase
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository.HikeAPIRepository
-import no.uio.ifi.in2000_gruppe3.data.log.repository.ActivityRepository
+import no.uio.ifi.in2000_gruppe3.data.activity.ActivityRepository
 import no.uio.ifi.in2000_gruppe3.data.profile.repository.ProfileRepository
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
@@ -19,7 +19,7 @@ class ActivityScreenViewModelFactory (
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ActivityScreenViewModel::class.java)) {
             val applicationScope = CoroutineScope(SupervisorJob())
-            val database = ProfileDatabase.getDatabase(application)
+            val database = ProfileDatabase.getDatabase(application, applicationScope)
             val activityRepository = ActivityRepository(database.logDao())
             val hikeAPIRepository = HikeAPIRepository(openAIViewModel)
             val mapboxViewModel = MapboxViewModel()

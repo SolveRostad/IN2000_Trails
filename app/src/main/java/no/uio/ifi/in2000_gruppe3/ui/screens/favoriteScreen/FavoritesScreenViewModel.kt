@@ -25,7 +25,7 @@ class FavoritesScreenViewModel(
     private val mapboxViewModel: MapboxViewModel?, // must be nullable for testing
 ) : AndroidViewModel(application) {
 
-    private val _favoriteScreenUIState = MutableStateFlow<FavoriteScreenUIState>(
+    private val _favoriteScreenUIState = MutableStateFlow(
         FavoriteScreenUIState(
             favorites = emptyList(),
             userLocation = Point.fromLngLat(10.441649, 59.542819),

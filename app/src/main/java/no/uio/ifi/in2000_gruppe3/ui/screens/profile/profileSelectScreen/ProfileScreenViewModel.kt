@@ -17,7 +17,7 @@ import no.uio.ifi.in2000_gruppe3.data.profile.repository.ProfileRepository
 class ProfileScreenViewModel(application: Application):AndroidViewModel(application) {
     private val profileRepository: ProfileRepository
 
-    private val _profileScreenUIState = MutableStateFlow<ProfileScreenUIState>(
+    private val _profileScreenUIState = MutableStateFlow(
         ProfileScreenUIState()
     )
     val profileScreenUIState: StateFlow<ProfileScreenUIState> = _profileScreenUIState.asStateFlow()
@@ -121,7 +121,7 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
         }
     }
 
-    fun setProfile() {
+    private fun setProfile() {
         viewModelScope.launch {
             try {
                 val selected = profileRepository.getSelectedUser()
@@ -144,7 +144,7 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
         }
     }
 
-    fun getAllProfiles() {
+    private fun getAllProfiles() {
         viewModelScope.launch {
             _profileScreenUIState.update{
                 it.copy (isLoading = true)
