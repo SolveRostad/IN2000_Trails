@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -96,7 +97,6 @@ fun ProfileSelectScreen(
                 .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // App logo
             Image(
                 painter = painterResource(id = R.drawable.logo_slogan),
                 contentDescription = "App Logo",
@@ -138,6 +138,19 @@ fun ProfileSelectScreen(
                         unfocusedContainerColor = Color.Transparent,
                     ),
                     singleLine = true,
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            if (profile.isNotBlank()) {
+                                Log.d("UserScreen", "Adding profile $profile")
+                                profileScreenViewModel.addProfile(profile)
+                                profileScreenViewModel.selectProfile(profile)
+                                profile = ""
+
+                                keyboardController?.hide()
+                                focusManager.clearFocus()
+                            }
+                        }
+                    ),
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Done
@@ -165,7 +178,7 @@ fun ProfileSelectScreen(
                 }
             }
 
-            // Profile list or empty state
+            // List of profiles
             if (profileUIState.profiles.isEmpty()) {
                 Text(
                     text = "Ingen brukere her gitt 🤔",
