@@ -1,9 +1,76 @@
 # Diagrammer
 
+## Use case-diagram
+
+### Tekstlig beskrivelse av use case
+
+## Sekvensdiagram
+```mermaid
+sequenceDiagram
+    participant Bruker
+    participant App
+    participant KartAPI
+    participant LocationForecastAPI
+    participant MetAlertsAPI
+    participant OpenAI
+    participant Database
+
+    Bruker ->> App: Åpner appen
+    App ->> Bruker: Viser startskjerm
+    Bruker ->> App: Oppretter brukerprofil
+    App ->> Database: Lagrer brukerprofil
+    alt Bruker trykker på søkefelt
+        Bruker ->> App: Skriver inn sted
+    else Bruker trykker på kart
+        Bruker ->> App: Trykker på kart
+    else Bruker spør Chatbot om turrute
+        Bruker ->> App: Trykker på Chatbot
+        App ->> Bruker: Viser chatbot-skjermen
+        Bruker ->> App: Skriver inn en melding
+        App ->> OpenAI: Sender prompt fra bruker
+        OpenAI ->> App: Sender en respons LLM
+        App ->> Bruker: Viser responsen
+    end
+    App ->> KartAPI: Ber om ruter basert på lokasjon
+    KartAPI ->> App: Returnerer ruter
+    App ->> LocationForecastAPI: Ber om værdata for gitt lokasjon
+    LocationForecastAPI ->> App: Returnerer værdata
+    App ->> MetAlertsAPI: Ber om farevarsel-data for gitt lokasjon
+    MetAlertsAPI ->> App: Returnerer farevarsel-data
+    App ->> Bruker: Viser ruter basert på lokasjon
+    Bruker ->> App: Velger rute
+    App ->> OpenAI: Ber om rutebeskrivelse ut ifra ruten sin metadata
+    OpenAI ->> App: Returnerer beskrivelsen
+    App ->> Bruker: Viser informasjon om ruten
+    opt Legge til ruten som favoritt
+        Bruker ->> App: Legger til ruten som favoritt
+        App ->> Database: Lagt til i database
+    end
+    opt Legge til ruten i loggen
+        Bruker ->> App: Legger til ruten i loggen
+        App ->> Database: Lagt til i database
+        Bruker ->> App: Skriver notat til turen
+        App ->> Database: Lagt til notat i database
+    end
+    alt Bruker trykker for å se været i dag
+        Bruker ->> App: Trykker på været i dag
+        App ->>  LocationForecastAPI: Ber om værdata basert på lokasjon
+        LocationForecastAPI ->> App: Returnerer værdata
+        App ->> Bruker: Viser værdata
+    else Bruker trykker på "Se været andre dager"
+        Bruker ->> App: Trykker på knappen
+        App ->>  LocationForecastAPI: Ber om værdata basert på lokasjon
+        LocationForecastAPI ->> App: Returnerer værdata for de neste syv dagene
+        App ->> Bruker: Viser værdata for de neste syv dagene
+        Bruker ->> App: Klikker på en dag
+        App ->>  LocationForecastAPI: Ber om værdata (time for time) basert på valgt dag
+        LocationForecastAPI ->> App: Returnerer værdata (time for time)
+        App ->> Bruker: Viser værdata (time for time)
+    end
+```
+
 ## Klassediagram
-
-### Diagrammet under viser oversikten over de implementerte klassene i prosjektet. Det illustrerer:
-
+Diagrammet under viser oversikten over de implementerte klassene i prosjektet. Det illustrerer:
 - Arv mellom klasser (hvem arver fra hvem)
 - Instansvariabler og deres typer
 - Metoder (funksjoner) som er definert i hver klasse, inkludert arvede metoder
@@ -377,4 +444,85 @@ classDiagram
     FavoritesScreenViewModelFactory ..|> Factory
     ProfileScreenViewModel --|> AndroidViewModel
     ProfileRepository --> ProfileRepository_Companion
+```
+
+## Aktivitetsdiagram
+```mermaid
+flowchart TB; 
+start((Start))
+slutt(((slutt)))
+
+startskjerm{{Startskjerm}}
+lagBruker(Lag bruker)
+velgBruker(Velg bruker)
+finneRute{{Finne rute}}
+trykkPaaKart(Velg lokasjon på kart)
+soek(Bruk søkefunksjon)
+chatbot(Finn rute ved hjelp av chat)
+AIAnbefalinger(Bruker anbefalingene fra AI)
+velgRute(Velg rute)
+informasjonKort(Informasjon om valgt rute generert av AI)
+informasjonKortEtterVaer(Informasjon om valgt rute for valgt dag generert av AI)
+
+favoritt{{Vil du legge til rute som favoritt?}}
+lagtTilFav(Lagt til som favoritt)
+slettFav{{Vil du slette fra favoritt?}}
+slettet(Slettet fra favoritt)
+logg{{Vil du legge til rute i logg?}}
+lagtTilLogg(Lagt til i loggen)
+notat{{Vil du legge til notat i loggen?}}
+notatLagtTil(Legger til notat i loggen)
+vaer{{Vil du bruke været for å velge dag?}}
+vaerDagens(Viser været for dagen i dag time for time)
+vaerNesteUke(Viser været for de neste syv dagene)
+vaerNesteUkeTime(Viser været timebasert for de neste syv dagene)
+
+%% Style
+style startskjerm fill: blue
+style finneRute fill: blue
+style logg fill: blue
+style favoritt fill: blue
+style notat fill: blue
+style slettFav fill: blue
+style vaer fill: blue
+
+%% Relasjoner
+start --> startskjerm
+startskjerm --> lagBruker
+startskjerm --deafult bruker--> velgBruker
+lagBruker --> velgBruker
+velgBruker --> finneRute
+subgraph rutevalg [Valg av rute]
+    finneRute --> trykkPaaKart --> velgRute
+    finneRute --> soek --> velgRute
+    finneRute --> chatbot --> velgRute
+    finneRute --> AIAnbefalinger --> velgRute
+end
+velgRute --> informasjonKort
+
+subgraph valgAvDag [Valg av dag]
+    informasjonKort --> vaer
+    vaer --ja, neste uken--> vaerNesteUke
+    vaer --ja, dagens--> vaerDagens
+    vaer --nei--> favoritt
+    vaer --nei--> logg
+    vaerDagens --> informasjonKortEtterVaer
+    vaerNesteUke --timebasert--> vaerNesteUkeTime
+    vaerNesteUkeTime --> informasjonKortEtterVaer
+end
+informasjonKortEtterVaer --> favoritt
+favoritt --ja--> lagtTilFav
+lagtTilFav --> slettFav
+slettFav --ja--> slettet
+slettet --> slutt
+slettFav --nei--> slutt
+favoritt --nei--> slutt
+
+informasjonKortEtterVaer --> logg
+logg --ja--> lagtTilLogg
+lagtTilLogg --> notat
+notat --ja--> notatLagtTil
+notat --nei--> slutt
+logg --nei--> slutt
+notatLagtTil --nei--> slutt
 ```
