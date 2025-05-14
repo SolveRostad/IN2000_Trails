@@ -28,8 +28,16 @@ android {
             "\"${properties["MAPBOX_SECRET_TOKEN"]}\""
         )
 
-        buildConfigField("String", "OPENAI_API_KEY_1", "\"${properties["OPENAI_API_KEY_1"]}\"")
-        buildConfigField("String", "OPENAI_API_KEY_2", "\"${properties["OPENAI_API_KEY_2"]}\"")
+        buildConfigField(
+            "String",
+            "OPENAI_API_KEY_1",
+            "\"${properties["OPENAI_API_KEY_1"]}\""
+        )
+        buildConfigField(
+            "String",
+            "OPENAI_API_KEY_2",
+            "\"${properties["OPENAI_API_KEY_2"]}\""
+        )
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -59,6 +67,8 @@ android {
         buildConfig = true
     }
 
+    // Exclude unnecessary or conflicting resource files (like licenses, notices, Netty metadata, markdown files)
+    // to prevent build errors (e.g., duplicate files) and reduce the final APK size.
     packaging {
         resources {
             excludes += setOf(
