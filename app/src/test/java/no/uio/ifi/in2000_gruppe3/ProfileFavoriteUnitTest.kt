@@ -27,10 +27,10 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 /**
- * Testklasse for UserRepository og favoritesViewModel.
- * Tester noen utvalgte funksjoner fra userDao, userRepository og favoritesViewModel
- * for å sjekke at SQL spørringene fungerer som de skal.
- * NB! Vi har ikke skrevet tester for ALL funksjonaliteten
+ * Test class for UserRepository and FavoritesViewModel.
+ * Tests selected functions from userDao, userRepository and favoritesViewModel
+ * to verify that SQL queries work as intended.
+ * NOTE: We have not written tests for ALL functionality
  */
 
 @RunWith(RobolectricTestRunner::class)
@@ -48,8 +48,7 @@ class ProfileFavoriteUnitTest {
     private val favoriteDao = userDatabase.favoriteDao()
     private val profileRepository = ProfileRepository(userDao)
 
-
-    //Dummy data til testene
+    //Dummy data for the tests
     val bruker1 = Profile(username = "Aanund")
     val bruker2 = Profile(username = "Victor")
 
@@ -124,7 +123,7 @@ class ProfileFavoriteUnitTest {
         println("---testSelectUser PASSERT---")
     }
 
-    //Tester for favorites view model.
+    //Tests for FavoriteScreenViewModel
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun testAddFavorite() = runTest {
@@ -147,8 +146,9 @@ class ProfileFavoriteUnitTest {
             favoritesScreenViewModel.addFavorite(1)
 
             var favorites = favoritesScreenViewModel.getAllFavorites(bruker1.username)
-            // Dette var den eneste måten jeg klarte å vente på at viewmodelscope
-            // coroutine launchen ble ferdig før hovedtråen fortsetter...
+            // This was the only way I managed to wait for the viewModelScope
+            // coroutine launch to complete before the main thread continues.
+            // Even though runBlocking should work here, it did not.
             while (favorites.isEmpty()) {
                 favorites = favoritesScreenViewModel.getAllFavorites(bruker1.username)
             }
