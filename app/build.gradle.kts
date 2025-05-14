@@ -90,16 +90,16 @@ dependencies {
     // Custom BottomSheet
     implementation("com.composables:core:1.20.1")
 
+    // Kotlin extensions
+    implementation(libs.core.ktx)
+    implementation(libs.androidx.junit.ktx)
+
     // Ktor
     implementation("io.ktor:ktor-client-android:2.3.5")
     implementation("io.ktor:ktor-client-core:2.3.5")
     implementation("io.ktor:ktor-client-cio:2.3.5")
     implementation("io.ktor:ktor-client-content-negotiation:2.3.5")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.5")
-
-    // Ktx
-    implementation(libs.core.ktx)
-    implementation(libs.androidx.junit.ktx)
 
     // Mapbox
     implementation("com.mapbox.maps:android:11.10.2")

@@ -106,6 +106,9 @@ fun SuggestionColumn(
     }
 }
 
+// Although Resources.getIdentifier() is discouraged due to performance and reliability concerns,
+// it's used here because the icon set contains hundreds of dynamic names (e.g., Maki icons).
+// Maintaining a static mapping would be impractical. A fallback icon is returned if the resource isn't found.
 private fun getIconFromString(
     iconName: String,
     context: android.content.Context
@@ -115,10 +118,5 @@ private fun getIconFromString(
         "drawable",
         context.packageName
     )
-
-    if (iconResourceId == 0) {
-        iconResourceId = R.drawable.marker
-    }
-
-    return iconResourceId
+    return if(iconResourceId != 0) iconResourceId else R.drawable.marker
 }
