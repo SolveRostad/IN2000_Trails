@@ -25,8 +25,6 @@ class ui.screens.hikeCardScreen.HikeScreenViewModel {
 
 class ui.screens.hikeCardScreen.HikeScreenUIState {
 }
-class data.locationForecastAPI.models.Next12Hours {
-}
 class ui.screens.favoriteScreen.FavoritesScreenViewModel {
 -  _favoriteScreenUIState
 + StateFlow<FavoriteScreenUIState> favoriteScreenUIState
@@ -42,10 +40,7 @@ class ui.screens.favoriteScreen.FavoritesScreenViewModel {
 }
 
 
-class ui.screens.favoriteScreen.FavoriteScreenUIState {
-}
-class data.locationForecastAPI.models.Next1Hours {
-}
+
 class data.openAIAPI.datasource.OpenAIDatasource {
 -  client
 -  endpoint
@@ -58,14 +53,10 @@ class data.openAIAPI.datasource.OpenAIDatasource {
 }
 
 
-class data.locationForecastAPI.models.Summary {
-}
 class data.locationForecastAPI.datasource.LocationForecastDatasource {
 + Locationforecast? getLocationForecast(Double,Double)
 }
 
-class data.locationForecastAPI.models.Details {
-}
 class data.database.ProfileDatabase$Companion$DatabaseCallBack {
 + void onCreate(SupportSQLiteDatabase)
 - void populateDatabase()
@@ -83,12 +74,8 @@ abstract class data.database.ProfileDatabase {
 + ActivityDao logDao()
 }
 
-class ui.mapbox.null {
-+ void onIndicatorPositionChanged(Point)
-}
 
-class data.hikeAPI.models.DifficultyInfo {
-}
+
 class data.hikeAPI.datasource.HikeAPIDatasource {
 -  ktorHttpClient
 + List<Feature> getHikes(Double,Double,Int,String,Int)
@@ -96,23 +83,12 @@ class data.hikeAPI.datasource.HikeAPIDatasource {
 }
 
 
-class data.openAIAPI.models.ChatMessage {
-}
-class data.hikeAPI.models.PropertiesX {
-}
 class data.database.null {
 + void migrate(SupportSQLiteDatabase)
 }
 
 class data.database.null {
 + void migrate(SupportSQLiteDatabase)
-}
-
-class data.hikeAPI.models.Hikes {
-}
-class data.openAIAPI.models.ChatCompletionsRequest {
-}
-class data.hikeAPI.models.Crs {
 }
 class ui.screens.chatbotScreen.OpenAIViewModel {
 -  openAIRepository
@@ -131,14 +107,6 @@ class ui.screens.chatbotScreen.OpenAIViewModel {
 }
 
 
-class ui.screens.chatbotScreen.OpenAIUIState {
-}
-class data.locationForecastAPI.models.Meta {
-}
-class data.database.Favorite {
-}
-class data.openAIAPI.models.ChatCompletionsResponse {
-}
 class data.date.Weekdays$Companion {
 + Int indexOf(String)
 }
@@ -153,16 +121,12 @@ enum data.date.Weekdays {
 +  Søndag
 }
 
-class data.hikeAPI.models.Properties {
-}
 class data.favorites.repository.FavoriteRepository {
 + void addFavorite(Favorite)
 + void deleteFavorite(Favorite)
 + List<Int> getAllFavorites(String)
 }
 
-class data.locationForecastAPI.models.DetailsX {
-}
 class ui.mapbox.MapboxViewModel {
 -  placeAutocomplete
 - MutableStateFlow<MapboxUIState> _mapboxUIState
@@ -180,8 +144,6 @@ class ui.mapbox.MapboxViewModel {
 }
 
 
-class ui.mapbox.MapboxUIState {
-}
 class data.metAlertsAPI.datasource.MetAlertsDatasource {
 + MetAlerts? getMetAlerts()
 }
@@ -211,14 +173,6 @@ class ui.screens.homeScreen.HomeScreenViewModel {
 }
 
 
-class ui.screens.homeScreen.HomeScreenUIState {
-}
-class data.locationForecastAPI.models.Properties {
-}
-class data.hikeAPI.models.Geometry {
-}
-class data.openAIAPI.models.Usage {
-}
 class ui.navigation.Screen$Welcome {
 }
 class ui.navigation.Screen$Home {
@@ -256,8 +210,7 @@ class data.openAIAPI.repository.OpenAIRepository {
 }
 
 
-class data.metAlertsAPI.models.Feature {
-}
+
 class ui.screens.profile.activities.ActivityScreenViewModel {
 -  _activityScreenUIState
 + StateFlow<ActivityScreenUIState> activityScreenUIState
@@ -277,23 +230,10 @@ class ui.screens.profile.activities.ActivityScreenViewModel {
 }
 
 
-class ui.screens.profile.activities.ActivityScreenUIState {
-}
-class data.locationForecastAPI.models.TimeSeries {
-}
 class MainActivity {
 + void onCreate(Bundle?)
 }
 
-class data.locationForecastAPI.models.Geometry {
-}
-class data.metAlertsAPI.models.Geometry$Polygon {
-}
-class data.metAlertsAPI.models.Geometry$MultiPolygon {
-}
-class data.metAlertsAPI.models.Geometry {
-+ String type
-}
 
 interface data.database.ActivityDao {
 + void saveLog(Activity)
@@ -306,14 +246,7 @@ interface data.database.ActivityDao {
 + Int getTimesWalkedForHike(String,Int)
 }
 
-class data.locationForecastAPI.models.Instant {
-}
-class data.locationForecastAPI.models.Next6Hours {
-}
-class data.locationForecastAPI.models.Units {
-}
-class ui.screens.chatbotScreen.ChatbotMessage {
-}
+
 class ui.screens.profile.activities.ActivityScreenViewModelFactory {
 + T create(Class<T>)
 }
@@ -324,12 +257,7 @@ class data.metAlertsAPI.repository.MetAlertsRepository {
 }
 
 
-class data.metAlertsAPI.models.MetAlerts {
-}
-class data.database.Profile {
-}
-class data.metAlertsAPI.models.Resource {
-}
+
 class ui.screens.favoriteScreen.FavoritesScreenViewModelFactory {
 + T create(Class<T>)
 }
@@ -352,8 +280,6 @@ class ui.screens.profile.profileSelectScreen.ProfileScreenViewModel {
 }
 
 
-class ui.screens.profile.profileSelectScreen.ProfileScreenUIState {
-}
 enum ui.bottomSheetDrawer.SheetDrawerDetent {
 +  HIDDEN
 +  SEMIPEEK
@@ -375,10 +301,6 @@ class data.hikeAPI.repository.HikeAPIRepository {
 }
 
 
-class data.openAIAPI.models.Choice {
-}
-class data.metAlertsAPI.models.When {
-}
 interface data.database.ProfileDao {
 + void insertUser(Profile)
 + void deleteUser(Profile)
@@ -390,10 +312,6 @@ interface data.database.ProfileDao {
 + void clearAllUsers()
 }
 
-class data.locationForecastAPI.models.Data {
-}
-class data.metAlertsAPI.models.Properties {
-}
 class data.profile.repository.ProfileRepository$Companion {
 - ProfileRepository? INSTANCE
 + ProfileRepository getInstance(Context,CoroutineScope)
@@ -410,12 +328,6 @@ class data.profile.repository.ProfileRepository {
 + void clearAllUsers()
 }
 
-class data.locationForecastAPI.models.Locationforecast {
-}
-class data.hikeAPI.models.Feature {
-}
-class data.database.Activity {
-}
 
 
 androidx.lifecycle.ViewModel <|-- ui.screens.hikeCardScreen.HikeScreenViewModel
@@ -425,7 +337,6 @@ data.database.ProfileDatabase$Companion +.. data.database.ProfileDatabase$Compan
 data.database.Callback <|-- data.database.ProfileDatabase$Companion$DatabaseCallBack
 data.database.ProfileDatabase +.. data.database.ProfileDatabase$Companion
 androidx.room.RoomDatabase <|-- data.database.ProfileDatabase
-ui.mapbox.OnIndicatorPositionChangedListener <|.. ui.mapbox.null
 data.database.Migration <|-- data.database.null
 data.database.Migration <|-- data.database.null
 androidx.lifecycle.ViewModel <|-- ui.screens.chatbotScreen.OpenAIViewModel
@@ -456,10 +367,6 @@ ui.navigation.Screen +.. ui.navigation.Screen$LocationForecastDetailed
 ui.navigation.Screen <|-- ui.navigation.Screen$LocationForecastDetailed
 androidx.lifecycle.AndroidViewModel <|-- ui.screens.profile.activities.ActivityScreenViewModel
 androidx.activity.ComponentActivity <|-- MainActivity
-data.metAlertsAPI.models.Geometry +.. data.metAlertsAPI.models.Geometry$Polygon
-data.metAlertsAPI.models.Geometry <|-- data.metAlertsAPI.models.Geometry$Polygon
-data.metAlertsAPI.models.Geometry +.. data.metAlertsAPI.models.Geometry$MultiPolygon
-data.metAlertsAPI.models.Geometry <|-- data.metAlertsAPI.models.Geometry$MultiPolygon
 ui.screens.profile.activities.Factory <|.. ui.screens.profile.activities.ActivityScreenViewModelFactory
 ui.screens.favoriteScreen.Factory <|.. ui.screens.favoriteScreen.FavoritesScreenViewModelFactory
 androidx.lifecycle.AndroidViewModel <|-- ui.screens.profile.profileSelectScreen.ProfileScreenViewModel
