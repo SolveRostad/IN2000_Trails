@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000_gruppe3.data.log.repository
+package no.uio.ifi.in2000_gruppe3.data.activity
 
 import no.uio.ifi.in2000_gruppe3.data.database.ActivityDao
 

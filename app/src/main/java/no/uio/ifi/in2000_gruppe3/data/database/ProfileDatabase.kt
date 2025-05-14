@@ -8,7 +8,6 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.util.concurrent.Executors
 import no.uio.ifi.in2000_gruppe3.data.database.Activity as LogEntity
 
@@ -35,7 +34,15 @@ import no.uio.ifi.in2000_gruppe3.data.database.Activity as LogEntity
  *   notes: String
  */
 
-@Database(entities = [LogEntity::class, Favorite::class, Profile::class], version = 3)
+@Database(
+    entities = [
+        LogEntity::class,
+        Favorite::class,
+        Profile::class
+               ],
+    version = 3,
+    exportSchema = true
+)
 abstract class ProfileDatabase : RoomDatabase() {
     abstract fun favoriteDao(): FavoriteDao
     abstract fun profileDao(): ProfileDao
@@ -45,30 +52,7 @@ abstract class ProfileDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: ProfileDatabase? = null
 
-        private class DatabaseCallBack(
-            private val database: ProfileDatabase,
-            private val scope: CoroutineScope
-        ) : Callback() {
-
-            override fun onCreate(db: SupportSQLiteDatabase) {
-                super.onCreate(db)
-
-                scope.launch {
-                    populateDatabase()
-                }
-            }
-
-            private suspend fun populateDatabase() {
-                val profileDao = database.profileDao()
-
-                val defaultProfile = Profile("defaultUser", isSelected = 1)
-
-                profileDao.insertUser(defaultProfile)
-                Log.d("DatabaseCallBack", "Default profile inserted: $defaultProfile")
-            }
-        }
-
-        fun getDatabase(context: Context): ProfileDatabase {
+        fun getDatabase(context: Context, scope: CoroutineScope): ProfileDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
@@ -76,21 +60,27 @@ abstract class ProfileDatabase : RoomDatabase() {
                     "Profile_database"
                 )
                     .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                    .addCallback(object : Callback() {
+                        override fun onCreate(db: SupportSQLiteDatabase) {
+                            super.onCreate(db)
+                            scope.launch {
+                                INSTANCE?.let { database ->
+                                    val profileDao = database.profileDao()
+                                    if (profileDao.getDefaultUser() == null) {
+                                        val defaultProfile = Profile("defaultUser", isSelected = 1)
+                                        profileDao.insertUser(defaultProfile)
+                                        Log.d("DatabaseCallBack", "Default profile inserted: $defaultProfile")
+                                    }
+                                }
+                            }
+                        }
+                    })
                     .setQueryCallback({ sqlQuery, bindArgs ->
                         Log.d("RoomQuery", "SQL: $sqlQuery, Args: $bindArgs")
                     }, Executors.newSingleThreadExecutor())
                     .build()
 
                 INSTANCE = instance
-
-                runBlocking {
-                    val profileDao = instance.profileDao()
-                    if (profileDao.getDefaultUser() == null) {
-                        val defaultProfile = Profile("defaultUser", isSelected = 1)
-                        profileDao.insertUser(defaultProfile)
-                        Log.d("DatabaseCallBack", "Default user inserted: $defaultProfile")
-                    }
-                }
                 instance
             }
         }

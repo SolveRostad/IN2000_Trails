@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository.HikeAPIRepository
-import no.uio.ifi.in2000_gruppe3.data.log.repository.ActivityRepository
+import no.uio.ifi.in2000_gruppe3.data.activity.ActivityRepository
 import no.uio.ifi.in2000_gruppe3.data.profile.repository.ProfileRepository
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 
@@ -23,7 +23,7 @@ class ActivityScreenViewModel(
     private val hikeAPIRepository: HikeAPIRepository,
     private val mapboxViewModel: MapboxViewModel,
 ): AndroidViewModel(application) {
-    private val _activityScreenUIState = MutableStateFlow<ActivityScreenUIState>(
+    private val _activityScreenUIState = MutableStateFlow(
         ActivityScreenUIState()
     )
 
@@ -127,13 +127,13 @@ class ActivityScreenViewModel(
         }
     }
 
-    fun updateUserLocation(point: Point) {
+    private fun updateUserLocation(point: Point) {
         _activityScreenUIState.update {
             it.copy(userLocation = point)
         }
     }
 
-    fun getConvertedActivities() {
+    private fun getConvertedActivities() {
         viewModelScope.launch {
             _activityScreenUIState.update {
                 it.copy(isLoading = true)
@@ -333,7 +333,7 @@ class ActivityScreenViewModel(
         }
     }
 
-    fun calculateTotalDistance() {
+    private fun calculateTotalDistance() {
         viewModelScope.launch {
             _activityScreenUIState.update {
                 it.copy(isLoading = true)

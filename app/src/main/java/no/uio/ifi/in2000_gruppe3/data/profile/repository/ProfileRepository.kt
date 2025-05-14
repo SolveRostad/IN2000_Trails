@@ -22,7 +22,7 @@ class ProfileRepository(private val profileDao: ProfileDao) {
         profileDao.selectUser(username)
     }
 
-    suspend fun unselectUser() {
+    private suspend fun unselectUser() {
         profileDao.unselectUser()
     }
 
@@ -51,7 +51,7 @@ class ProfileRepository(private val profileDao: ProfileDao) {
             scope: CoroutineScope = CoroutineScope(SupervisorJob())
         ): ProfileRepository {
             return INSTANCE ?: synchronized(this) {
-                val database = ProfileDatabase.getDatabase(context)
+                val database = ProfileDatabase.getDatabase(context, scope)
                 val instance = ProfileRepository(database.profileDao())
                 INSTANCE = instance
                 instance
