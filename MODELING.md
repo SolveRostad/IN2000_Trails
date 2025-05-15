@@ -5,6 +5,28 @@ Et use case-diagram viser et brukstilfelle, altså hvordan en aktør målrettet 
 ![](Diagrams/usecase.png)
 
 ### Tekstlig beskrivelse av use case
+**Primær aktør:** Bruker, altså en person som bruker applikasjonen for å finne og/eller planlegge turer.
+
+**Eksterne aktører:**
+- TurDB, aktøren sin funksjon er å hente data om turruter.
+- Mapbox API, aktøren sin funksjon er å vise kartet og håndtere posisjonsdata både via brukeren sin gitte eller valgte posisjon og via søkefeltet.
+- MET API, aktøren sin funksjon er å hente vær- og farevarsler.
+- OpenAI API, aktøren sin funksjon er å generere AI-anbefalinger, turinformasjon og svar via chatbot.
+
+**Hovedfunksjonalitet og flyt:**
+
+1. Opprette en brukerprofil, brukeren kan registrere seg i appen med et brukernavn for å kunne lagre ruter som favoritter eller i loggen og legge tl notater på hver tur.
+2. Velge og planlegge en tur, brukeren kan velge en tur på fire ulike måter (og alle henter data fra databasen og API-ene):
+    1. Ved å søke opp en lokasjon via søkefeltet.
+    2. Ved å bruke sin posisjonen eller velge en posisjon på kartet.
+    3. Ved å bruke de AI-genererte anbefalingene.
+    4. Ved å snakke med chatboten Ånund.
+
+   Når brukeren har valgt en tur får de opp informasjon om denne på en egen skjerm. Der vises turruten på kartet, værvarsler og en AI-generert informasjonstekst som kan hjelpe brukeren med planleggingen.
+
+3. Planleggingsfunksjoner, etter at brukeren har valgt en tur kan brukeren:
+    1. Legge til turen som favoritt.
+    2. Legge til turen i loggen, og videre eventuelt legge til et notat.
 
 ## Sekvensdiagram
 Et sekvensdiagram brukes for å illustrere hvordan objekter og/eller aktører interagerer med hverandre når brukeren utfører en spesifikk handling, for eksempel velge en turrute. Vi ønsket å bruke dette for å enkelt vise rekkefølgen av handlingene som skjer i applikasjonen, og hvordan de ulike delene av systemet samhandler. Diagrammet under illustrerer samhandlingen mellom bruker, applikasjon, API-er og databasen. 
