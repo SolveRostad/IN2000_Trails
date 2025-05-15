@@ -23,10 +23,6 @@ import com.mapbox.maps.plugin.locationcomponent.createDefault2DPuck
 import com.mapbox.maps.plugin.locationcomponent.location
 import com.mapbox.maps.plugin.viewport.data.DefaultViewportTransitionOptions
 import com.mapbox.maps.plugin.viewport.data.FollowPuckViewportStateOptions
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
 import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.SheetDrawerDetent
@@ -95,30 +91,13 @@ fun MapViewer(
                 .pitch(0.0)
                 .build(),
             defaultTransitionOptions = DefaultViewportTransitionOptions.Builder()
-                .maxDurationMs(if (!mapboxUIState.hasCenteredOnUser) 0 else 500)
+                .maxDurationMs(500)
                 .build()
         ) {
-            // We are having some problems with the emulators position where the position
-            // of the emulator is first set to a point in San Jose before repositioning to
-            // the correct location. This is NOT an issue on physical devices, and only
-            // occurred after updating Android Studio.
-            // Our solution is to attach the camera to the user location for a short time
-            // before detaching it again. The user can manually detach the camera by
-            // moving the map. If the user moves the map before the camera is correctly
-            // positioned on the user location, they will have to manually recenter the map
-            // with the recenter button.
-            if (!mapboxUIState.hasCenteredOnUser) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    delay(7000)
-                    mapViewportState.idle()
-                    homeScreenViewModel.fetchAlerts()
-                    homeScreenViewModel.fetchForecast(mapboxUIState.latestUserPosition!!)
-                    mapboxViewModel.setLoaderState(false)
-                    mapboxViewModel.setHasCenteredOnUser()
-                }
-            } else {
-                mapViewportState.idle()
-            }
+            mapboxViewModel.setLoaderState(false)
+            mapViewportState.idle()
+            homeScreenViewModel.fetchAlerts()
+            homeScreenViewModel.fetchForecast(mapboxUIState.latestUserPosition!!)
         }
     }
 
