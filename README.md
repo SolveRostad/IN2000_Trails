@@ -24,7 +24,9 @@ For å kjøre appen må du ha Android Studio installert og tilgang på internett
 1. Åpne terminalen
 2. Naviger til der du ønsker å laste ned prosjektet på din pc/mac
 3. Videre trenger du URL-en til prosjektet, denne finner du ved å trykke på den grønne "code"-knappen på github siden til prosjektet.
-4. Kopier HTTPS URL-en. Skriv git clone etterfulgt av URL-en i terminalen og trykk enter. Det skal se slik ut: git clone https://github.uio.no/IN2000-V25/team-3.git
+4. Kopier HTTPS URL-en. Skriv git clone etterfulgt av URL-en i terminalen og trykk enter. Det skal se slik ut: 
+
+   ```git clone https://github.uio.no/IN2000-V25/team-3.git```
 5. Når nedlastningene er ferdig åpner du Android Studio og trykker på "open"
 6. Naviger til der du lagret prosjektet og velg den øverste prosjekmappen, og trykk "open"
 7. Når Android Studio har lastet inn prosjektet trykker du på den grønne "run"-knappen for å kjøre appen. For at appen skal fungere er du avhengig av å dele din lokasjon, så når du starter appen må du velge "While using the app" eller "Only this time".
