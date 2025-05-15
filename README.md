@@ -1,38 +1,29 @@
 # IN2000 - Software Engineering med Prosjektarbeid
 
-## 🚀 Team-3
+Team 3 har gjennom prosjektet i emnet IN2000 - Software Engineering med prosjektarbeid ved Universitetet i Oslo utviklet TrAIls, en android applikasjon som ønsker å senke terskelen for å komme seg ut på tur. Den er utviklet for å hjelpe brukere med å finne og planlegge turer, både i nærområdet og i nye omgivelser, ved hjelp av kunstig intelligens (KI). TrAIld gjør det mulig for brukeren å finne og lagre turforslag, legge til egne notater og skape en personlig utfordring ved å konkurrere mot seg selv. En sentral funksjon i applikasjonen er bruken av KI for å finne turer (enten via anbefalte turer eller chatbot), samt få informasjon og tips til planlegging. En annen sentral del av applikasjonen er bruken av API-et til Meteorologisk institutt. Vi har benyttet værdata for å enklere finne de beste dagene for gode turopplevelser. Ved å bidra til at brukeren får mest mulig ut av sine turer, både med tanke på sikkerhet og opplevelse, underbygger vi målet vårt om å senke terskelen for å komme seg på tur.
 
-### 👥 Teammedlemmer
-- **Kaoutar**
-- **Nora**
-- **Sølve**
-- **Zara**
-- **Lennard**
-- **Sondre**
+### Teammedlemmer
+Kaoutar Abdellaoui (kaoutara)
+Lennard Rolstad Denby (lennarrd)
+Nora Liheim Alfstad (noralalf)
+Sondre Muri Indset (sondrein)
+Sølve Rostad (solveros)
+Zara Hope Adair (zjadair)
 
-## 📋 Prosjektbeskrivelse
-Dette prosjektet er en del av IN2000 - Software Engineering med Prosjektarbeid ved Universitetet i Oslo. Vårt team, Team-3, utvikler en applikasjon som hjelper brukere med å finne og utforske turstier ved hjelp av Mapbox og andre API-er.
+***
+[Dokumentasjon](#dokumentasjon)
+[Hvordan kjøre appen](#hvordan-kjøre-appen)
+[Biblioteker_og_rammeverk](#biblioteker-og-rammeverk)
+***
 
-## 🛠️ Teknologier og Verktøy
-- **Språk:** Kotlin, Java
-- **Byggverktøy:** Gradle
-- **Biblioteker og Rammeverk:** Jetpack Compose, Mapbox, Coil
+## Dokumentasjon
+Dokumentasjonen er tilgjengelig [HER](...).
 
-## 📦 Dependencies
-- **Mapbox SDK:** For kartvisning og håndtering av geografiske data.
-- **Coil:** For asynkron bildefylling og caching.
-- **Ktor:** For nettverksforespørsler og API-integrasjoner.
-- **Kotlinx Serialization:** For serialisering og deserialisering av JSON-data.
-- **Material3:** For moderne UI-komponenter og design.
+## Hvordan kjøre appen
 
-## 🌐 API-er
-- **Mapbox API:** Brukes til å hente kartdata og generere statiske kartbilder.
-- **MET Location Forecast API:** Brukes til å hente værdata for spesifikke geografiske koordinater.
-- **MET Alerts API:** Brukes til å hente værvarsler og advarsler.
-- **TurDB API:** Brukes til å hente informasjon om turstier basert på geografiske koordinater.
+## Biblioteker og rammeverk
+**Språk:** Kotlin, Java, **Byggverktøy:** Gradle
 
-## 📱 Funksjonaliteter
-- **Kartvisning:** Viser turstier på et interaktivt kart.
-- **Ruteinformasjon:** Gir detaljer om avstand, vanskelighetsgrad og beskrivelse av turstier.
-- **Værmelding:** Viser værmeldinger for valgt område.
-- **Favoritter:** Mulighet for å lagre og vise favoritturer. (Når Sølve får det til😹😹)
+### API-er
+
+### Biblioteker
