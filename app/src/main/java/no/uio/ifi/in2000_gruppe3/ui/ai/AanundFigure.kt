@@ -42,6 +42,7 @@ import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.profile.profileSelectScreen.ProfileScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.theme.LogoPrimary
 
 @Composable
@@ -49,16 +50,18 @@ fun AanundFigure(
     homeScreenViewModel: HomeScreenViewModel,
     hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
+    profileScreenViewModel: ProfileScreenViewModel,
     navController: NavHostController
 ) {
     val homeScreenUiState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val mapboxUiState by mapboxViewModel.mapboxUIState.collectAsState()
+    val profileUIState by profileScreenViewModel.profileScreenUIState.collectAsState()
     val aanundMenuExpanded = remember { mutableStateOf(false) }
     var isDialogVisible by remember { mutableStateOf(false) }
 
     // Show dialog if it has not been shown before
     LaunchedEffect(mapboxUiState.isLoading) {
-        if (!homeScreenUiState.hasShownAanundDialog) {
+        if (!homeScreenUiState.hasShownAanundDialog && !profileUIState.isLoggedIn) {
             if (!mapboxUiState.isLoading) {
                 homeScreenViewModel.markAanundDialogShown()
                 isDialogVisible = true
