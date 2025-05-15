@@ -1,12 +1,102 @@
 # Diagrammer
+## Use case-diagram
+Et use case-diagram viser et brukstilfelle, altså hvordan en aktør målrettet samhandler med systemet. Et use case har et større fokus på hvordan systemet fungerer, og dets funksjoner. Vi ønsker å bruke et use case-diagram for å vise hvordan en bruker kan interagere med applikasjonen vår. Det er en enkel og oversiktlig måte å vise funksjonalitet fra en brukers perspektiv, uten mengder med tekniske detaljer. Diagrammet under illustrerer de viktigste funksjonelle kravene på en visuell måte, og hvordan de er relatert til hverandre. 
+
+![](Diagrams/usecase.png)
+
+### Tekstlig beskrivelse av use case
+**Primær aktør:** Bruker, altså en person som bruker applikasjonen for å finne og/eller planlegge turer.
+
+**Eksterne aktører:**
+- TurDB, aktøren sin funksjon er å hente data om turruter.
+- Mapbox API, aktøren sin funksjon er å vise kartet og håndtere posisjonsdata både via brukeren sin gitte eller valgte posisjon og via søkefeltet.
+- MET API, aktøren sin funksjon er å hente vær- og farevarsler.
+- OpenAI API, aktøren sin funksjon er å generere AI-anbefalinger, turinformasjon og svar via chatbot.
+
+**Hovedfunksjonalitet og flyt:**
+
+1. Opprette en brukerprofil, brukeren kan registrere seg i appen med et brukernavn for å kunne lagre ruter som favoritter eller i loggen og legge tl notater på hver tur.
+2. Velge og planlegge en tur, brukeren kan velge en tur på fire ulike måter (og alle henter data fra databasen og API-ene):
+    1. Ved å søke opp en lokasjon via søkefeltet.
+    2. Ved å bruke sin posisjonen eller velge en posisjon på kartet.
+    3. Ved å bruke de AI-genererte anbefalingene.
+    4. Ved å snakke med chatboten Ånund.
+
+   Når brukeren har valgt en tur får de opp informasjon om denne på en egen skjerm. Der vises turruten på kartet, værvarsler og en AI-generert informasjonstekst som kan hjelpe brukeren med planleggingen.
+
+3. Planleggingsfunksjoner, etter at brukeren har valgt en tur kan brukeren:
+    1. Legge til turen som favoritt.
+    2. Legge til turen i loggen, og videre eventuelt legge til et notat.
+
+## Sekvensdiagram
+Et sekvensdiagram brukes for å illustrere hvordan objekter og/eller aktører interagerer med hverandre når brukeren utfører en spesifikk handling, for eksempel velge en turrute. Vi ønsket å bruke dette for å enkelt vise rekkefølgen av handlingene som skjer i applikasjonen, og hvordan de ulike delene av systemet samhandler. Diagrammet under illustrerer samhandlingen mellom bruker, applikasjon, API-er og databasen. 
+
+```mermaid
+sequenceDiagram
+    participant Bruker
+    participant App
+    participant KartAPI
+    participant LocationForecastAPI
+    participant MetAlertsAPI
+    participant OpenAI
+    participant Database
+
+    Bruker ->> App: Åpner appen
+    App ->> Bruker: Viser startskjerm
+    Bruker ->> App: Oppretter brukerprofil
+    App ->> Database: Lagrer brukerprofil
+    alt Bruker trykker på søkefelt
+        Bruker ->> App: Skriver inn sted
+    else Bruker trykker på kart
+        Bruker ->> App: Trykker på kart
+    else Bruker spør Chatbot om turrute
+        Bruker ->> App: Trykker på Chatbot
+        App ->> Bruker: Viser chatbot-skjermen
+        Bruker ->> App: Skriver inn en melding
+        App ->> OpenAI: Sender prompt fra bruker
+        OpenAI ->> App: Sender en respons LLM
+        App ->> Bruker: Viser responsen
+    end
+    App ->> KartAPI: Ber om ruter basert på lokasjon
+    KartAPI ->> App: Returnerer ruter
+    App ->> LocationForecastAPI: Ber om værdata for gitt lokasjon
+    LocationForecastAPI ->> App: Returnerer værdata
+    App ->> MetAlertsAPI: Ber om farevarsel-data for gitt lokasjon
+    MetAlertsAPI ->> App: Returnerer farevarsel-data
+    App ->> Bruker: Viser ruter basert på lokasjon
+    Bruker ->> App: Velger rute
+    App ->> OpenAI: Ber om rutebeskrivelse ut ifra ruten sin metadata
+    OpenAI ->> App: Returnerer beskrivelsen
+    App ->> Bruker: Viser informasjon om ruten
+    opt Legge til ruten som favoritt
+        Bruker ->> App: Legger til ruten som favoritt
+        App ->> Database: Lagt til i database
+    end
+    opt Legge til ruten i loggen
+        Bruker ->> App: Legger til ruten i loggen
+        App ->> Database: Lagt til i database
+        Bruker ->> App: Skriver notat til turen
+        App ->> Database: Lagt til notat i database
+    end
+    alt Bruker trykker for å se været i dag
+        Bruker ->> App: Trykker på været i dag
+        App ->>  LocationForecastAPI: Ber om værdata basert på lokasjon
+        LocationForecastAPI ->> App: Returnerer værdata
+        App ->> Bruker: Viser værdata
+    else Bruker trykker på "Se været andre dager"
+        Bruker ->> App: Trykker på knappen
+        App ->>  LocationForecastAPI: Ber om værdata basert på lokasjon
+        LocationForecastAPI ->> App: Returnerer værdata for de neste syv dagene
+        App ->> Bruker: Viser værdata for de neste syv dagene
+        Bruker ->> App: Klikker på en dag
+        App ->>  LocationForecastAPI: Ber om værdata (time for time) basert på valgt dag
+        LocationForecastAPI ->> App: Returnerer værdata (time for time)
+        App ->> Bruker: Viser værdata (time for time)
+    end
+```
 
 ## Klassediagram
-
-### Diagrammet under viser oversikten over de implementerte klassene i prosjektet. Det illustrerer:
-
-- Arv mellom klasser (hvem arver fra hvem)
-- Instansvariabler og deres typer
-- Metoder (funksjoner) som er definert i hver klasse, inkludert arvede metoder
+Et klassediagram brukes for å illustrere systemets struktur, altså klasser og deres tilhørende metoder og egenskaper, samt hvordan de er koblet sammen gjennom for eksempel arv. Vi ønsket å bruke dette diagrammet for å definere klassene og beskrive relasjoner og avhengigheter mellom dem, samt forbedre forståelsen vår av systemets arkitektur. Diagrammet under viser oversikten over de implementerte klassene i prosjektet. Det illustrerer arv mellom klasser (hvem arver fra hvem), instansvariabler og deres typer og metoder (funksjoner) som er definert i hver klasse, inkludert arvede metoder.
 
 ```mermaid
 classDiagram
@@ -377,4 +467,87 @@ classDiagram
     FavoritesScreenViewModelFactory ..|> Factory
     ProfileScreenViewModel --|> AndroidViewModel
     ProfileRepository --> ProfileRepository_Companion
+```
+
+## Aktivitetsdiagram
+Et aktivitetsdiagram (eller flytdiagram) brukes for å illustrere flyten av aktiviteter og beslutninger i applikasjonen, og hvordan prosesser utføres i praksis. Siden det er flere ulike måter å utføre samme oppgave i applikasjonen vår, altså å finne en tur, ønsket vi å bruke dette diagrammet for å vise hvordan ulike valg og beslutninger påvirker flyten. Diagrammet hjelper oss med å eventuelt finne alterantive flyter, logiske feil eller manglende steg i prosessene. Diagrammet under viser en oversikt over hvordan en bruker kan navigere i applikasjonen, og hvilke beslutninger som kan tas underveis. Det viser også hvordan de ulike aktivitetene er koblet sammen og påvriker hverandre. 
+
+```mermaid
+flowchart TB; 
+start((Start))
+slutt(((slutt)))
+
+startskjerm{{Startskjerm}}
+lagBruker(Lag bruker)
+velgBruker(Velg bruker)
+finneRute{{Finne rute}}
+trykkPaaKart(Velg lokasjon på kart)
+soek(Bruk søkefunksjon)
+chatbot(Finn rute ved hjelp av chat)
+AIAnbefalinger(Bruker anbefalingene fra AI)
+velgRute(Velg rute)
+informasjonKort(Informasjon om valgt rute generert av AI)
+informasjonKortEtterVaer(Informasjon om valgt rute for valgt dag generert av AI)
+
+favoritt{{Vil du legge til rute som favoritt?}}
+lagtTilFav(Lagt til som favoritt)
+slettFav{{Vil du slette fra favoritt?}}
+slettet(Slettet fra favoritt)
+logg{{Vil du legge til rute i logg?}}
+lagtTilLogg(Lagt til i loggen)
+notat{{Vil du legge til notat i loggen?}}
+notatLagtTil(Legger til notat i loggen)
+vaer{{Vil du bruke været for å velge dag?}}
+vaerDagens(Viser været for dagen i dag time for time)
+vaerNesteUke(Viser været for de neste syv dagene)
+vaerNesteUkeTime(Viser været timebasert for de neste syv dagene)
+
+%% Style
+style startskjerm fill: blue
+style finneRute fill: blue
+style logg fill: blue
+style favoritt fill: blue
+style notat fill: blue
+style slettFav fill: blue
+style vaer fill: blue
+
+%% Relasjoner
+start --> startskjerm
+startskjerm --> lagBruker
+startskjerm --deafult bruker--> velgBruker
+lagBruker --> velgBruker
+velgBruker --> finneRute
+subgraph rutevalg [Valg av rute]
+    finneRute --> trykkPaaKart --> velgRute
+    finneRute --> soek --> velgRute
+    finneRute --> chatbot --> velgRute
+    finneRute --> AIAnbefalinger --> velgRute
+end
+velgRute --> informasjonKort
+
+subgraph valgAvDag [Valg av dag]
+    informasjonKort --> vaer
+    vaer --ja, neste uken--> vaerNesteUke
+    vaer --ja, dagens--> vaerDagens
+    vaer --nei--> favoritt
+    vaer --nei--> logg
+    vaerDagens --> informasjonKortEtterVaer
+    vaerNesteUke --timebasert--> vaerNesteUkeTime
+    vaerNesteUkeTime --> informasjonKortEtterVaer
+end
+informasjonKortEtterVaer --> favoritt
+favoritt --ja--> lagtTilFav
+lagtTilFav --> slettFav
+slettFav --ja--> slettet
+slettet --> slutt
+slettFav --nei--> slutt
+favoritt --nei--> slutt
+
+informasjonKortEtterVaer --> logg
+logg --ja--> lagtTilLogg
+lagtTilLogg --> notat
+notat --ja--> notatLagtTil
+notat --nei--> slutt
+logg --nei--> slutt
+notatLagtTil --nei--> slutt
 ```
