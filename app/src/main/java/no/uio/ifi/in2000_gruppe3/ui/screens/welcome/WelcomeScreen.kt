@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -36,18 +38,19 @@ fun WelcomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 24.dp),
-            verticalArrangement = Arrangement.Center,
+                .padding(horizontal = 24.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             Icon(
                 painter = painterResource(id = R.drawable.logo_slogan),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(375.dp),
+                    .height(300.dp),
                 tint = Color.Unspecified
             )
 
@@ -58,7 +61,7 @@ fun WelcomeScreen(
                 color = LogoPrimary
             )
 
-            Spacer(modifier = Modifier.height(220.dp))
+            Spacer(modifier = Modifier.weight(1f))
 
             Button(
                 modifier = Modifier
@@ -73,8 +76,6 @@ fun WelcomeScreen(
                     fontSize = 18.sp
                 )
             }
-
-            Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 modifier = Modifier
