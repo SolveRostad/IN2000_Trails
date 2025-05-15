@@ -1,10 +1,9 @@
 package no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen
 
 import android.Manifest
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,10 +14,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -43,21 +42,25 @@ import no.uio.ifi.in2000_gruppe3.ui.mapbox.AlertsDisplay
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapStyleSelector
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapViewer
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
-import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.ResetMapCenterButton
+import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000_gruppe3.ui.networkSnackbar.NetworkSnackbar
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities.ActivityScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.profile.profileSelectScreen.ProfileScreenViewModel
 
 @Composable
 fun HomeScreen(
     homeScreenViewModel: HomeScreenViewModel,
+    favoritesViewModel: FavoritesScreenViewModel,
     hikeScreenViewModel: HikeScreenViewModel,
-    favoritesViewModel: FavoritesViewModel,
     mapboxViewModel: MapboxViewModel,
     openAIViewModel: OpenAIViewModel,
+    profileScreenViewModel: ProfileScreenViewModel,
+    activityScreenViewModel: ActivityScreenViewModel,
     navController: NavHostController
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -65,12 +68,19 @@ fun HomeScreen(
 
     val locationPermissionRequest = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
-    ) {}
+    ) { permissions ->
+        when {
+            permissions[Manifest.permission.ACCESS_FINE_LOCATION] == false &&
+                    permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == false -> {
+                mapboxViewModel.setLoaderState(false)
+            }
+        }
+    }
 
     val targetSheetState by homeScreenViewModel.sheetStateTarget.collectAsState()
     val currentSheetOffset by homeScreenViewModel.currentSheetOffset.collectAsState()
     val isControlsVisible = targetSheetState == SheetDrawerDetent.HIDDEN ||
-                            targetSheetState == SheetDrawerDetent.SEMIPEEK
+            targetSheetState == SheetDrawerDetent.SEMIPEEK
 
     LaunchedEffect(Unit) {
         locationPermissionRequest.launch(
@@ -80,6 +90,8 @@ fun HomeScreen(
             )
         )
     }
+
+    BackHandler { }
 
     Scaffold(
         bottomBar = { BottomBar(navController = navController) },
@@ -107,8 +119,9 @@ fun HomeScreen(
             MapViewer(
                 homeScreenViewModel = homeScreenViewModel,
                 hikeScreenViewModel = hikeScreenViewModel,
-                mapboxViewModel = mapboxViewModel,
                 favoritesViewModel = favoritesViewModel,
+                mapboxViewModel = mapboxViewModel,
+                activityScreenViewModel = activityScreenViewModel
             )
 
             MapLoader(
@@ -123,7 +136,7 @@ fun HomeScreen(
                     elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = Color.White.copy(alpha = 0.85f)
+                        containerColor = MaterialTheme.colorScheme.surface.copy(0.85f)
                     ),
                     onClick = {
                         hikeScreenViewModel.updateSelectedDay(getTodaysDay())
@@ -162,7 +175,9 @@ fun HomeScreen(
                 ) {
                     AanundFigure(
                         homeScreenViewModel = homeScreenViewModel,
+                        hikeScreenViewModel = hikeScreenViewModel,
                         mapboxViewModel = mapboxViewModel,
+                        profileScreenViewModel = profileScreenViewModel,
                         navController = navController
                     )
                 }

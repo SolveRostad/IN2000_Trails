@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,25 +17,25 @@ import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.SheetDrawerDetent
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
+import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
 fun AanundFigureDropdown(
     expanded: MutableState<Boolean>,
     homeScreenViewModel: HomeScreenViewModel,
+    hikeScreenViewModel: HikeScreenViewModel,
     mapBoxViewModel: MapboxViewModel,
-    navController: NavHostController,
-    modifier: Modifier
+    navController: NavHostController
 ) {
-
     DropdownMenu(
         expanded = expanded.value,
         onDismissRequest = { expanded.value = false },
-        modifier = modifier
+        modifier = Modifier
             .shadow(8.dp, RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(12.dp))
     ) {
-        androidx.compose.material3.DropdownMenuItem(
+        DropdownMenuItem(
             text = {
                 Text(
                     text = "✨Mine anbefalinger✨",
@@ -47,10 +48,11 @@ fun AanundFigureDropdown(
                 homeScreenViewModel.setSheetState(SheetDrawerDetent.SEMIPEEK)
                 homeScreenViewModel.clearHikes()
                 mapBoxViewModel.clearPolylineAnnotations()
+                hikeScreenViewModel.updateRecommendedHikesLoaded(false)
                 expanded.value = false
             }
         )
-        androidx.compose.material3.DropdownMenuItem(
+        DropdownMenuItem(
             text = {
                 Text(
                     text = "🤖 Chat med meg",

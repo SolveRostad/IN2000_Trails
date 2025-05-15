@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository
 
 import androidx.compose.ui.graphics.Color
+import com.mapbox.geojson.Point
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -110,5 +111,18 @@ class HikeAPIRepository(private val openAIViewModel: OpenAIViewModel) {
             "S" -> DifficultyInfo("EKSPERT", Color(0xFFF44336)) // Red
             else -> DifficultyInfo("UKJENT", Color(0xFF757575)) // Medium Gray
         }
+    }
+
+    suspend fun getHikesById(hikeIds: List<Int>, position: Point): List<Feature> {
+        val hikeIdStringList = hikeIds.map { it.toString() }
+        val features = hikeAPIDatasource.getHikesById(hikeIdStringList, position)
+        features.forEach { feature ->
+            feature.color = getColor()
+            if (feature.properties.gradering.isNullOrBlank()) {
+                generateDifficulty(feature)
+            }
+            feature.difficultyInfo = getDifficultyInfo(feature.properties.gradering ?: "Ukjent")
+        }
+        return features
     }
 }

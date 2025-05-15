@@ -141,14 +141,14 @@ class MapboxViewModel() : ViewModel() {
     }
 
     fun clearPolylineAnnotations() {
-        _mapboxUIState.update { it ->
+        _mapboxUIState.update {
             it.copy(polylineAnnotations = emptyList())
         }
     }
 
     fun centerOnUserPosition() {
         viewModelScope.launch {
-            _mapboxUIState.update { it ->
+            _mapboxUIState.update {
                 it.copy(
                     centerOnUserTrigger = System.currentTimeMillis()
                 )
@@ -157,24 +157,8 @@ class MapboxViewModel() : ViewModel() {
     }
 
     fun updateLatestUserPosition(point: Point) {
-        _mapboxUIState.update { it ->
+        _mapboxUIState.update {
             it.copy(latestUserPosition = point)
-        }
-    }
-
-    fun zoomIn() {
-        _mapboxUIState.update {
-            it.copy(
-                zoom = if (it.zoom < 22) it.zoom + 1 else 22.0
-            )
-        }
-    }
-
-    fun zoomOut() {
-        _mapboxUIState.update {
-            it.copy(
-                zoom = if (it.zoom > 0) it.zoom - 1 else 0.0
-            )
         }
     }
 }

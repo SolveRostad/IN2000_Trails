@@ -29,7 +29,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
 fun SuggestionColumn(
@@ -39,9 +38,9 @@ fun SuggestionColumn(
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
-    val readyToSend = mapboxUIState.searchQuery.isNotBlank() && mapboxUIState.searchResponse.isNotEmpty()
+    val hasSuggestions = mapboxUIState.searchQuery.isNotBlank() && mapboxUIState.searchResponse.isNotEmpty()
 
-    if (mapboxUIState.searchResponse.isNotEmpty() && mapboxUIState.searchQuery != "") {
+    if (hasSuggestions) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
@@ -55,13 +54,11 @@ fun SuggestionColumn(
                         .fillMaxWidth()
                         .padding(8.dp)
                         .clickable {
-                            if (readyToSend) {
-                                mapboxViewModel.getSelectedSearchResultPoint(
-                                    suggestion = suggestion
-                                )
-                                keyboardController?.hide()
-                                focusManager.clearFocus()
-                            }
+                            mapboxViewModel.getSelectedSearchResultPoint(
+                                suggestion = suggestion
+                            )
+                            keyboardController?.hide()
+                            focusManager.clearFocus()
                         },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -109,6 +106,9 @@ fun SuggestionColumn(
     }
 }
 
+// Although Resources.getIdentifier() is discouraged due to performance and reliability concerns,
+// it's used here because the icon set contains hundreds of dynamic names (e.g., Maki icons).
+// Maintaining a static mapping would be impractical. A fallback icon is returned if the resource isn't found.
 private fun getIconFromString(
     iconName: String,
     context: android.content.Context
@@ -118,10 +118,5 @@ private fun getIconFromString(
         "drawable",
         context.packageName
     )
-
-    if (iconResourceId == 0) {
-        iconResourceId = R.drawable.marker
-    }
-
-    return iconResourceId
+    return if(iconResourceId != 0) iconResourceId else R.drawable.marker
 }

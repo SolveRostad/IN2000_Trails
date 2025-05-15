@@ -46,6 +46,22 @@ class HikeScreenViewModel : ViewModel() {
         }
     }
 
+    fun updateRecommendedHikes(hikes: List<Feature>) {
+        _hikeScreenUIState.update {
+            it.copy(
+                recommendedHikes = hikes
+            )
+        }
+    }
+
+    fun updateRecommendedHikesLoaded(loaded: Boolean) {
+        _hikeScreenUIState.update {
+            it.copy(
+                recommendedHikesLoaded = loaded
+            )
+        }
+    }
+
     fun getHikeDescription(
         homeScreenViewModel: HomeScreenViewModel,
         openAIViewModel: OpenAIViewModel
@@ -66,6 +82,8 @@ class HikeScreenViewModel : ViewModel() {
                     "I tillegg skal du skrive et kort avsnitt som inneholder en anbefaling av hvilken dag, utover i dag, man burde gå på tur basert på værforholdet de neste 7 dagene. " +
                     "Du skal altså skrive tre korte avsnitt på formen: \n[Navn på tur]\nInnhold første avnitt med info om turen. \n[Informasjon om været]\nInnhold andre avsnitt om temperatur. \n[Når burde du gå tur?]\nInnhold tredje avsnitt om når det er best vær. " +
                     "Bruk små overskrifter med fet skrifttype og markdown tekst med UTF-8. " +
+                    "Ikke brukt tegn som ikke støttes av markdown tekst. " +
+                    "Teksten skal passe et norskt tastatur med æ, ø, å. " +
                     "Del opp avsnittene med en tynn linje. " +
                     "Du skal IKKE svare som en chatbot, men kun gi meg informasjonen jeg har spurt om. " +
                     "Hvis du nevner dato skal det være formattert som for eksempel 23. mars. " +
@@ -103,5 +121,7 @@ data class HikeScreenUIState(
     val selectedDay: String = getTodaysDay(),
     val selectedDate: String = getTodaysDate(),
     val formattedDate: String = "",
-    val descriptionAlreadyLoaded: Boolean = false
+    val descriptionAlreadyLoaded: Boolean = false,
+    val recommendedHikes: List<Feature> = emptyList(),
+    val recommendedHikesLoaded: Boolean = false
 )

@@ -8,25 +8,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000_gruppe3.R
-import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.ui.hikeCard.SmallHikeCard
+import no.uio.ifi.in2000_gruppe3.ui.loaders.Loader
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
@@ -41,15 +38,15 @@ fun RecommendedHikes(
     openAIViewModel: OpenAIViewModel,
     navController: NavHostController
 ) {
-    var recommendedHikes by remember { mutableStateOf<List<Feature>>(emptyList()) }
+    val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
 
     LaunchedEffect(Unit) {
-        val hikes = homeScreenViewModel.getRecommendedHikes(
-            homeScreenViewModel = homeScreenViewModel,
-            mapBoxViewModel = mapBoxViewModel,
-            openAIViewModel = openAIViewModel
-        )
-        recommendedHikes = hikes
+        if (!hikeUIState.recommendedHikesLoaded) {
+            openAIViewModel.getRecommendedHikes(
+                homeScreenViewModel,
+                hikeScreenViewModel
+            )
+        }
     }
 
     Column(
@@ -72,11 +69,11 @@ fun RecommendedHikes(
 
             Text(
                 text = "Mine anbefalinger i dag",
-                fontSize = 24.sp,
                 color = Color.Black,
-                fontFamily = FontFamily.SansSerif,
                 modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge,
+                fontStyle = MaterialTheme.typography.titleLarge.fontStyle,
             )
 
             Icon(
@@ -90,7 +87,14 @@ fun RecommendedHikes(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        recommendedHikes.forEach { hikeFeature ->
+        if (hikeUIState.recommendedHikes.isEmpty()) {
+            Text(
+                text = "Vent mens jeg finner de beste turene for deg!",
+            )
+            Loader()
+        }
+
+        hikeUIState.recommendedHikes.forEach { hikeFeature ->
             SmallHikeCard(
                 mapboxViewModel = mapBoxViewModel,
                 feature = hikeFeature,
@@ -99,6 +103,7 @@ fun RecommendedHikes(
                     navController.navigate(Screen.HikeScreen.route)
                 }
             )
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }

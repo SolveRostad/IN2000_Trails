@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     kotlin("plugin.serialization") version "2.1.10"
+    id("com.google.devtools.ksp") version "2.1.0-1.0.29"
 }
 
 android {
@@ -16,13 +17,27 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        buildConfigField("String", "MAPBOX_ACCESS_TOKEN", "\"${properties["MAPBOX_ACCESS_TOKEN"]}\"")
-        buildConfigField("String", "MAPBOX_SECRET_TOKEN", "\"${properties["MAPBOX_SECRET_TOKEN"]}\"")
+        buildConfigField(
+            "String",
+            "MAPBOX_ACCESS_TOKEN",
+            "\"${properties["MAPBOX_ACCESS_TOKEN"]}\""
+        )
+        buildConfigField(
+            "String",
+            "MAPBOX_SECRET_TOKEN",
+            "\"${properties["MAPBOX_SECRET_TOKEN"]}\""
+        )
 
-        buildConfigField("String", "GEMINI_API_KEY", "\"${properties["GEMINI_API_KEY"]}\"")
-
-        buildConfigField("String", "OPENAI_API_KEY_1", "\"${properties["OPENAI_API_KEY_1"]}\"")
-        buildConfigField("String", "OPENAI_API_KEY_2", "\"${properties["OPENAI_API_KEY_2"]}\"")
+        buildConfigField(
+            "String",
+            "OPENAI_API_KEY_1",
+            "\"${properties["OPENAI_API_KEY_1"]}\""
+        )
+        buildConfigField(
+            "String",
+            "OPENAI_API_KEY_2",
+            "\"${properties["OPENAI_API_KEY_2"]}\""
+        )
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -52,6 +67,8 @@ android {
         buildConfig = true
     }
 
+    // Exclude unnecessary or conflicting resource files (like licenses, notices, Netty metadata, markdown files)
+    // to prevent build errors (e.g., duplicate files) and reduce the final APK size.
     packaging {
         resources {
             excludes += setOf(
@@ -64,6 +81,10 @@ android {
                 "META-INF/DEPENDENCIES"
             )
         }
+    }
+
+    testOptions {
+        animationsDisabled = true
     }
 }
 
@@ -79,24 +100,12 @@ dependencies {
     // Custom BottomSheet
     implementation("com.composables:core:1.20.1")
 
-    // DataStore
-    implementation(libs.androidx.datastore.preferences)
-    implementation(libs.androidx.datastore.preferences.rxjava2)
-    implementation(libs.androidx.datastore.preferences.rxjava3)
-    implementation(libs.volley)
-
-    // Gemini AI
-    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
-
     // Ktor
     implementation("io.ktor:ktor-client-android:2.3.5")
     implementation("io.ktor:ktor-client-core:2.3.5")
     implementation("io.ktor:ktor-client-cio:2.3.5")
     implementation("io.ktor:ktor-client-content-negotiation:2.3.5")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.5")
-
-    // Location
-    implementation("com.google.android.gms:play-services-location:21.3.0")
 
     // Mapbox
     implementation("com.mapbox.maps:android:11.10.2")
@@ -127,14 +136,17 @@ dependencies {
     implementation("org.slf4j:slf4j-api:2.0.9")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
-    // Serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
+    // Room database
+    val roomVersion = "2.7.0-rc02"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
 
     // ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0") // 2
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
 
     // Standard libs
+    implementation(libs.core.ktx)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -143,6 +155,11 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    // For testing
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+    testImplementation("org.robolectric:robolectric:4.10.3")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -150,4 +167,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(kotlin("test"))
+    testImplementation(kotlin("test"))
 }

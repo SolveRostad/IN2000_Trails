@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000_gruppe3.ui.hikeCard
 
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.mapbox.geojson.BoundingBox
@@ -23,12 +25,14 @@ import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxUIState
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
+import no.uio.ifi.in2000_gruppe3.ui.navigation.Screen
 import kotlin.math.ln
 
 @Composable
 fun HikeCardMapPreview(
     mapboxViewModel: MapboxViewModel,
-    feature: Feature
+    feature: Feature,
+    navController: NavController? = null
 ) {
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
 
@@ -44,10 +48,8 @@ fun HikeCardMapPreview(
         (bbox.north() + bbox.south()) / 2
     )
 
-    // Calculate zoom level based on the bounding box and hike length
     val zoom = calculateIdealZoom(bbox)
 
-    // Create a static map URL
     val staticMapUrl = createStaticMapUrl(
         center = center,
         zoom = zoom,
@@ -61,7 +63,16 @@ fun HikeCardMapPreview(
     Surface(
         modifier = Modifier
             .height(160.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .then( // This code is for only making the map clickable if a navController is provided
+                if (navController != null) {
+                    Modifier.clickable {
+                        navController.navigate(Screen.MapPreview.route)
+                    }
+                } else {
+                    Modifier
+                }
+            ),
         shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)
     ) {
         // Static image of map

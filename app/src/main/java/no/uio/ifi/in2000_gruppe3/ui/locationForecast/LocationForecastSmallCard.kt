@@ -100,12 +100,28 @@ fun LocationForecastSmallCard(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 item {
-                    Text(
-                        text = "$daysHighestTemp°\n${daysLowestTemp}°",
-                        style = MaterialTheme.typography.bodyLarge,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(3.dp).width(45.dp)
-                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 8.dp)
+                    ) {
+                        Text(
+                            text = "$daysHighestTemp°",
+                            style = MaterialTheme.typography.bodyLarge,
+                            textAlign = TextAlign.Center,
+                            color = Color.Red
+                        )
+
+                        Spacer(modifier = Modifier.height(5.dp))
+
+                        Text(
+                            text = "${daysLowestTemp}°",
+                            style = MaterialTheme.typography.bodyLarge,
+                            textAlign = TextAlign.Center,
+                            color = Color.Blue
+                        )
+                    }
 
                     VerticalDivider(
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),

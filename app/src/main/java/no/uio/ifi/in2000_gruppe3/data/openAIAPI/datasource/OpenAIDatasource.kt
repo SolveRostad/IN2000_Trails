@@ -2,7 +2,6 @@ package no.uio.ifi.in2000_gruppe3.data.openAIAPI.datasource
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.header
 import io.ktor.client.request.post
@@ -81,10 +80,8 @@ class OpenAIDatasource {
         }.execute { response ->
             val channel = response.bodyAsChannel()
 
-            // Buffer to collect full lines
             val lineBuffer = StringBuilder()
 
-            // Read in larger chunks for efficiency
             val buffer = ByteArray(1024)
             var bytesRead: Int
 

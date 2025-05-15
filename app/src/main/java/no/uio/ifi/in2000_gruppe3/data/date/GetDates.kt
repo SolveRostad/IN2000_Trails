@@ -3,7 +3,8 @@ package no.uio.ifi.in2000_gruppe3.data.date
 import java.text.SimpleDateFormat
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 enum class Weekdays {
     Mandag, Tirsdag, Onsdag, Torsdag, Fredag, Lørdag, Søndag;

@@ -25,7 +25,11 @@ import coil.request.ImageRequest
 import com.mapbox.geojson.Point
 import no.uio.ifi.in2000_gruppe3.data.metAlertsAPI.models.Geometry
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
-import kotlin.math.*
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.pow
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 @Composable
 fun AlertsDisplay(
@@ -50,17 +54,14 @@ fun AlertsDisplay(
     val closestAlert = closestAlertWithDistance?.first
     val distance = closestAlertWithDistance?.second
 
-    if (closestAlert == null || distance == null) {
-        return
-    }
+    if (closestAlert == null || distance == null) return
 
     val alertEvent = closestAlert.properties.event?.lowercase()
     val alertColor = closestAlert.properties.riskMatrixColor?.lowercase()
 
     val radius = when (closestAlert.properties.severity?.lowercase()) {
-        "moderate" -> 30.0
-        "severe" -> 50.0
         "extreme" -> 70.0
+        "severe" -> 50.0
         else -> 30.0
     }
 

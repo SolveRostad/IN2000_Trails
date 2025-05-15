@@ -27,22 +27,26 @@ import no.uio.ifi.in2000_gruppe3.ui.hikeCard.HikeCard
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
 import no.uio.ifi.in2000_gruppe3.ui.navigation.BottomBar
 import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
-import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities.ActivityScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HikeScreen(
     homeScreenViewModel: HomeScreenViewModel,
-    favoritesViewModel: FavoritesViewModel,
+    favoritesViewModel: FavoritesScreenViewModel,
     hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     openAIViewModel: OpenAIViewModel,
+    activityScreenViewModel: ActivityScreenViewModel,
     navController: NavHostController
 ) {
     val hikeUIState by hikeScreenViewModel.hikeScreenUIState.collectAsState()
 
-    val checkedState = remember {
+    val favoriteUIState by favoritesViewModel.favoriteScreenUIState.collectAsState()
+
+    val checkedState = remember (hikeUIState.feature.properties.fid, favoriteUIState.username) {
         mutableStateOf(favoritesViewModel.isHikeFavorite(hikeUIState.feature))
     }
 
@@ -62,9 +66,9 @@ fun HikeScreen(
                     IconButton(onClick = {
                         checkedState.value = !checkedState.value
                         if (checkedState.value) {
-                            favoritesViewModel.addHike(hikeUIState.feature)
+                            favoritesViewModel.addFavorite(hikeUIState.feature.properties.fid)
                         } else {
-                            favoritesViewModel.deleteHike(hikeUIState.feature)
+                            favoritesViewModel.deleteFavorite(hikeUIState.feature.properties.fid)
                         }
                     }) {
                         Icon(
@@ -91,6 +95,7 @@ fun HikeScreen(
                 favoritesViewModel = favoritesViewModel,
                 mapboxViewModel = mapboxViewModel,
                 openAIViewModel = openAIViewModel,
+                activityScreenViewModel = activityScreenViewModel,
                 navController = navController,
                 checkedState = checkedState
             )

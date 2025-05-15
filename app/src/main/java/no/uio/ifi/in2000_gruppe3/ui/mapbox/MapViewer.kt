@@ -26,16 +26,18 @@ import com.mapbox.maps.plugin.locationcomponent.location
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
 import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.SheetDrawerDetent
-import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities.ActivityScreenViewModel
 
 @Composable
 fun MapViewer(
     homeScreenViewModel: HomeScreenViewModel,
     hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
-    favoritesViewModel: FavoritesViewModel
+    favoritesViewModel: FavoritesScreenViewModel,
+    activityScreenViewModel: ActivityScreenViewModel
 ) {
     val homeScreenUIState by homeScreenViewModel.homeScreenUIState.collectAsState()
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
@@ -53,7 +55,7 @@ fun MapViewer(
                 cameraOptions {
                     zoom(mapboxUIState.zoom)
                     center(mapboxUIState.pointerCoordinates.let { point ->
-                        Point.fromLngLat(point!!.longitude(), point.latitude() - 0.012)
+                        Point.fromLngLat(point!!.longitude(), point.latitude() - 0.012) // Adjust bc. bottombar
                     })
                     pitch(0.0)
                     bearing(0.0)
@@ -79,19 +81,6 @@ fun MapViewer(
         }
     }
 
-    LaunchedEffect(mapboxUIState.zoom) {
-        mapViewportState.easeTo(
-            cameraOptions {
-                zoom(mapboxUIState.zoom)
-                center(mapboxUIState.pointerCoordinates?.let { point ->
-                    Point.fromLngLat(point.longitude(), point.latitude() - 0.012)
-                })
-                pitch(0.0)
-                bearing(0.0)
-            }
-        )
-    }
-
     LaunchedEffect(mapboxUIState.centerOnUserTrigger) {
         if (mapboxUIState.centerOnUserTrigger > 0 && mapboxUIState.latestUserPosition != null) {
             mapViewportState.easeTo(
@@ -108,20 +97,20 @@ fun MapViewer(
     MapboxMap(
         modifier = Modifier.fillMaxSize(),
         mapViewportState = mapViewportState,
+        style = { MapStyle(mapboxUIState.mapStyle) },
         onMapClickListener = { point ->
             focusManager.clearFocus()
             mapboxViewModel.updatePointerCoordinates(point)
             true
         },
-        scaleBar = {},
-        logo = {},
-        attribution = {},
         compass = {
             Compass(
                 modifier = Modifier.padding(top = 80.dp, end = 8.dp)
             )
         },
-        style = { MapStyle(mapboxUIState.mapStyle) }
+        logo = {},
+        scaleBar = {},
+        attribution = {}
     ) {
         PolylineAnnotationGroup(
             mapboxUIState.polylineAnnotations,
@@ -152,14 +141,17 @@ fun MapViewer(
                         mapView.location.removeOnIndicatorPositionChangedListener(this)
                     }
                 }
-                addOnIndicatorPositionChangedListener(oneTimePositionListener)
+                if (mapboxUIState.pointerCoordinates == null) {
+                    addOnIndicatorPositionChangedListener(oneTimePositionListener)
+                }
             }
             mapView.location.updateSettings {
                 locationPuck = createDefault2DPuck(withBearing = true)
                 enabled = true
             }
             mapView.location.addOnIndicatorPositionChangedListener { point ->
-                favoritesViewModel.updateUserLocation(point)
+                favoritesViewModel.updateUserLocationFromMapbox()
+                activityScreenViewModel.updateUserLocationFromMapbox()
                 mapboxViewModel.updateLatestUserPosition(point)
             }
             mapView.mapboxMap.subscribeCameraChanged {
