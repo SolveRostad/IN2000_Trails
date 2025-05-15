@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen
 
 import android.Manifest
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
@@ -89,6 +90,8 @@ fun HomeScreen(
             )
         )
     }
+
+    BackHandler { }
 
     Scaffold(
         bottomBar = { BottomBar(navController = navController) },
