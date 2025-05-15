@@ -1,10 +1,15 @@
 # Diagrammer
-
 ## Use case-diagram
+Et use case-diagram viser et brukstilfelle, altså hvordan en aktør målrettet samhandler med systemet. Et use case har et større fokus på hvordan systemet fungerer, og dets funksjoner. Vi ønsker å bruke et use case-diagram for å vise hvordan en bruker kan interagere med applikasjonen vår. Det er en enkel og oversiktlig måte å vise funksjonalitet fra en brukers perspektiv, uten mengder med tekniske detaljer.
+Diagrammet under illustrerer...
+
+*bilde*
 
 ### Tekstlig beskrivelse av use case
 
 ## Sekvensdiagram
+Et sekvensdiagram brukes for å illustrere hvordan objekter og/eller aktører interagerer med hverandre når brukeren utfører en spesifikk handling, for eksempel velge en turrute. Vi ønsket å bruke dette for å enkelt vise rekkefølgen av handlingene som skjer i applikasjonen, og hvordan de ulike delene av systemet samhandler. Diagrammet under illustrerer samhandlingen mellom bruker, applikasjon, API-er og databasen. 
+
 ```mermaid
 sequenceDiagram
     participant Bruker
@@ -70,10 +75,7 @@ sequenceDiagram
 ```
 
 ## Klassediagram
-Diagrammet under viser oversikten over de implementerte klassene i prosjektet. Det illustrerer:
-- Arv mellom klasser (hvem arver fra hvem)
-- Instansvariabler og deres typer
-- Metoder (funksjoner) som er definert i hver klasse, inkludert arvede metoder
+Et klassediagram brukes for å illustrere systemets struktur, altså klasser og deres tilhørende metoder og egenskaper, samt hvordan de er koblet sammen gjennom for eksempel arv. Vi ønsket å bruke dette diagrammet for å definere klassene og beskrive relasjoner og avhengigheter mellom dem, samt forbedre forståelsen vår av systemets arkitektur. Diagrammet under viser oversikten over de implementerte klassene i prosjektet. Det illustrerer arv mellom klasser (hvem arver fra hvem), instansvariabler og deres typer og metoder (funksjoner) som er definert i hver klasse, inkludert arvede metoder.
 
 ```mermaid
 classDiagram
@@ -447,6 +449,8 @@ classDiagram
 ```
 
 ## Aktivitetsdiagram
+Et aktivitetsdiagram (eller flytdiagram) brukes for å illustrere flyten av aktiviteter og beslutninger i applikasjonen, og hvordan prosesser utføres i praksis. Siden det er flere ulike måter å utføre samme oppgave i applikasjonen vår, altså å finne en tur, ønsket vi å bruke dette diagrammet for å vise hvordan ulike valg og beslutninger påvirker flyten. Diagrammet hjelper oss med å eventuelt finne alterantive flyter, logiske feil eller manglende steg i prosessene. Diagrammet under viser en oversikt over hvordan en bruker kan navigere i applikasjonen, og hvilke beslutninger som kan tas underveis. Det viser også hvordan de ulike aktivitetene er koblet sammen og påvriker hverandre. 
+
 ```mermaid
 flowchart TB; 
 start((Start))
