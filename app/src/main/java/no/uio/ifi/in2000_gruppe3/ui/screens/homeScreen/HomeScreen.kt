@@ -203,10 +203,12 @@ fun HomeScreen(
 
             Column {
                 SearchBarForMap(
+                    homeScreenViewModel = homeScreenViewModel,
                     mapboxViewModel = mapboxViewModel
                 )
 
                 SuggestionColumn(
+                    homeScreenViewModel = homeScreenViewModel,
                     mapboxViewModel = mapboxViewModel
                 )
             }
