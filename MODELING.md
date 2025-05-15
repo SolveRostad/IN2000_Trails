@@ -1,9 +1,8 @@
 # Diagrammer
 ## Use case-diagram
-Et use case-diagram viser et brukstilfelle, altså hvordan en aktør målrettet samhandler med systemet. Et use case har et større fokus på hvordan systemet fungerer, og dets funksjoner. Vi ønsker å bruke et use case-diagram for å vise hvordan en bruker kan interagere med applikasjonen vår. Det er en enkel og oversiktlig måte å vise funksjonalitet fra en brukers perspektiv, uten mengder med tekniske detaljer.
-Diagrammet under illustrerer...
+Et use case-diagram viser et brukstilfelle, altså hvordan en aktør målrettet samhandler med systemet. Et use case har et større fokus på hvordan systemet fungerer, og dets funksjoner. Vi ønsker å bruke et use case-diagram for å vise hvordan en bruker kan interagere med applikasjonen vår. Det er en enkel og oversiktlig måte å vise funksjonalitet fra en brukers perspektiv, uten mengder med tekniske detaljer. Diagrammet under illustrerer de viktigste funksjonelle kravene på en visuell måte, og hvordan de er relatert til hverandre. 
 
-*bilde*
+![](Diagrams/usecase.png)
 
 ### Tekstlig beskrivelse av use case
 
