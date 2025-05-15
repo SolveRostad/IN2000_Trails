@@ -49,6 +49,7 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities.ActivityScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.profile.profileSelectScreen.ProfileScreenViewModel
 
 @Composable
 fun HomeScreen(
@@ -57,6 +58,7 @@ fun HomeScreen(
     hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     openAIViewModel: OpenAIViewModel,
+    profileScreenViewModel: ProfileScreenViewModel,
     activityScreenViewModel : ActivityScreenViewModel,
     navController: NavHostController
 ) {
@@ -165,6 +167,7 @@ fun HomeScreen(
                         homeScreenViewModel = homeScreenViewModel,
                         hikeScreenViewModel = hikeScreenViewModel,
                         mapboxViewModel = mapboxViewModel,
+                        profileScreenViewModel = profileScreenViewModel,
                         navController = navController
                     )
                 }
