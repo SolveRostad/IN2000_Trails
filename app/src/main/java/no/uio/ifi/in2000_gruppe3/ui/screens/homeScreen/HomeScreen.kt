@@ -59,7 +59,7 @@ fun HomeScreen(
     mapboxViewModel: MapboxViewModel,
     openAIViewModel: OpenAIViewModel,
     profileScreenViewModel: ProfileScreenViewModel,
-    activityScreenViewModel : ActivityScreenViewModel,
+    activityScreenViewModel: ActivityScreenViewModel,
     navController: NavHostController
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -67,7 +67,14 @@ fun HomeScreen(
 
     val locationPermissionRequest = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
-    ) {}
+    ) { permissions ->
+        when {
+            permissions[Manifest.permission.ACCESS_FINE_LOCATION] == false &&
+                    permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == false -> {
+                mapboxViewModel.setLoaderState(false)
+            }
+        }
+    }
 
     val targetSheetState by homeScreenViewModel.sheetStateTarget.collectAsState()
     val currentSheetOffset by homeScreenViewModel.currentSheetOffset.collectAsState()
