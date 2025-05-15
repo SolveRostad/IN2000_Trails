@@ -28,8 +28,16 @@ android {
             "\"${properties["MAPBOX_SECRET_TOKEN"]}\""
         )
 
-        buildConfigField("String", "OPENAI_API_KEY_1", "\"${properties["OPENAI_API_KEY_1"]}\"")
-        buildConfigField("String", "OPENAI_API_KEY_2", "\"${properties["OPENAI_API_KEY_2"]}\"")
+        buildConfigField(
+            "String",
+            "OPENAI_API_KEY_1",
+            "\"${properties["OPENAI_API_KEY_1"]}\""
+        )
+        buildConfigField(
+            "String",
+            "OPENAI_API_KEY_2",
+            "\"${properties["OPENAI_API_KEY_2"]}\""
+        )
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -59,6 +67,8 @@ android {
         buildConfig = true
     }
 
+    // Exclude unnecessary or conflicting resource files (like licenses, notices, Netty metadata, markdown files)
+    // to prevent build errors (e.g., duplicate files) and reduce the final APK size.
     packaging {
         resources {
             excludes += setOf(
@@ -79,7 +89,7 @@ android {
 }
 
 dependencies {
-    
+
     // Coil
     implementation("io.coil-kt:coil-compose:2.7.0")
     implementation("io.coil-kt:coil-svg:2.4.0")
@@ -89,10 +99,6 @@ dependencies {
 
     // Custom BottomSheet
     implementation("com.composables:core:1.20.1")
-
-    // Kotlin extensions
-    implementation(libs.core.ktx)
-    implementation(libs.androidx.junit.ktx)
 
     // Ktor
     implementation("io.ktor:ktor-client-android:2.3.5")
@@ -135,14 +141,12 @@ dependencies {
     implementation("androidx.room:room-runtime:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
 
-    // Serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
-
     // ViewModel
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
 
     // Standard libs
+    implementation(libs.core.ktx)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -154,11 +158,7 @@ dependencies {
 
     // For testing
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
     testImplementation("org.robolectric:robolectric:4.10.3")
-    testImplementation("org.slf4j:slf4j-nop:1.7.36")
-    testImplementation("junit:junit:1.7.8")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4: 1.7.8")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

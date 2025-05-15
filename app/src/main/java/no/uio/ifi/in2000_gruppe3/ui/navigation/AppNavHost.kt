@@ -82,6 +82,7 @@ fun AppNavHost() {
                 favoritesViewModel = favoritesViewModel,
                 mapboxViewModel = mapboxViewModel,
                 openAIViewModel = openAIViewModel,
+                profileScreenViewModel = profileScreenViewModel,
                 activityScreenViewModel = activityScreenViewModel,
                 navController = navController
             )
