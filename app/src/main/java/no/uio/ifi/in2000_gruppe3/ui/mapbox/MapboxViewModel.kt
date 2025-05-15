@@ -16,6 +16,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.pow
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 class MapboxViewModel() : ViewModel() {
     private val placeAutocomplete = PlaceAutocomplete.create()
@@ -156,10 +161,43 @@ class MapboxViewModel() : ViewModel() {
         }
     }
 
+    fun setHasCenteredOnUser() {
+        _mapboxUIState.update { it ->
+            it.copy(hasCenteredOnUser = true)
+        }
+    }
+
     fun updateLatestUserPosition(point: Point) {
         _mapboxUIState.update { it ->
             it.copy(latestUserPosition = point)
         }
+    }
+    // We are having some problems with the emulators position where the position
+    // of the emulator is first set to a point in San Jose before repositioning to
+    // the correct location. This is NOT a issue on physical devices.
+    // Our solution is to check if the user position change is beyond a certain threshold
+    // and move the camera only if it is.
+
+    private fun isDistanceMoreThanThreshold(
+        point1: Point,
+        point2: Point,
+        thresholdMeters: Double = 100000.0
+    ): Boolean {
+        val lat1 = Math.toRadians(point1.latitude())
+        val lon1 = Math.toRadians(point1.longitude())
+        val lat2 = Math.toRadians(point2.latitude())
+        val lon2 = Math.toRadians(point2.longitude())
+
+        // Haversine formula
+        val dLat = lat2 - lat1
+        val dLon = lon2 - lon1
+        val a = sin(dLat / 2).pow(2) + cos(lat1) * cos(lat2) * sin(dLon / 2).pow(2)
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+        val radius = 6371000.0
+        val distanceMeters = radius * c
+
+        return distanceMeters > thresholdMeters
     }
 }
 
@@ -171,6 +209,7 @@ data class MapboxUIState(
     val polylineAnnotations: List<PolylineAnnotationOptions>,
     val zoom: Double = 12.0,
     val shouldFetchHikes: Boolean = false,
+    val hasCenteredOnUser: Boolean = false,
 
     val searchResponse: List<PlaceAutocompleteSuggestion>,
     val searchQuery: String,

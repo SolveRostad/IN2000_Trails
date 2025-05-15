@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import com.mapbox.geojson.Point
-import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.dsl.cameraOptions
 import com.mapbox.maps.extension.compose.MapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
@@ -20,9 +19,14 @@ import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotation
 import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotationGroupState
 import com.mapbox.maps.extension.compose.annotation.rememberIconImage
 import com.mapbox.maps.extension.compose.style.MapStyle
-import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
 import com.mapbox.maps.plugin.locationcomponent.createDefault2DPuck
 import com.mapbox.maps.plugin.locationcomponent.location
+import com.mapbox.maps.plugin.viewport.data.DefaultViewportTransitionOptions
+import com.mapbox.maps.plugin.viewport.data.FollowPuckViewportStateOptions
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
 import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.SheetDrawerDetent
@@ -55,7 +59,10 @@ fun MapViewer(
                 cameraOptions {
                     zoom(mapboxUIState.zoom)
                     center(mapboxUIState.pointerCoordinates.let { point ->
-                        Point.fromLngLat(point!!.longitude(), point.latitude() - 0.012) // Adjust bc. bottombar
+                        Point.fromLngLat(
+                            point!!.longitude(),
+                            point.latitude() - 0.012
+                        ) // Adjust bc. bottombar
                     })
                     pitch(0.0)
                     bearing(0.0)
@@ -82,15 +89,36 @@ fun MapViewer(
     }
 
     LaunchedEffect(mapboxUIState.centerOnUserTrigger) {
-        if (mapboxUIState.centerOnUserTrigger > 0 && mapboxUIState.latestUserPosition != null) {
-            mapViewportState.easeTo(
-                cameraOptions {
-                    zoom(mapboxUIState.zoom)
-                    center(mapboxUIState.latestUserPosition)
-                    pitch(0.0)
-                    bearing(0.0)
+        mapViewportState.transitionToFollowPuckState(
+            followPuckViewportStateOptions = FollowPuckViewportStateOptions.Builder()
+                .zoom(mapboxUIState.zoom)
+                .pitch(0.0)
+                .build(),
+            defaultTransitionOptions = DefaultViewportTransitionOptions.Builder()
+                .maxDurationMs(if (!mapboxUIState.hasCenteredOnUser) 0 else 500)
+                .build()
+        ) {
+            // We are having some problems with the emulators position where the position
+            // of the emulator is first set to a point in San Jose before repositioning to
+            // the correct location. This is NOT an issue on physical devices, and only
+            // occurred after updating Android Studio.
+            // Our solution is to attach the camera to the user location for a short time
+            // before detaching it again. The user can manually detach the camera by
+            // moving the map. If the user moves the map before the camera is correctly
+            // positioned on the user location, they will have to manually recenter the map
+            // with the recenter button.
+            if (!mapboxUIState.hasCenteredOnUser) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    delay(7000)
+                    mapViewportState.idle()
+                    homeScreenViewModel.fetchAlerts()
+                    homeScreenViewModel.fetchForecast(mapboxUIState.latestUserPosition!!)
+                    mapboxViewModel.setLoaderState(false)
+                    mapboxViewModel.setHasCenteredOnUser()
                 }
-            )
+            } else {
+                mapViewportState.idle()
+            }
         }
     }
 
@@ -125,30 +153,11 @@ fun MapViewer(
         }
 
         MapEffect(Unit) { mapView ->
-            mapView.location.apply {
-                enabled = true
-                val oneTimePositionListener = object : OnIndicatorPositionChangedListener {
-                    override fun onIndicatorPositionChanged(point: Point) {
-                        mapViewportState.setCameraOptions(
-                            CameraOptions.Builder()
-                                .center(point)
-                                .zoom(mapboxUIState.zoom)
-                                .build()
-                        )
-                        homeScreenViewModel.fetchForecast(point)
-                        homeScreenViewModel.fetchAlerts()
-                        mapboxViewModel.setLoaderState(isLoading = false)
-                        mapView.location.removeOnIndicatorPositionChangedListener(this)
-                    }
-                }
-                if (mapboxUIState.pointerCoordinates == null) {
-                    addOnIndicatorPositionChangedListener(oneTimePositionListener)
-                }
-            }
             mapView.location.updateSettings {
                 locationPuck = createDefault2DPuck(withBearing = true)
                 enabled = true
             }
+
             mapView.location.addOnIndicatorPositionChangedListener { point ->
                 favoritesViewModel.updateUserLocationFromMapbox()
                 activityScreenViewModel.updateUserLocationFromMapbox()
