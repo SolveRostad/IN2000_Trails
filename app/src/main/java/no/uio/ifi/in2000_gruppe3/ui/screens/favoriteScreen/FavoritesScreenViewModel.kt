@@ -199,5 +199,5 @@ data class FavoriteScreenUIState(
     val errorMessage: String = "",
     val favorites: List<Int> = emptyList(),
     val username: String = "",
-    val userLocation: Point = Point.fromLngLat(10.441649, 59.542819)
+    val userLocation: Point = Point.fromLngLat(10.441649, 59.542819) // Default location (Oslo, Norway)
 )

@@ -24,7 +24,6 @@ class ActivityScreenViewModelFactory (
             val hikeAPIRepository = HikeAPIRepository(openAIViewModel)
             val mapboxViewModel = MapboxViewModel()
 
-            // Use the singleton instance of UserRepository
             val profileRepository = ProfileRepository.getInstance(application, applicationScope)
 
             @Suppress("UNCHECKED_CAST")

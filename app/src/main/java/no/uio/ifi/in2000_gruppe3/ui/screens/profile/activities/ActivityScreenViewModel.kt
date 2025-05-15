@@ -364,7 +364,7 @@ data class ActivityScreenUIState(
     val hikeNotes: Map<Int, String> = emptyMap(),
     val convertedLog: List<Feature> = emptyList(),
     val username: String = "",
-    val userLocation: Point = Point.fromLngLat(10.441649, 59.542819),
+    val userLocation: Point = Point.fromLngLat(10.441649, 59.542819), // Default location (Oslo, Norway)
     val isLoading: Boolean = false,
     val errorMessage: String = "",
     val isError: Boolean = false,
