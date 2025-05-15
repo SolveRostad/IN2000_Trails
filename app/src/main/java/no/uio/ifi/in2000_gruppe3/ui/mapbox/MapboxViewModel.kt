@@ -88,6 +88,7 @@ class MapboxViewModel : ViewModel() {
                     )
                 }
                 updateSearchQuery("")
+                centerOnPoint(point)
             } catch (e: Exception) {
                 Log.e("SearchBarViewModel", "Error selecting place", e)
             }
@@ -171,9 +172,9 @@ class MapboxViewModel : ViewModel() {
                 center(
                     Point.fromLngLat(
                         point.longitude(),
-                        point.latitude() - 0.012
+                        point.latitude() - 0.012 // Adjust bc. bottombar
                     )
-                ) // Adjust bc. bottombar
+                )
                 pitch(0.0)
                 bearing(0.0)
             }
