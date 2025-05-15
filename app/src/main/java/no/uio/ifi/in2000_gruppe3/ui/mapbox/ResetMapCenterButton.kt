@@ -37,6 +37,7 @@ fun ResetMapCenterButton(
                     homeScreenViewModel.fetchForecast(
                         mapboxViewModel.mapboxUIState.value.latestUserPosition!!
                     )
+                    homeScreenViewModel.fetchAlerts()
                 }
             }
     ) {

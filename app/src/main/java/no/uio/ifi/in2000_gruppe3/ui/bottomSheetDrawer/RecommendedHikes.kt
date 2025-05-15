@@ -1,10 +1,8 @@
 package no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -49,61 +47,56 @@ fun RecommendedHikes(
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+
+    Row(
+        modifier = Modifier,
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier,
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ai_sparkle_icon),
-                contentDescription = "AI Sparkle Icon",
-                modifier = Modifier
-                    .size(60.dp)
-                    .weight(0.2f)
-            )
+        Icon(
+            painter = painterResource(R.drawable.ai_sparkle_icon),
+            contentDescription = "AI Sparkle Icon",
+            modifier = Modifier
+                .size(60.dp)
+                .weight(0.2f)
+        )
 
-            Text(
-                text = "Mine anbefalinger i dag",
-                color = Color.Black,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleLarge,
-                fontStyle = MaterialTheme.typography.titleLarge.fontStyle,
-            )
+        Text(
+            text = "Mine anbefalinger i dag",
+            color = Color.Black,
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleLarge,
+            fontStyle = MaterialTheme.typography.titleLarge.fontStyle,
+        )
 
-            Icon(
-                painter = painterResource(R.drawable.ai_sparkle_icon),
-                contentDescription = "AI Sparkle Icon",
-                modifier = Modifier
-                    .size(60.dp)
-                    .weight(0.2f)
-            )
-        }
+        Icon(
+            painter = painterResource(R.drawable.ai_sparkle_icon),
+            contentDescription = "AI Sparkle Icon",
+            modifier = Modifier
+                .size(60.dp)
+                .weight(0.2f)
+        )
+    }
 
+    Spacer(modifier = Modifier.height(16.dp))
+
+    if (hikeUIState.recommendedHikes.isEmpty()) {
+        Text(
+            text = "Vent mens jeg finner de beste turene for deg!",
+        )
+        Loader()
+    }
+
+    hikeUIState.recommendedHikes.forEach { hikeFeature ->
+        SmallHikeCard(
+            mapboxViewModel = mapBoxViewModel,
+            feature = hikeFeature,
+            onClick = {
+                hikeScreenViewModel.updateHike(hikeFeature)
+                navController.navigate(Screen.HikeScreen.route)
+            }
+        )
         Spacer(modifier = Modifier.height(16.dp))
-
-        if (hikeUIState.recommendedHikes.isEmpty()) {
-            Text(
-                text = "Vent mens jeg finner de beste turene for deg!",
-            )
-            Loader()
-        }
-
-        hikeUIState.recommendedHikes.forEach { hikeFeature ->
-            SmallHikeCard(
-                mapboxViewModel = mapBoxViewModel,
-                feature = hikeFeature,
-                onClick = {
-                    hikeScreenViewModel.updateHike(hikeFeature)
-                    navController.navigate(Screen.HikeScreen.route)
-                }
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-        }
     }
 }

@@ -1,6 +1,5 @@
 [versions]
-datastorePreferencesRxjava2 = "1.1.3"
-agp = "8.9.2"
+agp = "8.10.0"
 kotlin = "2.1.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
