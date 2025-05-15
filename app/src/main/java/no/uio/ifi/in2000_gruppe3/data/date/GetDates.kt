@@ -14,7 +14,7 @@ enum class Weekdays {
     }
 }
 
-// Returns a list of all weekdays, starting on todays day
+// Returns a list of all weekdays, starting on today's day
 fun getOrderedWeekdays(todaysDay: String): List<Weekdays> {
     val startIndex = Weekdays.indexOf(todaysDay)
     val weekdaysList = Weekdays.entries.toList()

@@ -3,7 +3,6 @@ package no.uio.ifi.in2000_gruppe3.ui.ai
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -146,24 +145,31 @@ fun AanundFigure(
             modifier = Modifier.size(120.dp)
         ) {
             IconButton(
-                onClick = { isDialogVisible = true },
-                modifier = Modifier.fillMaxSize()
+                onClick = { aanundMenuExpanded.value = true },
+                modifier = Modifier
+                    .size(120.dp)
+                    .align(Alignment.Center)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.aanund_white),
                     contentDescription = "AI icon white",
                     tint = Color.Unspecified,
-                    modifier = Modifier.size(90.dp) // must be 30dp smaller than the surface
+                    modifier = Modifier.size(90.dp) // Must be 30dp smaller than the surface
                 )
+            }
 
+            IconButton(
+                onClick = { isDialogVisible = true },
+                modifier = Modifier
+                    .size(30.dp)
+                    .align(Alignment.TopEnd)
+                    .offset(x = (-15).dp, y = 15.dp)
+            ) {
                 Icon(
                     imageVector = Icons.Default.Info,
                     contentDescription = "Info icon",
                     tint = Color.DarkGray,
-                    modifier = Modifier
-                        .size(16.dp)
-                        .clickable { aanundMenuExpanded.value = true }
-                        .offset(x = 30.dp, y = (-30).dp)
+                    modifier = Modifier.size(20.dp)
                 )
             }
 

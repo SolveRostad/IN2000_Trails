@@ -35,7 +35,7 @@ class LocationForecastDatasource {
                 null
             }
         } catch (e: Exception) {
-            Log.e("LocationForecastDatasource", "Feil ved parsing av JSON: ${e.message}")
+            Log.e("LocationForecastDatasource", "getLocationForecast: ${e.message}")
             null
         }
     }

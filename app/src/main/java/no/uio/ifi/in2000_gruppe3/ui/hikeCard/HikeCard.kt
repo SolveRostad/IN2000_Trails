@@ -338,7 +338,7 @@ fun HikeCard(
                         .padding(horizontal = 80.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .clickable {
-                            favoritesViewModel.setUser()
+                            favoritesViewModel.setProfile()
                             checkedState.value = !checkedState.value
                             if (checkedState.value) {
                                 favoritesViewModel.addFavorite(hikeUIState.feature.properties.fid)

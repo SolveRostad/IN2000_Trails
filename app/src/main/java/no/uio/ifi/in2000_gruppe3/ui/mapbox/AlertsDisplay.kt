@@ -113,7 +113,7 @@ fun AlertsDisplay(
 
 private fun getAlertsIconUrl(event: String?, riskMatrixColor: String?): String {
     if (event.isNullOrEmpty() || riskMatrixColor.isNullOrEmpty()) {
-        Log.d("AlertsDisplay", "getAlertsIconUrl: event eller color")
+        Log.d("AlertsDisplay", "getAlertsIconUrl: Alert icon error")
         return "null"
     }
     val eventCode = getEventCode(event)

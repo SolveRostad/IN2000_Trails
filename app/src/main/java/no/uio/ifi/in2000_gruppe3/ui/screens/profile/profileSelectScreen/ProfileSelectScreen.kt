@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000_gruppe3.ui.screens.profile.profileSelectScreen
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -120,7 +119,6 @@ fun ProfileSelectScreen(
                         .onKeyEvent { keyEvent ->
                             if (keyEvent.type == KeyEventType.KeyUp && keyEvent.key == Key.Enter) {
                                 if (profile.isNotBlank()) {
-                                    Log.d("UserScreen", "Adding profile $profile")
                                     profileScreenViewModel.addProfile(profile)
                                     profileScreenViewModel.selectProfile(profile)
                                     profile = ""
@@ -141,7 +139,6 @@ fun ProfileSelectScreen(
                     keyboardActions = KeyboardActions(
                         onDone = {
                             if (profile.isNotBlank()) {
-                                Log.d("UserScreen", "Adding profile $profile")
                                 profileScreenViewModel.addProfile(profile)
                                 profileScreenViewModel.selectProfile(profile)
                                 profile = ""
@@ -163,7 +160,6 @@ fun ProfileSelectScreen(
                     modifier = Modifier.weight(0.4f),
                     onClick = {
                         if (profile.isNotBlank()) {
-                            Log.d("UserScreen", "Adding profile $profile")
                             profileScreenViewModel.addProfile(profile)
                             profileScreenViewModel.selectProfile(profile)
                             profile = ""
@@ -181,7 +177,7 @@ fun ProfileSelectScreen(
             // List of profiles
             if (profileUIState.profiles.isEmpty()) {
                 Text(
-                    text = "Ingen brukere her gitt 🤔",
+                    text = "Ingen profiler her gitt 🤔",
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(16.dp)
                 )

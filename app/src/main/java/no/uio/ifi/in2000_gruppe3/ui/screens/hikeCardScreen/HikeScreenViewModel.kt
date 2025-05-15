@@ -29,7 +29,7 @@ class HikeScreenViewModel : ViewModel() {
                     name = "error",
                     src = "error",
                     type = "error",
-                    gradering = "error"
+                    difficulty = "error"
                 ),
                 "error"
             )

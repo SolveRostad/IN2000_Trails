@@ -26,7 +26,7 @@ class ProfileRepository(private val profileDao: ProfileDao) {
         profileDao.unselectUser()
     }
 
-    suspend fun getSelectedUser(): Profile {
+    suspend fun getSelectedProfile(): Profile {
         val selectedUser = profileDao.getSelectedUser()
         return selectedUser ?: profileDao.getDefaultUser()?.also {
             profileDao.selectUser(it.username)

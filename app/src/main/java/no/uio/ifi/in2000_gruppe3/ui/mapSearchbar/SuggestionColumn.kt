@@ -29,9 +29,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
 fun SuggestionColumn(
+    homeScreenViewModel: HomeScreenViewModel,
     mapboxViewModel: MapboxViewModel
 ) {
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
@@ -55,7 +57,8 @@ fun SuggestionColumn(
                         .padding(8.dp)
                         .clickable {
                             mapboxViewModel.getSelectedSearchResultPoint(
-                                suggestion = suggestion
+                                suggestion = suggestion,
+                                homeScreenViewModel = homeScreenViewModel
                             )
                             keyboardController?.hide()
                             focusManager.clearFocus()

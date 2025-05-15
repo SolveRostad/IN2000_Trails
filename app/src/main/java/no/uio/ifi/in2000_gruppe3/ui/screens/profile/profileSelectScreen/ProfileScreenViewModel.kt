@@ -39,17 +39,15 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
             try {
                 val newProfile = Profile(username = username)
                 profileRepository.addUser(newProfile)
-                Log.e("CurrentUsers", "Current users: ${_profileScreenUIState.value.profiles}")
-                Log.d("UserScreenViewModel", "Legger til bruker ${newProfile.username}")
                 _profileScreenUIState.update {
                     it.copy (profiles = _profileScreenUIState.value.profiles + newProfile)
                 }
             } catch (e: Exception) {
-                Log.e("UserScreenViewModel", "Error adding user: ${e.message}")
+                Log.e("ProfileScreenViewModel", "addProfile: ${e.message}")
                 _profileScreenUIState.update {
                     it.copy (
                         isLoading = false,
-                        errorMessage = "Error adding user: ${e.message}",
+                        errorMessage = e.message.toString(),
                         isError = true
                     )
                 }
@@ -78,7 +76,7 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
                 _profileScreenUIState.update {
                     it.copy (
                         isLoading = false,
-                        errorMessage = "Error deleting user: ${e.message}",
+                        errorMessage = "Error deleting profile: ${e.message}",
                         isError = true
                     )
                 }
@@ -103,13 +101,12 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
                         isLoggedIn = username != "defaultUser"
                     )
                 }
-                Log.d("UserScreenViewModel", "Selected user: ${_profileScreenUIState.value.username}")
                 onUserSelected()
             } catch (e: Exception) {
                 _profileScreenUIState.update {
                     it.copy (
                         isLoading = false,
-                        errorMessage = "Error selecting user: ${e.message}",
+                        errorMessage = "Error selecting profile: ${e.message}",
                         isError = true
                     )
                 }
@@ -124,7 +121,7 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
     private fun setProfile() {
         viewModelScope.launch {
             try {
-                val selected = profileRepository.getSelectedUser()
+                val selected = profileRepository.getSelectedProfile()
                 _profileScreenUIState.update {
                     it.copy(
                         username = selected.username,
@@ -132,9 +129,13 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
                     )
                 }
             } catch (e: Exception) {
-                Log.e("ProfileScreenViewModel", "Error getting selected Profile: ${e.message}")
+                Log.e("ProfileScreenViewModel", "setProfile: ${e.message}")
                 _profileScreenUIState.update {
-                    it.copy (isLoading = false, errorMessage = "Error unselecting user: ${e.message}", isError = true)
+                    it.copy (
+                        isLoading = false,
+                        errorMessage = e.message.toString(),
+                        isError = true
+                    )
                 }
             } finally {
                 _profileScreenUIState.update {
@@ -155,7 +156,10 @@ class ProfileScreenViewModel(application: Application):AndroidViewModel(applicat
                 }
             } catch (e: Exception) {
                 _profileScreenUIState.update{
-                    it.copy (isLoading = false, errorMessage = "Error getting all users: ${e.message}")
+                    it.copy (
+                        isLoading = false,
+                        errorMessage = "Error getting all profiles: ${e.message}"
+                    )
                 }
             } finally {
                 _profileScreenUIState.update {
