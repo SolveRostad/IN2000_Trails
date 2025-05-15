@@ -37,7 +37,7 @@ class FavoritesScreenViewModel(
     init {
         viewModelScope.launch {
             try {
-                setUser()
+                setProfile()
                 getAllFavorites(profileRepository.getSelectedProfile().username)
                 getAllConvertedFavorites()
             } catch (e: Exception) {
@@ -75,7 +75,7 @@ class FavoritesScreenViewModel(
         }
     }
 
-    fun setUser() {
+    fun setProfile() {
         viewModelScope.launch {
             _favoriteScreenUIState.update {
                 it.copy(username = profileRepository.getSelectedProfile().username)
@@ -170,8 +170,8 @@ class FavoritesScreenViewModel(
                 it.copy(isLoading = true)
             }
             try {
-                val currentUser = profileRepository.getSelectedProfile()
-                val favoriteToRemove = Favorite(currentUser.username, id)
+                val currentProfile = profileRepository.getSelectedProfile()
+                val favoriteToRemove = Favorite(currentProfile.username, id)
                 favoriteRepository.deleteFavorite(favoriteToRemove)
 
                 _favoriteScreenUIState.update {
