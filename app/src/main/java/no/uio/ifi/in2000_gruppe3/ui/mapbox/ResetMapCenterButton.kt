@@ -32,10 +32,13 @@ fun ResetMapCenterButton(
             .size(38.dp)
             .clip(RoundedCornerShape(10.dp))
             .clickable {
-                mapboxViewModel.centerOnUserPosition()
-                homeScreenViewModel.fetchForecast(
-                    mapboxViewModel.mapboxUIState.value.latestUserPosition!!
-                )
+                if (mapboxViewModel.mapboxUIState.value.latestUserPosition != null) {
+                    mapboxViewModel.centerOnUserPosition()
+                    homeScreenViewModel.fetchForecast(
+                        mapboxViewModel.mapboxUIState.value.latestUserPosition!!
+                    )
+                    homeScreenViewModel.fetchAlerts()
+                }
             }
     ) {
         Icon(

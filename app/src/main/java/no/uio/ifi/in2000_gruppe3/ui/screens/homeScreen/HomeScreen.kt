@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen
 
 import android.Manifest
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
@@ -49,6 +50,7 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.chatbotScreen.OpenAIViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.favoriteScreen.FavoritesScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.hikeCardScreen.HikeScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities.ActivityScreenViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.profile.profileSelectScreen.ProfileScreenViewModel
 
 @Composable
 fun HomeScreen(
@@ -57,7 +59,8 @@ fun HomeScreen(
     hikeScreenViewModel: HikeScreenViewModel,
     mapboxViewModel: MapboxViewModel,
     openAIViewModel: OpenAIViewModel,
-    activityScreenViewModel : ActivityScreenViewModel,
+    profileScreenViewModel: ProfileScreenViewModel,
+    activityScreenViewModel: ActivityScreenViewModel,
     navController: NavHostController
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -65,7 +68,14 @@ fun HomeScreen(
 
     val locationPermissionRequest = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
-    ) {}
+    ) { permissions ->
+        when {
+            permissions[Manifest.permission.ACCESS_FINE_LOCATION] == false &&
+                    permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == false -> {
+                mapboxViewModel.setLoaderState(false)
+            }
+        }
+    }
 
     val targetSheetState by homeScreenViewModel.sheetStateTarget.collectAsState()
     val currentSheetOffset by homeScreenViewModel.currentSheetOffset.collectAsState()
@@ -80,6 +90,8 @@ fun HomeScreen(
             )
         )
     }
+
+    BackHandler { }
 
     Scaffold(
         bottomBar = { BottomBar(navController = navController) },
@@ -165,6 +177,7 @@ fun HomeScreen(
                         homeScreenViewModel = homeScreenViewModel,
                         hikeScreenViewModel = hikeScreenViewModel,
                         mapboxViewModel = mapboxViewModel,
+                        profileScreenViewModel = profileScreenViewModel,
                         navController = navController
                     )
                 }

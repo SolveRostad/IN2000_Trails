@@ -19,15 +19,13 @@ import no.uio.ifi.in2000_gruppe3.data.database.Activity as LogEntity
  *
  * Favorite
  * PN: [username, hikeId]
- * FN: username -> User
- *   username: User
- *   hikeId: String
- *   isSelected: Int
- *   personalHikeComment: String
+ * FN: username -> (Profile)username
+ *   username: String
+ *   hikeId: Int
  *
  * Activity
  * PN: [username, hikeId]
- * FN: username -> Profile
+ * FN: username -> (Profile)username
  *   username: String
  *   hikeId: Int
  *   adjustTimesWalked: Int
