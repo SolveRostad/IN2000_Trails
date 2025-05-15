@@ -65,7 +65,7 @@ class MapboxViewModel : ViewModel() {
                         }
                     }
                 } catch (e: Exception) {
-                    Log.e("SearchBarViewModel", "Error fetching suggestions", e)
+                    Log.e("MapboxViewModel", "updateSearchQuery: ${e.message}")
                 }
             }
         } else {
@@ -79,6 +79,7 @@ class MapboxViewModel : ViewModel() {
                 val detailsResponse = placeAutocomplete.select(suggestion)
                 val coordinates = detailsResponse.value!!.coordinate.coordinates()
                 val point = Point.fromLngLat(coordinates[0], coordinates[1])
+                centerOnPoint(point)
 
                 _mapboxUIState.update {
                     it.copy(
@@ -87,10 +88,8 @@ class MapboxViewModel : ViewModel() {
                         pointerCoordinates = point
                     )
                 }
-                updateSearchQuery("")
-                centerOnPoint(point)
             } catch (e: Exception) {
-                Log.e("SearchBarViewModel", "Error selecting place", e)
+                Log.e("MapboxViewModel", "getSelectedSearchResultPoint: ${e.message}")
             }
         }
     }
@@ -195,9 +194,7 @@ data class MapboxUIState(
     val centerOnUserTrigger: Long = 0L,
     val polylineAnnotations: List<PolylineAnnotationOptions>,
     val zoom: Double = 12.0,
-
     val searchResponse: List<PlaceAutocompleteSuggestion>,
     val searchQuery: String,
-
     val isLoading: Boolean = true
 )

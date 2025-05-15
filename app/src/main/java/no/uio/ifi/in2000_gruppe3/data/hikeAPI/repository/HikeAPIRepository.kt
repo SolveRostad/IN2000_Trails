@@ -30,10 +30,10 @@ class HikeAPIRepository(private val openAIViewModel: OpenAIViewModel) {
         val features = hikeAPIDatasource.getHikes(lat, lng, limit, featureType, minDistance)
         features.forEach { feature ->
             feature.color = getColor()
-            if (feature.properties.gradering.isNullOrBlank()) {
+            if (feature.properties.difficulty.isNullOrBlank()) {
                 generateDifficulty(feature)
             }
-            feature.difficultyInfo = getDifficultyInfo(feature.properties.gradering ?: "Ukjent")
+            feature.difficultyInfo = getDifficultyInfo(feature.properties.difficulty ?: "Ukjent")
 
             if (feature.properties.desc == null || feature.properties.desc!!.contains("_")) {
                 val cachedName = generatedNames[feature.properties.fid]
@@ -100,16 +100,16 @@ class HikeAPIRepository(private val openAIViewModel: OpenAIViewModel) {
             distance < 10000 -> "R"
             else -> "S"
         }
-        feature.properties.gradering = difficulty
+        feature.properties.difficulty = difficulty
     }
 
-    private fun getDifficultyInfo(gradering: String): DifficultyInfo {
-        return when (gradering) {
+    private fun getDifficultyInfo(difficulty: String): DifficultyInfo {
+        return when (difficulty) {
             "G" -> DifficultyInfo("ENKEL", Color(0xFF4CAF50)) // Green
-            "B" -> DifficultyInfo("MIDDELS", Color(0xFFFFC107)) // Yellow/Amber
+            "B" -> DifficultyInfo("MIDDELS", Color(0xFFFFC107)) // Yellow
             "R" -> DifficultyInfo("KREVENDE", Color(0xFFFF9800)) // Orange
             "S" -> DifficultyInfo("EKSPERT", Color(0xFFF44336)) // Red
-            else -> DifficultyInfo("UKJENT", Color(0xFF757575)) // Medium Gray
+            else -> DifficultyInfo("UKJENT", Color(0xFF757575)) // Gray
         }
     }
 
@@ -118,10 +118,10 @@ class HikeAPIRepository(private val openAIViewModel: OpenAIViewModel) {
         val features = hikeAPIDatasource.getHikesById(hikeIdStringList, position)
         features.forEach { feature ->
             feature.color = getColor()
-            if (feature.properties.gradering.isNullOrBlank()) {
+            if (feature.properties.difficulty.isNullOrBlank()) {
                 generateDifficulty(feature)
             }
-            feature.difficultyInfo = getDifficultyInfo(feature.properties.gradering ?: "Ukjent")
+            feature.difficultyInfo = getDifficultyInfo(feature.properties.difficulty ?: "Ukjent")
         }
         return features
     }

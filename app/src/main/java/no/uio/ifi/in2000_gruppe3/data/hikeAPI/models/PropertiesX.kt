@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000_gruppe3.data.hikeAPI.models
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -12,5 +13,6 @@ data class PropertiesX(
     val name: String,
     val src: String,
     val type: String,
-    var gradering: String?,
+    @SerialName("gradering")
+    var difficulty: String?,
 )

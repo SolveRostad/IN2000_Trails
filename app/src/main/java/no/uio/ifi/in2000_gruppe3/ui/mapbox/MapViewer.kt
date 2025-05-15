@@ -115,7 +115,7 @@ fun MapViewer(
 
             mapView.location.addOnIndicatorPositionChangedListener { point ->
                 favoritesViewModel.updateUserLocationFromMapbox()
-                activityScreenViewModel.updateUserLocationFromMapbox()
+                activityScreenViewModel.updateProfileLocationFromMapbox()
                 mapboxViewModel.updateLatestUserPosition(point)
                 if (firstInit.value) {
                     homeScreenViewModel.fetchForecast(point)
