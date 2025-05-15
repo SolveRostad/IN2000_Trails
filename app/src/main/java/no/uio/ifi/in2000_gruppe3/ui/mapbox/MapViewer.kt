@@ -3,17 +3,17 @@ package no.uio.ifi.in2000_gruppe3.ui.mapbox
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
-import com.mapbox.geojson.Point
-import com.mapbox.maps.dsl.cameraOptions
 import com.mapbox.maps.extension.compose.MapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
-import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
 import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotationGroup
 import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotationGroupState
@@ -21,8 +21,6 @@ import com.mapbox.maps.extension.compose.annotation.rememberIconImage
 import com.mapbox.maps.extension.compose.style.MapStyle
 import com.mapbox.maps.plugin.locationcomponent.createDefault2DPuck
 import com.mapbox.maps.plugin.locationcomponent.location
-import com.mapbox.maps.plugin.viewport.data.DefaultViewportTransitionOptions
-import com.mapbox.maps.plugin.viewport.data.FollowPuckViewportStateOptions
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.data.date.getTodaysDay
 import no.uio.ifi.in2000_gruppe3.ui.bottomSheetDrawer.SheetDrawerDetent
@@ -43,7 +41,13 @@ fun MapViewer(
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
     val focusManager = LocalFocusManager.current
     val polylineAnnotationGroupState = PolylineAnnotationGroupState()
-    val mapViewportState = rememberMapViewportState()
+    val mapViewportState = mapboxViewModel.mapViewportState
+    val firstInit = remember { mutableStateOf(true) }
+
+    DisposableEffect(Unit) {
+        mapboxViewModel.centerOnUserPosition(animationDuration = 0)
+        onDispose { }
+    }
 
     LaunchedEffect(homeScreenUIState.hikes) {
         mapboxViewModel.updatePolylineAnnotationsFromFeatures(homeScreenUIState.hikes)
@@ -51,53 +55,16 @@ fun MapViewer(
 
     LaunchedEffect(mapboxUIState.pointerCoordinates) {
         if (mapboxUIState.pointerCoordinates != null) {
-            mapViewportState.easeTo(
-                cameraOptions {
-                    zoom(mapboxUIState.zoom)
-                    center(mapboxUIState.pointerCoordinates.let { point ->
-                        Point.fromLngLat(
-                            point!!.longitude(),
-                            point.latitude() - 0.012
-                        ) // Adjust bc. bottombar
-                    })
-                    pitch(0.0)
-                    bearing(0.0)
-                }
-            )
-
-            // Only fetch hikes if the flag is true
-            if (mapboxUIState.shouldFetchHikes) {
-                mapboxViewModel.setLoaderState(isLoading = true)
-                homeScreenViewModel.fetchHikes(
-                    mapboxUIState.pointerCoordinates!!.latitude(),
-                    mapboxUIState.pointerCoordinates!!.longitude(),
-                    5,
-                    "Fotrute",
-                    500
-                )
-                mapboxViewModel.resetShouldFetchHikes()
-
-                homeScreenViewModel.fetchForecast(mapboxUIState.pointerCoordinates!!)
-                homeScreenViewModel.fetchAlerts()
-                hikeScreenViewModel.updateSelectedDay(getTodaysDay())
-            }
+            homeScreenViewModel.fetchForecast(mapboxUIState.pointerCoordinates!!)
+            homeScreenViewModel.fetchAlerts()
+            hikeScreenViewModel.updateSelectedDay(getTodaysDay())
         }
     }
 
     LaunchedEffect(mapboxUIState.centerOnUserTrigger) {
-        mapViewportState.transitionToFollowPuckState(
-            followPuckViewportStateOptions = FollowPuckViewportStateOptions.Builder()
-                .zoom(mapboxUIState.zoom)
-                .pitch(0.0)
-                .build(),
-            defaultTransitionOptions = DefaultViewportTransitionOptions.Builder()
-                .maxDurationMs(500)
-                .build()
-        ) {
-            mapboxViewModel.setLoaderState(false)
-            mapViewportState.idle()
-            homeScreenViewModel.fetchAlerts()
-            homeScreenViewModel.fetchForecast(mapboxUIState.latestUserPosition!!)
+        homeScreenViewModel.fetchAlerts()
+        mapboxUIState.latestUserPosition?.let {
+            homeScreenViewModel.fetchForecast(it)
         }
     }
 
@@ -106,6 +73,15 @@ fun MapViewer(
         mapViewportState = mapViewportState,
         style = { MapStyle(mapboxUIState.mapStyle) },
         onMapClickListener = { point ->
+            mapboxViewModel.setLoaderState(true)
+            mapboxViewModel.centerOnPoint(point)
+            homeScreenViewModel.fetchHikes(
+                point.latitude(),
+                point.longitude(),
+                5,
+                "Fotrute",
+                500
+            )
             focusManager.clearFocus()
             mapboxViewModel.updatePointerCoordinates(point)
             true
@@ -141,6 +117,10 @@ fun MapViewer(
                 favoritesViewModel.updateUserLocationFromMapbox()
                 activityScreenViewModel.updateUserLocationFromMapbox()
                 mapboxViewModel.updateLatestUserPosition(point)
+                if (firstInit.value) {
+                    homeScreenViewModel.fetchForecast(point)
+                    firstInit.value = false
+                }
             }
             mapView.mapboxMap.subscribeCameraChanged {
                 if (homeScreenViewModel.sheetStateTarget.value.value.identifier != "hidden") {

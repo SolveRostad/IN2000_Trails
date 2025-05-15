@@ -72,7 +72,7 @@ Vi bruker API nivå 36, vi har valgt å bruke dette API nivået fordi det er den
 ikke er i beta.
 Vi har da tilgang til de nyeste funksjonene, bedre ytelse i tilegg til forbedret sikkerhet.
 I tillegg har vi hatt problemener med å emulator posisjon på tidligere API nivåer.
-Dersom du kjører appen på et tidligere API-nivå kan det oppstå problemer med bruker lokasjon.
+Dersom du kjører appen på et tidligere API-nivå kan det oppstå problemer med bruker posisjon.
 
 # Vedlikehold og videreutvikling
 

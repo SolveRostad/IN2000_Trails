@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000_gruppe3.ui.hikeCard
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -9,6 +8,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -50,15 +51,17 @@ fun HikeCardMapPreview(
 
     val zoom = calculateIdealZoom(bbox)
 
-    val staticMapUrl = createStaticMapUrl(
-        center = center,
-        zoom = zoom,
-        lineCoordinates = coordinates,
-        uiState = mapboxUIState,
-        feature = feature
-    )
-
-    Log.d("HikeCardMapPreview", "Static map URL: $staticMapUrl")
+    val staticMapUrl = remember {
+        mutableStateOf(
+            createStaticMapUrl(
+                center = center,
+                zoom = zoom,
+                lineCoordinates = coordinates,
+                uiState = mapboxUIState,
+                feature = feature
+            )
+        )
+    }
 
     Surface(
         modifier = Modifier
@@ -78,7 +81,7 @@ fun HikeCardMapPreview(
         // Static image of map
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(staticMapUrl)
+                .data(staticMapUrl.value)
                 .crossfade(true)
                 .build(),
             contentDescription = "Map preview",
