@@ -29,50 +29,64 @@ class FavoritesScreenViewModel(
         FavoriteScreenUIState(
             favorites = emptyList(),
             userLocation = Point.fromLngLat(10.441649, 59.542819),
+            isLoading = true
         )
     )
     val favoriteScreenUIState: StateFlow<FavoriteScreenUIState> =
         _favoriteScreenUIState.asStateFlow()
 
     init {
+        loadFavoritesSequentially()
+    }
+
+    private fun loadFavoritesSequentially() {
         viewModelScope.launch {
             try {
-                setProfile()
-                getAllFavorites(profileRepository.getSelectedProfile().username)
-                getAllConvertedFavorites()
+                _favoriteScreenUIState.update {
+                    it.copy(isLoading = true)
+                }
+
+                // Get the selected profile
+                val profile = profileRepository.getSelectedProfile()
+                _favoriteScreenUIState.update {
+                    it.copy(username = profile.username)
+                }
+
+                // Get all favorites
+                val favorites = getAllFavorites(profile.username)
+                _favoriteScreenUIState.update {
+                    it.copy(favorites = favorites)
+                }
+
+                // Convert favorites to features
+                if (favorites.isNotEmpty()) {
+                    val favoriteFeatures = hikeAPIRepository.getHikesById(
+                        favorites,
+                        _favoriteScreenUIState.value.userLocation
+                    )
+                    _favoriteScreenUIState.update {
+                        it.copy(convertedFavorites = favoriteFeatures, isLoading = false)
+                    }
+                } else {
+                    _favoriteScreenUIState.update {
+                        it.copy(isLoading = false)
+                    }
+                }
             } catch (e: Exception) {
-                Log.e("FavoritesViewModel", "Error initializing data: ${e.message}")
+                Log.e("FavoritesViewModel", "loadFavoritesSequentially: ${e.message}")
+                _favoriteScreenUIState.update {
+                    it.copy(
+                        isLoading = false,
+                        isError = true,
+                        errorMessage = e.message.toString()
+                    )
+                }
             }
         }
     }
 
     fun loadFavorites() {
-        viewModelScope.launch {
-            _favoriteScreenUIState.update {
-                it.copy(isLoading = true)
-            }
-            try {
-                val username = profileRepository.getSelectedProfile().username
-                val updatedFavorites = getAllFavorites(username)
-                getAllConvertedFavorites()
-
-                _favoriteScreenUIState.update {
-                    it.copy(favorites = updatedFavorites)
-                }
-            } catch (e: Exception) {
-                Log.e("FavoritesViewModel", "loadFavorites: ${e.message}")
-                _favoriteScreenUIState.update {
-                    it.copy(
-                        isError = true,
-                        errorMessage = e.message.toString()
-                    )
-                }
-            } finally {
-                _favoriteScreenUIState.update {
-                    it.copy(isLoading = false)
-                }
-            }
-        }
+        loadFavoritesSequentially()
     }
 
     fun setProfile() {
@@ -84,7 +98,7 @@ class FavoritesScreenViewModel(
     }
 
     fun updateUserLocationFromMapbox() {
-        val latestPosition = mapboxViewModel!!.mapboxUIState.value.latestUserPosition
+        val latestPosition = mapboxViewModel?.mapboxUIState?.value?.latestUserPosition
         if (latestPosition != null) {
             updateUserLocation(latestPosition)
         }
@@ -105,35 +119,6 @@ class FavoritesScreenViewModel(
         return _favoriteScreenUIState.value.favorites.contains(feature.properties.fid)
     }
 
-    fun getAllConvertedFavorites() {
-        viewModelScope.launch {
-            _favoriteScreenUIState.update {
-                it.copy(isLoading = true)
-            }
-            try {
-                val favoriteFeatures: List<Feature> = hikeAPIRepository.getHikesById(
-                    _favoriteScreenUIState.value.favorites,
-                    _favoriteScreenUIState.value.userLocation
-                )
-                _favoriteScreenUIState.update {
-                    it.copy(convertedFavorites = favoriteFeatures)
-                }
-            } catch (e: Exception) {
-                Log.e("FavoritesViewModel", "getAllConvertedFavorites: ${e.message}")
-                _favoriteScreenUIState.update {
-                    it.copy(
-                        isError = true,
-                        errorMessage = e.message.toString()
-                    )
-                }
-            } finally {
-                _favoriteScreenUIState.update {
-                    it.copy(isLoading = false)
-                }
-            }
-        }
-    }
-
     fun addFavorite(id: Int) {
         viewModelScope.launch {
             _favoriteScreenUIState.update {
@@ -143,10 +128,18 @@ class FavoritesScreenViewModel(
                 val currentProfile = profileRepository.getSelectedProfile()
                 val newFavorite = Favorite(currentProfile.username, id)
                 favoriteRepository.addFavorite(newFavorite)
+
+                val updatedFavorites = _favoriteScreenUIState.value.favorites + newFavorite.hikeId
                 _favoriteScreenUIState.update {
-                    it.copy(
-                        favorites = _favoriteScreenUIState.value.favorites + newFavorite.hikeId
-                    )
+                    it.copy(favorites = updatedFavorites)
+                }
+
+                val favoriteFeatures = hikeAPIRepository.getHikesById(
+                    updatedFavorites,
+                    _favoriteScreenUIState.value.userLocation
+                )
+                _favoriteScreenUIState.update {
+                    it.copy(convertedFavorites = favoriteFeatures)
                 }
             } catch (e: Exception) {
                 Log.e("FavoritesViewModel", "addFavorites: ${e.message}")
@@ -174,10 +167,17 @@ class FavoritesScreenViewModel(
                 val favoriteToRemove = Favorite(currentProfile.username, id)
                 favoriteRepository.deleteFavorite(favoriteToRemove)
 
+                val updatedFavorites = _favoriteScreenUIState.value.favorites - favoriteToRemove.hikeId
                 _favoriteScreenUIState.update {
-                    it.copy(
-                        favorites = _favoriteScreenUIState.value.favorites - favoriteToRemove.hikeId
-                    )
+                    it.copy(favorites = updatedFavorites)
+                }
+
+                val favoriteFeatures = hikeAPIRepository.getHikesById(
+                    updatedFavorites,
+                    _favoriteScreenUIState.value.userLocation
+                )
+                _favoriteScreenUIState.update {
+                    it.copy(convertedFavorites = favoriteFeatures)
                 }
             } catch (e: Exception) {
                 Log.e("FavoritesViewModel", "deleteFavorites: ${e.message}")
