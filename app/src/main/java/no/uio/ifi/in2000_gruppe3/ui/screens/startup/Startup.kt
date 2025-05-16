@@ -15,7 +15,7 @@ fun StartupScreen(
     val profileUIState by profileScreenViewModel.profileScreenUIState.collectAsState()
 
     LaunchedEffect(key1 = true) {
-        delay(10)
+        delay(100)
         onCheckComplete(profileUIState.isLoggedIn)
     }
 }
