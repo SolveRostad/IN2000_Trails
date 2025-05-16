@@ -14,7 +14,7 @@ Team 3 har gjennom prosjektet i emnet [IN2000 - Software Engineering med prosjek
 
 * [Dokumentasjon](#dokumentasjon)
 * [Hvordan kjøre appen](#hvordan-kjøre-appen)
-* [Biblioteker_og_rammeverk](#biblioteker-og-rammeverk)
+* [Biblioteker og rammeverk](#biblioteker-og-rammeverk)
 
 ***
 
