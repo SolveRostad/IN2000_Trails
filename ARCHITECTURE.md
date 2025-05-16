@@ -1,8 +1,6 @@
 # Introduksjon
 
-Dette dokumentet er ment for utviklere som skal vedlikeholde,
-videreutvikle eller sette seg inn i appen.
-Det gir en oversikt over arkitekturen som brukes i prosjektet.
+Dette dokumentet er ment for utviklere som skal vedlikeholde, videreutvikle eller sette seg inn i appen. Det gir en oversikt over arkitekturen som brukes i prosjektet slik at de kan fortsette å jobbe med samme “kodestil”/praksiser.
 
 # Arkitektur oversikt
 
@@ -71,7 +69,7 @@ kombinert med prinsipper fra UDF (Unidirectional Data Flow).
 Vi bruker API nivå 36, vi har valgt å bruke dette API nivået fordi det er den nyeste versjonen som
 ikke er i beta.
 Vi har da tilgang til de nyeste funksjonene, bedre ytelse i tilegg til forbedret sikkerhet.
-I tillegg har vi hatt problemener med å emulator posisjon på tidligere API nivåer.
+I tillegg har vi hatt problemer med å emulator posisjon på tidligere API nivåer.
 Dersom du kjører appen på et tidligere API-nivå kan det oppstå problemer med bruker posisjon.
 
 # Vedlikehold og videreutvikling
