@@ -45,7 +45,7 @@ Om du heller ønsker å laste ned zip-filen til prosjeketet er dette også mulig
 
 **Mapbox API og SDK:** ...
 
-**TurDB REST-API:** API-et er basert på data fra Geonorge (65 000+ ruter). Det brukes for å effektivt hente informasjon om turstier basert på geografiske koordinater, og vise denne dataen på kartet. Rutene som returneres til applikasjonen er automatisk tildelt en farge og vanskelighetsgrad. På grunn av ytelsesproblemer i emulatoren ved lokal prosessering, satte vi opp en egen Node.js-server, som ga opptil 50 ganger raskere responstid, dersom vi ser bort i fra tiden for DNS lookup og pakke sendingen. API-et kan du se [her](http://turdb.info.gf:3000/).
+**TurDB REST-API:** API-et er basert på data fra Geonorge (65 000+ ruter). Det brukes for å effektivt hente informasjon om turstier basert på geografiske koordinater, og vise denne dataen på kartet. Rutene som returneres til applikasjonen er automatisk tildelt en farge og vanskelighetsgrad. På grunn av ytelsesproblemer i emulatoren ved lokal prosessering, satte vi opp en egen Node.js-server, som ga opptil 50 ganger raskere responstid, dersom vi ser bort i fra tiden for DNS lookup og pakke sendingen. API-et kan du se [her](http://turdb.info.gf:3000/) eller under [Dokumentasjon](#dokumentasjon).
 
 **Open AI:** Under utviklingen har GPT-4o-modellen fra Azure OpenAI blitt brukt til å blant annet gi turrute anbefalinger til brukeren (både på forsiden og via chatbotten Ånund). Den har i tillegg blitt brukt til å generere informasjon om turrutene. OpenAI gir mer presise svar og kan håndtere flere tokens enn gratisversjonen av Gemini, som vi bruke mens vi ventet på tilgang til OpenAI.
 
