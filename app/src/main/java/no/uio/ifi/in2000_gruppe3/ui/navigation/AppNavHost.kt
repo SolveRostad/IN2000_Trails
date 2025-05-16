@@ -2,9 +2,10 @@ package no.uio.ifi.in2000_gruppe3.ui.navigation
 
 import android.app.Application
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -29,6 +30,7 @@ import no.uio.ifi.in2000_gruppe3.ui.screens.profile.activities.ActivityScreenVie
 import no.uio.ifi.in2000_gruppe3.ui.screens.profile.profileSelectScreen.ProfileScreenViewModel
 import no.uio.ifi.in2000_gruppe3.ui.screens.profile.profileSelectScreen.ProfileSelectScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.settings.ProfileSettingsScreen
+import no.uio.ifi.in2000_gruppe3.ui.screens.startup.StartupScreen
 import no.uio.ifi.in2000_gruppe3.ui.screens.welcome.WelcomeScreen
 
 @Composable
@@ -54,21 +56,33 @@ fun AppNavHost() {
         )
     )
 
-    val profileUIState by profileScreenViewModel.profileScreenUIState.collectAsState()
+    var isInitialCheckDone by remember { mutableStateOf(false) }
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Welcome.route
+        startDestination = Screen.Startup.route
     ) {
-        // Welcome screen
-        composable(Screen.Welcome.route) {
-            LaunchedEffect(profileUIState.isLoggedIn) {
-                if (profileUIState.isLoggedIn) {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Welcome.route) { inclusive = true }
+        // Startup screen waiting to check if user is logged in
+        composable(Screen.Startup.route) {
+            StartupScreen (
+                profileScreenViewModel = profileScreenViewModel,
+                onCheckComplete = { isLoggedIn ->
+                    isInitialCheckDone = true
+                    if (isLoggedIn) {
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Home.route) { inclusive = true }
+                        }
+                    } else {
+                        navController.navigate(Screen.Welcome.route) {
+                            popUpTo(Screen.Welcome.route) { inclusive = true }
+                        }
                     }
                 }
-            }
+            )
+        }
+
+        // Welcome screen
+        composable(Screen.Welcome.route) {
             WelcomeScreen(
                 navController = navController
             )
