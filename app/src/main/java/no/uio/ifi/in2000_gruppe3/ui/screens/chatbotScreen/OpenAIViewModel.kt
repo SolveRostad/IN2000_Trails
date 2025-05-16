@@ -216,7 +216,7 @@ class OpenAIViewModel: ViewModel() {
                         }
                     }
                 } catch (e: Exception) {
-                    Log.e("OpenAIViewModel", "getRecommendedHikes: Error parsing coordinates", e)
+                    Log.e("OpenAIViewModel", "getRecommendedHikes: Error parsing coordinates: ${e.message}")
                 }
             }
         } else {

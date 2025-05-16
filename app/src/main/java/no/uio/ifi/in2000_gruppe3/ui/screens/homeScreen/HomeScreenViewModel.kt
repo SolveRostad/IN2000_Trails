@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mapbox.geojson.Point
@@ -80,10 +81,11 @@ class HomeScreenViewModel() : ViewModel() {
                     )
                 }
             } catch (e: Exception) {
+                Log.e("HomeScreenViewModel", "fetchHikes: ${e.message}")
                 _homeScreenUIState.update {
                     it.copy(
                         isError = true,
-                        errorMessage = e.message ?: "Error fetching hikes"
+                        errorMessage = e.message.toString()
                     )
                 }
             } finally {
@@ -109,10 +111,11 @@ class HomeScreenViewModel() : ViewModel() {
                     )
                 }
             } catch (e: Exception) {
+                Log.e("HomeScreenViewModel", "fetchForecast: ${e.message}")
                 _homeScreenUIState.update {
                     it.copy(
                         isError = true,
-                        errorMessage = e.message ?: "Error fetching forecast"
+                        errorMessage = e.message.toString()
                     )
                 }
             } finally {
@@ -137,10 +140,11 @@ class HomeScreenViewModel() : ViewModel() {
                     )
                 }
             } catch (e: Exception) {
+                Log.e("HomeScreenViewModel", "fetchAlerts: ${e.message}")
                 _homeScreenUIState.update {
                     it.copy(
                         isError = true,
-                        errorMessage = e.message ?: "Error fetching alerts"
+                        errorMessage = e.message.toString()
                     )
                 }
             } finally {

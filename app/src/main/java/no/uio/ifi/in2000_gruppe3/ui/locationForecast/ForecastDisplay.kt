@@ -76,7 +76,7 @@ fun ForecastDisplay(
 
 fun getWeatherIconUrl(symbolCode: String): String {
     if (symbolCode.isEmpty()) {
-        Log.d("ForecastDisplay", "Symbol code error")
+        Log.d("ForecastDisplay", "getWeatherIconUrl: Symbol code error")
         return "null"
     }
     return "https://raw.githubusercontent.com/metno/weathericons/refs/heads/main/weather/png/$symbolCode.png"

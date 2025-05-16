@@ -27,7 +27,7 @@ class MetAlertsDatasource {
             if (connection.responseCode == HttpURLConnection.HTTP_OK) {
                 val response = connection.inputStream.bufferedReader().readText()
                 val json = Json { ignoreUnknownKeys = true }
-                Log.d("MetAlertsDatasource", "API Response: $response")
+                Log.d("MetAlertsDatasource", "Active alerts: $response")
 
                 // Deserialize the response to a MetAlerts object
                 json.decodeFromString<MetAlerts>(response)
@@ -35,7 +35,7 @@ class MetAlertsDatasource {
                 null
             }
         } catch (e: Exception) {
-            Log.e("MetAlertsDatasource", "Feil ved parsing av JSON: ${e.message}")
+            Log.e("MetAlertsDatasource", "getMetAlerts: ${e.message}")
             null
         }
     }

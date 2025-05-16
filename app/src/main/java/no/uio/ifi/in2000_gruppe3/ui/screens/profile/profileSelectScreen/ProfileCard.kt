@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000_gruppe3.ui.screens.profile.profileSelectScreen
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -67,7 +66,6 @@ fun ProfileCard(
         ),
         onClick = {
             expandedProfileId = if (expandedProfileId == profile.username) null else profile.username
-            Log.d("UserScreen", "Clicked on profile: ${profile.username}")
         }
     ) {
         Row(
@@ -123,7 +121,6 @@ fun ProfileCard(
             ) {
                 Button(
                     onClick = {
-                        Log.d("UserScreen", "Selected profile: ${profile.username}")
                         profileScreenViewModel.selectProfile(profile.username)
                         expandedProfileId = null
                         navController.navigate(Screen.Profile.route)

@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000_gruppe3.data.activity.ActivityRepository
+import no.uio.ifi.in2000_gruppe3.data.database.Activity
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.models.Feature
 import no.uio.ifi.in2000_gruppe3.data.hikeAPI.repository.HikeAPIRepository
 import no.uio.ifi.in2000_gruppe3.data.profile.repository.ProfileRepository
@@ -32,10 +33,10 @@ class ActivityScreenViewModel(
     init {
         viewModelScope.launch {
             try {
-                setUser()
+                setProfile()
                 getConvertedActivities()
             } catch (e: Exception) {
-                Log.e("LogScreenViewModel", "Error initializing data: ${e.message}")
+                Log.e("ActivityScreenViewModel", "Error initializing data: ${e.message}")
             }
         }
     }
@@ -46,21 +47,21 @@ class ActivityScreenViewModel(
                 it.copy(isLoading = true)
             }
             try {
-                val username = profileRepository.getSelectedUser().username
+                val username = profileRepository.getSelectedProfile().username
                 val updatedLog = activityRepository.getAllLogs(username)
+                getConvertedActivities()
 
                 _activityScreenUIState.update {
                     it.copy(hikeLog = updatedLog)
                 }
-
-                Log.d("LogScreenViewModel", "Fetched log for user: ${username}: ${_activityScreenUIState.value.hikeLog}")
-                getConvertedActivities()
-
             } catch (e: Exception) {
+                Log.e("ActivityScreenViewModel", "loadActivities: ${e.message}")
                 _activityScreenUIState.update {
-                    it.copy(isError = true, errorMessage = e.message.toString())
+                    it.copy(
+                        isError = true,
+                        errorMessage = e.message.toString()
+                    )
                 }
-                Log.e("LogScreenViewModel", "Error loading log: ${e.message}")
             } finally {
                 _activityScreenUIState.update {
                     it.copy(isLoading = false)
@@ -69,16 +70,16 @@ class ActivityScreenViewModel(
         }
     }
 
-    fun setUser() {
+    fun setProfile() {
         viewModelScope.launch {
             _activityScreenUIState.update {
-                it.copy(username = profileRepository.getSelectedUser().username)
+                it.copy(username = profileRepository.getSelectedProfile().username)
             }
             try {
-                val selectedUser = profileRepository.getSelectedUser()
+                val selectedProfile = profileRepository.getSelectedProfile()
                 _activityScreenUIState.update {
                     it.copy(
-                        username = selectedUser.username,
+                        username = selectedProfile.username,
                         hikeLog = emptyList(),
                         hikeTimesWalked = emptyMap(),
                         hikeNotes = emptyMap(),
@@ -89,11 +90,11 @@ class ActivityScreenViewModel(
                     )
                 }
 
-                val userLogs = activityRepository.getAllLogs(selectedUser.username)
+                val profileLogs = activityRepository.getAllLogs(selectedProfile.username)
 
                 _activityScreenUIState.update {
                     it.copy(
-                        hikeLog = userLogs,
+                        hikeLog = profileLogs,
                         isLoading = false
                     )
                 }
@@ -101,16 +102,20 @@ class ActivityScreenViewModel(
                 getConvertedActivities()
                 getTotalTimesWalked()
 
-                userLogs.forEach { hikeId ->
+                profileLogs.forEach { hikeId ->
                     getTimesWalkedForHike(hikeId)
                     getNotesForHike(hikeId)
                 }
 
                 calculateTotalDistance()
             } catch (e: Exception) {
-                Log.e("LogScreenViewModel", "Error setting user: ${e.message}")
+                Log.e("ActivityScreenViewModel", "setProfile: ${e.message}")
                 _activityScreenUIState.update {
-                    it.copy(isLoading = false, isError = true, errorMessage = e.message ?: "Unknown error")
+                    it.copy(
+                        isLoading = false,
+                        isError = true,
+                        errorMessage = e.message.toString()
+                    )
                 }
             } finally {
                 _activityScreenUIState.update {
@@ -120,16 +125,16 @@ class ActivityScreenViewModel(
         }
     }
 
-    fun updateUserLocationFromMapbox() {
+    fun updateProfileLocationFromMapbox() {
         val latestPosition = mapboxViewModel.mapboxUIState.value.latestUserPosition
-        if(latestPosition != null) {
-            updateUserLocation(latestPosition)
+        if (latestPosition != null) {
+            updateProfileLocation(latestPosition)
         }
     }
 
-    private fun updateUserLocation(point: Point) {
+    private fun updateProfileLocation(point: Point) {
         _activityScreenUIState.update {
-            it.copy(userLocation = point)
+            it.copy(profileLocation = point)
         }
     }
 
@@ -141,16 +146,18 @@ class ActivityScreenViewModel(
             try {
                 val logFeatures: List<Feature> = hikeAPIRepository.getHikesById(
                     _activityScreenUIState.value.hikeLog,
-                    _activityScreenUIState.value.userLocation
+                    _activityScreenUIState.value.profileLocation
                 )
                 _activityScreenUIState.update {
                     it.copy(convertedLog = logFeatures)
                 }
                 calculateTotalDistance()
-                Log.d("LogScreenViewModel", "Fetched converted log: $logFeatures")
             } catch (e: Exception) {
                 _activityScreenUIState.update {
-                    it.copy(isError = true, errorMessage = e.message.toString())
+                    it.copy(
+                        isError = true,
+                        errorMessage = e.message.toString()
+                    )
                 }
             } finally {
                 _activityScreenUIState.update {
@@ -166,9 +173,8 @@ class ActivityScreenViewModel(
                 it.copy(isLoading = true)
             }
             try {
-                val currentUser = profileRepository.getSelectedUser()
-                val newActivity = no.uio.ifi.in2000_gruppe3.data.database.Activity(currentUser.username, hikeId)
-                Log.d("LogScreenViewModel", "Adding log: $newActivity")
+                val currentProfile = profileRepository.getSelectedProfile()
+                val newActivity = Activity(currentProfile.username, hikeId)
                 activityRepository.addLog(newActivity)
                 _activityScreenUIState.update {
                     it.copy(
@@ -176,8 +182,12 @@ class ActivityScreenViewModel(
                     )
                 }
             } catch (e: Exception) {
+                Log.e("ActivityScreenViewModel", "addToActivityLog: ${e.message}")
                 _activityScreenUIState.update {
-                    it.copy(isError = true, errorMessage = e.message.toString())
+                    it.copy(
+                        isError = true,
+                        errorMessage = e.message.toString()
+                    )
                 }
             } finally {
                 _activityScreenUIState.update {
@@ -193,7 +203,7 @@ class ActivityScreenViewModel(
                 it.copy(isLoading = true)
             }
             try {
-                val newActivity = no.uio.ifi.in2000_gruppe3.data.database.Activity(
+                val newActivity = Activity(
                     _activityScreenUIState.value.username,
                     hikeId
                 )
@@ -205,9 +215,12 @@ class ActivityScreenViewModel(
                     )
                 }
             } catch (e: Exception) {
-                Log.e("LogScreenViewModel", "Error fetching Activity: ${e.message}")
+                Log.e("ActivityScreenViewModel", "removeFromActivityLog: ${e.message}")
                 _activityScreenUIState.update {
-                    it.copy(isError = true, errorMessage = e.message.toString())
+                    it.copy(
+                        isError = true,
+                        errorMessage = e.message.toString()
+                    )
                 }
             } finally {
                 _activityScreenUIState.update {
@@ -228,9 +241,12 @@ class ActivityScreenViewModel(
                     state.copy(hikeNotes = state.hikeNotes + (hikeId to notes))
                 }
             } catch (e: Exception) {
-                Log.e("LogScreenViewModel", "Error adding notes to log: ${e.message}")
+                Log.e("ActivityScreenViewModel", "addNotesToActivityLog: ${e.message}")
                 _activityScreenUIState.update {
-                    it.copy(isError = true, errorMessage = e.message.toString())
+                    it.copy(
+                        isError = true,
+                        errorMessage = e.message.toString()
+                    )
                 }
             } finally {
                 _activityScreenUIState.update {
@@ -253,9 +269,12 @@ class ActivityScreenViewModel(
                     it.copy(hikeTimesWalked = it.hikeTimesWalked + (hikeId to updatedTimesWalked))
                 }
             } catch (e: Exception) {
-                Log.e("LogScreenViewModel", "Error adjusting times walked: ${e.message}")
+                Log.e("LogScreenViewModel", "adjustTimesWalked: ${e.message}")
                 _activityScreenUIState.update {
-                    it.copy(isError = true, errorMessage = e.message.toString())
+                    it.copy(
+                        isError = true,
+                        errorMessage = e.message.toString()
+                    )
                 }
             } finally {
                 _activityScreenUIState.update {
@@ -276,9 +295,12 @@ class ActivityScreenViewModel(
                     state.copy(hikeNotes = state.hikeNotes + (hikeId to notes))
                 }
             } catch (e: Exception) {
-                Log.e("LogScreenViewModel", "Error fetching notes for hike: ${e.message}")
+                Log.e("LogScreenViewModel", "getNotesForHike: ${e.message}")
                 _activityScreenUIState.update {
-                    it.copy(isError = true, errorMessage = e.message.toString())
+                    it.copy(
+                        isError = true,
+                        errorMessage = e.message.toString()
+                    )
                 }
             } finally {
                 _activityScreenUIState.update {
@@ -298,9 +320,12 @@ class ActivityScreenViewModel(
                 val total = activityRepository.getTotalTimesWalked(username)
                 _activityScreenUIState.update { it.copy(hikesDone = total) }
             } catch (e: Exception) {
-                Log.e("LogScreenViewModel", "Error fetching times walked: ${e.message}")
+                Log.e("LogScreenViewModel", "getTotalTimesWalked: ${e.message}")
                 _activityScreenUIState.update {
-                    it.copy(isError = true, errorMessage = e.message.toString())
+                    it.copy(
+                        isError = true,
+                        errorMessage = e.message.toString()
+                    )
                 }
             } finally {
                 _activityScreenUIState.update {
@@ -322,8 +347,12 @@ class ActivityScreenViewModel(
                     it.copy(hikeTimesWalked = it.hikeTimesWalked + (hikeId to timesWalked))
                 }
             } catch(e: Exception) {
+                Log.e("ActivityScreenViewModel", "getTimesWalkedForHike: ${e.message}")
                 _activityScreenUIState.update {
-                    it.copy(isError = true, errorMessage = e.message.toString())
+                    it.copy(
+                        isError = true,
+                        errorMessage = e.message.toString()
+                    )
                 }
             } finally {
                 _activityScreenUIState.update {
@@ -348,8 +377,12 @@ class ActivityScreenViewModel(
                     it.copy(totalDistance = totalDistance)
                 }
             } catch (e: Exception) {
+                Log.e("ActivityScreenViewModel", "calculateTotalDistance: ${e.message}")
                 _activityScreenUIState.update {
-                    it.copy(isError = true, errorMessage = e.message.toString())
+                    it.copy(
+                        isError = true,
+                        errorMessage = e.message.toString()
+                    )
                 }
             } finally {
                 _activityScreenUIState.update {
@@ -364,7 +397,7 @@ data class ActivityScreenUIState(
     val hikeNotes: Map<Int, String> = emptyMap(),
     val convertedLog: List<Feature> = emptyList(),
     val username: String = "",
-    val userLocation: Point = Point.fromLngLat(10.441649, 59.542819), // Default location (Oslo, Norway)
+    val profileLocation: Point = Point.fromLngLat(10.441649, 59.542819), // Default location (Oslo, Norway)
     val isLoading: Boolean = false,
     val errorMessage: String = "",
     val isError: Boolean = false,

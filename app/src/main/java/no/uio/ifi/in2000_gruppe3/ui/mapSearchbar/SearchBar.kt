@@ -31,9 +31,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000_gruppe3.R
 import no.uio.ifi.in2000_gruppe3.ui.mapbox.MapboxViewModel
+import no.uio.ifi.in2000_gruppe3.ui.screens.homeScreen.HomeScreenViewModel
 
 @Composable
 fun SearchBarForMap(
+    homeScreenViewModel: HomeScreenViewModel,
     mapboxViewModel: MapboxViewModel
 ) {
     val mapboxUIState by mapboxViewModel.mapboxUIState.collectAsState()
@@ -57,7 +59,8 @@ fun SearchBarForMap(
             .onKeyEvent { keyEvent ->
                 if (keyEvent.type == KeyEventType.KeyUp && keyEvent.key == Key.Enter && hasSuggestions) {
                     mapboxViewModel.getSelectedSearchResultPoint(
-                        suggestion = mapboxUIState.searchResponse.first()
+                        suggestion = mapboxUIState.searchResponse.first(),
+                        homeScreenViewModel = homeScreenViewModel
                     )
                     keyboardController?.hide()
                     focusManager.clearFocus()
@@ -72,7 +75,8 @@ fun SearchBarForMap(
             onDone = {
                 if (hasSuggestions) {
                     mapboxViewModel.getSelectedSearchResultPoint(
-                        suggestion = mapboxUIState.searchResponse.first()
+                        suggestion = mapboxUIState.searchResponse.first(),
+                        homeScreenViewModel = homeScreenViewModel
                     )
                     keyboardController?.hide()
                     focusManager.clearFocus()

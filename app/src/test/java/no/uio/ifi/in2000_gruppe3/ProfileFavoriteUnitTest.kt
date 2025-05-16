@@ -115,7 +115,7 @@ class ProfileFavoriteUnitTest {
             profileRepository.clearAllUsers()
             profileRepository.addUser(bruker1)
             profileRepository.selectProfile(bruker1.username)
-            selectedProfile = profileRepository.getSelectedUser()
+            selectedProfile = profileRepository.getSelectedProfile()
 
             assertEquals(selectedProfile.username, bruker1.username, "Bruker ble ikke valgt")
         }

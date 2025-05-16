@@ -30,7 +30,6 @@ For å kjøre appen må du ha Android Studio installert og tilgang på internett
 3. Videre trenger du URL-en til prosjektet, denne finner du ved å trykke på den grønne "code"-knappen på github siden til prosjektet.
 4. Kopier HTTPS URL-en. Skriv git clone etterfulgt av URL-en i terminalen og trykk enter. Det skal se slik ut: 
    ```git clone https://github.uio.no/IN2000-V25/team-3.git```
-
 5. Når nedlastningene er ferdig åpner du Android Studio og trykker på "open"
 6. Naviger til der du lagret prosjektet og velg den øverste prosjekmappen, og trykk "open"
 7. Når Android Studio har lastet inn prosjektet trykker du på den grønne "run"-knappen for å kjøre appen. Vi anbefaler å kjøre appen på API-nivå 36 fordi det har vært noen problemer med brukerposisjon på eldre API nivåer når applikasjonen kjøres i emulatoren. 
@@ -38,9 +37,9 @@ For å kjøre appen må du ha Android Studio installert og tilgang på internett
 
 Om du heller ønsker å laste ned zip-filen til prosjeketet er dette også mulig når du klikker på den grønne "code"-knappen på github siden til prosjektet. Deretter pakker du ut ZIP-filen på din pc/mac før du videre kan følge de samme stegene fra punkt 5.
 
-**MERK:** Vi har noen problemer med emulatorposisjonen der posisjonen til emulatoren først settes til et punkt i San Jose før den flyttes til riktig plassering. 
-Dette er IKKE et problem på fysiske enheter, og oppstod kun etter oppdatering av Android Studio. 
-Hvis du åpner appen og kartet ikke er sentrert på din posisjon, kan du trykke på sentreringsknappen til høyre på kartet for å flytte kartet til din posisjon.
+
+**MERK:** Vi har noen problemer med emulatorposisjonen der posisjonen til emulatoren først settes til et punkt i San Jose før den flyttes til riktig plassering. Dette er IKKE et problem på fysiske enheter, og oppstod kun etter oppdatering av Android Studio. Dette problemet er derimot løst dersom du kjører emulatoren på API-nivå 36.
+
 
 
 ## Biblioteker og rammeverk
