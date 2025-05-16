@@ -36,14 +36,14 @@ Om du heller ønsker å laste ned zip-filen til prosjeketet er dette også mulig
 **MERK:** Vi har noen problemer med emulatorposisjonen der posisjonen til emulatoren først settes til et punkt i San Jose før den flyttes til riktig plassering. Dette er IKKE et problem på fysiske enheter, og oppstod kun etter oppdatering av Android Studio. Vår løsning er å feste kameraet til brukerstedet i en kort stund før du kobler det fra igjen. Brukeren kan koble fra kameraet manuelt ved å flytte kartet. Hvis brukeren flytter kartet før kameraet er riktig posisjonert på brukerposisjonen, må de manuelt søke om kartet med Nyheter-knappen.
 
 ## Biblioteker og rammeverk
-**Språk:** Kotlin, **Byggverktøy:** Gradle
+**Språk:** Kotlin, **Brukergrensesnitt:** Jetpack Compose, **Byggverktøy:** Gradle
 
 ### API-er
 **MET(Meteorologisk Institutt) API-er:**
 - MET Location Forecast API: Brukes til å hente værdata for spesifikke geografiske koordinater. Det gir oss relevant værdata for den neste uken basert på disse koordinatene, som er viktig for å kunne vise temperatur og data for de ulike turene.
 - MET Alerts API: Brukes til å hente værvarsler og advarsler, som sterk vind eller fare for skogbrann, basert på brukerens gitte eller valgte lokasjon.
 
-**Mapbox API og SDK:** ...
+**Mapbox API:** Det er et bibliotek som tilbyr kart og stedstjenester. Vi har brukt det til å hente kartdata og generere statiske kartbilder, søke etter steder (via Autocomplete) og visualisere turruter fra TurDB. Andre inkluderte funksjoner i Mapbox er lokasjon og sanntidssporing, altså at brukeren kan se hvor de befinner seg på kartet i sanntid. Kartvisningen gjøres med en Mapbox Composable, som håndterer API-integrasjonen uten behov for egen Datasource eller Repository. Mapbox sine innebygde LineStrings gir oss ikke den kontrollen vi ønsket, så vi valgte å heller vise turrutene som Polylines via PolylineGroup.
 
 **TurDB REST-API:** API-et er basert på data fra Geonorge (65 000+ ruter). Det brukes for å effektivt hente informasjon om turstier basert på geografiske koordinater, og vise denne dataen på kartet. Rutene som returneres til applikasjonen er automatisk tildelt en farge og vanskelighetsgrad. På grunn av ytelsesproblemer i emulatoren ved lokal prosessering, satte vi opp en egen Node.js-server, som ga opptil 50 ganger raskere responstid, dersom vi ser bort i fra tiden for DNS lookup og pakke sendingen. API-et kan du se [her](http://turdb.info.gf:3000/) eller under [Dokumentasjon](#dokumentasjon).
 
