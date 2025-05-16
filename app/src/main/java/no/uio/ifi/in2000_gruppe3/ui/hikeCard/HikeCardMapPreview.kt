@@ -8,8 +8,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -51,17 +49,13 @@ fun HikeCardMapPreview(
 
     val zoom = calculateIdealZoom(bbox)
 
-    val staticMapUrl = remember {
-        mutableStateOf(
-            createStaticMapUrl(
+    val staticMapUrl = createStaticMapUrl(
                 center = center,
                 zoom = zoom,
                 lineCoordinates = coordinates,
                 uiState = mapboxUIState,
                 feature = feature
             )
-        )
-    }
 
     Surface(
         modifier = Modifier
@@ -81,7 +75,7 @@ fun HikeCardMapPreview(
         // Static image of map
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(staticMapUrl.value)
+                .data(staticMapUrl)
                 .crossfade(true)
                 .build(),
             contentDescription = "Map preview",
