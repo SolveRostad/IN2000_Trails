@@ -36,7 +36,7 @@ Om du heller ønsker å laste ned zip-filen til prosjeketet er dette også mulig
 **MERK:** Vi har noen problemer med emulatorposisjonen der posisjonen til emulatoren først settes til et punkt i San Jose før den flyttes til riktig plassering. Dette er IKKE et problem på fysiske enheter, og oppstod kun etter oppdatering av Android Studio. Vår løsning er å feste kameraet til brukerstedet i en kort stund før du kobler det fra igjen. Brukeren kan koble fra kameraet manuelt ved å flytte kartet. Hvis brukeren flytter kartet før kameraet er riktig posisjonert på brukerposisjonen, må de manuelt søke om kartet med Nyheter-knappen.
 
 ## Biblioteker og rammeverk
-**Språk:** Kotlin, Java, **Byggverktøy:** Gradle
+**Språk:** Kotlin, **Byggverktøy:** Gradle
 
 ### API-er
 **MET(Meteorologisk Institutt) API-er:**
