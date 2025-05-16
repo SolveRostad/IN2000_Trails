@@ -40,14 +40,14 @@ Om du heller ønsker å laste ned zip-filen til prosjeketet er dette også mulig
 
 ### API-er
 **MET(Meteorologisk Institutt) API-er:**
-- MET Location Forecast API: Brukes til å hente værdata for spesifikke geografiske koordinater. Det gir oss relevant værdata for den neste uken basert på koordinater, som er viktig for å kunne vise temperatur og data for de ulike turene.
-- MET Alerts API: Brukes til å hente værvarsler og advarsler, som sterk vind og fare for skogbrann, basert på brukerens valgte lokasjon.
+- MET Location Forecast API: Brukes til å hente værdata for spesifikke geografiske koordinater. Det gir oss relevant værdata for den neste uken basert på disse koordinatene, som er viktig for å kunne vise temperatur og data for de ulike turene.
+- MET Alerts API: Brukes til å hente værvarsler og advarsler, som sterk vind eller fare for skogbrann, basert på brukerens gitte eller valgte lokasjon.
 
-**Mapbox**...
+**Mapbox API og SDK:** ...
 
-**TurDB**...
+**TurDB REST-API:** API-et er basert på data fra Geonorge (65 000+ ruter). Det brukes for å effektivt hente informasjon om turstier basert på geografiske koordinater, og vise denne dataen på kartet. Rutene som returneres til applikasjonen er automatisk tildelt en farge og vanskelighetsgrad. På grunn av ytelsesproblemer i emulatoren ved lokal prosessering, satte vi opp en egen Node.js-server, som ga opptil 50 ganger raskere responstid, dersom vi ser bort i fra tiden for DNS lookup og pakke sendingen. API-et kan du se [her]([*http://turdb.info.gf:3000/](http://turdb.info.gf:3000/)* ).
 
-**OpenAI**...
+**Open AI:** Under utviklingen har GPT-4o-modellen fra Azure OpenAI blitt brukt til å blant annet gi turrute anbefalinger til brukeren (både på forsiden og via chatbotten Ånund). Den har i tillegg blitt brukt til å generere informasjon om turrutene. OpenAI gir mer presise svar og kan håndtere flere tokens enn gratisversjonen av Gemini, som vi bruke mens vi ventet på tilgang til OpenAI.
 
 ### Biblioteker
 **Coroutines** er et kotlin-bibliotek som brukes for asynkron programmering. Det gjør at det er mulig å skrive kode som ser synkron ut, men som kjøres i bakgrunnen, og dermed ikke blokkerer UI-tråden. Dette fører til at det ikke oppstår forsinkelser og appen kan kjøre mer effektivt. Eksempler på asynkrone oppgaver er nettverkskall og databaseoperasjoner.
