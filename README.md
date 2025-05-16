@@ -36,7 +36,7 @@ For å kjøre appen må du ha Android Studio installert og tilgang på internett
 
 Om du heller ønsker å laste ned zip-filen til prosjeketet er dette også mulig når du klikker på den grønne "code"-knappen på github siden til prosjektet. Deretter pakker du ut ZIP-filen på din pc/mac før du videre kan følge de samme stegene fra punkt 5.
 
-**MERK:** Vi har noen problemer med emulatorposisjonen der posisjonen til emulatoren først settes til et punkt i San Jose før den flyttes til riktig plassering. Dette er IKKE et problem på fysiske enheter, og oppstod kun etter oppdatering av Android Studio. Vår løsning er å feste kameraet til brukerstedet i en kort stund før du kobler det fra igjen. Brukeren kan koble fra kameraet manuelt ved å flytte kartet. Hvis brukeren flytter kartet før kameraet er riktig posisjonert på brukerposisjonen, må de manuelt søke om kartet med Nyheter-knappen.
+**MERK:** Vi har noen problemer med emulatorposisjonen der posisjonen til emulatoren først settes til et punkt i San Jose før den flyttes til riktig plassering. Dette er IKKE et problem på fysiske enheter, og oppstod kun etter oppdatering av Android Studio. Dette problemet er derimot løst dersom du kjører emulatoren på API-nivå 36.
 
 
 ## Biblioteker og rammeverk
