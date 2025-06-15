@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -17,26 +19,29 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        val localProperties = Properties().apply {
+            load(rootProject.file("local.properties").inputStream())
+        }
+
         buildConfigField(
             "String",
             "MAPBOX_ACCESS_TOKEN",
-            "\"${properties["MAPBOX_ACCESS_TOKEN"]}\""
+            "\"${localProperties["MAPBOX_ACCESS_TOKEN"]}\""
         )
         buildConfigField(
             "String",
             "MAPBOX_SECRET_TOKEN",
-            "\"${properties["MAPBOX_SECRET_TOKEN"]}\""
+            "\"${localProperties["MAPBOX_SECRET_TOKEN"]}\""
         )
-
         buildConfigField(
             "String",
             "OPENAI_API_KEY_1",
-            "\"${properties["OPENAI_API_KEY_1"]}\""
+            "\"${localProperties["OPENAI_API_KEY_1"]}\""
         )
         buildConfigField(
             "String",
             "OPENAI_API_KEY_2",
-            "\"${properties["OPENAI_API_KEY_2"]}\""
+            "\"${localProperties["OPENAI_API_KEY_2"]}\""
         )
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
