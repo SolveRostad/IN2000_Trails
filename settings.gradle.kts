@@ -1,3 +1,5 @@
+import java.util.Properties
+
 pluginManagement {
     repositories {
         google {
@@ -11,6 +13,7 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -22,11 +25,11 @@ dependencyResolutionManagement {
                 create<BasicAuthentication>("basic")
             }
             credentials {
-                // Do not change the username below.
-                // This should always be `mapbox` (not your username).
+                val localProperties = Properties().apply {
+                    load(project(":").projectDir.resolve("local.properties").inputStream())
+                }
                 username = "mapbox"
-                // Use the secret token in gradle.properties as the password
-                password = providers.gradleProperty("MAPBOX_SECRET_TOKEN").get()
+                password = localProperties["MAPBOX_SECRET_TOKEN"]?.toString() ?: error("MAPBOX_SECRET_TOKEN not found in local.properties")
             }
         }
         maven("https://jitpack.io")
